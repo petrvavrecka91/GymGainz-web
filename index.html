@@ -2181,6 +2181,30 @@
   }
   .comm-react-btn.active{border-color:var(--accent); color:var(--text); background:rgba(var(--accent-rgb),0.14);}
   .comm-comment-btn{margin-left:auto; background:none; border:none; color:var(--muted); cursor:pointer; font-size:12px; font-family:'Space Mono',monospace;}
+  .comm-own-actions{display:flex; gap:4px; margin-left:6px;}
+  .comm-own-btn{background:rgba(0,0,0,0.3); border:1.5px solid var(--line); border-radius:20px; width:32px; height:28px; cursor:pointer; font-size:13px; line-height:1; color:var(--muted);}
+  .comm-own-btn:active{border-color:var(--accent);}
+  .comm-edit-box{margin-top:8px; display:flex; flex-direction:column; gap:6px;}
+  .comm-edit-box input, .comm-edit-box textarea{background:rgba(0,0,0,0.35); border:1px solid var(--line); border-radius:8px; padding:8px 10px; color:var(--text); font-size:13px; font-family:inherit; width:100%; box-sizing:border-box;}
+  .comm-edit-box textarea{min-height:90px; resize:vertical;}
+  .comm-edit-row{display:flex; gap:8px; align-items:center;}
+  .comm-edit-row button{border:none; border-radius:8px; padding:8px 14px; font-weight:700; font-size:12px; cursor:pointer;}
+  .comm-edit-save{background:var(--accent); color:#fff;}
+  .comm-edit-cancel{background:rgba(255,255,255,0.08); color:var(--text);}
+  .comm-edit-err{font-size:11px; color:#ff7a7a;}
+  .comm-edited{opacity:.8;}
+  .comm-cdel{background:none; border:none; color:var(--muted); cursor:pointer; font-size:11px; padding:0 4px; margin-left:4px;}
+  .comm-bell{float:right; margin-right:8px; position:relative; background:rgba(var(--accent-rgb),0.14) !important; border-color:var(--accent) !important; color:var(--text) !important; box-shadow:none !important; font-size:20px !important;}
+  .comm-bell[data-n]::after{content:attr(data-n); position:absolute; top:-6px; right:-6px; min-width:18px; height:18px; border-radius:9px; background:#ef4444; color:#fff; font-size:10px; line-height:18px; text-align:center; padding:0 4px; font-family:'Oxanium',sans-serif; font-weight:700;}
+  #tileCommunity{position:relative;}
+  #tileCommunity[data-badge]::after{content:attr(data-badge); position:absolute; top:6px; right:8px; min-width:18px; height:18px; border-radius:9px; background:#ef4444; color:#fff; font-size:10px; line-height:18px; text-align:center; padding:0 4px; font-family:'Oxanium',sans-serif; font-weight:700;}
+  .nt-row{display:flex; gap:10px; align-items:flex-start; padding:11px 12px; border-top:1px solid rgba(255,255,255,0.06); cursor:pointer;}
+  .nt-row.unread{background:rgba(var(--accent-rgb),0.12);}
+  .nt-ic{font-size:20px; line-height:1.2;}
+  .nt-tx{flex:1; font-size:13px; line-height:1.35;}
+  .nt-tx small{display:block; color:var(--muted); font-size:10.5px; font-family:'Space Mono',monospace; margin-top:2px;}
+  .ch-mini.warn{border-color:rgba(255,46,77,0.5); color:#ff8095;}
+  .ch-actions{display:flex; gap:6px; margin-left:auto; flex-shrink:0;}
   .comm-comments{margin-top:10px; padding-top:10px; border-top:1px solid var(--line); display:none;}
   .comm-comments.open{display:block;}
   .comm-comment{font-size:calc(12px * var(--font-scale)); margin-bottom:6px; color:var(--text);}
@@ -2625,7 +2649,7 @@
     <button id="musicToggleBtn" class="home-bottom-btn" title="Hudba on/off">🔇 Hudba</button>
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V24 · 2026-10-15</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V25 · 2026-10-15</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -2862,6 +2886,7 @@
 <div class="profile-overlay" id="communityOverlay">
   <div class="profile-card">
     <button class="prof-close" id="commClose">✕</button>
+    <button class="prof-close comm-bell" id="commBell" title="Upozornění">🔔</button>
     <div style="font-family:'Oxanium',sans-serif; font-weight:700; font-size:19px; color:var(--accent); margin-bottom:4px;">🌍 Komunita</div>
     <div class="portion-note" id="commStatus2" style="margin-bottom:14px;"></div>
 
@@ -2944,6 +2969,7 @@
 </div>
 
 <div class="profile-overlay" id="commPlayerOverlay"></div>
+<div class="profile-overlay" id="commNotifOverlay" style="z-index:70;"></div>
 <div class="profile-overlay" id="commChOverlay"></div>
 <div class="profile-overlay" id="commChDetailOverlay"></div>
 <div class="profile-overlay" id="commNewPostOverlay">
@@ -7965,6 +7991,7 @@ async function commInitAuth(){
     commShowLoggedIn();
     commLoadFeed();
     commSyncStats(true);
+    commNotifStart();
   } else {
     commShowAuthGate();
   }
@@ -7975,8 +8002,10 @@ async function commInitAuth(){
       commShowLoggedIn();
       commLoadFeed();
       commSyncStats(true);
+      commNotifStart();
     } else {
       commUser = null; commProfile = null;
+      if(commNotifTimer){ clearInterval(commNotifTimer); commNotifTimer = null; }
       commShowAuthGate();
     }
   });
@@ -8044,6 +8073,7 @@ const CH_LB = {
 const CH_VIS = {private:{icon:'🔒', name:'Nikdo'}, friends:{icon:'👥', name:'Přátelé'}, public:{icon:'🌍', name:'Všichni'}};
 let commMyStats = null;       // moje řádka z profile_stats (hlavně nastavení viditelnosti)
 let commFriendIds = [];       // vzájemné sledování
+let commPendingIds = [];       // ja sleduju je, oni me ne (odeslana zadost)
 let commRequestIds = [];      // sledují mě, já je ne
 let commPeople = {};          // id -> profil (username, avatar_emoji, ...)
 let commStatsMap = {};        // id -> profile_stats (jen to, co smím vidět)
@@ -8125,8 +8155,10 @@ async function chLoadFriends(){
   const { data: fol } = await sbClient.from('follows').select('follower_id').eq('following_id', commUser.id);
   const followers = new Set((fol||[]).map(f=>f.follower_id));
   commFriendIds = Array.from(commFollowedIds).filter(id=>followers.has(id));
-  commRequestIds = Array.from(followers).filter(id=>!commFollowedIds.has(id));
-  const all = Array.from(new Set(commFriendIds.concat(commRequestIds)));
+  const ign = state.commIgnored || [];
+  commRequestIds = Array.from(followers).filter(id=>!commFollowedIds.has(id) && !ign.includes(id));
+  commPendingIds = Array.from(commFollowedIds).filter(id=>!followers.has(id));
+  const all = Array.from(new Set(commFriendIds.concat(commRequestIds, commPendingIds)));
   commPeople = Object.assign({}, commPeople);
   if(all.length){
     const { data: profs } = await sbClient.from('profiles').select('id,username,avatar_emoji,rank_name,level,bio,instagram_url').in('id', all);
@@ -8213,11 +8245,15 @@ function chDrawFriendsTab(){
   // --- přátelé ---
   const friendsHTML = commFriendIds.length ? commFriendIds.map(id=>{
     const p = commPeople[id]||{};
-    return `<div class="ch-row" data-chplayer="${id}"><span class="ch-av">${p.avatar_emoji||'🦍'}</span><span class="ch-nm">${escHtml(p.username||'Hráč')}<small>${commStatsMap[id] ? 'Lv '+(commStatsMap[id].level||1)+' · '+escHtml(commStatsMap[id].rank_name||'') : '🔒 progres nesdílí'}</small></span><button class="ch-mini" data-chvyz="${id}">⚔️ Vyzvat</button></div>`;
+    return `<div class="ch-row" data-chplayer="${id}"><span class="ch-av">${p.avatar_emoji||'🦍'}</span><span class="ch-nm">${escHtml(p.username||'Hráč')}<small>${commStatsMap[id] ? 'Lv '+(commStatsMap[id].level||1)+' · '+escHtml(commStatsMap[id].rank_name||'') : '🔒 progres nesdílí'}</small></span><span class="ch-actions"><button class="ch-mini" data-chvyz="${id}">⚔️ Vyzvat</button><button class="ch-mini warn" data-chunf="${id}">Odebrat</button></span></div>`;
   }).join('') : '<p class="nb-note" style="text-align:center;">Zatím nemáš žádné přátele. Najdi je níže – přátelé jsou lidé, kteří se navzájem sledují.</p>';
   const reqHTML = commRequestIds.length ? '<div class="ch-sub">Chtějí být tvoji přátelé</div>' + commRequestIds.map(id=>{
     const p = commPeople[id]||{};
-    return `<div class="ch-row"><span class="ch-av">${p.avatar_emoji||'🦍'}</span><span class="ch-nm">${escHtml(p.username||'Hráč')}<small>sleduje tě</small></span><button class="ch-mini main" data-chfollow="${id}">＋ Přidat</button></div>`;
+    return `<div class="ch-row"><span class="ch-av">${p.avatar_emoji||'🦍'}</span><span class="ch-nm">${escHtml(p.username||'Hráč')}<small>sleduje tě</small></span><span class="ch-actions"><button class="ch-mini main" data-chfollow="${id}">＋ Přidat</button><button class="ch-mini" data-chign="${id}">Odmítnout</button></span></div>`;
+  }).join('') : '';
+  const pendHTML = commPendingIds.length ? '<div class="ch-sub">Odeslané žádosti</div>' + commPendingIds.map(id=>{
+    const p = commPeople[id]||{};
+    return `<div class="ch-row" data-chplayer="${id}"><span class="ch-av">${p.avatar_emoji||'🦍'}</span><span class="ch-nm">${escHtml(p.username||'Hráč')}<small>⏳ čeká, až tě přidá zpět</small></span><span class="ch-actions"><button class="ch-mini warn" data-chcancel="${id}">Zrušit žádost</button></span></div>`;
   }).join('') : '';
   box.innerHTML = `
     ${visBanner}
@@ -8230,7 +8266,7 @@ function chDrawFriendsTab(){
     <button class="addrec-save" id="chNewBtn" style="margin:0 0 10px;">＋ Nová challenge</button>
     ${challengesHTML}
     <div class="comm-section-title" style="margin-top:20px;"><span>👥 Přátelé</span></div>
-    ${reqHTML}${friendsHTML}
+    ${reqHTML}${friendsHTML}${pendHTML}
     <div class="ch-search"><input type="text" id="chSearch" maxlength="24" placeholder="Najít hráče podle přezdívky…"><button class="addrec-save" id="chSearchBtn">🔎</button></div>
     <div id="chSearchRes">${chSearchHTML()}</div>`;
   chWireFriends(box);
@@ -8243,17 +8279,32 @@ function chSearchHTML(){
     const friend = commFriendIds.includes(p.id);
     let act;
     if(friend) act = '<span class="ch-tag">✓ přátelé</span>';
-    else if(iFollow) act = '<span class="ch-tag">⏳ čeká na potvrzení</span>';
+    else if(iFollow) act = `<span class="ch-tag">⏳ čeká</span><button class="ch-mini warn" data-chcancel="${p.id}">Zrušit</button>`;
     else act = `<button class="ch-mini main" data-chfollow="${p.id}">${theyFollow?'＋ Přidat zpět':'＋ Přidat'}</button>`;
     return `<div class="ch-row" data-chplayer="${p.id}"><span class="ch-av">${p.avatar_emoji||'🦍'}</span><span class="ch-nm">${escHtml(p.username)}<small>${escHtml(p.rank_name||'')}</small></span>${act}</div>`;
   }).join('');
 }
 async function chFollow(id){
+  if((state.commIgnored||[]).includes(id)){ state.commIgnored = state.commIgnored.filter(x=>x!==id); saveState(); }
   await sbClient.from('follows').insert({follower_id:commUser.id, following_id:id});
   await chLoadFriends();
   showToast(commFriendIds.includes(id) ? '🤝 Jste přátelé!' : '✅ Žádost odeslána – až tě sleduje zpět, budete přátelé');
 }
+async function chUnfollow(id, ignore){
+  await sbClient.from('follows').delete().match({follower_id:commUser.id, following_id:id});
+  if(ignore){ state.commIgnored = Array.from(new Set((state.commIgnored||[]).concat([id]))); saveState(); }
+  await chLoadFriends();
+  chUpdateBadge();
+}
+function chRemoveFriend(id, after){
+  const nm = chPersonName(id);
+  showConfirm({icon:'💔', title:'Odebrat z přátel?', text:nm+' zmizí z tvého žebříčku a nebude vidět tvůj progres. Půjde ho zase přidat.', okLabel:'Odebrat', cancelLabel:'Zrušit',
+    onConfirm: async ()=>{ await chUnfollow(id, true); showToast('Odebráno z přátel'); if(after) after(); }});
+}
 function chWireFriends(box){
+  box.querySelectorAll('[data-chunf]').forEach(b=>b.addEventListener('click', (e)=>{ e.stopPropagation(); chRemoveFriend(b.dataset.chunf, ()=>chDrawFriendsTab()); }));
+  box.querySelectorAll('[data-chcancel]').forEach(b=>b.addEventListener('click', async (e)=>{ e.stopPropagation(); await chUnfollow(b.dataset.chcancel, false); showToast('Žádost zrušena'); chDrawFriendsTab(); }));
+  box.querySelectorAll('[data-chign]').forEach(b=>b.addEventListener('click', (e)=>{ e.stopPropagation(); const id=b.dataset.chign; state.commIgnored = Array.from(new Set((state.commIgnored||[]).concat([id]))); saveState(); commRequestIds = commRequestIds.filter(x=>x!==id); chUpdateBadge(); chDrawFriendsTab(); }));
   box.querySelectorAll('[data-lb]').forEach(b=>b.addEventListener('click', ()=>{ chLbMetric = b.dataset.lb; chDrawFriendsTab(); }));
   box.querySelectorAll('[data-chplayer]').forEach(r=>r.addEventListener('click', (e)=>{ if(e.target.closest('button')) return; chOpenPlayer(r.dataset.chplayer); }));
   box.querySelectorAll('[data-chfollow]').forEach(b=>b.addEventListener('click', async ()=>{ await chFollow(b.dataset.chfollow); chDrawFriendsTab(); chUpdateBadge(); }));
@@ -8443,7 +8494,11 @@ async function chOpenPlayer(uid){
   }
   const actions = isMe
     ? `<div class="ch-banner">Tvůj progres vidí: <b>${CH_VIS[chVis()].icon} ${CH_VIS[chVis()].name}</b>${chVisPickHTML()}</div>`
-    : `<div class="rest-btns"><button class="rest-b ${iFollow?'':'main'}" id="plFollow">${iFollow ? (isFriend?'✓ Přátelé':'✓ Sleduji') : '＋ Přidat / sledovat'}</button>${isFriend?'<button class="rest-b main" id="plChallenge">⚔️ Vyzvat</button>':''}</div>`;
+    : (isFriend
+        ? `<div class="portion-note" style="text-align:center; margin-bottom:6px;">🤝 Jste přátelé</div><div class="rest-btns"><button class="rest-b main" id="plChallenge">⚔️ Vyzvat</button><button class="rest-b" id="plRemove">💔 Odebrat z přátel</button></div>`
+        : (iFollow
+            ? `<div class="portion-note" style="text-align:center; margin-bottom:6px;">⏳ Žádost odeslána – až tě ${escHtml(prof.username)} přidá zpět, budete přátelé</div><div class="rest-btns"><button class="rest-b" id="plFollow">Zrušit žádost</button></div>`
+            : `<div class="rest-btns"><button class="rest-b main" id="plFollow">${commRequestIds.includes(uid) ? '＋ Přidat zpět' : '＋ Přidat do přátel'}</button></div>`));
   ov.innerHTML = `<div class="profile-card">
     <button class="prof-close" id="plClose">✕</button>
     <div class="pl-head"><div class="pl-av">${prof.avatar_emoji||'🦍'}</div><div><div class="pl-name">${escHtml(prof.username)}</div>${prof.bio?`<div class="pl-bio">${escHtml(prof.bio)}</div>`:''}${prof.instagram_url?`<div class="pl-bio">📷 ${escHtml(prof.instagram_url)}</div>`:''}</div></div>
@@ -8452,15 +8507,100 @@ async function chOpenPlayer(uid){
   if(isMe) chBindVisPick(ov);
   const fb = document.getElementById('plFollow');
   if(fb) fb.addEventListener('click', async ()=>{
-    if(iFollow) await sbClient.from('follows').delete().match({follower_id:commUser.id, following_id:uid});
-    else await sbClient.from('follows').insert({follower_id:commUser.id, following_id:uid});
+    if(iFollow) await chUnfollow(uid, false);
+    else await chFollow(uid);
     await chLoadFriends(); chUpdateBadge();
     chOpenPlayer(uid);
     if(commActiveTab==='friends') chDrawFriendsTab();
   });
+  const rb = document.getElementById('plRemove');
+  if(rb) rb.addEventListener('click', ()=> chRemoveFriend(uid, ()=>{ chOpenPlayer(uid); if(commActiveTab==='friends') chDrawFriendsTab(); }));
   const cb = document.getElementById('plChallenge');
   if(cb) cb.addEventListener('click', ()=>{ ov.classList.remove('open'); chOpenCreate([uid]); });
 }
+
+// ===== UPOZORNENI (like, komentar, novy prispevek sledovaneho, zadost o pratelstvi) =====
+let commNotifTimer = null, commNotifBusy = false;
+function commNotifList(){ return state.commNotifs || (state.commNotifs = []); }
+function commNotifUnread(){ const r = state.commNotifRead || ''; return commNotifList().filter(n=>n.t > r).length; }
+function commNotifRenderBadge(){
+  const n = commNotifUnread();
+  const bell = document.getElementById('commBell');
+  if(bell){ if(n>0) bell.dataset.n = n>99?'99+':String(n); else delete bell.dataset.n; }
+  const tile = document.getElementById('tileCommunity');
+  if(tile){ if(n>0) tile.dataset.badge = n>99?'99+':String(n); else delete tile.dataset.badge; }
+}
+function commNotifSnip(s, n){ s = String(s||'').replace(/\s+/g,' ').trim(); return s.length>n ? s.slice(0,n-1)+'…' : s; }
+async function commNotifPoll(){
+  if(!sbClient || !commUser || commUser.id==='demo' || commNotifBusy) return;
+  commNotifBusy = true;
+  try{
+    const me = commUser.id, nowIso = new Date().toISOString();
+    if(!state.commNotifCursor){ state.commNotifCursor = nowIso; state.commNotifRead = nowIso; saveState(); commNotifRenderBadge(); return; }
+    const since = state.commNotifCursor;
+    await commLoadFollows();
+    const followed = Array.from(commFollowedIds);
+    const { data: mine } = await sbClient.from('posts').select('id,title,body').eq('user_id', me).limit(300);
+    const myPosts = {}; (mine||[]).forEach(p=>myPosts[p.id]=p);
+    const ids = Object.keys(myPosts);
+    const [rc, rr, rp, rf] = await Promise.all([
+      ids.length ? sbClient.from('comments').select('id,post_id,user_id,text,created_at').in('post_id', ids).gt('created_at', since).neq('user_id', me).order('created_at',{ascending:false}).limit(30) : {data:[]},
+      ids.length ? sbClient.from('reactions').select('id,post_id,user_id,emoji,created_at').in('post_id', ids).gt('created_at', since).neq('user_id', me).order('created_at',{ascending:false}).limit(30) : {data:[]},
+      followed.length ? sbClient.from('posts').select('id,user_id,title,body,created_at').in('user_id', followed).gt('created_at', since).order('created_at',{ascending:false}).limit(20) : {data:[]},
+      sbClient.from('follows').select('follower_id,created_at').eq('following_id', me).gt('created_at', since).order('created_at',{ascending:false}).limit(20),
+    ]);
+    const cs = rc.data||[], rs = rr.data||[], ps = rp.data||[], fs = rf.data||[];
+    const uids = Array.from(new Set([].concat(cs.map(x=>x.user_id), rs.map(x=>x.user_id), ps.map(x=>x.user_id), fs.map(x=>x.follower_id))));
+    const names = {};
+    if(uids.length){ const { data: pr } = await sbClient.from('profiles').select('id,username').in('id', uids); (pr||[]).forEach(p=>names[p.id]=p.username); }
+    const nm = id=>names[id]||'Někdo';
+    const ptitle = p=> p ? commNotifSnip(p.title||p.body||'tvůj příspěvek', 40) : 'tvůj příspěvek';
+    const list = commNotifList(), have = new Set(list.map(n=>n.id));
+    const fresh = []; let maxT = since;
+    const add = (id,t,icon,text,uid)=>{ if(t>maxT) maxT=t; if(have.has(id)) return; fresh.push({id,t,icon,text,uid:uid||null}); };
+    cs.forEach(c=>add('c:'+c.id, c.created_at, '💬', nm(c.user_id)+' okomentoval(a) „'+ptitle(myPosts[c.post_id])+'“: '+commNotifSnip(c.text,50), c.user_id));
+    rs.forEach(r=>add('r:'+r.id, r.created_at, r.emoji||'👍', nm(r.user_id)+' dal(a) '+(r.emoji||'👍')+' tvému příspěvku „'+ptitle(myPosts[r.post_id])+'“', r.user_id));
+    ps.forEach(p=>add('p:'+p.id, p.created_at, '📰', nm(p.user_id)+' přidal(a) příspěvek „'+commNotifSnip(p.title||p.body||'',40)+'“', p.user_id));
+    fs.forEach(f=>{ const fr = commFollowedIds.has(f.follower_id); add('f:'+f.follower_id+':'+f.created_at, f.created_at, fr?'🤝':'👋', fr ? nm(f.follower_id)+' tě přidal(a) zpět – jste přátelé' : nm(f.follower_id)+' tě chce mít mezi přáteli', f.follower_id); });
+    state.commNotifCursor = maxT;
+    if(fresh.length){
+      fresh.sort((a,b)=>b.t.localeCompare(a.t));
+      state.commNotifs = fresh.concat(list).slice(0,40);
+    }
+    saveState();
+    commNotifRenderBadge();
+    if(fresh.length){
+      const open = document.getElementById('commNotifOverlay').classList.contains('open');
+      if(open) commNotifOpen(); else showToast(fresh.length===1 ? '🔔 '+fresh[0].text : '🔔 '+fresh.length+' nových upozornění v Komunitě');
+    }
+  }catch(e){ /* sit/DB nedostupna - zkusime pozdeji */ }
+  commNotifBusy = false;
+}
+function commNotifTimeAgo(iso){ try{ return commTimeAgo(iso); }catch(e){ return ''; } }
+function commNotifOpen(){
+  const ov = document.getElementById('commNotifOverlay');
+  const readBefore = state.commNotifRead || '';
+  const list = commNotifList();
+  ov.innerHTML = '<div class="profile-card"><button class="prof-close" id="ntClose">✕</button>'
+    + '<div style="font-family:\'Oxanium\',sans-serif; font-weight:700; font-size:19px; color:var(--accent); margin-bottom:12px;">🔔 Upozornění</div>'
+    + (list.length ? '<div class="ch-box">'+list.map(n=>`<div class="nt-row ${n.t>readBefore?'unread':''}" data-ntuid="${n.uid||''}"><span class="nt-ic">${n.icon}</span><span class="nt-tx">${escHtml(n.text)}<small>${commNotifTimeAgo(n.t)}</small></span></div>`).join('')+'</div>'
+        + '<button class="rest-b" id="ntClear" style="margin-top:12px; width:100%;">Vymazat upozornění</button>'
+      : '<div class="shop-empty">Zatím nic nového. Dozvíš se tu o lajcích, komentářích, nových příspěvcích lidí, které sleduješ, a o žádostech o přátelství.</div>')
+    + '<p class="nb-note" style="margin-top:12px;">Upozornění se načítají, když máš appku otevřenou. Když je zavřená, zatím nepřijdou.</p></div>';
+  ov.classList.add('open');
+  state.commNotifRead = new Date().toISOString(); saveState(); commNotifRenderBadge();
+  document.getElementById('ntClose').addEventListener('click', ()=>ov.classList.remove('open'));
+  const cl = document.getElementById('ntClear'); if(cl) cl.addEventListener('click', ()=>{ state.commNotifs = []; saveState(); commNotifOpen(); });
+  ov.querySelectorAll('.nt-row').forEach(r=>r.addEventListener('click', ()=>{ const u=r.dataset.ntuid; if(u){ chOpenPlayer(u); } }));
+}
+document.getElementById('commBell').addEventListener('click', async ()=>{ await commNotifPoll(); commNotifOpen(); });
+function commNotifStart(){
+  commNotifRenderBadge();
+  commNotifPoll();
+  if(commNotifTimer) clearInterval(commNotifTimer);
+  commNotifTimer = setInterval(()=>{ if(!document.hidden) commNotifPoll(); }, 60000);
+}
+document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) commNotifPoll(); });
 
 // ===== Profil =====
 function commRenderProfileForm(){
@@ -8504,6 +8644,7 @@ document.getElementById('commSaveProfile').addEventListener('click', async ()=>{
 // ===== Feed =====
 let commFollowedIds = new Set();
 let commFeedFilterMode = 'all';
+let commFeedCache = {};
 async function commLoadFollows(){
   if(!sbClient || !commUser) return;
   const { data } = await sbClient.from('follows').select('following_id').eq('follower_id', commUser.id);
@@ -8535,6 +8676,7 @@ async function commLoadFeed(){
     list.innerHTML = '<div class="shop-empty">Zatím tu nikdo nic nesdílel. Buď první – klikni na "Nový příspěvek"!</div>';
     return;
   }
+  commFeedCache = {}; posts.forEach(p=>{ commFeedCache[p.id] = p; });
   const postIds = posts.map(p=>p.id);
   const [{ data: reactions }, { data: comments }] = await Promise.all([
     sbClient.from('reactions').select('*').in('post_id', postIds),
@@ -8613,7 +8755,7 @@ function commRenderPost(p, reactions, comments){
   return '<div class="comm-post" data-pid="'+p.id+'">'
     + '<div class="comm-post-head"><div class="comm-post-avatar" data-prof="'+p.user_id+'">'+(author.avatar_emoji||'🦍')+'</div>'
     + '<div><div class="comm-post-user" data-prof="'+p.user_id+'">'+escHtml(author.username||'Hráč')+'</div>'
-    + '<div class="comm-post-meta">'+escHtml(author.rank_name||'')+' · '+commTimeAgo(p.created_at)+'</div></div>'
+    + '<div class="comm-post-meta">'+escHtml(author.rank_name||'')+' · '+commTimeAgo(p.created_at)+(p.edited_at?' · <span class="comm-edited">upraveno</span>':'')+'</div></div>'
     + followBtn
     + '<div class="comm-post-type">'+typeIcon+'</div></div>'
     + (p.title ? '<div class="comm-post-title">'+escHtml(p.title)+'</div>' : '')
@@ -8624,9 +8766,11 @@ function commRenderPost(p, reactions, comments){
     + '<button class="comm-react-btn '+(myReactions.includes('💪')?'active':'')+'" data-emoji="💪">💪 '+(counts['💪']||0)+'</button>'
     + '<button class="comm-react-btn '+(myReactions.includes('🔥')?'active':'')+'" data-emoji="🔥">🔥 '+(counts['🔥']||0)+'</button>'
     + '<button class="comm-react-btn '+(myReactions.includes('❤️')?'active':'')+'" data-emoji="❤️">❤️ '+(counts['❤️']||0)+'</button>'
-    + '<button class="comm-comment-btn">💬 '+postComments.length+'</button></div>'
+    + '<button class="comm-comment-btn">💬 '+postComments.length+'</button>'
+    + (isOwn ? '<span class="comm-own-actions"><button class="comm-own-btn comm-edit-btn" title="Upravit">✏️</button><button class="comm-own-btn comm-del-btn" title="Smazat">🗑</button></span>' : '')
+    + '</div>'
     + '<div class="comm-comments">'
-    + postComments.map(c=>'<div class="comm-comment"><b>'+escHtml((c.profiles&&c.profiles.username)||'Hráč')+':</b> '+escHtml(c.text)+'</div>').join('')
+    + postComments.map(c=>'<div class="comm-comment"><b>'+escHtml((c.profiles&&c.profiles.username)||'Hráč')+':</b> '+escHtml(c.text)+(c.user_id===commUser.id?'<button class="comm-cdel" data-cid="'+c.id+'" title="Smazat komentář">✕</button>':'')+'</div>').join('')
     + '<div class="comm-comment-add"><input type="text" placeholder="Napiš komentář..." maxlength="200"><button>Odeslat</button></div>'
     + '</div></div>';
 }
@@ -8659,6 +8803,58 @@ function commWirePostEvents(container){
         commLoadFeed();
       });
     }
+    // smazani vlastniho komentare
+    postEl.querySelectorAll('.comm-cdel').forEach(b=>b.addEventListener('click', async ()=>{
+      const { error } = await sbClient.from('comments').delete().match({id:b.dataset.cid, user_id:commUser.id});
+      if(error){ showToast('⚠️ Komentář se nepodařilo smazat'); return; }
+      commLoadFeed();
+    }));
+    // smazani vlastniho prispevku
+    const delBtn = postEl.querySelector('.comm-del-btn');
+    if(delBtn) delBtn.addEventListener('click', ()=>{
+      showConfirm({icon:'🗑', title:'Smazat příspěvek?', text:'Příspěvek zmizí i s reakcemi a komentáři. Nejde to vrátit.', okLabel:'Smazat', cancelLabel:'Zrušit',
+        onConfirm: async ()=>{
+          const { error } = await sbClient.from('posts').delete().match({id:pid, user_id:commUser.id});
+          if(error){ showToast('⚠️ Příspěvek se nepodařilo smazat'); return; }
+          showToast('🗑 Příspěvek smazán');
+          commLoadFeed();
+        }});
+    });
+    // uprava vlastniho prispevku (nadpis + text)
+    const editBtn = postEl.querySelector('.comm-edit-btn');
+    if(editBtn) editBtn.addEventListener('click', ()=>{
+      if(postEl.querySelector('.comm-edit-box')) return;
+      const titleEl = postEl.querySelector('.comm-post-title');
+      const bodyEl = postEl.querySelector('.comm-post-body');
+      const post = (commFeedCache && commFeedCache[pid]) || {};
+      const box = document.createElement('div');
+      box.className = 'comm-edit-box';
+      box.innerHTML = '<input type="text" class="ce-title" maxlength="80" placeholder="Nadpis">'
+        + '<textarea class="ce-body" maxlength="600" placeholder="Text příspěvku"></textarea>'
+        + '<div class="comm-edit-err"></div>'
+        + '<div class="comm-edit-row"><button class="comm-edit-save">Uložit</button><button class="comm-edit-cancel">Zrušit</button></div>';
+      box.querySelector('.ce-title').value = post.title || '';
+      box.querySelector('.ce-body').value = post.body || '';
+      const head = postEl.querySelector('.comm-post-head');
+      head.insertAdjacentElement('afterend', box);
+      if(titleEl) titleEl.style.display = 'none';
+      if(bodyEl) bodyEl.style.display = 'none';
+      box.querySelector('.comm-edit-cancel').addEventListener('click', ()=>{
+        box.remove();
+        if(titleEl) titleEl.style.display = '';
+        if(bodyEl) bodyEl.style.display = '';
+      });
+      box.querySelector('.comm-edit-save').addEventListener('click', async ()=>{
+        const t = box.querySelector('.ce-title').value.trim();
+        const bd = box.querySelector('.ce-body').value.trim();
+        const err = box.querySelector('.comm-edit-err');
+        if(!t && !bd){ err.textContent = 'Napiš aspoň nadpis nebo text.'; return; }
+        const { error } = await sbClient.from('posts').update({title:t, body:bd, edited_at:new Date().toISOString()}).match({id:pid, user_id:commUser.id});
+        if(error){ err.textContent = 'Uložení selhalo: ' + error.message; return; }
+        showToast('✏️ Příspěvek upraven');
+        commLoadFeed();
+      });
+    });
     const commentBtn = postEl.querySelector('.comm-comment-btn');
     const commentsBox = postEl.querySelector('.comm-comments');
     commentBtn.addEventListener('click', ()=> commentsBox.classList.toggle('open'));
