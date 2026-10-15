@@ -919,6 +919,8 @@
   .profile-overlay.open{display:block;}
 
   /* PLNOSTRÁNKOVÝ OVERLAY (s fotkou z pozadí jako hlavní stránka) */
+  body[data-sec]:not([data-sec="kitchen"]) > .wrap{visibility:hidden;}
+  .page-overlay, .profile-overlay{overscroll-behavior:contain;}
   .page-overlay{
     position:fixed; inset:0; z-index:60;
     background-color:var(--bg);
@@ -2289,7 +2291,7 @@
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body>
+<body data-sec="home">
 <div id="splash">
   <video id="splashVid" class="splash-vid" autoplay muted playsinline webkit-playsinline preload="auto" poster="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGNgYGAAAAAEAAH2FzhVAAAAAElFTkSuQmCC"></video>
   <div class="splash-tap-hint" id="splashTapHint">👆 Klepni pro pokračování</div>
@@ -2623,7 +2625,7 @@
     <button id="musicToggleBtn" class="home-bottom-btn" title="Hudba on/off">🔇 Hudba</button>
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V23 · 2026-10-15</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V24 · 2026-10-15</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -8956,6 +8958,7 @@ function openHomeSub(section){
   document.getElementById('achOverlay').classList.remove('open');
   document.getElementById('progressOverlay').classList.remove('open');
   document.querySelectorAll('.bn-btn').forEach(b=>b.classList.toggle('on', b.dataset.nav===section));
+  document.body.dataset.sec = section; // kuchyne (zakladni .wrap) je videt jen na zalozce JIDLO
   if(section==='training'){
     document.getElementById('workoutOverlay').classList.add('open');
     if(state.workoutPlan){
@@ -11044,8 +11047,17 @@ document.getElementById('obReplayBtn').addEventListener('click', ()=>{
   // po chvilce ukaz napis, ktery navede ke klepnuti (skip + start hudby se tak stanou
   // stejnym gestem - odpada cekani na nahodne prvni klepnuti nekde jinde v appce)
   setTimeout(()=>{ if(!hidden && tapHint) tapHint.classList.add('show'); }, 1200);
-  vid.addEventListener('playing', ()=>vid.classList.add('ready'));
+  let started = false, blocked = false, hardTimer = null;
+  vid.addEventListener('playing', ()=>{
+    vid.classList.add('ready');
+    if(started) return;
+    started = true;
+    if(hardTimer) clearTimeout(hardTimer);
+    // dohraj video do konce (a malou rezervou), nezavisle na tom, jak pozdne zacalo
+    hardTimer = setTimeout(hideSplash, ((vid.duration && isFinite(vid.duration)) ? vid.duration : 4) * 1000 + 1500);
+  });
   vid.addEventListener('ended', hideSplash);
+  vid.addEventListener('error', ()=>setTimeout(hideSplash, 300)); // video nejde prehrat -> neblokuj start appky
   // base64 -> Blob URL (mobilni prohlizece neprehraji dlouhe data-URI spolehlive)
   try{
     const bin = atob(SPLASH_VID_B64);
@@ -11054,18 +11066,28 @@ document.getElementById('obReplayBtn').addEventListener('click', ()=>{
     vid.src = URL.createObjectURL(new Blob([arr], {type:'video/mp4'}));
   }catch(e){ hideSplash(); }
   if(aud && SPLASH_AUDIO_SRC){ aud.src = SPLASH_AUDIO_SRC; }
-  function tryPlay(){ vid.play && vid.play().catch(()=>{}); }
+  function tryPlay(){
+    try{
+      const pr = vid.play && vid.play();
+      if(pr && pr.catch) pr.catch(()=>{ blocked = true; });
+    }catch(e){ blocked = true; }
+  }
   function tryPlayAudio(){
     if(!aud || !SPLASH_AUDIO_SRC || hidden) return;
     aud.play && aud.play().catch(()=>{ /* autoplay se zvukem zablokovan - znelka pri videu je jen bonus kdyz to prohlizec dovoli */ });
   }
   tryPlay();
   tryPlayAudio(); // pokus o prehrani znelky hned pri nacteni (funguje jen na povolenejsich prohlizecich)
-  const touchRetry = ()=>{ if(!vid.currentTime) tryPlay(); };
-  document.addEventListener('touchstart', touchRetry, {once:true, passive:true});
-  setTimeout(()=>{ if(!vid.currentTime) hideSplash(); }, 2500);
-  setTimeout(hideSplash, 5200);
-  sp.addEventListener('click', ()=>{ if(vid.currentTime > 0.3) hideSplash(); });
+  // prvni klepnuti: pokud prohlizec zablokoval autoplay, video (i znelka) se spusti timto gestem
+  const gestureRetry = ()=>{ if(!started){ blocked = false; tryPlay(); tryPlayAudio(); } };
+  document.addEventListener('touchstart', gestureRetry, {once:true, passive:true});
+  document.addEventListener('pointerdown', gestureRetry, {once:true, passive:true});
+  document.addEventListener('keydown', gestureRetry, {once:true});
+  // autoplay zablokovan a nikdo neklepl -> po chvili splash preskoc
+  setTimeout(()=>{ if(!started && blocked) hideSplash(); }, 3500);
+  // video se vubec nerozjelo (pomale zarizeni / nepodporovany prehravac) -> preskoc az po dlouhe rezerve
+  hardTimer = setTimeout(()=>{ if(!started) hideSplash(); }, 9000);
+  sp.addEventListener('click', ()=>{ if(started && vid.currentTime > 0.3) hideSplash(); });
 })();
 
 </script>
