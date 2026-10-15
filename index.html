@@ -2649,7 +2649,7 @@
     <button id="musicToggleBtn" class="home-bottom-btn" title="Hudba on/off">🔇 Hudba</button>
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V25 · 2026-10-15</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V26 · 2026-10-15</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -3147,7 +3147,12 @@
 
     <div class="prof-sec">
       <h5>☁️ Záloha dat</h5>
-      <div class="portion-note">Přihlášení přes Google/Apple přijde s online verzí. Zatím si můžeš data zálohovat kódem:</div>
+      <div class="portion-note" id="cbStatus">☁️ Cloudová záloha: přihlas se v Komunitě a progres se bude zálohovat sám.</div>
+      <div class="backup-row">
+        <button id="cbNow">☁️ Zálohovat teď</button>
+        <button id="cbRestore">☁️ Obnovit z cloudu</button>
+      </div>
+      <div class="portion-note" style="margin-top:12px;">Záloha kódem (bez účtu):</div>
       <div class="backup-row">
         <button id="bkExport">📤 Exportovat data</button>
         <button id="bkImport">📥 Obnovit ze zálohy</button>
@@ -7991,7 +7996,7 @@ async function commInitAuth(){
     commShowLoggedIn();
     commLoadFeed();
     commSyncStats(true);
-    commNotifStart();
+    commNotifStart(); cbStart();
   } else {
     commShowAuthGate();
   }
@@ -8002,10 +8007,12 @@ async function commInitAuth(){
       commShowLoggedIn();
       commLoadFeed();
       commSyncStats(true);
-      commNotifStart();
+      commNotifStart(); cbStart();
     } else {
       commUser = null; commProfile = null;
       if(commNotifTimer){ clearInterval(commNotifTimer); commNotifTimer = null; }
+      if(cbTimer){ clearInterval(cbTimer); cbTimer = null; }
+      cbStartedFor = null;
       commShowAuthGate();
     }
   });
@@ -8601,6 +8608,109 @@ function commNotifStart(){
   commNotifTimer = setInterval(()=>{ if(!document.hidden) commNotifPoll(); }, 60000);
 }
 document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) commNotifPoll(); });
+
+// ===== CLOUDOVA ZALOHA PROGRESU (Supabase, tabulka user_backups) =====
+let cbTimer = null, cbBusy = false, cbHold = false, cbLastJson = '', cbChecked = false;
+const CB_VER = 'V26';
+function cbSnapshot(){
+  const s = JSON.parse(JSON.stringify(state));
+  (function walk(o){ for(const k in o){ const v = o[k]; if(typeof v==='string' && v.startsWith('data:') && v.length>150000){ o[k] = null; } else if(v && typeof v==='object') walk(v); } })(s);
+  ['commNotifs','commNotifCursor','commNotifRead','cloudBkAt'].forEach(k=>{ delete s[k]; });
+  return s;
+}
+function cbLooksEmpty(){
+  return !(state.workoutsTotal>0) && !(state.sessionLog && state.sessionLog.length) && !(state.notebook && state.notebook.length) && (state.xp||0) <= 60;
+}
+function cbSummary(){
+  const lv = levelOf(state.xp||0);
+  return {level:lv, xp:state.xp||0, workouts:state.workoutsTotal||0, streak:state.streak||0};
+}
+function cbFmt(iso){ const d = new Date(iso); return d.getDate()+'. '+(d.getMonth()+1)+'. '+d.getFullYear()+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
+function cbStatus(txt){ const el = document.getElementById('cbStatus'); if(el) el.textContent = txt; }
+function cbReady(){ return !!(sbClient && commUser && commUser.id!=='demo'); }
+async function cbUpload(force){
+  if(!cbReady() || cbBusy) return false;
+  if(cbHold && !force) return false;
+  if(!force && cbLooksEmpty()) return false;
+  const snap = cbSnapshot();
+  const json = JSON.stringify(snap);
+  if(!force && json === cbLastJson) return false;
+  if(json.length > 4800000){ cbStatus('⚠️ Záloha je moc velká pro cloud (fotky). Použij zálohu kódem.'); return false; }
+  cbBusy = true;
+  try{
+    const now = new Date().toISOString();
+    const { error } = await sbClient.from('user_backups').upsert({user_id:commUser.id, data:snap, summary:cbSummary(), app_version:CB_VER, updated_at:now});
+    if(error){ cbStatus('⚠️ Cloudová záloha selhala: '+error.message); cbBusy = false; return false; }
+    cbLastJson = json; cbHold = false;
+    state.cloudBkAt = now; saveState();
+    cbStatus('☁️ Cloudová záloha je zapnutá · naposledy '+cbFmt(now));
+    cbBusy = false; return true;
+  }catch(e){ cbBusy = false; return false; }
+}
+async function cbFetchMeta(){
+  const { data, error } = await sbClient.from('user_backups').select('updated_at,summary,app_version').eq('user_id', commUser.id).maybeSingle();
+  if(error) return {error};
+  return {row:data||null};
+}
+function cbDesc(row){ const s = row.summary||{}; return cbFmt(row.updated_at)+' (Level '+(s.level||'?')+', '+(s.workouts||0)+' tréninků)'; }
+async function cbRestore(){
+  const { data, error } = await sbClient.from('user_backups').select('data,updated_at').eq('user_id', commUser.id).maybeSingle();
+  if(error || !data){ showToast('⚠️ Cloudovou zálohu se nepodařilo načíst'); return; }
+  state = Object.assign({xp:0, favorites:[], shopping:[], missionsDate:'', missions:[], cooked:[]}, data.data, {cloudBkAt:data.updated_at});
+  saveState();
+  showToast('☁️ Progres obnoven! Načítám…');
+  setTimeout(()=>location.reload(), 900);
+}
+async function cbCheck(){
+  if(!cbReady()) return;
+  const { row, error } = await cbFetchMeta();
+  if(error){ cbStatus('☁️ Cloudová záloha zatím není zapnutá (chybí tabulka v databázi).'); cbHold = true; return; }
+  cbChecked = true;
+  if(!row){
+    cbHold = false;
+    cbStatus(cbLooksEmpty() ? '☁️ Cloudová záloha: zatím nic k zálohování.' : '☁️ Cloudová záloha se právě vytváří…');
+    await cbUpload(false); return;
+  }
+  const same = state.cloudBkAt && Math.abs(new Date(row.updated_at) - new Date(state.cloudBkAt)) < 1000;
+  if(cbLooksEmpty()){
+    cbHold = true;
+    showConfirm({icon:'☁️', title:'Najít tvůj progres?', text:'V cloudu je záloha z '+cbDesc(row)+'. Chceš ji obnovit v tomto zařízení?', okLabel:'Obnovit', cancelLabel:'Ne, začít znovu',
+      onConfirm: ()=>cbRestore()});
+    cbStatus('☁️ V cloudu je záloha z '+cbDesc(row)+'. Obnovíš ji tlačítkem níže.');
+    return;
+  }
+  if(same || (state.cloudBkAt && new Date(row.updated_at) <= new Date(state.cloudBkAt))){
+    cbHold = false; cbStatus('☁️ Cloudová záloha je zapnutá · naposledy '+cbFmt(row.updated_at));
+    await cbUpload(false); return;
+  }
+  // jina zarizeni zalohovalo pozdeji, nez toto synchronizovalo -> neprepisuj bez ptani
+  cbHold = true;
+  cbStatus('☁️ V cloudu je jiná záloha z '+cbDesc(row)+'. Automatické zálohování je pozastaveno.');
+  showConfirm({icon:'☁️', title:'Jiná záloha v cloudu', text:'V cloudu je záloha z '+cbDesc(row)+', která se liší od dat v tomto zařízení. Obnovit z cloudu (data tady se přepíšou), nebo ponechat tato data?', okLabel:'Obnovit z cloudu', cancelLabel:'Ponechat zde',
+    onConfirm: ()=>cbRestore()});
+}
+let cbStartedFor = null;
+function cbStart(){
+  if(!commUser || cbStartedFor === commUser.id) return;   // auth udalosti (obnova tokenu) nespousti kontrolu znovu
+  cbStartedFor = commUser.id;
+  cbChecked = false; cbLastJson = '';
+  cbCheck();
+  if(cbTimer) clearInterval(cbTimer);
+  cbTimer = setInterval(()=>{ if(!document.hidden) cbUpload(false); }, 5*60*1000);
+}
+document.addEventListener('visibilitychange', ()=>{ if(document.hidden && cbChecked) cbUpload(false); });
+document.getElementById('cbNow').addEventListener('click', async ()=>{
+  if(!cbReady()){ showToast('☁️ Nejdřív se přihlas v Komunitě'); return; }
+  const ok = await cbUpload(true);
+  showToast(ok ? '☁️ Progres zálohován' : '⚠️ Zálohování se nepovedlo');
+});
+document.getElementById('cbRestore').addEventListener('click', async ()=>{
+  if(!cbReady()){ showToast('☁️ Nejdřív se přihlas v Komunitě'); return; }
+  const { row, error } = await cbFetchMeta();
+  if(error){ showToast('⚠️ Cloudová záloha není dostupná'); return; }
+  if(!row){ showToast('V cloudu zatím žádná záloha není'); return; }
+  showConfirm({icon:'☁️', title:'Obnovit z cloudu?', text:'Záloha z '+cbDesc(row)+'. Data v tomto zařízení se přepíšou.', okLabel:'Obnovit', cancelLabel:'Zrušit', onConfirm: ()=>cbRestore()});
+});
 
 // ===== Profil =====
 function commRenderProfileForm(){
