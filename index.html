@@ -1730,7 +1730,9 @@
   .wo-finish:disabled{opacity:0.5; cursor:default; box-shadow:none;}
 
   .wo-ex{cursor:pointer; flex-direction:column; align-items:stretch; gap:0;}
-  .wo-ex-top{display:flex; justify-content:space-between; align-items:center;}
+  .wo-ex-top{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px 8px;}
+  .wo-ex-top .wex-name{flex:1 1 100%; min-width:0;}
+  .wo-ex-top .wo-ex-actions{margin-left:auto; align-items:center;}
   .wo-ex-actions{display:flex; gap:6px; flex-shrink:0;}
   .wo-ex-actions button{
     border:1px solid var(--line); background:rgba(0,0,0,0.3); color:var(--muted);
@@ -1766,13 +1768,27 @@
     border-radius:999px; padding:6px 12px; cursor:pointer; font-size:11.5px;
   }
   .wo-picker-muscles button.on{border-color:var(--accent); color:var(--accent);}
-  .wo-picker-list{max-height:220px; overflow-y:auto;}
+  .wo-picker-list{max-height:none; overflow:visible;}
   .wo-picker-list .wpl-item{
     padding:9px 12px; background:rgba(0,0,0,0.25); border:1px solid var(--line); border-radius:8px;
     margin-bottom:6px; cursor:pointer; font-size:13px;
     display:flex; justify-content:space-between; align-items:center; gap:8px;
   }
   .wo-picker-list .wpl-item:hover{border-color:var(--cut); color:var(--cut);}
+
+  .ex-sub{display:block; font-size:10.5px; color:var(--muted); font-weight:400; margin-top:1px;}
+  .wo-pick-q{width:100%; box-sizing:border-box; margin-bottom:10px;}
+  .wo-picker-list .wpl-item .wpl-main{display:flex; align-items:center; gap:9px; flex:1; min-width:0;}
+  .wo-picker-list .wpl-item .wpl-chk{flex:none; width:20px; height:20px; border:1.5px solid var(--line); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:13px; color:#14041f;}
+  .wo-picker-list .wpl-item.sel{border-color:var(--accent);}
+  .wo-picker-list .wpl-item.sel .wpl-chk{background:var(--accent); border-color:var(--accent);}
+  .wo-picker-list .wpl-item .wpl-name{display:block; line-height:1.25;}
+  .wo-picker-list .wpl-item .wpl-name small{display:block; font-size:10.5px; color:var(--muted); margin-top:1px;}
+  .wo-pick-bar{position:sticky; bottom:0; padding:10px 0 4px; background:linear-gradient(to top, var(--bg, #0e0614) 70%, transparent); z-index:5;}
+  .wo-pick-bar button{width:100%; border:none; background:var(--accent); color:#14041f; border-radius:10px; padding:12px; font-family:'Oxanium',sans-serif; font-weight:700; font-size:13.5px; cursor:pointer;}
+  .wo-pick-hint{font-size:11.5px; color:var(--muted); margin:0 0 8px;}
+  .wo-ex-actions .wo-mv{padding:2px 6px;}
+  .wo-ex-actions .wo-mv:disabled{opacity:.25; cursor:default;}
 
   .home-intro{font-size:calc(12.5px * var(--font-scale)); color:var(--muted); margin:2px 0 12px; line-height:1.45;}
   .home-none{width:100%; padding:12px 14px; border-radius:12px; border:1.5px solid var(--line); background:rgba(0,0,0,0.28); color:var(--text);
@@ -2649,7 +2665,7 @@
     <button id="musicToggleBtn" class="home-bottom-btn" title="Hudba on/off">🔇 Hudba</button>
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V26 · 2026-10-15</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V27 · 2026-10-16</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -3041,10 +3057,25 @@
         <div><label>🔥 Aktuální váha (kg)</label><input type="number" id="stWeight" step="0.1"></div>
         <div><label>🎯 Cílová váha (kg)</label><input type="number" id="stTarget" step="0.1"></div>
         <div><label>📏 Výška (cm)</label><input type="number" id="stHeight"></div>
+        <div><label>🎂 Věk (roky)</label><input type="number" id="stAge" min="14" max="90"></div>
+        <div><label>🏃 Aktivita</label>
+          <select id="stAct" style="width:100%; padding:11px; border-radius:10px; background:rgba(0,0,0,0.3); border:1px solid var(--line); color:var(--text); font-family:'Space Grotesk',sans-serif; font-size:14px;">
+            <option value="">Auto (podle plánu)</option>
+            <option value="low">Nízká (sedavé)</option>
+            <option value="mid">Střední</option>
+            <option value="high">Vysoká (fyzická práce)</option>
+          </select>
+        </div>
+        <div><label>🏷️ Názvy cviků</label>
+          <select id="stExLang" style="width:100%; padding:11px; border-radius:10px; background:rgba(0,0,0,0.3); border:1px solid var(--line); color:var(--text); font-family:'Space Grotesk',sans-serif; font-size:14px;">
+            <option value="cz">🇨🇿 Česky</option>
+            <option value="en">🇬🇧 Anglicky (původní)</option>
+          </select>
+        </div>
       </div>
       <div class="bmi-box"><span>💪 BMI</span><b id="stBMI">—</b></div>
       <div class="bmi-box"><span>🍽️ Odhad příjmu (cíl)</span><b id="stKcal">—</b></div>
-      <div class="portion-note" id="stKcalNote" style="margin-top:-8px; margin-bottom:8px;"></div>
+      <div class="portion-note" id="stKcalNote" style="margin-top:-8px; margin-bottom:8px; white-space:pre-line;"></div>
       <button id="applyKcalBtn" style="display:none; width:100%; padding:10px; border-radius:10px; background:rgba(var(--cut-rgb),0.16); border:1.5px solid var(--cut); color:#fff; font-family:'Oxanium',sans-serif; font-weight:700; font-size:12.5px; cursor:pointer; margin-bottom:6px;">✅ Použít jako denní cíl</button>
       <div class="bmi-box"><span>🥩 Odhad bílkovin (cíl)</span><b id="stProtEst">—</b></div>
       <div class="portion-note" id="stProtNote" style="margin-top:-8px; margin-bottom:8px;"></div>
@@ -3494,7 +3525,7 @@ function pickExercises(muscle, levelMax, n, usedSet){
   // 'legs' je souhrnný klíč pro generování tréninkových plánů (SPLITS) -
   // pokrývá kvadriceps, hamstringy i lýtka dohromady, ať plán míchá cviky na celé nohy
   const muscleMatch = muscle==='legs' ? ['quads','hamstrings','calves'] : [muscle];
-  const pool = EXERCISES.filter(e=>muscleMatch.includes(e.muscle) && e.level<=levelMax && !e.home && !usedSet.has(e.name));
+  const pool = EXERCISES.filter(e=>muscleMatch.includes(e.muscle) && e.level<=levelMax && !e.home && !(e.extra && e.muscle==='cardio') && !usedSet.has(e.name));
   const shuffled = pool.sort(()=>Math.random()-0.5);
   // oblíbené cviky (❤️) mají při generování přednost
   shuffled.sort((a,b)=> (isFavExercise(b.name)?1:0) - (isFavExercise(a.name)?1:0));
@@ -3738,6 +3769,84 @@ const HOME_GYM_TAGS = {
     if(t && e.req===undefined){ e.req = t[0]; e.flags = t[1]; }
   });
 })();
+
+// ============================================================
+// 🇨🇿 České názvy cviků + slang + hledání (V27)
+// Kanonický název cviku (anglický / původní) zůstává klíčem pro historii, rekordy a plány.
+// Český název je jen "zobrazení" – proto se nic z uložených dat nerozbije.
+// ============================================================
+const EX_CZ = {"Chůze do kopce na páse": [null, "chuze sklon incline walk pas"], "Běžecký pás": [null, "behatko pas beh treadmill"], "Rotoped": [null, "kolo spinning bike"], "Eliptický trenažér": [null, "orbitrek eliptical crosstrainer"], "Veslařský trenažér": [null, "veslo rower concept2 veslovani"], "Schodolez (StairMaster)": [null, "stairmaster schody schodiste"], "Intervaly na rotopedu (HIIT)": [null, "hiit intervaly kolo"], "Švihadlo": [null, "skipping svihadlo jump rope"], "Air Bike (Assault Bike)": [null, "assault bike airbike vzduchove kolo"], "Sprinty na páse (HIIT)": [null, "sprinty hiit pas beh"], "Veslování – intervaly": [null, "hiit veslo intervaly"], "Chest Press stroj": ["Tlak na hrudník na stroji", "chest press stroj tlaky prsa"], "Pec Deck": ["Rozpažování na stroji (motýlek)", "pec deck peck deck butterfly motylek rozpazky prsa"], "Kliky": [null, "push up pushup prsa"], "Dumbbell Bench Press": ["Tlak s jednoručkami na rovné lavici", "jednorucky tlaky prsa bench lavicka"], "Bench Press": ["Bench press (tlak na rovné lavici)", "bench benc benchpress tlaky prsa lavicka velka cinka"], "Barbell Bench Press": ["Tlak s velkou činkou na rovné lavici", "bench benc tlaky prsa velka cinka"], "Incline Bench Press": ["Tlak na šikmé lavici (nahoru)", "incline sikma lavice horni prsa"], "Incline Dumbbell Press": ["Tlak s jednoručkami na šikmé lavici", "incline jednorucky horni prsa sikma"], "Dumbbell Fly": ["Rozpažování s jednoručkami", "fly rozpazky rozpazovani prsa"], "Cable Fly": ["Rozpažování na kladkách", "cable fly kladky rozpazky prsa crossover"], "Chest Dips": ["Dipy na prsa (bradla)", "dipy bradla prsa dips"], "Pause Bench Press": ["Tlak na lavici s pauzou", "bench pauza prsa"], "Spoto Press": ["Spoto press", "spoto bench prsa"], "Larsen Press": ["Larsen press (bez opory nohou)", "larsen bench prsa"], "Floor Press": ["Tlak vleže na podlaze", "floor press podlaha prsa"], "Weighted Dips (těžké)": ["Dipy s těžkou zátěží", "dipy bradla zatez prsa"], "Lat Pulldown": ["Stahování horní kladky k hrudníku", "lat pulldown stahovani kladky horni kladka zada latissimus"], "Seated Cable Row": ["Veslování na spodní kladce vsedě", "row spodni kladka veslovani zada"], "Chest-Supported Row": ["Veslování s opřeným hrudníkem", "veslovani zada podpora lavice"], "Machine Row": ["Veslování na stroji", "row stroj zada veslovani"], "Assisted Pull-Up": ["Shyby s asistencí (stroj)", "asistovane shyby hrazda pomoc stroj"], "Pull-Up": ["Shyby nadhmatem", "shyby hrazda pullup pull up zada"], "Chin-Up": ["Shyby podhmatem", "chinup chin up shyby hrazda biceps"], "Barbell Row": ["Veslování s velkou činkou v předklonu", "barbell row veslovani predklon zada cinka"], "Dumbbell Row": ["Veslování s jednoručkou", "row jednorucka veslovani zada"], "T-Bar Row": ["Veslování na T-osu", "tbar t bar t osa veslovani zada"], "Straight-Arm Pulldown": ["Stahování kladky s nataženýma rukama", "pullover kladka zada straight arm"], "Weighted Pull-Up": ["Shyby se zátěží", "shyby zatez hrazda zada"], "Pendlay Row": ["Pendlay veslování", "pendlay row veslovani zada"], "Meadows Row": ["Meadows veslování (landmine)", "meadows row landmine veslovani zada"], "Seal Row": ["Veslování vleže na lavici (seal row)", "seal row veslovani zada"], "Deficit Deadlift": ["Mrtvý tah z podstavce", "deficit mrtvy tah zada"], "Machine Shoulder Press": ["Tlak na ramena na stroji", "ramena tlaky stroj military"], "Dumbbell Shoulder Press": ["Tlak s jednoručkami nad hlavu", "ramena tlaky jednorucky military"], "Dumbbell Lateral Raise": ["Upažování s jednoručkami", "upazovani bocni ramena lateral raise upazky"], "Cable Lateral Raise": ["Upažování na kladce", "upazovani kladka lateral raise ramena"], "Reverse Pec Deck": ["Zadní ramena na stroji (obrácený motýlek)", "reverse pec deck zadni delty rear delt motylek"], "Barbell Overhead Press": ["Vojenský tlak s velkou činkou (OHP)", "military press ohp tlak nad hlavu ramena cinka"], "Arnold Press": ["Arnoldův tlak", "arnold arnoldky ramena"], "Landmine Press": ["Tlak na landmine", "landmine ramena"], "Rear Delt Row": ["Veslování na zadní ramena", "zadni delty rear delt ramena veslovani"], "Face Pull": ["Face pull (stahování lana ke tváři)", "face pull facepull zadni ramena lano"], "Push Press": ["Push press (tlak s přírazem nohou)", "push press ramena"], "Handstand Push-Up": ["Kliky ve stojce na rukou", "stojka kliky handstand ramena"], "Single-Arm Landmine Press": ["Jednoruční tlak na landmine", "landmine ramena jednoruc"], "Dumbbell Curl": ["Bicepsový zdvih s jednoručkami", "biceps curl bicaky jednorucky zdvihy"], "Hammer Curl": ["Kladivový zdvih (hammer curl)", "hammer kladivo kladivovy biceps"], "Cable Curl": ["Bicepsový zdvih na kladce", "curl kladka biceps"], "Machine Biceps Curl": ["Bicepsový zdvih na stroji", "biceps stroj curl"], "Incline Dumbbell Curl": ["Bicepsový zdvih na šikmé lavici", "incline curl biceps sikma lavice"], "Preacher Curl": ["Bicepsový zdvih na lavici (preacher)", "preacher scott lavice biceps"], "EZ-Bar Curl": ["Bicepsový zdvih s EZ tyčí", "ez tyc zalomena cinka biceps curl"], "Concentration Curl": ["Koncentrovaný bicepsový zdvih", "concentration curl biceps koncentrak"], "Spider Curl": ["Spider curl (předkloněný zdvih)", "spider curl biceps"], "Bayesian Cable Curl": ["Bayesian curl na kladce", "bayesian kladka biceps"], "Drag Curl": ["Drag curl (tažení činky po těle)", "drag curl biceps"], "Cheat Curl": ["Bicepsový zdvih se švihem (cheat curl)", "cheat curl svih biceps"], "Strict Incline Curl": ["Přísný bicepsový zdvih na šikmé lavici", "incline curl biceps prisny"], "Cable Pushdown": ["Stahování kladky dolů na triceps", "pushdown triceps kladka stahovani tricepsak"], "Rope Pushdown": ["Stahování lana dolů na triceps", "pushdown lano provaz triceps"], "Machine Triceps Extension": ["Extenze tricepsu na stroji", "triceps stroj extenze"], "Overhead Cable Extension": ["Extenze tricepsu nad hlavou na kladce", "triceps nad hlavou kladka overhead francouzak"], "Skull Crusher": ["Francouzský tlak vleže (skull crusher)", "skullcrusher francouzak triceps lebkolam"], "EZ-Bar French Press": ["Francouzský tlak s EZ tyčí", "francouzak ez tyc triceps"], "Weighted Dips": ["Dipy se zátěží (triceps)", "dipy bradla zatez triceps"], "Overhead Dumbbell Extension": ["Extenze tricepsu nad hlavou s jednoručkou", "triceps nad hlavou jednorucka francouzak"], "Close-Grip Bench Press": ["Tlak úzkým úchopem", "uzky tlak close grip triceps bench"], "JM Press": ["JM press", "jm press triceps"], "Heavy Skull Crusher": ["Těžký francouzský tlak vleže", "skullcrusher francouzak tezky triceps"], "Close-Grip Bench Press (těžký)": ["Těžký tlak úzkým úchopem", "uzky tlak close grip triceps"], "Leg Press": ["Leg press (tlak nohama)", "leg press legpress tlak nohama stehna lis nohy"], "Leg Extension": ["Předkopávání (extenze kolen)", "leg extension predkopavani stehna kvadriceps extenze"], "Goblet Squat": ["Dřep s jednoručkou u hrudi (goblet)", "goblet drep kettlebell"], "Barbell Back Squat": ["Dřep s velkou činkou na zádech", "drep squat zadni drep cinka stehna"], "Front Squat": ["Přední dřep", "front squat predni drep stehna"], "Bulgarian Split Squat": ["Bulharský dřep", "bulharak bulharsky split squat vypad zadni noha lavice"], "Hack Squat": ["Hack dřep", "hack squat hackenschmidt stehna"], "Low-Bar Squat": ["Dřep s činkou nízko na zádech", "low bar drep powerlifting stehna"], "Front Squat (těžký)": ["Těžký přední dřep", "front squat predni drep"], "Safety Bar Squat": ["Dřep se safety bar tyčí", "safety bar drep"], "Hack Squat (těžký)": ["Těžký hack dřep", "hack squat"], "Bulgarian Split Squat s těžkou zátěží": ["Bulharský dřep s těžkou zátěží", "bulharak tezky"], "Leg Curl": ["Zakopávání na stroji (leg curl)", "leg curl zakopavani zadni stehna hamstringy"], "Walking Lunges": ["Chůze ve výpadech", "vypady lunges chodici vypad"], "Romanian Deadlift": ["Rumunský mrtvý tah", "rdl rumunak rumunsky mrtvy tah zadni stehna"], "Sumo Deadlift": ["Sumo mrtvý tah", "sumo mrtvy tah mrtak"], "Seated Leg Curl": ["Zakopávání vsedě na stroji", "leg curl sede zakopavani zadni stehna"], "Conventional Deadlift": ["Mrtvý tah (klasický)", "deadlift mrtvy tah mrtak deadliftka zada zadni stehna"], "Sumo Deadlift (těžký)": ["Těžký sumo mrtvý tah", "sumo mrtvy tah"], "Romanian Deadlift (těžký)": ["Těžký rumunský mrtvý tah", "rdl rumunak"], "Calf Raise": ["Výpony na lýtka ve stoje", "vypony lytka calf raise"], "Seated Calf Raise": ["Výpony na lýtka vsedě", "vypony sede lytka soleus"], "Machine Calf Raise": ["Výpony na lýtka na stroji", "vypony stroj lytka"], "Standing Barbell Calf Raise": ["Výpony ve stoje s velkou činkou", "vypony lytka cinka"], "Leg Press Calf Raise": ["Výpony na leg pressu", "vypony leg press lytka"], "Single-Leg Calf Raise (těžké)": ["Jednonohé výpony se zátěží", "vypony lytka jednonoz"], "Donkey Calf Raise": ["Výpony v předklonu (oslík)", "donkey oslik vypony lytka"], "Wrist Curl": ["Zdvihy zápěstí (předloktí)", "wrist curl zapesti predlokti"], "Reverse Wrist Curl": ["Zdvihy zápěstí nadhmatem", "reverse wrist curl predlokti"], "Cable Wrist Curl": ["Zdvihy zápěstí na kladce", "zapesti kladka predlokti"], "Barbell Wrist Curl": ["Zdvihy zápěstí s velkou činkou", "zapesti predlokti cinka"], "Zottman Curl": ["Zottmanův zdvih", "zottman biceps predlokti"], "Behind-the-Back Wrist Curl": ["Zdvihy zápěstí za zády", "zapesti za zady predlokti"], "Plate Pinch Hold": ["Držení kotoučů sevřením prstů", "pinch kotouc uchop predlokti"], "Fat Gripz Deadlift Hold": ["Držení mrtvého tahu na tlustém úchopu", "fat gripz uchop predlokti"], "Hip Thrust": ["Hip thrust (můstek s činkou)", "hip thrust hipthrust mustek hyzde zadek"], "Glute Bridge": ["Hýžďový můstek", "glute bridge mustek zadek hyzde"], "Hip Abduction Machine": ["Odtahování nohou na stroji (abdukce)", "abdukce abduction odtahovani hyzde stroj"], "Cable Kickback": ["Zakopávání vzad na kladce (kickback)", "kickback kladka hyzde zadek"], "Barbell Hip Thrust": ["Hip thrust s velkou činkou", "hip thrust hipthrust cinka hyzde zadek mustek"], "Romanian Deadlift (hýždě)": ["Rumunský mrtvý tah (na hýždě)", "rdl rumunak hyzde zadek"], "Bulgarian Split Squat (hýždě)": ["Bulharský dřep (na hýždě)", "bulharak hyzde zadek"], "Cable Pull-Through": ["Přítah kladky mezi nohama (pull-through)", "pull through kladka hyzde"], "Heavy Barbell Hip Thrust": ["Těžký hip thrust s velkou činkou", "hip thrust hyzde"], "Single-Leg Hip Thrust": ["Jednonohý hip thrust", "hip thrust jednonoz hyzde"], "Heavy Romanian Deadlift": ["Těžký rumunský mrtvý tah (hýždě)", "rdl rumunak hyzde"], "Crunch": ["Zkracovačky (crunch)", "crunch zkracovacky sklapovacky bricho"], "Cable Crunch": ["Zkracovačky na kladce", "crunch kladka bricho"], "Machine Crunch": ["Zkracovačky na stroji", "crunch stroj bricho"], "Plank": ["Plank (prkno)", "plank prkno bricho core"], "Reverse Crunch": ["Obrácené zkracovačky", "reverse crunch bricho spodni"], "Hanging Knee Raise": ["Zvedání kolen ve visu", "vis hrazda kolena bricho"], "Hanging Leg Raise": ["Zvedání nohou ve visu", "vis hrazda nohy bricho"], "Ab Wheel": ["Kolečko na břicho", "ab wheel koleco bricho rollout"], "Decline Sit-Up": ["Sedy-lehy na negativní lavici", "sit up sedy lehy bricho"], "Russian Twist": ["Ruský twist", "russian twist rotace bricho sikme"], "Dragon Flag": ["Dragon flag", "dragon flag bricho"], "Toes-to-Bar": ["Špičky k hrazdě", "toes to bar ttb bricho hrazda"], "Weighted Ab Wheel": ["Kolečko na břicho se zátěží", "ab wheel koleco"], "Barbell Rollout": ["Rollout s velkou činkou", "rollout cinka bricho"], "Front Lever": ["Přední páka (front lever)", "front lever hrazda paka"], "Barbell Curl": ["Bicepsový zdvih s velkou činkou", "barbell curl biceps cinka bicaky"], "Kettlebell swing": ["Kettlebell swing (švih s kettlebellem)", "kettlebell svih kettle kb swing"], "Triceps dipy o židli / lavici": [null, "dipy lavicka zidle triceps"], "Dřepy s vlastní vahou": [null, "drep squat bez zateze"], "Kliky na kolenou": [null, "kliky lehci zenske"], "Superman": ["Superman (zvedání trupu vleže na břiše)", "superman zada bedra"], "Dead bug": ["Dead bug (mrtvý brouk)", "dead bug bricho"], "Bird dog": ["Bird dog (pták-pes)", "bird dog core"], "Bicycle crunch": ["Kolo vleže (bicycle crunch)", "bicycle crunch kolo bricho"], "Hollow body hold": ["Hollow body (držení \"banánu\")", "hollow body hold bricho"], "V-up": ["V-up (sklapovačka do V)", "v up sklapovacka bricho"], "Pallof press s gumou": ["Pallof press s gumou", "pallof press guma core"], "Horolezci (mountain climbers)": [null, "mountain climbers horolezec bricho kardio"], "Boční plank": [null, "side plank bocni prkno sikme bricho"], "Jumping jacks": ["Jumping jacks (panáčci)", "jumping jacks panacci skakani"], "Shadow boxing": ["Shadow boxing (stínový box)", "shadow boxing box stinovy"], "Wall sit (dřep u zdi)": [null, "wall sit drep zed"], "Pistol squat": ["Pistol squat (dřep na jedné noze)", "pistol squat jednonoz drep"], "Cossack dřepy": [null, "cossack drep bocni"], "Nordic curl s oporou": ["Nordic curl s oporou (zakopávání)", "nordic curl zadni stehna"], "Farmer's Walk": ["Farmářská chůze", "farmer walk chuze zatez uchop"]};
+const EX_EXTRA = [["Smith Machine Bench Press", "chest", 1, "", "Tlak na Smithově stroji na rovné lavici", "smith multipress bench prsa"], ["Incline Machine Press", "chest", 1, "", "Tlak na šikmém stroji", "incline stroj horni prsa"], ["Machine Dips", "chest", 1, "", "Dipy na stroji (asistované)", "dipy stroj prsa"], ["Decline Bench Press", "chest", 2, "", "Tlak na negativní lavici", "decline negativni lavice spodni prsa"], ["Cable Crossover", "chest", 2, "", "Překřížení kladek (crossover)", "crossover kladky prekrizeni prsa"], ["Low-to-High Cable Fly", "chest", 2, "", "Rozpažování na kladkách zdola nahoru", "kladky rozpazky horni prsa"], ["Dumbbell Pullover", "chest", 2, "", "Pullover s jednoručkou", "pullover prsa zada"], ["Svend Press", "chest", 2, "", "Svend press (stlačování kotoučů)", "svend press prsa kotouc"], ["Wide-Grip Lat Pulldown", "back", 1, "", "Stahování horní kladky širokým úchopem", "stahovani kladka siroky zada"], ["Close-Grip Lat Pulldown", "back", 1, "", "Stahování horní kladky úzkým úchopem", "stahovani kladka uzky zada"], ["Single-Arm Cable Row", "back", 1, "", "Jednoruční veslování na kladce", "veslovani kladka jednorucni zada"], ["Inverted Row", "back", 1, "", "Australské přítahy (veslování pod hrazdou)", "australske pritahy inverted row zada"], ["Back Extension", "back", 1, "", "Hyperextenze (zpevnění beder)", "hyperextenze bedra back extension zada"], ["Barbell Shrug", "back", 1, "", "Krčení ramen s velkou činkou (trapézy)", "shrugs srugy trapezy krceni ramen cinka"], ["Dumbbell Shrug", "back", 1, "", "Krčení ramen s jednoručkami (trapézy)", "shrugs srugy trapezy krceni ramen jednorucky"], ["Smith Machine Row", "back", 2, "", "Veslování na Smithově stroji", "smith veslovani zada"], ["Rack Pull", "back", 2, "", "Mrtvý tah z bloků (rack pull)", "rack pull mrtvy tah zada"], ["Dumbbell Front Raise", "shoulders", 1, "", "Předpažování s jednoručkami", "predpazovani front raise predni ramena"], ["Cable Front Raise", "shoulders", 1, "", "Předpažování na kladce", "predpazovani kladka ramena"], ["Smith Machine Shoulder Press", "shoulders", 1, "", "Tlak na ramena na Smithově stroji", "smith ramena tlak"], ["Dumbbell Reverse Fly", "shoulders", 1, "", "Zadní rozpažování s jednoručkami", "zadni ramena rozpazky rear delt"], ["Upright Row", "shoulders", 2, "", "Přítah činky k bradě", "upright row pritah brada ramena trapezy"], ["Rope Hammer Curl", "biceps", 1, "", "Kladivový zdvih s lanem na kladce", "hammer lano kladka biceps"], ["Reverse Curl", "biceps", 2, "", "Bicepsový zdvih nadhmatem", "reverse curl predlokti biceps"], ["Single-Arm Cable Pushdown", "triceps", 1, "", "Stahování kladky jednou rukou (triceps)", "triceps kladka jednorucni pushdown"], ["Smith Machine Squat", "quads", 1, "", "Dřep na Smithově stroji", "smith drep multipress stehna"], ["Dumbbell Squat", "quads", 1, "", "Dřep s jednoručkami", "drep jednorucky stehna"], ["Dumbbell Lunge", "quads", 1, "", "Výpady s jednoručkami", "vypady lunges jednorucky stehna"], ["Step-Up", "quads", 1, "", "Výstupy na bednu s jednoručkami", "step up vystup bedna schod stehna"], ["Barbell Lunge", "quads", 2, "", "Výpady s velkou činkou", "vypady lunges cinka stehna"], ["Belt Squat", "quads", 2, "", "Dřep s pásem (belt squat)", "belt squat drep stehna"], ["Pendulum Squat", "quads", 2, "", "Pendulum dřep (stroj)", "pendulum drep stroj stehna"], ["Sissy Squat", "quads", 3, "", "Sissy dřep", "sissy squat stehna"], ["Lying Leg Curl", "hamstrings", 1, "", "Zakopávání vleže na stroji", "leg curl vleze zadni stehna"], ["Dumbbell Romanian Deadlift", "hamstrings", 1, "", "Rumunský mrtvý tah s jednoručkami", "rdl rumunak jednorucky zadni stehna"], ["Stiff-Leg Deadlift", "hamstrings", 2, "", "Mrtvý tah na propnutých nohou", "stiff leg mrtvy tah zadni stehna"], ["Good Morning", "hamstrings", 2, "", "Good morning (předklony s činkou)", "good morning predklony zada zadni stehna"], ["Single-Leg Romanian Deadlift", "hamstrings", 2, "", "Jednonohý rumunský mrtvý tah", "rdl jednonoz zadni stehna"], ["Nordic Hamstring Curl", "hamstrings", 3, "", "Nordic curl (zakopávání s fixací)", "nordic curl zadni stehna"], ["Glute-Ham Raise", "hamstrings", 3, "", "Glute-ham raise (GHR)", "ghr zadni stehna"], ["Smith Machine Calf Raise", "calves", 1, "", "Výpony na Smithově stroji", "smith vypony lytka"], ["Dumbbell Calf Raise", "calves", 1, "", "Výpony s jednoručkami", "vypony lytka jednorucky"], ["Tibialis Raise", "calves", 1, "", "Zvedání špiček (přední holeně)", "tibialis holene spicky"], ["Dead Hang", "forearms", 1, "time", "Vis na hrazdě", "vis hrazda uchop predlokti"], ["Smith Machine Hip Thrust", "glutes", 1, "", "Hip thrust na Smithově stroji", "hip thrust smith hyzde"], ["Hip Adduction Machine", "glutes", 1, "", "Přitahování nohou na stroji (adduktory)", "adduktory addukce stroj vnitrni stehna"], ["Cable Hip Abduction", "glutes", 1, "", "Odtahování nohy na kladce", "abdukce kladka hyzde"], ["Sumo Squat", "glutes", 1, "", "Sumo dřep", "sumo drep hyzde vnitrni stehna"], ["Frog Pump", "glutes", 1, "", "Frog pump (můstek s chodidly k sobě)", "frog pump hyzde mustek"], ["Step-Up (hýždě)", "glutes", 1, "", "Výstupy na bednu (na hýždě)", "step up hyzde"], ["Reverse Hyperextension", "glutes", 2, "", "Obrácená hyperextenze", "reverse hyper hyzde"], ["Sit-Up", "core", 1, "", "Sedy-lehy", "sit up sedy lehy bricho"], ["Lying Leg Raise", "core", 1, "", "Zvedání nohou vleže", "zvedani nohou spodni bricho"], ["Cable Woodchop", "core", 1, "", "Sekání dřeva na kladce (woodchop)", "woodchop kladka sikme bricho"], ["Cable Side Bend", "core", 1, "", "Úklony na kladce", "uklony sikme bricho"], ["Dumbbell Side Bend", "core", 1, "", "Úklony s jednoručkou", "uklony sikme bricho"], ["Hanging Windshield Wiper", "core", 3, "", "Stěrače ve visu", "sterace vis bricho"], ["Plavání", "cardio", 1, "cardio", "Plavání", "plavani bazen"], ["Kolo venku", "cardio", 1, "cardio", "Kolo venku", "kolo cyklistika"]];
+(function setupExtraExercises(){
+  const existing = new Set(EXERCISES.map(e=>e.name));
+  EX_EXTRA.forEach(([name, muscle, level, mode, cz, slang])=>{
+    EX_CZ[name] = [cz, slang];
+    if(existing.has(name)) return;
+    const o = {name, muscle, level, extra:true};
+    if(mode) o.mode = mode;
+    EXERCISES.push(o);
+  });
+})();
+function exLang(){ return (typeof state==='object' && state && state.exLang==='en') ? 'en' : 'cz'; }
+function exAliasMap(){ if(!state.exAlias || typeof state.exAlias!=='object') state.exAlias = {}; return state.exAlias; }
+let _exRev = null;
+function exRev(){
+  if(_exRev) return _exRev;
+  _exRev = {};
+  EXERCISES.forEach(e=>{ _exRev[homeNorm(e.name)] = e.name; const c = EX_CZ[e.name]; if(c && c[0]) _exRev[homeNorm(c[0])] = e.name; });
+  return _exRev;
+}
+// libovolný název (český, anglický, přejmenovaný) -> kanonický název z knihovny (nebo beze změny)
+function exCanon(name){
+  const n = homeNorm(name).trim();
+  if(!n) return name;
+  const r = exRev()[n];
+  if(r) return r;
+  const al = (typeof state==='object' && state && state.exAlias) || {};
+  for(const k in al){ if(homeNorm(k).trim()===n) return al[k]; }
+  return name;
+}
+function exMeta(name){ const c = exCanon(name); return EXERCISES.find(e=>e.name===c) || null; }
+// název pro zobrazení (česky, pokud existuje překlad a není zapnuté "anglicky")
+function exDisp(name){
+  if(exLang()==='en') return name;
+  const c = EX_CZ[name];
+  return (c && c[0]) ? c[0] : name;
+}
+function exSub(name){ const c = EX_CZ[name]; return (exLang()==='cz' && c && c[0] && c[0]!==name) ? name : ''; }
+function exHay(name){
+  const c = exCanon(name), z = EX_CZ[c] || [];
+  return homeNorm([name, c, z[0]||'', z[1]||''].join(' '));
+}
+function exTokOk(h, t){
+  if(h.includes(t)) return true;
+  if(t.length>=5 && h.includes(t.slice(0,-1))) return true;
+  if(t.length>=7 && h.includes(t.slice(0,-2))) return true;
+  return false;
+}
+function exMatches(name, q){
+  const toks = homeNorm(q).split(/\s+/).filter(Boolean);
+  if(!toks.length) return true;
+  const h = exHay(name);
+  return toks.every(t=>exTokOk(h,t));
+}
+// po přejmenování cviku si zapamatujeme, ze kterého cviku vznikl (aby ho hledání našlo i pod starým názvem)
+function exRegisterRename(oldName, newName){
+  const canon = exCanon(oldName);
+  if(homeNorm(newName)===homeNorm(canon)) return;
+  exAliasMap()[newName] = canon;
+}
+// přejmenované cviky jako "virtuální" položky pro výběr (jen při hledání)
+function exRenamedEntries(){
+  const out = [];
+  const al = (state && state.exAlias) || {};
+  Object.keys(al).forEach(nn=>{
+    if(EXERCISES.some(e=>e.name===nn)) return;
+    const meta = EXERCISES.find(e=>e.name===al[nn]);
+    if(meta) out.push(Object.assign({}, meta, {name:nn, alias:true}));
+  });
+  return out;
+}
 
 // vyhledávání zakázaných cviků podle textu uživatele (česky -> anglické názvy ve větší části DB)
 const HOME_BAN_ALIAS = {
@@ -4746,7 +4855,7 @@ function closeUnlock(){
   setTimeout(flushUnlocks, 150); // dalsi cekajici odemceni (kdyz se odemklo vic motivu najednou)
 }
 renderThemeLocks();
-['arVersion','arCategory','arDiet','fltKcal','fltDiet','fltProt','stSex'].forEach(bubbleifySelect);
+['arVersion','arCategory','arDiet','fltKcal','fltDiet','fltProt','stSex','stAct','stExLang'].forEach(bubbleifySelect);
 if(state.theme === 'custom'){ applyCustomTheme(); }
 function hslToHexVivid(hue, sat, light){ return rgbArrToHex(hslToRgbArr(hue, sat!=null?sat:82, light!=null?light:55)); }
 function hexToHueVal(hex){ return rgbToHsl(...hexToRgbArr(hex))[0]; }
@@ -6281,6 +6390,43 @@ function renderWorkoutStep2(){
   });
 }
 
+function woApplyEdits(day){
+  document.querySelectorAll('[data-editf]').forEach(inp=>{
+    const idx = parseInt(inp.dataset.idx);
+    const field = inp.dataset.editf;
+    const val = parseInt(inp.value) || 1;
+    if(day.exercises[idx]) day.exercises[idx][field] = val;
+  });
+  // typ cviku (opakování / čas / kardio)
+  document.querySelectorAll('[data-editmode]').forEach(sel=>{
+    const ex = day.exercises[parseInt(sel.dataset.idx)];
+    if(!ex) return;
+    if(sel.value) ex.mode = sel.value; else delete ex.mode;
+    if(ex.mode==='cardio'){ ex.sets = 1; }
+  });
+  // přejmenování cviku (porovnává se se ZOBRAZENÝM názvem, ne s uloženým anglickým)
+  let renamed = 0, dup = 0;
+  document.querySelectorAll('[data-editname]').forEach(inp=>{
+    const idx = parseInt(inp.dataset.idx);
+    const ex = day.exercises[idx];
+    if(!ex) return;
+    const nn = inp.value.replace(/[<>"'&\\`]/g,'').trim().slice(0,60);
+    if(!nn || nn===exDisp(ex.name) || nn===ex.name) return;
+    // kdyby uživatel napsal přesný český/anglický název cviku z knihovny, použije se kanonický název
+    const lib = exRev()[homeNorm(nn)];
+    const finalName = lib || nn;
+    if(finalName===ex.name) return;
+    if(day.exercises.some((x,j)=>j!==idx && x.name===finalName)){ dup++; return; }
+    const old = ex.name;
+    ex.name = finalName;
+    if(!lib) exRegisterRename(old, finalName);
+    // předvyplněné váhy/opakování z minula přenést na nový název (kopie, původní zůstává)
+    const hh = exHistory();
+    if(hh[old] && !hh[finalName]) hh[finalName] = JSON.parse(JSON.stringify(hh[old]));
+    renamed++;
+  });
+  return {renamed, dup};
+}
 function renderWorkoutStep3(){
   woStep = 3; woSetDots();
   const plan = state.workoutPlan;
@@ -6291,9 +6437,11 @@ function renderWorkoutStep3(){
   const exHTML = day.exercises.map((e,i)=>`
     <div class="wo-ex" data-idx="${i}">
       <div class="wo-ex-top">
-        <span class="wex-name">${e.name}</span>
+        <span class="wex-name">${homeEsc(exDisp(e.name))}</span>
         <div class="wo-ex-actions">
           <span class="wex-muscle">${e.muscle}</span>
+          <button class="wo-mv" data-act="up" data-idx="${i}" title="Posunout nahoru" ${i===0?'disabled':''}>▲</button>
+          <button class="wo-mv" data-act="down" data-idx="${i}" title="Posunout dolů" ${i===day.exercises.length-1?'disabled':''}>▼</button>
           <button class="bp-ex-fav-btn ${isFavExercise(e.name)?'on':''}" data-fav="${e.name}" title="Oblíbený cvik">${isFavExercise(e.name)?'❤️':'🤍'}</button>
           <button data-act="swap" data-idx="${i}" title="Vyměnit cvik">🔁</button>
           <button data-act="rm" data-idx="${i}" title="Odebrat cvik">✕</button>
@@ -6302,7 +6450,7 @@ function renderWorkoutStep3(){
       ${woEditMode ? `
       <div style="margin-bottom:8px;">
         <label style="display:block; font-size:11px; color:var(--muted); margin-bottom:4px;">✏️ Název cviku</label>
-        <input type="text" class="wex-name-input" maxlength="60" value="${homeEsc(e.name)}" data-editname="1" data-idx="${i}">
+        <input type="text" class="wex-name-input" maxlength="60" value="${homeEsc(exDisp(e.name))}" data-editname="1" data-idx="${i}">
       </div>
       <div style="margin-bottom:8px;">
         <label style="display:block; font-size:11px; color:var(--muted); margin-bottom:4px;">Typ cviku</label>
@@ -6326,7 +6474,7 @@ function renderWorkoutStep3(){
       </div>` : `
       <div class="wo-ex-detail" id="wed-${i}">
         <div class="wed-tip">💡 ${MUSCLE_TIPS[e.muscleKey] || 'Prováděj cvik kontrolovaně, s plným rozsahem pohybu.'}</div>
-        <a href="${youtubeSearchUrl(e.name)}" target="_blank" rel="noopener">▶️ Najít video na YouTube</a>
+        <a href="${youtubeSearchUrl(exDisp(e.name))}" target="_blank" rel="noopener">▶️ Najít video na YouTube</a>
       </div>`}
     </div>`).join('');
   const emptyMsg = day.exercises.length ? '' : '<p style="font-size:12px; color:var(--muted); text-align:center; padding:14px 0;">Zatím žádné cviky – přidej si vlastní ↓</p>';
@@ -6353,35 +6501,9 @@ function renderWorkoutStep3(){
   document.getElementById('woSchedBtn').addEventListener('click', ()=>{ nbTab = 'calendar'; nbCalSel = null; openHomeSub('notebook'); });
   document.getElementById('woEditBtn').addEventListener('click', ()=>{
     if(woEditMode){
-      document.querySelectorAll('[data-editf]').forEach(inp=>{
-        const idx = parseInt(inp.dataset.idx);
-        const field = inp.dataset.editf;
-        const val = parseInt(inp.value) || 1;
-        day.exercises[idx][field] = val;
-      });
-      // typ cviku (opakování / čas / kardio)
-      document.querySelectorAll('[data-editmode]').forEach(sel=>{
-        const ex = day.exercises[parseInt(sel.dataset.idx)];
-        if(sel.value) ex.mode = sel.value; else delete ex.mode;
-        if(ex.mode==='cardio'){ ex.sets = 1; }
-      });
-      // přejmenování cviku
-      let renamed = 0, dup = 0;
-      document.querySelectorAll('[data-editname]').forEach(inp=>{
-        const idx = parseInt(inp.dataset.idx);
-        const ex = day.exercises[idx];
-        const nn = inp.value.replace(/[<>"'&\\`]/g,'').trim().slice(0,60);
-        if(!nn || nn===ex.name) return;
-        if(day.exercises.some((x,j)=>j!==idx && x.name===nn)){ dup++; return; }
-        const old = ex.name;
-        ex.name = nn;
-        // předvyplněné váhy/opakování z minula přenést na nový název (kopie, původní zůstává)
-        const h = exHistory();
-        if(h[old] && !h[nn]) h[nn] = JSON.parse(JSON.stringify(h[old]));
-        renamed++;
-      });
+      const r = woApplyEdits(day);
       saveState();
-      showToast(dup ? '⚠️ Dva cviky ve dni nemůžou mít stejný název – ten druhý zůstal původní' : (renamed ? '💾 Uloženo, přejmenováno: '+renamed : '💾 Změny uloženy'));
+      showToast(r.dup ? '⚠️ Dva cviky ve dni nemůžou mít stejný název – ten druhý zůstal původní' : (r.renamed ? '💾 Uloženo, přejmenováno: '+r.renamed : '💾 Změny uloženy'));
     }
     woEditMode = !woEditMode;
     renderWorkoutStep3();
@@ -6428,6 +6550,16 @@ function renderWorkoutStep3(){
       btn.classList.toggle('on', added);
       btn.textContent = added ? '❤️' : '🤍';
       showToast(added ? '❤️ Přidáno do oblíbených cviků' : '💔 Odebráno z oblíbených');
+    });
+  });
+  document.querySelectorAll('[data-act="up"],[data-act="down"]').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      if(woEditMode) woApplyEdits(day);
+      const i = parseInt(b.dataset.idx), j = b.dataset.act==='up' ? i-1 : i+1;
+      if(j<0 || j>=day.exercises.length) return;
+      const t = day.exercises[i]; day.exercises[i] = day.exercises[j]; day.exercises[j] = t;
+      saveState();
+      renderWorkoutStep3();
     });
   });
   document.querySelectorAll('[data-act="rm"]').forEach(b=>{
@@ -6477,71 +6609,158 @@ function renderWorkoutStep3(){
   });
 }
 
+function woBuildEntry(plan, exMeta, name){
+  if(plan.splitKey==='home') return homeEntry(Object.assign({}, exMeta, {name}), homeCtx(plan.home || HOME_DEFAULT_PROFILE));
+  const s = schemeObj(plan.level);
+  const isTime = exMeta.mode === 'time' || exMeta.mode === 'weightTime';
+  const t = timeTargetForLevel(plan.level);
+  if(exMeta.mode==='cardio'){ const c = cardioTargetForLevel(plan.level, name);
+    return {name, muscle: MUSCLE_LABELS.cardio, muscleKey:'cardio', mode:'cardio', sets:1, rest:30, repsMin:c.min, repsMax:c.max}; }
+  return {name, muscle: MUSCLE_LABELS[exMeta.muscle] || exMeta.muscle, muscleKey: exMeta.muscle, mode: exMeta.mode,
+    sets:s.sets, rest:s.rest,
+    repsMin: isTime ? t.min : s.repsMin, repsMax: isTime ? t.max : s.repsMax};
+}
 function openExercisePicker(dayIndex, replaceIndex){
-  woPicker = {dayIndex, replaceIndex, muscle:'chest'};
+  const plan = state.workoutPlan;
+  const day = plan && plan.days[dayIndex];
+  let muscle = state.woLastMuscle;
+  if(replaceIndex!==null && day && day.exercises[replaceIndex] && day.exercises[replaceIndex].muscleKey) muscle = day.exercises[replaceIndex].muscleKey;
+  if(!muscle && day && day.exercises.length) muscle = day.exercises[day.exercises.length-1].muscleKey;
+  if(!muscle || (!MUSCLE_LABELS[muscle] && muscle!=='__fav__')) muscle = 'chest';
+  woPicker = {dayIndex, replaceIndex, muscle, q:'', sel:[]};
   renderExercisePicker();
 }
-function renderExercisePicker(){
+function woPickerPool(){
   const plan = state.workoutPlan;
-  const muscles = Object.keys(MUSCLE_LABELS);
-  const isFavFilter = woPicker.muscle === '__fav__';
-  const musclesHTML = `<button data-m="__fav__" class="${isFavFilter?'on':''}">❤️ Oblíbené</button>` +
-    muscles.map(m=>`<button data-m="${m}" class="${woPicker.muscle===m?'on':''}">${MUSCLE_LABELS[m]}</button>`).join('');
   const isHomePlan = plan.splitKey==='home';
   const hctx = isHomePlan ? homeCtx(plan.home || HOME_DEFAULT_PROFILE) : null;
-  const allowed = e=> isHomePlan ? homeAvail(e, hctx) : !e.home;
-  const pool = isFavFilter
-    ? EXERCISES.filter(e=>isFavExercise(e.name) && e.level<=plan.level && allowed(e))
-    : EXERCISES.filter(e=>e.muscle===woPicker.muscle && e.level<=plan.level && allowed(e));
-  const listHTML = pool.length
-    ? pool.map(e=>`<div class="wpl-item" data-name="${e.name}">
-        <span>${e.name}</span>
-        <button class="bp-ex-fav-btn ${isFavExercise(e.name)?'on':''}" data-fav="${e.name}" title="Oblíbený cvik">${isFavExercise(e.name)?'❤️':'🤍'}</button>
-      </div>`).join('')
-    : `<p style="font-size:12px; color:var(--muted);">${isFavFilter ? 'Zatím nemáš žádné oblíbené cviky na této úrovni – přidej si je srdíčkem u Partie.' : isHomePlan ? 'Pro tuhle partii nemáš s dostupným vybavením a omezeními žádný další cvik.' : 'Žádné cviky na této úrovni.'}</p>`;
-  document.getElementById('woContent').innerHTML = `
-    <button class="wo-back" id="woPickerBack">← Zpět na trénink</button>
-    <p style="font-size:12.5px; color:var(--muted); margin-bottom:10px;">Vyber svalovou partii:</p>
-    <div class="wo-picker-muscles">${musclesHTML}</div>
-    <div class="wo-picker-list">${listHTML}</div>`;
-  document.getElementById('woPickerBack').addEventListener('click', ()=>{ woPicker=null; renderWorkoutStep3(); });
-  document.querySelectorAll('.wo-picker-muscles button').forEach(b=>{
-    b.addEventListener('click', ()=>{ woPicker.muscle = b.dataset.m; renderExercisePicker(); });
+  const allowed = e=> isHomePlan ? homeAvail(e, hctx) : true;
+  const q = (woPicker.q||'').trim();
+  let pool;
+  if(q){
+    pool = EXERCISES.concat(exRenamedEntries()).filter(e=>allowed(e) && exMatches(e.name, q));
+  } else if(woPicker.muscle==='__fav__'){
+    pool = EXERCISES.filter(e=>isFavExercise(e.name) && allowed(e));
+  } else {
+    pool = EXERCISES.filter(e=>e.muscle===woPicker.muscle && allowed(e));
+  }
+  pool = pool.slice().sort((x,y)=> (x.level-y.level) || exDisp(x.name).localeCompare(exDisp(y.name),'cs'));
+  return {pool, isHomePlan, q};
+}
+function woPickerListHTML(){
+  const plan = state.workoutPlan;
+  const {pool, isHomePlan, q} = woPickerPool();
+  const multi = woPicker.replaceIndex===null;
+  const day = plan.days[woPicker.dayIndex];
+  const inDay = new Set(day.exercises.map(x=>exCanon(x.name)));
+  if(!pool.length){
+    return `<p style="font-size:12px; color:var(--muted);">${q ? 'Nic nenalezeno – zkus kratší nebo jiný výraz (česky, anglicky, slangem).' : woPicker.muscle==='__fav__' ? 'Zatím nemáš žádné oblíbené cviky – přidej si je srdíčkem.' : isHomePlan ? 'Pro tuhle partii nemáš s dostupným vybavením a omezeními žádný další cvik.' : 'Žádné cviky.'}</p>`;
+  }
+  const lvlDot = {1:'🟢',2:'🟡',3:'🔴'};
+  return pool.map(e=>{
+    const sel = woPicker.sel.includes(e.name);
+    const sub = [];
+    const en = exSub(e.alias ? exCanon(e.name) : e.name);
+    if(e.alias) sub.push('přejmenováno z: '+exDisp(exCanon(e.name)));
+    else if(en) sub.push(en);
+    sub.push(lvlDot[e.level]||'');
+    if(q || woPicker.muscle==='__fav__') sub.push(MUSCLE_LABELS[e.muscle]||'');
+    if(e.home && !isHomePlan) sub.push('🏠 i doma');
+    if(inDay.has(exCanon(e.name))) sub.push('✓ už v dni');
+    return `<div class="wpl-item ${sel?'sel':''}" data-name="${homeEsc(e.name)}">
+      <div class="wpl-main">${multi?`<span class="wpl-chk">${sel?'✓':''}</span>`:''}
+        <span class="wpl-name">${homeEsc(exDisp(e.name))}<small>${sub.filter(Boolean).join(' · ')}</small></span></div>
+      <button class="bp-ex-fav-btn ${isFavExercise(e.name)?'on':''}" data-fav="${homeEsc(e.name)}" title="Oblíbený cvik">${isFavExercise(e.name)?'❤️':'🤍'}</button>
+    </div>`;
+  }).join('');
+}
+function woPickerBarHTML(){
+  const n = woPicker.sel.length;
+  if(woPicker.replaceIndex!==null || !n) return '';
+  return `<button id="woPickAdd">＋ Přidat vybrané (${n})</button>`;
+}
+function woPickerCommit(names){
+  const plan = state.workoutPlan;
+  const day = plan.days[woPicker.dayIndex];
+  const pool = EXERCISES.concat(exRenamedEntries());
+  let added = 0;
+  names.forEach(name=>{
+    const exMeta = pool.find(e=>e.name===name) || {muscle: woPicker.muscle};
+    const entry = woBuildEntry(plan, exMeta, name);
+    if(woPicker.replaceIndex!==null) day.exercises[woPicker.replaceIndex] = entry;
+    else day.exercises.push(entry);
+    added++;
+    if(exMeta.muscle && MUSCLE_LABELS[exMeta.muscle]) state.woLastMuscle = exMeta.muscle;
   });
-  document.querySelectorAll('.wpl-item .bp-ex-fav-btn').forEach(btn=>{
+  saveState();
+  const multi = woPicker.replaceIndex===null;
+  woPicker = null;
+  renderWorkoutStep3();
+  if(multi && added>1) showToast('✅ Přidáno cviků: '+added);
+}
+function woPickerWireList(){
+  const plan = state.workoutPlan;
+  const multi = woPicker.replaceIndex===null;
+  document.querySelectorAll('#woPickList .bp-ex-fav-btn').forEach(btn=>{
     btn.addEventListener('click', (ev)=>{
       ev.stopPropagation();
       const added = toggleFavExercise(btn.dataset.fav);
       showToast(added ? '❤️ Přidáno do oblíbených cviků' : '💔 Odebráno z oblíbených');
-      renderExercisePicker();
+      woPickerRefresh();
     });
   });
-  document.querySelectorAll('.wpl-item').forEach(it=>{
+  document.querySelectorAll('#woPickList .wpl-item').forEach(it=>{
     it.addEventListener('click', (ev)=>{
       if(ev.target.closest('.bp-ex-fav-btn')) return;
       const name = it.dataset.name;
-      const day = plan.days[woPicker.dayIndex];
-      const exMeta = EXERCISES.find(e=>e.name===name) || {muscle: woPicker.muscle};
-      const entry = plan.splitKey==='home' ? homeEntry(exMeta, homeCtx(plan.home || HOME_DEFAULT_PROFILE)) : (()=>{
-        const s = schemeObj(plan.level);
-        const isTime = exMeta.mode === 'time' || exMeta.mode === 'weightTime';
-        const t = timeTargetForLevel(plan.level);
-        if(exMeta.mode==='cardio'){ const c = cardioTargetForLevel(plan.level, name);
-          return {name, muscle: MUSCLE_LABELS.cardio, muscleKey:'cardio', mode:'cardio', sets:1, rest:30, repsMin:c.min, repsMax:c.max}; }
-        return {name, muscle: MUSCLE_LABELS[exMeta.muscle] || exMeta.muscle, muscleKey: exMeta.muscle, mode: exMeta.mode,
-          sets:s.sets, rest:s.rest,
-          repsMin: isTime ? t.min : s.repsMin, repsMax: isTime ? t.max : s.repsMax};
-      })();
-      if(woPicker.replaceIndex!==null){
-        day.exercises[woPicker.replaceIndex] = entry;
+      if(multi){
+        const i = woPicker.sel.indexOf(name);
+        if(i>-1) woPicker.sel.splice(i,1); else woPicker.sel.push(name);
+        it.classList.toggle('sel', i===-1);
+        const chk = it.querySelector('.wpl-chk'); if(chk) chk.textContent = i===-1 ? '✓' : '';
+        woPickerBarRefresh();
       } else {
-        day.exercises.push(entry);
+        woPickerCommit([name]);
       }
-      saveState();
-      woPicker = null;
-      renderWorkoutStep3();
     });
   });
+}
+function woPickerBarRefresh(){
+  const bar = document.getElementById('woPickBar');
+  bar.innerHTML = woPickerBarHTML();
+  const btn = document.getElementById('woPickAdd');
+  if(btn) btn.addEventListener('click', ()=>woPickerCommit(woPicker.sel.slice()));
+}
+function woPickerRefresh(){
+  const q = (woPicker.q||'').trim();
+  document.querySelectorAll('.wo-picker-muscles button').forEach(b=>b.classList.toggle('on', !q && b.dataset.m===woPicker.muscle));
+  document.getElementById('woPickList').innerHTML = woPickerListHTML();
+  woPickerWireList();
+  woPickerBarRefresh();
+}
+function renderExercisePicker(){
+  const muscles = Object.keys(MUSCLE_LABELS);
+  const musclesHTML = `<button data-m="__fav__">❤️ Oblíbené</button>` +
+    muscles.map(m=>`<button data-m="${m}">${MUSCLE_LABELS[m]}</button>`).join('');
+  const multi = woPicker.replaceIndex===null;
+  document.getElementById('woContent').innerHTML = `
+    <button class="wo-back" id="woPickerBack">← Zpět na trénink</button>
+    <input type="text" id="woPickQ" class="wo-scratch-input wo-pick-q" placeholder="🔎 Hledat cvik (česky, anglicky, slangem…)" value="${homeEsc(woPicker.q||'')}" autocomplete="off" maxlength="40">
+    <p class="wo-pick-hint">${multi ? 'Klikni na víc cviků a pak je přidej všechny najednou. Vybereš-li partii, zapamatuje se.' : 'Klikni na cvik, kterým chceš ten stávající nahradit.'}</p>
+    <div class="wo-picker-muscles">${musclesHTML}</div>
+    <div class="wo-picker-list" id="woPickList"></div>
+    <div class="wo-pick-bar" id="woPickBar"></div>`;
+  document.getElementById('woPickerBack').addEventListener('click', ()=>{ woPicker=null; renderWorkoutStep3(); });
+  document.getElementById('woPickQ').addEventListener('input', (ev)=>{ woPicker.q = ev.target.value; woPickerRefresh(); });
+  document.querySelectorAll('.wo-picker-muscles button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      woPicker.muscle = b.dataset.m; woPicker.q = '';
+      document.getElementById('woPickQ').value = '';
+      if(b.dataset.m!=='__fav__'){ state.woLastMuscle = b.dataset.m; saveState(); }
+      woPickerRefresh();
+    });
+  });
+  woPickerRefresh();
 }
 
 // ===== WORKOUT SESSION MODE (interaktivní trénink) =====
@@ -6616,7 +6835,7 @@ function sessFmtTime(sec){
 function normalizeExercise(e){
   // ochrana proti starým uloženým plánům bez sets/reps/rest (NaN by rozbil timer)
   // + zpětné doplnění 'mode' pro plány uložené před zavedením časových cviků
-  const meta = EXERCISES.find(x=>x.name===e.name);
+  const meta = exMeta(e.name);
   return {
     ...e,
     mode: e.mode || (meta ? meta.mode : undefined),
@@ -6747,7 +6966,7 @@ function renderSessOverview(el){
     const isCardioEx = e.mode === 'cardio';
     const schemeStr = isCardioEx ? `${e.repsMin===e.repsMax?e.repsMin:e.repsMin+'-'+e.repsMax} min` : `${e.sets}× ${e.repsMin===e.repsMax?e.repsMin:e.repsMin+'-'+e.repsMax}${isTimeBased?' s':''}`;
     return `<div class="sess-ov-item">
-      <div><div class="soi-name">${e.name}</div>${sugg?('<div class="soi-sugg">'+sugg.note+' · naposledy: '+sugg.lastStr+'</div>'):''}</div>
+      <div><div class="soi-name">${exDisp(e.name)}</div>${sugg?('<div class="soi-sugg">'+sugg.note+' · naposledy: '+sugg.lastStr+'</div>'):''}</div>
       <div class="soi-scheme">${schemeStr}</div>
     </div>`;
   }).join('');
@@ -6803,7 +7022,7 @@ function renderSessActive(el){
           <div><label>Opakování</label><input type="number" id="sessReps" inputmode="numeric" placeholder="${repsTarget}" value="${prefillReps}"></div>
         </div>`;
   el.innerHTML = `
-    <a class="sess-active-name" href="${youtubeSearchUrl(e.name, state.sex)}" target="_blank" rel="noopener">${e.name} <span class="yticon">▶️</span></a>
+    <a class="sess-active-name" href="${youtubeSearchUrl(exDisp(e.name), state.sex)}" target="_blank" rel="noopener">${exDisp(e.name)} <span class="yticon">▶️</span></a>
     <div class="sess-active-sub">Série ${session.setIdx+1} / ${e.sets}</div>
     <div class="sess-active-target">${repsTarget} ${unitLabel}</div>
     ${tipHTML}
@@ -7058,7 +7277,7 @@ function renderSessExDone(el){
   el.innerHTML = `
     <div class="sess-exdone">
       <div class="sed-check">✅</div>
-      <div class="sed-name">${e.name} DOKONČEN</div>
+      <div class="sed-name">${exDisp(e.name)} DOKONČEN</div>
       <button id="sessNextExBtn">${isLast ? '<span class="trophy-ic"></span> Dokončit trénink' : 'Další cvik →'}</button>
     </div>`;
   document.getElementById('sessNextExBtn').addEventListener('click', ()=>{
@@ -7106,7 +7325,7 @@ function renderSessComplete(el){
     ? `<div class="sess-pr-list">${session.prsThisSession.map(pr=>{
         const m = modeByName[pr.name];
         const valStr = m==='time' ? `${pr.reps} s` : m==='weightTime' ? `${pr.weight} kg × ${pr.reps} s` : `${pr.weight} kg × ${pr.reps}`;
-        return `<div class="spl-item"><span class="trophy-ic"></span> Nový rekord: <b>${pr.name}</b> — ${valStr}</div>`;
+        return `<div class="spl-item"><span class="trophy-ic"></span> Nový rekord: <b>${exDisp(pr.name)}</b> — ${valStr}</div>`;
       }).join('')}</div>`
     : '';
   const xpEarned = totalSets*2 + 25;
@@ -7179,8 +7398,8 @@ function renderSessComplete(el){
         state.suggestedWeightUsedCount = (state.suggestedWeightUsedCount||0) + 1;
       }
       // objem podle svalove partie (pro tydenni report)
-      const exMeta = session.exercises.find(e=>e.name===name) || EXERCISES.find(e=>e.name===name);
-      const muscleKey = (exMeta && (exMeta.muscleKey || exMeta.muscle)) || 'ostatni';
+      const exM = session.exercises.find(e=>e.name===name) || exMeta(name);
+      const muscleKey = (exM && (exM.muscleKey || exM.muscle)) || 'ostatni';
       const exVolume = sets.reduce((s,x)=> s + (x.weight||0)*(x.reps||0), 0);
       muscleVolumes[muscleKey] = (muscleVolumes[muscleKey]||0) + exVolume;
     });
@@ -7352,19 +7571,19 @@ function renderBodyPartExercises(muscle){
       const altHTML = alternatives.length
         ? `<div class="bp-ex-alt-label">↔ Alternativy</div>
            <div class="bp-ex-alt-list">${alternatives.map(a=>
-             `<span class="bp-ex-alt-chip" data-name="${a.name}" data-level="${a.level}">${tierLabel[a.level].split(' ')[0]} ${a.name}</span>`
+             `<span class="bp-ex-alt-chip" data-name="${a.name}" data-level="${a.level}">${tierLabel[a.level].split(' ')[0]} ${exDisp(a.name)}</span>`
            ).join('')}</div>`
         : '';
       return `<div class="bp-ex-item" data-id="${id}" data-name="${e.name}">
         <div class="bp-ex-item-head">
-          <span>${e.name}</span>
+          <span>${exDisp(e.name)}${exSub(e.name)?`<small class="ex-sub">${exSub(e.name)}</small>`:''}</span>
           <button class="bp-ex-fav-btn ${isFavExercise(e.name)?'on':''}" data-fav="${e.name}" title="Oblíbený cvik">${isFavExercise(e.name)?'❤️':'🤍'}</button>
         </div>
         <div class="bp-ex-detail" id="${id}">
           <div class="bp-ex-detail-row">🎯 <b>Primární sval:</b> ${MUSCLE_LABELS[e.muscle] || muscle}</div>
           <div class="bp-ex-detail-row">💪 <b>Obtížnost:</b> ${tierLabel[lvl]}</div>
           <div class="bp-ex-detail-row" style="color:#fff; font-size:13.5px;">🎥 ${MUSCLE_TIPS[e.muscle] || 'Prováděj cvik kontrolovaně, s plným rozsahem pohybu.'}</div>
-          <a href="${youtubeSearchUrl(e.name, bpGender)}" target="_blank" rel="noopener">▶️ Video na YouTube</a>
+          <a href="${youtubeSearchUrl(exDisp(e.name), bpGender)}" target="_blank" rel="noopener">▶️ Video na YouTube</a>
           ${altHTML}
         </div>
       </div>`;
@@ -9143,7 +9362,7 @@ function showWeeklyReport(){
     <div class="wk-highlight-card">
       <div class="whc-title">🟣 CYKLUS #${cycleNum} COMPLETE</div>
       ${strongestMuscle ? `<div class="whc-row"><span>💪 Nejsilnější partie</span><span>${strongestMuscle.label}</span></div>` : ''}
-      ${biggestGain ? `<div class="whc-row"><span>📈 Největší progres</span><span>${biggestGain.name} +${biggestGain.diff} kg</span></div>` : ''}
+      ${biggestGain ? `<div class="whc-row"><span>📈 Největší progres</span><span>${exDisp(biggestGain.name)} +${biggestGain.diff} kg</span></div>` : ''}
       ${volPct!==null ? `<div class="whc-row"><span>🏋️ Objem</span><span>${volPct>=0?'+':''}${volPct.toFixed(1)}%</span></div>` : ''}
       <div class="whc-row"><span><span class="trophy-ic"></span> PR</span><span>${newPRs}</span></div>
     </div>` : ''}
@@ -9363,7 +9582,7 @@ function nbDateLabel(dk){
   const base = `${NB_DAYS[d.getDay()]} ${d.getDate()}. ${d.getMonth()+1}. ${d.getFullYear()}`;
   return diff===0 ? 'Dnes · '+base : diff===1 ? 'Včera · '+base : base;
 }
-function nbMeta(name){ return EXERCISES.find(e=>e.name===name) || null; }
+function nbMeta(name){ return exMeta(name); }
 function nbMode(name){ const m = nbMeta(name); return m && m.mode ? m.mode : ''; }
 function nbWork(sets){ const w = (sets||[]).filter(s=>s.t!=='w'); return w.length ? w : (sets||[]); }
 function nbEntries(){
@@ -9449,7 +9668,7 @@ function nbEntryHTML(e, prDay){
   const sets = e.sets.map(s=>`<span class="nb-set ${s.t==='w'?'warm':''} ${s===top?'top':''}">${nbSetStr(e.name,s)}</span>`).join('');
   const tag = e.manual ? (e.copied ? '<span class="nb-tag">📋 kopie</span>' : '<span class="nb-tag">✍️ ručně</span>') : (e.edited ? '<span class="nb-tag">✏️ upraveno</span>' : '');
   const note = e.note ? `<div class="nb-enote">📝 ${homeEsc(e.note)}</div>` : '';
-  return `<div class="nb-ex"><div class="nb-ex-top"><b>${homeEsc(e.name)}</b>${prDay[e.id]?'<span class="nb-tag pr">🏆 rekord</span>':''}${tag}
+  return `<div class="nb-ex"><div class="nb-ex-top"><b>${homeEsc(exDisp(e.name))}</b>${prDay[e.id]?'<span class="nb-tag pr">🏆 rekord</span>':''}${tag}
     <span class="nb-acts"><button class="nb-ib" data-nbedit="${homeEsc(e.id)}" title="Upravit">✏️</button><button class="nb-ib" data-nbcopy="${homeEsc(e.id)}" title="Kopírovat na dnes">📋</button><button class="nb-ib" data-nbdel="${homeEsc(e.id)}" title="Smazat">🗑️</button></span></div>
     <div class="nb-sets">${sets}</div>${note}</div>`;
 }
@@ -9519,9 +9738,9 @@ function nbSessionsFor(entries, name){
   return entries.filter(e=>e.name===name).sort((a,b)=>dateKeyToTime(a.date)-dateKeyToTime(b.date));
 }
 function nbExercisesHTML(entries){
-  const names = [...new Set(entries.map(e=>e.name))].sort((a,b)=>a.localeCompare(b,'cs'));
+  const names = [...new Set(entries.map(e=>e.name))].sort((a,b)=>exDisp(a).localeCompare(exDisp(b),'cs'));
   const q = homeNorm(nbSearch);
-  const shown = q ? names.filter(n=>homeNorm(n).includes(q)) : names;
+  const shown = q ? names.filter(n=>exMatches(n, nbSearch)) : names;
   const search = `<input type="text" id="nbSearch" class="wo-scratch-input" placeholder="🔎 Hledat cvik…" value="${homeEsc(nbSearch)}" style="margin-bottom:10px;">`;
   if(!shown.length) return search + '<p class="nb-none">Nic nenalezeno.</p>';
   return search + shown.map(name=>{
@@ -9547,7 +9766,7 @@ function nbExercisesHTML(entries){
       detail = `<div class="nb-detail"><svg class="weight-chart" id="nbChart" viewBox="0 0 300 100" preserveAspectRatio="none"></svg>${rows}</div>`;
     }
     return `<div class="nb-exrow ${open?'open':''}"><button class="nb-exhead" data-nbex="${homeEsc(name)}">
-      <div><b>${homeEsc(name)}</b><small>${ses.length} ${ses.length===1?'trénink':(ses.length<5?'tréninky':'tréninků')} · nejlepší ${nbSetStr(name,best)}</small></div>
+      <div><b>${homeEsc(exDisp(name))}</b><small>${ses.length} ${ses.length===1?'trénink':(ses.length<5?'tréninky':'tréninků')} · nejlepší ${nbSetStr(name,best)}</small></div>
       <div class="nb-exright">${trend}<span class="hg-arrow">▾</span></div></button>${detail}</div>`;
   }).join('');
 }
@@ -9800,7 +10019,7 @@ function nbDeleteEntry(id){
 }
 function nbConfirmDelete(id, afterOpenEditor){
   const e = nbFindEntry(id); if(!e) return;
-  showConfirm({icon:'🗑️', title:'Smazat záznam?', text:`„${e.name}“ z ${nbDateLabel(e.date).replace(/^(Dnes|Včera) · /,'')} se ze sešitu odstraní. Rekordy a XP zůstanou beze změny.`, okLabel:'Smazat', cancelLabel:'Zpět',
+  showConfirm({icon:'🗑️', title:'Smazat záznam?', text:`„${exDisp(e.name)}“ z ${nbDateLabel(e.date).replace(/^(Dnes|Včera) · /,'')} se ze sešitu odstraní. Rekordy a XP zůstanou beze změny.`, okLabel:'Smazat', cancelLabel:'Zpět',
     onConfirm:()=>{ nbDeleteEntry(id); if(afterOpenEditor) document.getElementById('nbAddOverlay').classList.remove('open'); nbAfterChange(); showToast('🗑️ Záznam smazán'); }});
 }
 function nbCopyToToday(ids){
@@ -9847,12 +10066,12 @@ function openNbEditor(opts){
     : {id:null, date: opts.date ? nbKeyToIso(opts.date) : todayIso, name:'', rows:[{weight:'', reps:'', t:''}], note:''};
   if(nbEdit.rows.length===0) nbEdit.rows.push({weight:'', reps:'', t:''});
   const ov = document.getElementById('nbAddOverlay');
-  const known = [...new Set(EXERCISES.map(e=>e.name).concat(Object.keys(state.exerciseSetLog||{}), (state.notebook||[]).map(e=>e.name)))].sort((a,b)=>a.localeCompare(b,'cs'));
+  const known = [...new Set(EXERCISES.map(e=>e.name).concat(Object.keys(state.exerciseSetLog||{}), (state.notebook||[]).map(e=>e.name)).map(exDisp))].sort((a,b)=>a.localeCompare(b,'cs'));
   ov.innerHTML = `<div class="nb-add-card">
     <button class="prof-close" id="nbAddClose" style="float:none; position:absolute; top:12px; right:12px;">✕</button>
     <h4>${ent ? '✏️ Upravit záznam' : '✍️ Zapsat trénink ručně'}</h4>
     <label>Datum</label><input type="date" id="nbAddDate" value="${nbEdit.date}" max="${todayIso}">
-    <label>Cvik</label><input type="text" id="nbAddName" list="nbAddNames" maxlength="60" placeholder="Začni psát (např. Bench Press)" autocomplete="off" value="${homeEsc(nbEdit.name)}">
+    <label>Cvik</label><input type="text" id="nbAddName" list="nbAddNames" maxlength="60" placeholder="Začni psát (např. bench, dřep, shyby)" autocomplete="off" value="${homeEsc(exDisp(nbEdit.name))}">
     <datalist id="nbAddNames">${known.map(n=>`<option value="${homeEsc(n)}">`).join('')}</datalist>
     <label id="nbAddUnitLbl">Série (váha v kg × opakování)</label>
     <div id="nbAddRows"></div>
@@ -9865,7 +10084,7 @@ function openNbEditor(opts){
   </div>`;
   ov.classList.add('open');
   const applyMode = ()=>{
-    const mode = nbMode(document.getElementById('nbAddName').value.trim());
+    const mode = nbMode(exCanon(document.getElementById('nbAddName').value.trim()));
     const cardio = mode==='cardio', timed = mode==='time', wt = mode==='weightTime';
     document.getElementById('nbAddUnitLbl').textContent = cardio ? 'Délka (minuty)' : timed ? 'Série (čas v sekundách)' : wt ? 'Série (váha v kg × čas v s)' : 'Série (váha v kg × opakování; vlastní váha = 0)';
     ov.querySelectorAll('input[data-f="weight"]').forEach(i=>{ i.style.display = (cardio||timed) ? 'none' : ''; });
@@ -9900,7 +10119,7 @@ function openNbEditor(opts){
     document.getElementById('nbEdDel').addEventListener('click', ()=>nbConfirmDelete(ent.id, true));
   }
   document.getElementById('nbAddSave').addEventListener('click', ()=>{
-    const name = document.getElementById('nbAddName').value.trim();
+    const name = exCanon(document.getElementById('nbAddName').value.trim());
     const iso2 = document.getElementById('nbAddDate').value;
     const note = document.getElementById('nbAddNote').value.trim();
     if(!name){ showToast('⚠️ Napiš název cviku'); return; }
@@ -9976,8 +10195,9 @@ function foodGoalKey(){
 // cíle podle zvoleného cíle (bez ručních úprav)
 function foodTargetsAuto(){
   const p = profState(), gk = foodGoalKey(), g = FOOD_GOALS[gk];
-  const base = p.weight ? Math.round(p.weight*(p.sex==='female'?28:p.sex==='male'?31:29.5)) : (p.sex==='female'?2100:2500);
-  const kcal = Math.max(1200, base + g.kcalAdj);
+  const mt = calcMaintenance();
+  const base = mt ? mt.kcal : (p.sex==='female'?2100:2500);
+  const kcal = Math.max(kcalFloor(), base + (mt ? kcalAdjust(gk, base) : g.kcalAdj));
   const prot = p.weight ? Math.round(p.weight*g.prot) : Math.round(kcal*0.25/4);
   const fat = Math.round(kcal*0.27/9);
   const carb = Math.max(0, Math.round((kcal - prot*4 - fat*9)/4));
@@ -10515,26 +10735,54 @@ function calcBMI(){
   }
   return '—';
 }
-function calcSuggestedKcal(){
+// Udrzovaci prijem: Mifflin-St Jeor (vaha, vyska, vek, pohlavi) x koeficient aktivity.
+// Aktivita = auto podle poctu treninku v planu (nebo rucni volba v profilu).
+function calcMaintenance(){
   const p = profState();
   if(!p.weight) return null;
-  // zjednodušený odhad udržovacího příjmu pro mírně aktivního člověka
-  // muži mají v průměru více svalové hmoty -> vyšší bazální výdej na kg váhy než ženy
-  const perKg = p.sex === 'female' ? 28 : p.sex === 'male' ? 31 : 29.5;
-  const maintenance = Math.round(p.weight * perKg);
+  const ageOk = p.age>=14 && p.age<=90, hOk = p.height>=120 && p.height<=230;
+  const age = ageOk ? p.age : 28;
+  const height = hOk ? p.height : (p.sex==='female' ? 165 : p.sex==='male' ? 178 : 171);
+  const sexC = p.sex==='male' ? 5 : p.sex==='female' ? -161 : -78;
+  const bmr = 10*p.weight + 6.25*height - 5*age + sexC;
+  let pal, palSrc;
+  if(p.activity==='low'){ pal = 1.375; palSrc = 'nízká aktivita'; }
+  else if(p.activity==='mid'){ pal = 1.55; palSrc = 'střední aktivita'; }
+  else if(p.activity==='high'){ pal = 1.725; palSrc = 'vysoká aktivita'; }
+  else {
+    const f = Math.min(6, Math.max(1, (state.workoutPlan && state.workoutPlan.freq) || 3));
+    pal = {1:1.3, 2:1.375, 3:1.45, 4:1.5, 5:1.55, 6:1.6}[f];
+    palSrc = f+'× týdně trénink';
+  }
+  return {kcal: Math.round(bmr*pal/10)*10, bmr: Math.round(bmr), pal, palSrc, ageOk, hOk};
+}
+function kcalAdjust(goalKey, maintenance){
+  if(goalKey==='cutting') return -Math.min(500, Math.round(maintenance*0.2));
+  if(goalKey==='bulking') return 350;
+  return 0;
+}
+function kcalFloor(){ const s = profState().sex; return s==='male' ? 1500 : s==='female' ? 1200 : 1350; }
+function calcSuggestedKcal(){
+  const p = profState();
+  const m = calcMaintenance();
+  if(!m) return null;
+  const maintenance = m.kcal;
   const diff = (p.target||p.weight) - p.weight;
-  let target = maintenance, note = `Udržovací příjem (bez cílové váhy nebo cíl = aktuální váha)`;
+  let target = maintenance, note;
   if(diff <= -0.5){
-    target = maintenance - 500;
-    note = `Deficit ~500 kcal/den → hubnutí cca 0,5 kg/týden (do cíle zbývá ${Math.abs(diff).toFixed(1)} kg)`;
+    target = maintenance + kcalAdjust('cutting', maintenance);
+    note = `Deficit ~${maintenance-target} kcal/den → hubnutí cca 0,4–0,5 kg/týden (do cíle zbývá ${Math.abs(diff).toFixed(1)} kg)`;
   } else if(diff >= 0.5){
-    target = maintenance + 350;
+    target = maintenance + kcalAdjust('bulking', maintenance);
     note = `Přebytek ~350 kcal/den → nabírání (do cíle zbývá ${diff.toFixed(1)} kg)`;
   } else {
-    note = `Jsi na cílové váze – udržovací příjem`;
+    note = `Udržovací příjem (jsi na cílové váze nebo cíl není zadaný)`;
   }
-  if(!p.sex) note += ' · zadej pohlaví pro přesnější odhad';
-  return {maintenance, target: Math.max(1200, target), note};
+  note += `\nVýpočet: bazální výdej ${m.bmr} kcal × ${String(m.pal).replace('.',',')} (${m.palSrc}); udržování ≈ ${maintenance} kcal.`;
+  const miss = [];
+  if(!p.sex) miss.push('pohlaví'); if(!m.hOk) miss.push('výšku'); if(!m.ageOk) miss.push('věk');
+  if(miss.length) note += `\nZadej ${miss.join(', ')} pro přesnější odhad (zatím počítám s průměrem).`;
+  return {maintenance, target: Math.max(kcalFloor(), target), note};
 }
 function calcSuggestedProtein(){
   const p = profState();
@@ -10627,6 +10875,9 @@ function renderProfile(){
   document.getElementById('stWeight').value = p.weight || '';
   document.getElementById('stTarget').value = p.target || '';
   document.getElementById('stHeight').value = p.height || '';
+  document.getElementById('stAge').value = p.age || '';
+  document.getElementById('stAct').value = p.activity || '';
+  document.getElementById('stExLang').value = exLang();
   document.getElementById('stProt').value = dmTargets().Prot;
   document.getElementById('stBMI').textContent = calcBMI();
   updateKcalSuggestionUI();
@@ -10691,9 +10942,9 @@ function renderFavExList(){
   if(!favs.length){ section.style.display = 'none'; return; }
   section.style.display = 'block';
   document.getElementById('favExList').innerHTML = favs.map(name=>{
-    const meta = EXERCISES.find(e=>e.name===name);
+    const meta = exMeta(name);
     const muscleLabel = meta ? (MUSCLE_LABELS[meta.muscle] || meta.muscle) : '';
-    return `<div class="prof-row"><span>❤️ ${name}</span><span class="val">${muscleLabel}</span></div>`;
+    return `<div class="prof-row"><span>❤️ ${exDisp(name)}</span><span class="val">${muscleLabel}</span></div>`;
   }).join('');
 }
 let progActiveTab = 'progres';
@@ -11038,7 +11289,7 @@ function updateKcalSuggestionUI(){
     applyProtBtn.style.display = 'none';
   }
 }
-for(const [id, key] of [['stWeight','weight'],['stTarget','target'],['stHeight','height']]){
+for(const [id, key] of [['stWeight','weight'],['stTarget','target'],['stHeight','height'],['stAge','age']]){
   document.getElementById(id).addEventListener('change', (e)=>{
     profState()[key] = parseFloat(e.target.value)||null;
     saveState();
@@ -11050,6 +11301,16 @@ document.getElementById('stSex').addEventListener('change', (e)=>{
   profState().sex = e.target.value || null;
   saveState();
   updateKcalSuggestionUI();
+});
+document.getElementById('stAct').addEventListener('change', (e)=>{
+  profState().activity = e.target.value || null;
+  saveState();
+  updateKcalSuggestionUI();
+});
+document.getElementById('stExLang').addEventListener('change', (e)=>{
+  state.exLang = e.target.value==='en' ? 'en' : 'cz';
+  saveState();
+  showToast(state.exLang==='en' ? '🇬🇧 Názvy cviků: anglicky' : '🇨🇿 Názvy cviků: česky');
 });
 document.getElementById('stProt').addEventListener('change', (e)=>{
   dmTargets().Prot = parseInt(e.target.value)||180;
