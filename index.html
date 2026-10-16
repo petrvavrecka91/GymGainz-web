@@ -2683,7 +2683,7 @@
     <button id="musicToggleBtn" class="home-bottom-btn" title="Hudba on/off">🔇 Hudba</button>
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V28e · 2026-10-16</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V28f · 2026-10-16</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -9848,7 +9848,7 @@ document.getElementById('bodyMapClose').addEventListener('click', goHome);
 document.getElementById('workoutClose').addEventListener('click', goHome);
 document.getElementById('profClose').addEventListener('click', goHome);
 
-renderHome();
+// (renderHome() se vola az na konci skriptu, aby byly inicializovane vsechny const/let)
 
 // ============================================================
 // 📓 SEŠIT – přehledný zápisník tréninků a progresu
@@ -11706,6 +11706,7 @@ document.getElementById('bkImport').addEventListener('click', ()=>{
   }catch(e){ showToast('⚠️ Neplatný kód zálohy'); }
 });
 renderHdrProfile();
+renderHome();
 
 
 
