@@ -2613,7 +2613,7 @@
     </button>
     <button class="home-tile t-progress" id="tileProgress">
       <div class="ht-icon">📈</div>
-      <div><div class="ht-title">PROGRESS</div><div class="ht-sub">Skóre · makra v Deníku jídla</div></div>
+      <div><div class="ht-title">PROGRESS</div><div class="ht-sub">Skóre a Deník jídla</div></div>
     </button>
   </div>
 
@@ -2634,18 +2634,7 @@
       <div class="hm-sub">Sdílené recepty</div>
     </button>
   </div>
-  <div class="home-mini-row">
-    <button class="home-mini home-mini-wide" id="tileNotebook">
-      <div class="hm-icon">📓</div>
-      <div><div class="hm-title">Sešit</div><div class="hm-sub" id="nbTileSub">Je součástí Tréninku · PR a grafy</div></div>
-    </button>
-    <button class="home-mini home-mini-wide" id="tileFood">
-      <div class="hm-icon">🍽️</div>
-      <div><div class="hm-title">Deník jídla</div><div class="hm-sub" id="foodTileSub">Makra, skener a graf</div></div>
-    </button>
-  </div>
-
-  <div class="home-bottom-controls">
+    <div class="home-bottom-controls">
     <button id="musicToggleBtn" class="home-bottom-btn" title="Hudba on/off">🔇 Hudba</button>
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
@@ -2748,6 +2737,10 @@
       <div class="logo-wrap"><div class="logo"><span class="dot"></span>GYM GAINZ</div><div class="slogan slogan-shoju">Progress</div></div>
       <button class="hdr-btn exit-btn" id="progressClose">← Zpět</button>
     </header>
+    <div class="wo-top-tabs" style="margin-top:16px;">
+      <button class="on">📈 Progress</button>
+      <button id="progTabFood">🍽️ Deník jídla</button>
+    </div>
     <div class="gainz-score-box" style="margin-top:24px;">
       <div class="gsb-label">GAINZ SCORE</div>
       <div class="gsb-value" id="progGainzVal">0</div>
@@ -2800,7 +2793,11 @@
       <div class="logo-wrap"><div class="logo"><span class="dot"></span>GYM GAINZ</div><div class="slogan slogan-shoju">Deník jídla</div></div>
       <button class="hdr-btn exit-btn" id="foodClose">← Zpět</button>
     </header>
-    <div id="foodContent" style="margin-top:18px; padding-bottom:90px;"></div>
+    <div class="wo-top-tabs" style="margin-top:16px;">
+      <button id="foodTabProg">📈 Progress</button>
+      <button class="on">🍽️ Deník jídla</button>
+    </div>
+    <div id="foodContent" style="margin-top:10px; padding-bottom:90px;"></div>
   </div>
 </div>
 <div class="page-overlay-light" id="foodAddOverlay"></div>
@@ -7937,6 +7934,8 @@ document.getElementById('workoutToggle').addEventListener('click', ()=>{
 });
 document.getElementById('woTabNb').addEventListener('click', ()=>{ nbTab = 'diary'; nbOpenEx = null; openHomeSub('notebook'); });
 document.getElementById('nbTabPlan').addEventListener('click', ()=>openHomeSub('training'));
+document.getElementById('progTabFood').addEventListener('click', ()=>openHomeSub('food'));
+document.getElementById('foodTabProg').addEventListener('click', ()=>openHomeSub('progress'));
 document.getElementById('workoutClose').addEventListener('click', ()=>{
   document.getElementById('workoutOverlay').classList.remove('open');
 });
@@ -10933,8 +10932,6 @@ function renderHomeFoodTile(){
   sub.textContent = tot.n ? `Dnes ${Math.round(tot.kcal)} / ${tg.kcal} kcal` : 'Makra, skener a graf';
 }
 
-document.getElementById('tileNotebook').addEventListener('click', ()=> openHomeSub('notebook'));
-document.getElementById('tileFood').addEventListener('click', ()=> openHomeSub('food'));
 document.getElementById('foodClose').addEventListener('click', goHome);
 document.getElementById('notebookClose').addEventListener('click', goHome);
 
