@@ -1087,7 +1087,7 @@
   .nb-cal-c.today{border-color:var(--text);} .nb-cal-c.sel{outline:2px solid var(--accent); outline-offset:1px;}
   .nb-cal-sum{text-align:center; font-size:12px; color:var(--muted); margin:8px 0 0;}
   .nb-h{font-family:'Oxanium',sans-serif; font-size:calc(14px * var(--font-scale)); margin:20px 0 8px; color:var(--accent);}
-  .nb-mus, .nb-tool{border:1px solid var(--line); border-radius:14px; background:rgba(0,0,0,calc(var(--gs) * 0.9)); padding:10px 12px; box-shadow:inset 0 1px 0 rgba(255,255,255,var(--gedge)), inset 0 -1px 0 rgba(255,255,255,calc(var(--gedge) * 0.35));}
+  .nb-mus, .nb-tool, .nb-bub{backdrop-filter:blur(9px); -webkit-backdrop-filter:blur(9px); border:1px solid var(--line); border-radius:14px; background:rgba(0,0,0,calc(var(--gs) * 0.9)); padding:10px 12px; box-shadow:inset 0 1px 0 rgba(255,255,255,var(--gedge)), inset 0 -1px 0 rgba(255,255,255,calc(var(--gedge) * 0.35));}
   .nb-tool{margin-bottom:12px;}
   .nb-mrow{display:flex; align-items:center; gap:8px; padding:4px 0; font-size:calc(12px * var(--font-scale));}
   .nb-mname{flex:0 0 92px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
@@ -1133,6 +1133,11 @@
   .nb-trend.up{color:var(--cut);} .nb-trend.down{color:var(--bulk);}
   .nb-exrow.open .hg-arrow{transform:rotate(180deg);}
   .nb-detail{padding:0 14px 12px;}
+  .nb-bub{margin:6px 0 4px;}
+  .nb-bub .nb-note:first-child{margin-top:0;}
+  .nb-bub .nb-row:first-child{border-top:0; padding-top:2px;}
+  .nb-bub .nb-mrow:last-of-type{padding-bottom:2px;}
+  .nb-bub .weight-chart{margin-top:2px;}
   .nb-row{display:flex; gap:12px; padding:7px 0; border-top:1px solid rgba(255,255,255,0.05); font-size:calc(12px * var(--font-scale));}
   .nb-row-date{flex:0 0 74px; white-space:nowrap; color:var(--muted); font-family:'Space Mono',monospace;}
   .nb-row-sets small{color:var(--muted); margin-left:4px;}
@@ -2743,7 +2748,7 @@
     <button id="musicToggleBtn" class="home-bottom-btn" title="Hudba on/off">🔇 Hudba</button>
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V28g · 2026-10-16</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V28h · 2026-10-16</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -10172,7 +10177,7 @@ function nbStatsTabHTML(entries){
     <div><b>${sets}</b><span>pracovních sérií</span></div>
     <div><b>${nbVolShort(vol)}</b><span>objem</span></div>
   </div>
-  <p class="nb-note" style="margin:-4px 0 12px;">V průměru ${nbFmt(Math.round(dayset.size/weeksInP*10)/10)} tréninkových dnů týdně.</p>`;
+  <div class="nb-bub" style="margin:0 0 12px; padding:8px 12px;"><p class="nb-note" style="margin:0;">V průměru ${nbFmt(Math.round(dayset.size/weeksInP*10)/10)} tréninkových dnů týdně.</p></div>`;
   // série na svalovou partii
   const keys = Object.keys(MUSCLE_LABELS).filter(k=>k!=='cardio');
   const rows = keys.map(k=>({k, n:muscleSets[k]||0})).sort((a,b)=>b.n-a.n);
@@ -10206,8 +10211,8 @@ function nbStatsTabHTML(entries){
       + `<text x="${xx+bw/2}" y="114" text-anchor="middle" fill="#9a9aab" font-size="8.5" font-family="monospace">${md.getDate()}.${md.getMonth()+1}.</text>`
       + `<text x="${xx+bw/2}" y="125" text-anchor="middle" fill="#9a9aab" font-size="8" font-family="monospace">${x.days.size}×</text>`;
   }).join('');
-  const weekChart = `<svg viewBox="0 0 320 130" class="weight-chart" style="height:150px">${bars}</svg>
-    <p class="nb-note" style="margin-top:2px;">Objem v kg za týden (pondělí–neděle) a počet tréninkových dnů pod sloupcem.</p>`;
+  const weekChart = `<div class="nb-bub"><svg viewBox="0 0 320 130" class="weight-chart" style="height:150px">${bars}</svg>
+    <p class="nb-note" style="margin-top:2px;">Objem v kg za týden (pondělí–neděle) a počet tréninkových dnů pod sloupcem.</p></div>`;
   // nejvíc odcvičené
   const topEx = Object.entries(exVol).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]).slice(0,5);
   const maxEx = topEx.length ? topEx[0][1] : 1;
@@ -10232,12 +10237,11 @@ function nbStatsTabHTML(entries){
   wsorted.forEach(x=>{ run = (prev!==null && x===prev+1) ? run+1 : 1; longest = Math.max(longest, run); prev = x; });
   const streak = `<div class="nb-stats"><div><b>${cur}</b><span>týdnů v řadě 🔥</span></div><div><b>${longest}</b><span>nejdelší série týdnů</span></div><div><b>${new Set(entries.map(e=>e.date)).size}</b><span>dnů celkem</span></div></div>`;
   return `<div class="wo-mode-tabs nb-period">${periodBtns}</div>${cards}
-    <h4 class="nb-h">💪 Série podle svalů</h4><div class="nb-mus">${muscleHTML}</div>
-    <p class="nb-note">Doporučení pro růst svalů: zhruba 10–20 pracovních sérií na partii týdně (zelená). Rozcvička se nepočítá.</p>
+    <h4 class="nb-h">💪 Série podle svalů</h4><div class="nb-mus">${muscleHTML}<p class="nb-note" style="margin:8px 0 0;">Doporučení pro růst svalů: zhruba 10–20 pracovních sérií na partii týdně (zelená). Rozcvička se nepočítá.</p></div>
     <h4 class="nb-h">📈 Týdenní objem</h4>${weekChart}
     <h4 class="nb-h">🔥 Pravidelnost</h4>${streak}
-    <h4 class="nb-h">🏅 Nejvíc odcvičené cviky</h4>${topHTML}
-    <h4 class="nb-h">🏆 Nejlepší odhad 1RM</h4>${b1HTML}`;
+    <h4 class="nb-h">🏅 Nejvíc odcvičené cviky</h4><div class="nb-bub">${topHTML}</div>
+    <h4 class="nb-h">🏆 Nejlepší odhad 1RM</h4><div class="nb-bub">${b1HTML}</div>`;
 }
 // ---------- nástroje: 1RM a kotouče ----------
 function nbToolsHTML(){
@@ -11179,7 +11183,7 @@ function calcSuggestedProtein(){
   return {target: Math.round(p.weight * perKg), note};
 }
 function themeColor(varName){
-  return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+  return getComputedStyle(document.body).getPropertyValue(varName).trim();
 }
 function renderVolumeChart(){
   const svg = document.getElementById('volumeChart');
@@ -11356,8 +11360,8 @@ function nbPrSectionHTML(){
   const prs = state.exercisePRs || {};
   const names = Object.keys(prs).sort((a,b)=> (prs[b].weight||0) - (prs[a].weight||0));
   return `<div class="nb-prsec"><h4 class="fd-h"><span class="trophy-ic"></span> Moje osobní rekordy (PR)</h4>
-    ${names.length ? names.map((n,i)=>`<div class="prof-row pr-row-clickable" data-ex="${homeEsc(n)}"><span>🏋️ ${homeEsc(exDisp(n))}</span><span class="val">${prs[n].weight} kg × ${prs[n].reps} ${i===0?'🔥':''} <span style="opacity:.5;">›</span></span></div>`).join('') : '<p class="nb-none">Rekordy se objeví po dokončení prvního cviku s váhou. Klepnutím na rekord uvidíš graf.</p>'}
-    <h4 class="fd-h">💪 Síla (index hlavních cviků)</h4><div id="strengthIndexBlock" style="margin-bottom:18px;"></div></div>`;
+    <div class="nb-bub">${names.length ? names.map((n,i)=>`<div class="prof-row pr-row-clickable" data-ex="${homeEsc(n)}"><span>🏋️ ${homeEsc(exDisp(n))}</span><span class="val">${prs[n].weight} kg × ${prs[n].reps} ${i===0?'🔥':''} <span style="opacity:.5;">›</span></span></div>`).join('') : '<p class="nb-none">Rekordy se objeví po dokončení prvního cviku s váhou. Klepnutím na rekord uvidíš graf.</p>'}</div>
+    <h4 class="fd-h">💪 Síla (index hlavních cviků)</h4><div id="strengthIndexBlock" class="nb-bub" style="margin-bottom:18px;"></div></div>`;
 }
 function nbPrBind(el){
   try{ renderStrengthIndexBlock(); }catch(e){}
@@ -11452,7 +11456,7 @@ function renderStrengthIndexBlock(){
   const timeline = getStrengthTimeline();
   const wrapEl = document.getElementById('strengthIndexBlock');
   if(timeline.length < 2){
-    wrapEl.innerHTML = `<p style="font-size:12.5px; color:var(--muted); text-align:center; padding:10px 0 20px;">Appka spočítá index síly z hlavních cviků (bench, dřep, mrtvý tah, veslování, OHP) po pár trénincích.</p>`;
+    wrapEl.innerHTML = `<p style="font-size:12.5px; color:var(--muted); text-align:center; padding:4px 0; margin:0;">Appka spočítá index síly z hlavních cviků (bench, dřep, mrtvý tah, veslování, OHP) po pár trénincích.</p>`;
     return;
   }
   const first = timeline[0], last = timeline[timeline.length-1];
