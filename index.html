@@ -2748,7 +2748,7 @@
     <button id="musicToggleBtn" class="home-bottom-btn" title="Hudba on/off">🔇 Hudba</button>
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V28h · 2026-10-16</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V28i · 2026-10-16</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -2951,7 +2951,7 @@
     <button class="prof-close" id="prGraphClose" style="position:absolute; top:14px; right:14px; float:none;">✕</button>
     <div style="font-size:34px; margin-bottom:6px;"><span class="trophy-ic"></span></div>
     <h4 id="prGraphTitle" style="font-family:'Oxanium',sans-serif; text-transform:uppercase; color:var(--accent); font-size:16px; margin:0 0 10px;">BENCH PRESS</h4>
-    <div id="prGraphPRVal" style="font-family:'Oxanium',sans-serif; font-weight:800; font-size:26px; color:#fff; margin-bottom:6px;">90 × 6 kg</div>
+    <div id="prGraphPRVal" style="font-family:'Oxanium',sans-serif; font-weight:800; font-size:26px; color:#fff; margin-bottom:6px;">90 kg × 6</div>
     <div id="prGraphE1rm" style="font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); margin-bottom:14px;">e1RM 108 kg</div>
     <div id="prGraphDelta" style="font-family:'Oxanium',sans-serif; font-weight:700; font-size:14px; color:var(--cut); margin-bottom:22px;">📈 +12 kg od prvního tréninku</div>
     <button class="levelup-continue" id="prGraphSeeFull" style="background:var(--accent); color:#14041f; box-shadow:0 4px 0 var(--accent-dark);">Zobrazit celý progres →</button>
@@ -11540,7 +11540,7 @@ function openPrGraph(name){
   const pr = (state.exercisePRs||{})[name];
   const trainings = getTrainingsFor(name);
   document.getElementById('prGraphTitle').textContent = name;
-  document.getElementById('prGraphPRVal').textContent = pr ? `${pr.weight} × ${pr.reps} kg` : '–';
+  document.getElementById('prGraphPRVal').textContent = pr ? (pr.weight>0 ? `${pr.weight} kg × ${pr.reps}` : `${pr.reps} opak.`) : '–';
   document.getElementById('prGraphE1rm').textContent = pr ? `e1RM ${Math.round(pr.oneRM)} kg` : '';
   const deltaEl = document.getElementById('prGraphDelta');
   if(trainings.length >= 2 && pr){
