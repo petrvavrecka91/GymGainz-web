@@ -2601,7 +2601,7 @@
   <div class="home-tiles">
     <button class="home-tile t-training" id="tileTraining">
       <div class="ht-icon">🏋️</div>
-      <div><div class="ht-title">TRÉNINK</div><div class="ht-sub">Plán a cviky</div></div>
+      <div><div class="ht-title">TRÉNINK</div><div class="ht-sub">Plán, cviky a Sešit</div></div>
     </button>
     <button class="home-tile t-body" id="tileBody">
       <div class="ht-icon">💪</div>
@@ -2613,7 +2613,7 @@
     </button>
     <button class="home-tile t-progress" id="tileProgress">
       <div class="ht-icon">📈</div>
-      <div><div class="ht-title">PROGRESS</div><div class="ht-sub">Váhy, PR, grafy</div></div>
+      <div><div class="ht-title">PROGRESS</div><div class="ht-sub">Skóre · makra v Deníku jídla</div></div>
     </button>
   </div>
 
@@ -2637,11 +2637,11 @@
   <div class="home-mini-row">
     <button class="home-mini home-mini-wide" id="tileNotebook">
       <div class="hm-icon">📓</div>
-      <div><div class="hm-title">Sešit</div><div class="hm-sub" id="nbTileSub">Deník tréninků a progres</div></div>
+      <div><div class="hm-title">Sešit</div><div class="hm-sub" id="nbTileSub">Je součástí Tréninku · PR a grafy</div></div>
     </button>
     <button class="home-mini home-mini-wide" id="tileFood">
       <div class="hm-icon">🍽️</div>
-      <div><div class="hm-title">Deník jídla</div><div class="hm-sub" id="foodTileSub">Skener, makra a graf</div></div>
+      <div><div class="hm-title">Deník jídla</div><div class="hm-sub" id="foodTileSub">Makra, skener a graf</div></div>
     </button>
   </div>
 
@@ -2758,13 +2758,8 @@
 
     <div id="progFoodBox"></div>
 
-    <div class="prof-sec" id="prSection" style="border-top:none; margin-top:24px; padding-top:0;">
-      <div class="wo-mode-tabs" id="progTabSwitch" style="margin-bottom:16px;">
-        <button data-tab="progres" class="on">📈 PROGRES</button>
-        <button data-tab="pr"><span class="trophy-ic"></span> MOJE PR</button>
-      </div>
-      <div id="progTabContent"></div>
-    </div>
+    <button class="prog-food-link" id="progToNb" style="margin-top:12px;"><span>🏆 Rekordy (PR), síla a grafy cviků</span><small>Najdeš je v Tréninku → 📓 Sešit (Statistiky a Cviky) →</small></button>
+
     <div class="prof-sec" style="border-top:none; margin-top:24px; padding-top:0;">
       <button class="wk-continue-btn" id="wToggleBtn" style="background:rgba(var(--accent-rgb),0.14); border:1.5px solid var(--accent); color:var(--accent); box-shadow:none; display:flex; align-items:center; justify-content:space-between;">
         <span>⚖️ PROGRES VÁHY <span id="wVipTag">👑</span></span><span id="wToggleArrow">▾</span>
@@ -10177,11 +10172,11 @@ function renderNotebook(){
   const emptyMsg = `<div class="nb-empty">📓<p>Sešit je zatím prázdný.</p><p style="font-size:12px;">Každý trénink, který dokončíš v appce, se sem zapíše sám. Můžeš sem také ručně přidat trénink, který jsi dělal jinde.</p></div>`;
   let body = '';
   const needsData = ['diary','exercises','stats'].includes(nbTab);
-  if(needsData && !entries.length) body = emptyMsg;
+  if(needsData && !entries.length) body = emptyMsg + (nbTab==='stats' ? nbPrSectionHTML() : '');
   else if(nbTab==='diary') body = nbDiaryHTML(entries);
   else if(nbTab==='calendar') body = nbCalendarHTML(entries);
   else if(nbTab==='exercises') body = nbExercisesHTML(entries);
-  else if(nbTab==='stats') body = nbStatsTabHTML(entries);
+  else if(nbTab==='stats') body = nbStatsTabHTML(entries) + nbPrSectionHTML();
   else body = nbToolsHTML();
   const showTop = nbTab==='diary' || nbTab==='calendar' || nbTab==='exercises';
   el.innerHTML = (showTop ? nbStatsHTML(entries) + addBtn : '') + tabs + body;
@@ -10217,6 +10212,7 @@ function renderNotebook(){
     s.addEventListener('input', ()=>{ nbSearch = s.value; renderNotebook(); const n = document.getElementById('nbSearch'); n.focus(); n.setSelectionRange(n.value.length, n.value.length); });
   }
   if(nbTab==='tools') nbToolsBind();
+  if(nbTab==='stats') nbPrBind(el);
   if(nbTab==='exercises' && nbOpenEx){ nbDrawChart(entries.filter(e=>e.name===nbOpenEx)); }
 }
 // ---------- akce nad záznamy ----------
@@ -10405,9 +10401,9 @@ function openNbAdd(){ openNbEditor({}); }
 function renderHomeNotebookTile(){
   const sub = document.getElementById('nbTileSub'); if(!sub) return;
   const entries = nbEntries();
-  if(!entries.length){ sub.textContent = 'Zatím prázdný – začni prvním tréninkem'; return; }
+  if(!entries.length){ sub.textContent = 'V Tréninku · zatím prázdný'; return; }
   const days = new Set(entries.map(e=>e.date)).size;
-  sub.textContent = `${days} ${days===1?'den':(days<5?'dny':'dní')} zapsáno · ${new Set(entries.map(e=>e.name)).size} cviků`;
+  sub.textContent = `V Tréninku · ${days} ${days===1?'den':(days<5?'dny':'dní')} zapsáno`;
 }
 
 // ============================================================
@@ -10934,7 +10930,7 @@ function renderProgFood(){
 function renderHomeFoodTile(){
   const sub = document.getElementById('foodTileSub'); if(!sub) return;
   const tot = foodDayTotals(todayKey()), tg = foodTargets();
-  sub.textContent = tot.n ? `Dnes ${Math.round(tot.kcal)} / ${tg.kcal} kcal` : 'Skener, makra a graf';
+  sub.textContent = tot.n ? `Dnes ${Math.round(tot.kcal)} / ${tg.kcal} kcal` : 'Makra, skener a graf';
 }
 
 document.getElementById('tileNotebook').addEventListener('click', ()=> openHomeSub('notebook'));
@@ -11238,30 +11234,21 @@ function renderFavExList(){
 let progActiveTab = 'progres';
 let progSelectedExercise = null;
 function renderPrList(){
+  const pc = document.getElementById('pPrCnt'); if(pc) pc.textContent = Object.keys(state.exercisePRs || {}).length;
+}
+const _progToNb = document.getElementById('progToNb');
+if(_progToNb) _progToNb.addEventListener('click', ()=>{ nbTab = 'stats'; nbOpenEx = null; openHomeSub('notebook'); });
+// PR + index síly jsou součástí Sešitu (Statistiky)
+function nbPrSectionHTML(){
   const prs = state.exercisePRs || {};
   const names = Object.keys(prs).sort((a,b)=> (prs[b].weight||0) - (prs[a].weight||0));
-  const section = document.getElementById('prSection');
-  const pc = document.getElementById('pPrCnt'); if(pc) pc.textContent = names.length;
-  if(!section) return;
-  section.style.display = 'block';
-  const sw = document.getElementById('progTabSwitch'); if(sw) sw.style.display = 'none';
-  const el = document.getElementById('progTabContent');
-  const hasLog = Object.keys(state.exerciseSetLog || {}).some(n => getTrainingsFor(n).length >= 1);
-  el.innerHTML = `
-    <h5>💪 Síla (index hlavních cviků)</h5>
-    <div id="strengthIndexBlock" style="margin-bottom:18px;"></div>
-    <h5><span class="trophy-ic"></span> Moje osobní rekordy (PR)</h5>
-    ${names.length ? names.map((n,i)=>`
-      <div class="prof-row pr-row-clickable" data-ex="${homeEsc(n)}">
-        <span>🏋️ ${homeEsc(exDisp(n))}</span>
-        <span class="val">${prs[n].weight} kg × ${prs[n].reps} ${i===0?'🔥':''} <span style="opacity:.5;">›</span></span>
-      </div>`).join('') : '<p style="font-size:12.5px; color:var(--muted); padding:6px 0 14px;">Rekordy a grafy se objeví po dokončení prvního cviku s váhou v tréninku. Klepnutím na rekord pak uvidíš graf vývoje.</p>'}
-    <button class="rest-b main" id="progToNotebook" style="width:100%; margin-top:12px;">📓 Progres jednotlivých cviků (grafy, historie) najdeš v Sešitu →</button>`;
-  renderStrengthIndexBlock();
-  el.querySelectorAll('.pr-row-clickable').forEach(row=>{
-    row.addEventListener('click', ()=> openPrGraph(row.dataset.ex));
-  });
-  document.getElementById('progToNotebook').addEventListener('click', ()=>{ nbTab = 'exercises'; nbOpenEx = null; openHomeSub('notebook'); });
+  return `<div class="nb-prsec"><h4 class="fd-h"><span class="trophy-ic"></span> Moje osobní rekordy (PR)</h4>
+    ${names.length ? names.map((n,i)=>`<div class="prof-row pr-row-clickable" data-ex="${homeEsc(n)}"><span>🏋️ ${homeEsc(exDisp(n))}</span><span class="val">${prs[n].weight} kg × ${prs[n].reps} ${i===0?'🔥':''} <span style="opacity:.5;">›</span></span></div>`).join('') : '<p class="nb-none">Rekordy se objeví po dokončení prvního cviku s váhou. Klepnutím na rekord uvidíš graf.</p>'}
+    <h4 class="fd-h">💪 Síla (index hlavních cviků)</h4><div id="strengthIndexBlock" style="margin-bottom:18px;"></div></div>`;
+}
+function nbPrBind(el){
+  try{ renderStrengthIndexBlock(); }catch(e){}
+  el.querySelectorAll('.nb-prsec .pr-row-clickable').forEach(row=>row.addEventListener('click', ()=>openPrGraph(row.dataset.ex)));
 }
 let progMetric = 'weight';
 // ===== INDEX SILY (hlavni GG graf - agregace z 5 hlavnich pohybovych vzoru) =====
