@@ -1833,6 +1833,12 @@
   .wo-top-tabs button{flex:1; border:1.5px solid var(--line); background:rgba(0,0,0,0.3); color:var(--muted); border-radius:999px; padding:10px 8px; cursor:pointer; font-family:'Oxanium',sans-serif; font-weight:700; font-size:13px;}
   .wo-top-tabs button.on{border-color:var(--accent); color:var(--accent); background:rgba(var(--accent-rgb),calc(0.14 * var(--gt)));}
   .wo-pick-hint{font-size:11.5px; color:var(--muted); margin:0 0 8px;}
+  .wo-grip{display:inline-flex; align-items:center; justify-content:center; width:30px; height:26px; border:1px solid rgba(255,255,255,0.28); border-radius:6px; background:rgba(0,0,0,max(0.28, calc(var(--gs) * 0.9))); color:var(--text); font-size:17px; line-height:1; cursor:grab; touch-action:none; user-select:none; -webkit-user-select:none;}
+  .wo-grip:active{cursor:grabbing;}
+  .wex-name::before{content:attr(data-pos) '. '; color:var(--muted); font-family:'Space Mono',monospace; font-size:0.85em;}
+  .wo-ex.wo-dragging{position:relative; z-index:20; opacity:0.97; background:rgba(22,22,32,0.97) !important; backdrop-filter:none !important; -webkit-backdrop-filter:none !important; box-shadow:0 10px 28px rgba(0,0,0,0.55); border-color:var(--accent);}
+  .wo-ex.drop-before{box-shadow:0 -3px 0 0 var(--accent);}
+  .wo-ex.drop-after{box-shadow:0 3px 0 0 var(--accent);}
   .wo-ex-actions .wo-mv{padding:2px 6px;}
   .wo-ex-actions .wo-mv:disabled{opacity:.25; cursor:default;}
 
@@ -2759,7 +2765,7 @@
     <button id="musicToggleBtn" class="home-bottom-btn" title="Hudba on/off">🔇 Hudba</button>
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V28n · 2026-10-16</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V28o · 2026-10-16</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -6577,6 +6583,19 @@ function woApplyEdits(day){
     if(hh[old] && !hh[finalName]) hh[finalName] = JSON.parse(JSON.stringify(hh[old]));
     renamed++;
   });
+  // pořadí podle zadaného čísla (1 = první); cvik s ručně změněným číslem předběhne ten, který tam byl dřív
+  const posInputs = [...document.querySelectorAll('[data-editpos]')];
+  if(posInputs.length){
+    const items = day.exercises.map((ex,i)=>({ex, i, pos:i+1, edited:false}));
+    posInputs.forEach(inp=>{
+      const i = parseInt(inp.dataset.idx), v = parseInt(inp.value);
+      if(items[i] && v>0 && v!==i+1){ items[i].pos = Math.min(v, 999); items[i].edited = true; }
+    });
+    if(items.some(x=>x.edited)){
+      items.sort((a,b)=> (a.pos-b.pos) || (a.edited===b.edited ? 0 : (a.edited ? -1 : 1)) || (a.i-b.i));
+      day.exercises = items.map(x=>x.ex);
+    }
+  }
   return {renamed, dup};
 }
 // ===== ODHAD DÉLKY TRÉNINKU =====
@@ -6645,11 +6664,10 @@ function renderWorkoutStep3(){
   const exHTML = day.exercises.map((e,i)=>`
     <div class="wo-ex" data-idx="${i}">
       <div class="wo-ex-top">
-        <span class="wex-name">${homeEsc(exDisp(e.name))}</span>
+        <span class="wex-name" data-pos="${i+1}">${homeEsc(exDisp(e.name))}</span>
         <div class="wo-ex-actions">
           <span class="wex-muscle">${e.muscle}</span>
-          <button class="wo-mv" data-act="up" data-idx="${i}" title="Posunout nahoru" ${i===0?'disabled':''}>▲</button>
-          <button class="wo-mv" data-act="down" data-idx="${i}" title="Posunout dolů" ${i===day.exercises.length-1?'disabled':''}>▼</button>
+          <span class="wo-grip" data-idx="${i}" title="Chyť a přesuň na jiné místo" role="button" aria-label="Přesunout cvik">⠿</span>
           <button class="bp-ex-fav-btn ${isFavExercise(e.name)?'on':''}" data-fav="${e.name}" title="Oblíbený cvik">${isFavExercise(e.name)?'❤️':'🤍'}</button>
           <button data-act="swap" data-idx="${i}" title="Vyměnit cvik">🔁</button>
           <button data-act="rm" data-idx="${i}" title="Odebrat cvik">✕</button>
@@ -6670,6 +6688,7 @@ function renderWorkoutStep3(){
         </select>
       </div>
       <div class="wex-edit-row">
+        <label>Pořadí <input type="number" min="1" max="999" value="${i+1}" data-editpos="1" data-idx="${i}"></label>
         <label>Série <input type="number" min="1" max="10" value="${e.sets||3}" data-editf="sets" data-idx="${i}"></label>
         <label>${e.mode==='cardio'?'Min. od':(e.mode==='time'||e.mode==='weightTime'?'Čas od (s)':'Opak. od')} <input type="number" min="1" max="${(e.mode==='time'||e.mode==='weightTime')?600:(e.mode==='cardio'?180:30)}" value="${e.repsMin||8}" data-editf="repsMin" data-idx="${i}"></label>
         <label>do <input type="number" min="1" max="${(e.mode==='time'||e.mode==='weightTime')?600:(e.mode==='cardio'?180:30)}" value="${e.repsMax||8}" data-editf="repsMax" data-idx="${i}"></label>
@@ -6894,14 +6913,54 @@ function renderWorkoutStep3(){
       showToast(added ? '❤️ Přidáno do oblíbených cviků' : '💔 Odebráno z oblíbených');
     });
   });
-  document.querySelectorAll('[data-act="up"],[data-act="down"]').forEach(b=>{
-    b.addEventListener('click', ()=>{
+  // přesouvání cviků tažením za úchyt ⠿ (dotyk i myš)
+  document.querySelectorAll('.wo-grip').forEach(g=>{
+    g.addEventListener('pointerdown', ev=>{
+      ev.preventDefault();
+      const card = g.closest('.wo-ex'); if(!card) return;
       if(woEditMode) woApplyEdits(day);
-      const i = parseInt(b.dataset.idx), j = b.dataset.act==='up' ? i-1 : i+1;
-      if(j<0 || j>=day.exercises.length) return;
-      const t = day.exercises[i]; day.exercises[i] = day.exercises[j]; day.exercises[j] = t;
-      saveState();
-      renderWorkoutStep3();
+      const cards = [...document.querySelectorAll('#woContent .wo-ex')];
+      const from = cards.indexOf(card); if(from < 0) return;
+      let sp = card.parentElement; while(sp && sp !== document.body){ const o = getComputedStyle(sp).overflowY; if((o==='auto'||o==='scroll') && sp.scrollHeight > sp.clientHeight) break; sp = sp.parentElement; }
+      const scroller = (sp && sp !== document.body) ? sp : null;
+      const sc0 = scroller ? scroller.scrollTop : 0;
+      const y0 = ev.clientY; let lastY = y0, to = from, raf = null;
+      try{ g.setPointerCapture(ev.pointerId); }catch(e){}
+      card.classList.add('wo-dragging');
+      const mark = ()=>{
+        const others = cards.filter(c=>c!==card);
+        to = 0; others.forEach(c=>{ const r = c.getBoundingClientRect(); if(r.top + r.height/2 < lastY) to++; });
+        cards.forEach(c=>c.classList.remove('drop-before','drop-after'));
+        if(to < others.length) others[to].classList.add('drop-before'); else if(others.length) others[others.length-1].classList.add('drop-after');
+        card.style.transform = `translateY(${lastY - y0 + (scroller ? scroller.scrollTop - sc0 : 0)}px)`;
+      };
+      const tick = ()=>{
+        raf = null;
+        if(scroller){
+          const r = scroller.getBoundingClientRect();
+          const edge = 70, v = lastY < r.top + edge ? -14 : (lastY > r.bottom - edge - 60 ? 14 : 0);
+          if(v){ scroller.scrollTop += v; mark(); raf = requestAnimationFrame(tick); }
+        } else {
+          const v = lastY < 70 ? -14 : (lastY > innerHeight - 130 ? 14 : 0);
+          if(v){ window.scrollBy(0, v); mark(); raf = requestAnimationFrame(tick); }
+        }
+      };
+      const move = e2=>{ lastY = e2.clientY; mark(); if(!raf) raf = requestAnimationFrame(tick); };
+      const end = e2=>{
+        g.removeEventListener('pointermove', move); g.removeEventListener('pointerup', end); g.removeEventListener('pointercancel', end);
+        if(raf) cancelAnimationFrame(raf);
+        cards.forEach(c=>c.classList.remove('drop-before','drop-after'));
+        card.classList.remove('wo-dragging'); card.style.transform = '';
+        if(e2.type !== 'pointercancel' && to !== from){
+          const t = day.exercises.splice(from, 1)[0];
+          day.exercises.splice(to, 0, t);
+          saveState();
+          showToast('↕ Cvik přesunut na pozici ' + (to + 1));
+          renderWorkoutStep3();
+        }
+      };
+      g.addEventListener('pointermove', move); g.addEventListener('pointerup', end); g.addEventListener('pointercancel', end);
+      mark();
     });
   });
   document.querySelectorAll('[data-act="rm"]').forEach(b=>{
