@@ -1731,6 +1731,12 @@
     width:100%; padding:8px; border-radius:8px; background:rgba(0,0,0,calc(var(--gs) * 0.9));
     border:1px solid var(--line); color:var(--text); font-family:'Space Grotesk',sans-serif; font-size:13px;
   }
+  .wo-day-tools{display:flex; flex-wrap:wrap; gap:6px; margin:-4px 0 10px;}
+  .wo-day-tools button{padding:7px 11px; border-radius:10px; border:1px solid var(--line); background:rgba(0,0,0,calc(var(--gs) * 0.9)); backdrop-filter:blur(9px); -webkit-backdrop-filter:blur(9px); color:var(--text); font-family:'Oxanium',sans-serif; font-weight:700; font-size:calc(11.5px * var(--font-scale)); cursor:pointer;}
+  .wo-day-tools button.danger{color:var(--bulk); border-color:rgba(255,46,77,0.4);}
+  .wo-daylabel{margin:0 0 10px;}
+  .wo-daylabel label{display:block; font-size:11px; color:var(--muted);}
+  .wo-daylabel input{display:block; width:100%; margin-top:4px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:rgba(0,0,0,calc(var(--gs) * 0.9)); color:var(--text); font-family:inherit; font-size:14px; box-sizing:border-box;}
   .wo-day-tabs{display:flex; gap:6px; overflow-x:auto; margin-bottom:12px; padding-bottom:2px;}
   .wo-day-tabs button{
     flex-shrink:0; border:1px solid var(--line); background:rgba(0,0,0,calc(var(--gs) * 0.9)); color:var(--muted);
@@ -2751,7 +2757,7 @@
     <button id="musicToggleBtn" class="home-bottom-btn" title="Hudba on/off">🔇 Hudba</button>
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V28k · 2026-10-16</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V28l · 2026-10-16</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -6687,6 +6693,12 @@ function renderWorkoutStep3(){
     </div>
     ${homePlanBanner(plan)}
     <div class="wo-day-tabs">${tabsHTML}</div>
+    <div class="wo-day-tools">
+      <button id="woDayCopy" title="Zkopírovat tento den jako nový den na konec týdne">⧉ Kopírovat den</button>
+      <button id="woDayNew" title="Přidat prázdný den (např. ruce)">＋ Nový den</button>
+      ${woEditMode && plan.days.length>1 ? '<button id="woDayDel" class="danger" title="Smazat tento den">🗑 Smazat den</button>' : ''}
+    </div>
+    ${woEditMode ? `<div class="wo-daylabel"><label>✏️ Název dne <input type="text" id="woDayLabel" maxlength="24" value="${homeEsc(day.label)}" placeholder="např. Vrch, Spodek, Ruce"></label></div>` : ''}
     <div class="wo-note">📋 ${woDayNote(day)}</div>
     ${woDurChipHTML(day)}
     ${emptyMsg}
@@ -6739,11 +6751,67 @@ function renderWorkoutStep3(){
   };
   const bd = document.getElementById('woBulkDay'); if(bd) bd.addEventListener('click', ()=>woBulk(false));
   const ba = document.getElementById('woBulkAll'); if(ba) ba.addEventListener('click', ()=>woBulk(true));
+  // ----- dny: kopírovat / nový / smazat / název -----
+  const woDayLabelSave = ()=>{
+    const li = document.getElementById('woDayLabel');
+    if(li){ const v = li.value.trim().slice(0,24); if(v) day.label = v; }
+  };
+  const woDaysChanged = ()=>{ plan.freq = Math.min(7, Math.max(1, plan.days.length)); saveState(); renderWorkoutStep3(); };
+  const woUniqueLabel = (base)=>{
+    const root = base.replace(/\s*\(kopie\)$/,'').replace(/\s+\d+$/,'');
+    const used = new Set(plan.days.map(d=>d.label));
+    for(let n=2; n<50; n++){ const c = root + ' ' + n; if(!used.has(c)) return c; }
+    return root + ' ' + (plan.days.length+1);
+  };
+  document.getElementById('woDayCopy').addEventListener('click', ()=>{
+    if(plan.days.length >= 7){ showToast('⚠️ Týden může mít nejvýš 7 dnů'); return; }
+    if(woEditMode){ woApplyEdits(day); woDayLabelSave(); }
+    const copy = JSON.parse(JSON.stringify(day));
+    copy.label = woUniqueLabel(day.label);
+    plan.days.push(copy); plan.done.push(false);
+    woActiveDay = plan.days.length - 1;
+    showToast('⧉ Zkopírováno jako „' + copy.label + '“ – můžeš upravit cviky nebo přejmenovat');
+    woDaysChanged();
+  });
+  document.getElementById('woDayNew').addEventListener('click', ()=>{
+    if(plan.days.length >= 7){ showToast('⚠️ Týden může mít nejvýš 7 dnů'); return; }
+    if(woEditMode){ woApplyEdits(day); woDayLabelSave(); }
+    let n = plan.days.length + 1, label = 'Den ' + n;
+    const used = new Set(plan.days.map(d=>d.label));
+    while(used.has(label)){ n++; label = 'Den ' + n; }
+    plan.days.push({label, note:'Vlastní den', exercises:[]}); plan.done.push(false);
+    woActiveDay = plan.days.length - 1;
+    showToast('＋ Nový den – přidej cviky tlačítkem „Přidat cvik“');
+    woDaysChanged();
+  });
+  const woDelBtn = document.getElementById('woDayDel');
+  if(woDelBtn) woDelBtn.addEventListener('click', ()=>{
+    showConfirm({
+      icon:'🗑', title:'Smazat den „' + day.label + '“?',
+      text:'Smažou se cviky v tomto dni. Zápisy v Sešitu a historie zůstanou. Dny v kalendáři se podle toho posunou.',
+      okLabel:'Smazat', cancelLabel:'Zpět',
+      onConfirm: ()=>{
+        const di = woActiveDay;
+        plan.days.splice(di,1); plan.done.splice(di,1);
+        if(state.schedule){
+          Object.keys(state.schedule).forEach(k=>{
+            const v = state.schedule[k];
+            if(v===di) delete state.schedule[k]; else if(v>di) state.schedule[k] = v-1;
+          });
+        }
+        woActiveDay = Math.max(0, Math.min(di, plan.days.length-1));
+        woEditMode = false;
+        showToast('🗑 Den smazán');
+        woDaysChanged();
+      }
+    });
+  });
   document.getElementById('woBack2').addEventListener('click', renderWorkoutStep1);
   document.getElementById('woSchedBtn').addEventListener('click', ()=>{ nbTab = 'calendar'; nbCalSel = null; openHomeSub('notebook'); });
   document.getElementById('woEditBtn').addEventListener('click', ()=>{
     if(woEditMode){
       const r = woApplyEdits(day);
+      woDayLabelSave();
       saveState();
       showToast(r.dup ? '⚠️ Dva cviky ve dni nemůžou mít stejný název – ten druhý zůstal původní' : (r.renamed ? '💾 Uloženo, přejmenováno: '+r.renamed : '💾 Změny uloženy'));
     }
