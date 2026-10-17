@@ -1735,7 +1735,8 @@
   .wo-day-tools button{padding:7px 11px; border-radius:10px; border:1px solid var(--line); background:rgba(0,0,0,calc(var(--gs) * 0.9)); backdrop-filter:blur(9px); -webkit-backdrop-filter:blur(9px); color:var(--text); font-family:'Oxanium',sans-serif; font-weight:700; font-size:calc(11.5px * var(--font-scale)); cursor:pointer;}
   .wo-day-tools button.on{border-color:var(--cut); color:var(--cut);}
   .wo-day-tools button.danger{color:var(--bulk); border-color:rgba(255,46,77,0.4);}
-  .wo-daylabel{margin:0 0 10px;}
+  .wo-daylabel{margin:0;}
+  .wo-daybox{margin-bottom:12px;}
   .wo-daylabel label{display:block; font-size:11px; color:var(--muted);}
   .wo-daylabel input{display:block; width:100%; margin-top:4px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:rgba(0,0,0,calc(var(--gs) * 0.9)); color:var(--text); font-family:inherit; font-size:14px; box-sizing:border-box;}
   .wo-day-tabs{display:flex; gap:6px; overflow-x:auto; margin-bottom:12px; padding-bottom:2px;}
@@ -2758,7 +2759,7 @@
     <button id="musicToggleBtn" class="home-bottom-btn" title="Hudba on/off">🔇 Hudba</button>
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V28m · 2026-10-16</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V28n · 2026-10-16</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -6695,14 +6696,17 @@ function renderWorkoutStep3(){
     </div>
     ${homePlanBanner(plan)}
     <div class="wo-day-tabs">${tabsHTML}</div>
-    <div class="wo-day-tools">
-      <button id="woDayCopy" title="Zkopírovat tento den jako nový den na konec týdne">⧉ Duplikovat den</button>
-      <button id="woClipCopy" title="Zkopírovat cviky tohoto dne a vložit je do jiného dne">📋 Kopírovat cviky</button>
-      ${(woClip && !(woClip.planId===plan && woClip.dayIdx===woActiveDay)) ? `<button id="woClipPaste" class="on" title="Nahradí cviky v tomto dni zkopírovanými">📥 Vložit z „${homeEsc(woClip.label)}“</button>` : ''}
-      <button id="woDayNew" title="Přidat prázdný den (např. ruce)">＋ Nový den</button>
-      ${plan.days.length>1 ? '<button id="woDayDel" class="danger" title="Smazat tento den">🗑 Smazat den</button>' : ''}
-    </div>
-    ${woEditMode ? `<div class="wo-daylabel"><label>✏️ Název dne <input type="text" id="woDayLabel" maxlength="24" value="${homeEsc(day.label)}" placeholder="např. Vrch, Spodek, Ruce"></label></div>` : ''}
+    ${woEditMode ? `<div class="wo-bulk wo-daybox">
+      <div class="wo-bulk-t">📅 Práce s dny</div>
+      <div class="wo-daylabel"><label>✏️ Název dne <input type="text" id="woDayLabel" maxlength="24" value="${homeEsc(day.label)}" placeholder="např. Vrch, Spodek, Ruce"></label></div>
+      <div class="wo-day-tools" style="margin:8px 0 0;">
+        <button id="woDayCopy" title="Zkopírovat tento den jako nový den na konec týdne">⧉ Duplikovat den</button>
+        <button id="woClipCopy" title="Zkopírovat cviky tohoto dne a vložit je do jiného dne">📋 Kopírovat cviky</button>
+        ${(woClip && !(woClip.planId===plan && woClip.dayIdx===woActiveDay)) ? `<button id="woClipPaste" class="on" title="Nahradí cviky v tomto dni zkopírovanými">📥 Vložit z „${homeEsc(woClip.label)}“</button>` : ''}
+        <button id="woDayNew" title="Přidat prázdný den (např. ruce)">＋ Nový den</button>
+        ${plan.days.length>1 ? '<button id="woDayDel" class="danger" title="Smazat tento den">🗑 Smazat den</button>' : ''}
+      </div>
+    </div>` : ''}
     <div class="wo-note">📋 ${woDayNote(day)}</div>
     ${woDurChipHTML(day)}
     ${emptyMsg}
@@ -6767,7 +6771,8 @@ function renderWorkoutStep3(){
     for(let n=2; n<50; n++){ const c = root + ' ' + n; if(!used.has(c)) return c; }
     return root + ' ' + (plan.days.length+1);
   };
-  document.getElementById('woDayCopy').addEventListener('click', ()=>{
+  const woCopyBtn = document.getElementById('woDayCopy');
+  if(woCopyBtn) woCopyBtn.addEventListener('click', ()=>{
     if(plan.days.length >= 7){ showToast('⚠️ Týden může mít nejvýš 7 dnů'); return; }
     if(woEditMode){ woApplyEdits(day); woDayLabelSave(); }
     const copy = JSON.parse(JSON.stringify(day));
@@ -6777,7 +6782,8 @@ function renderWorkoutStep3(){
     showToast('⧉ Zkopírováno jako „' + copy.label + '“ – můžeš upravit cviky nebo přejmenovat');
     woDaysChanged();
   });
-  document.getElementById('woDayNew').addEventListener('click', ()=>{
+  const woNewBtn = document.getElementById('woDayNew');
+  if(woNewBtn) woNewBtn.addEventListener('click', ()=>{
     if(plan.days.length >= 7){ showToast('⚠️ Týden může mít nejvýš 7 dnů'); return; }
     if(woEditMode){ woApplyEdits(day); woDayLabelSave(); }
     let n = plan.days.length + 1, label = 'Den ' + n;
@@ -6810,7 +6816,8 @@ function renderWorkoutStep3(){
       }
     });
   });
-  document.getElementById('woClipCopy').addEventListener('click', ()=>{
+  const woClipBtn = document.getElementById('woClipCopy');
+  if(woClipBtn) woClipBtn.addEventListener('click', ()=>{
     if(woEditMode){ woApplyEdits(day); }
     if(!day.exercises.length){ showToast('⚠️ Tento den nemá žádné cviky ke zkopírování'); return; }
     woClip = {planId:plan, dayIdx:woActiveDay, label:day.label, exercises:JSON.parse(JSON.stringify(day.exercises))};
