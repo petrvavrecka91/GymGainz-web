@@ -1739,6 +1739,9 @@
   }
   .wo-day-tabs button.on{border-color:var(--accent); color:var(--accent);}
   .wo-day-tabs button.done{border-color:var(--cut); color:var(--cut);}
+  .wo-dur{display:flex; align-items:baseline; justify-content:space-between; gap:10px; flex-wrap:wrap; padding:9px 12px; margin:0 0 10px; font-size:calc(12.5px * var(--font-scale));}
+  .wo-dur b{font-family:'Oxanium',sans-serif; color:var(--text);}
+  .wo-dur span{font-size:calc(10.5px * var(--font-scale)); color:var(--muted); font-family:'Space Mono',monospace;}
   .wo-note{
     font-family:'Space Mono',monospace; font-size:calc(11px * var(--font-scale)); color:var(--cyan); margin-bottom:10px;
   }
@@ -2748,7 +2751,7 @@
     <button id="musicToggleBtn" class="home-bottom-btn" title="Hudba on/off">🔇 Hudba</button>
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V28i · 2026-10-16</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V28k · 2026-10-16</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -6567,6 +6570,62 @@ function woApplyEdits(day){
   });
   return {renamed, dup};
 }
+// ===== ODHAD DÉLKY TRÉNINKU =====
+// série ≈ opakování × 3,5 s + 10 s příprava, pauzy podle nastavení, přechod mezi cviky ≈ 60 s, kardio = zadané minuty
+function woEstSeconds(day){
+  let t = 0;
+  ((day && day.exercises) || []).forEach(raw=>{
+    const e = raw || {};
+    const sets = Math.max(1, e.sets || 3);
+    const lo = e.repsMin || 8, hi = e.repsMax || lo, avg = (lo + hi) / 2;
+    if(e.mode === 'cardio'){ t += avg * 60 + 30; return; }
+    const rest = e.rest || 120;
+    const setSec = (e.mode === 'time' || e.mode === 'weightTime') ? avg + 8 : avg * 3.5 + 10;
+    t += sets * setSec + (sets - 1) * rest + 60;
+  });
+  return t;
+}
+function woEstMinutes(day){
+  const sec = woEstSeconds(day);
+  if(!sec) return 0;
+  return Math.max(5, Math.round(sec / 60 / 5) * 5);
+}
+function woFmtDur(m){
+  if(m < 90) return m + ' min';
+  const h = Math.floor(m / 60), r = m % 60;
+  return h + ' h' + (r ? ' ' + r + ' min' : '');
+}
+function woDayStats(day){
+  const ex = (day && day.exercises) || [];
+  const sets = ex.reduce((a,e)=>a + (e.mode === 'cardio' ? 0 : Math.max(1, e.sets || 3)), 0);
+  return {n: ex.length, sets, min: woEstMinutes(day)};
+}
+function woDurChipHTML(day){
+  const st = woDayStats(day);
+  if(!st.n) return '';
+  return `<div class="wo-dur nb-bub"><b>⏱ Odhad délky: cca ${woFmtDur(st.min)}</b><span>${st.n} cviků${st.sets ? ' · ' + st.sets + ' sérií' : ''} · vč. pauz</span></div>`;
+}
+// popisek dne ("4 série × 8-12 opakování") se přepočítává podle aktuálně upravených cviků
+function woSetsWord(n){ return n===1 ? 'série' : (n>=2 && n<=4 ? 'série' : 'sérií'); }
+function woRange(a,b){ return a===b ? String(a) : a + '-' + b; }
+function woDayNote(day){
+  const note = (day && day.note) || '';
+  const lifts = ((day && day.exercises) || []).filter(e=>e && !e.mode);
+  const gymM = note.match(/^\d+ sérií? × [\d-]+ opakování$/) || note.match(/^\d+ série × [\d-]+ opakování$/);
+  const homeM = note.match(/^(\d+) série · pauza (\d+) s · cca (\d+) min(.*)$/);
+  if(!gymM && !homeM) return note;
+  const ex = ((day && day.exercises) || []).filter(e=>e && e.mode !== 'cardio');
+  const pool = lifts.length ? lifts : ex;
+  if(!pool.length) return note;
+  const sets = pool.map(e=>e.sets||3), mins = pool.map(e=>e.repsMin||8), maxs = pool.map(e=>e.repsMax||e.repsMin||8), rests = pool.map(e=>e.rest||120);
+  const sMin = Math.min(...sets), sMax = Math.max(...sets);
+  const setsStr = woRange(sMin, sMax) + ' ' + woSetsWord(sMax);
+  if(gymM){
+    return `${setsStr} × ${woRange(Math.min(...mins), Math.max(...maxs))} opakování`;
+  }
+  const rMin = Math.min(...rests), rMax = Math.max(...rests);
+  return `${setsStr} · pauza ${woRange(rMin, rMax)} s · cca ${woFmtDur(woEstMinutes(day))}${homeM[4]||''}`;
+}
 function renderWorkoutStep3(){
   woStep = 3; woSetDots();
   const plan = state.workoutPlan;
@@ -6628,7 +6687,8 @@ function renderWorkoutStep3(){
     </div>
     ${homePlanBanner(plan)}
     <div class="wo-day-tabs">${tabsHTML}</div>
-    <div class="wo-note">📋 ${day.note}</div>
+    <div class="wo-note">📋 ${woDayNote(day)}</div>
+    ${woDurChipHTML(day)}
     ${emptyMsg}
     ${(woEditMode && day.exercises.length) ? `
     <div class="wo-bulk">
@@ -7297,7 +7357,7 @@ function renderSessOverview(el){
   }).join('');
   el.innerHTML = `
     <div style="font-family:'Oxanium',sans-serif; font-size:18px; margin-bottom:4px;">${state.workoutPlan.days[session.dayIndex].label}</div>
-    <div style="font-size:12px; color:var(--muted); margin-bottom:16px;">${session.exercises.length} cviků · ${LEVEL_LABELS[state.workoutPlan.level]}</div>
+    <div style="font-size:12px; color:var(--muted); margin-bottom:16px;">${session.exercises.length} cviků · ⏱ cca ${woFmtDur(woEstMinutes({exercises:session.exercises}))} · ${LEVEL_LABELS[state.workoutPlan.level]}</div>
     ${session.comeback ? `<div class="rest-card comeback" style="margin-bottom:12px;"><div class="rest-head">🌱 <b>Postupný návrat</b></div><p class="rest-p">Váhy jsou zhruba −${Math.round((1-session.comeback)*100)} % a o sérii méně. Dbej na techniku, nech si aspoň 3 opakování rezervu.</p></div>` : ''}
     <div class="sess-ov-list">${items}</div>
     <button class="sess-start-btn" id="sessBeginBtn">▶ START</button>`;
@@ -9794,8 +9854,8 @@ function renderHome(){
       const day = plan.days[sIdx];
       card.classList.remove('rest');
       document.getElementById('todayTitle').textContent = day.label;
-      const mins = Math.max(15, Math.round((day.exercises.length||1) * 9));
-      document.getElementById('todaySub').textContent = `📆 Naplánováno na dnes • ${day.exercises.length} cviků • ~${mins} min`;
+      const mins = woEstMinutes(day) || 15;
+      document.getElementById('todaySub').textContent = `📆 Naplánováno na dnes • ${day.exercises.length} cviků • ~${woFmtDur(mins)}`;
       document.getElementById('todayBtn').textContent = '▶ START TRÉNINKU';
       document.getElementById('todayBtn').onclick = ()=>{ woActiveDay = sIdx; openHomeSub('training'); renderWorkoutStep3(); startWorkoutSession(sIdx); };
     } else {
@@ -9812,8 +9872,8 @@ function renderHome(){
     const day = plan.days[nextIdx];
     card.classList.remove('rest');
     document.getElementById('todayTitle').textContent = day.label;
-    const mins = Math.max(15, Math.round((day.exercises.length||1) * 9));
-    document.getElementById('todaySub').textContent = `${day.exercises.length} cviků • ~${mins} min`;
+    const mins = woEstMinutes(day) || 15;
+    document.getElementById('todaySub').textContent = `${day.exercises.length} cviků • ~${woFmtDur(mins)}`;
     document.getElementById('todayBtn').textContent = '▶ START TRÉNINKU';
     document.getElementById('todayBtn').onclick = ()=>{
       woActiveDay = nextIdx;
