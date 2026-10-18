@@ -2097,6 +2097,9 @@
   .spw-recipe:hover, .spw-recipe:active{border-color:var(--cut);}
   .spw-recipe-name{font-family:'Oxanium',sans-serif; font-weight:700; font-size:calc(13.5px * var(--font-scale)); color:#fff;}
   .spw-recipe-macros{font-family:'Space Mono',monospace; font-size:calc(11.5px * var(--font-scale)); color:var(--cut); margin-top:3px;}
+  .sess-add-btn{display:block; width:100%; margin:10px 0 0; padding:13px; border-radius:14px; border:1.5px solid var(--accent); background:rgba(var(--accent-rgb),calc(0.1 * var(--gt))); backdrop-filter:blur(9px); -webkit-backdrop-filter:blur(9px); color:var(--accent); font-family:'Oxanium',sans-serif; font-weight:800; font-size:calc(14px * var(--font-scale)); cursor:pointer;}
+  .sess-exdone .sess-add-btn{width:auto; min-width:60%; margin:12px auto 0; padding:13px 20px; background:rgba(var(--accent-rgb),calc(0.1 * var(--gt))); border:1.5px solid var(--accent); color:var(--accent-light); box-shadow:none;}
+  body:not(.theme-light) .sess-add-btn{color:var(--accent-light); text-shadow:0 1px 3px rgba(0,0,0,0.55);}
   .sess-save-btn{
     width:100%; border:none; border-radius:12px; padding:16px;
     background:var(--cut); color:#02160a; cursor:pointer; font-family:'Oxanium',sans-serif;
@@ -2635,6 +2638,7 @@
     <div class="confirm-text">Neuložený postup v tomto tréninku se ztratí. Opravdu chceš skončit?</div>
     <div class="confirm-actions">
       <button class="confirm-btn confirm-btn-stay" id="endWorkoutCancel">💪 Pokračovat</button>
+      <button class="confirm-btn" id="endWorkoutAdd" style="display:none;">＋ Přidat cvik</button>
       <button class="confirm-btn confirm-btn-end" id="endWorkoutOk">Ukončit trénink</button>
     </div>
   </div>
@@ -2765,7 +2769,7 @@
     <button id="musicToggleBtn" class="home-bottom-btn" title="Hudba on/off">🔇 Hudba</button>
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V28o · 2026-10-16</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V28p · 2026-10-16</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -7478,6 +7482,76 @@ function sessSwapTo(name){
   renderSession();
 }
 
+// ===== PŘIDAT CVIK NAVÍC (na konci nebo během tréninku) =====
+function sessAddOpen(){
+  const last = session.exercises[session.exercises.length-1];
+  const meta = last ? exMeta(last.name) : null;
+  session.addFrom = session.phase;
+  session.add = {muscle: (last && last.muscleKey && last.muscleKey!=='cardio') ? last.muscleKey : ((meta && meta.muscle) || 'chest'), q:'', perm:false};
+  session.phase = 'add';
+  renderSession();
+}
+function sessAddPool(){
+  const plan = state.workoutPlan;
+  const isHome = plan.splitKey==='home';
+  const hctx = isHome ? homeCtx(plan.home || HOME_DEFAULT_PROFILE) : null;
+  const allowed = x=> isHome ? homeAvail(x, hctx) : true;
+  const inUse = new Set(session.exercises.map(x=>exCanon(x.name)));
+  const q = (session.add.q||'').trim();
+  let pool = q ? EXERCISES.concat(exRenamedEntries()).filter(x=>allowed(x) && exMatches(x.name,q))
+               : EXERCISES.filter(x=>x.muscle===session.add.muscle && allowed(x));
+  pool = pool.filter(x=>!inUse.has(exCanon(x.name)));
+  return pool.sort((a,b)=>(a.level-b.level)||exDisp(a.name).localeCompare(exDisp(b.name),'cs'));
+}
+function renderSessAdd(el){
+  const muscles = Object.keys(MUSCLE_LABELS);
+  const chips = muscles.map(m=>`<button data-m="${m}" class="${!session.add.q && session.add.muscle===m?'on':''}">${MUSCLE_LABELS[m]}</button>`).join('');
+  el.innerHTML = `
+    <button class="wo-back" id="adBack">← Zpět</button>
+    <div class="sess-swap-head">＋ Přidat cvik do tréninku</div>
+    <p class="wo-pick-hint">Cvik se přidá na konec dnešního tréninku. Série zapíšeš stejně jako u ostatních.</p>
+    <input type="text" id="adQ" class="wo-scratch-input wo-pick-q" placeholder="🔎 Hledat cvik (česky, anglicky, slangem…)" value="${homeEsc(session.add.q)}" autocomplete="off" maxlength="40">
+    <div class="wo-picker-muscles" id="adMuscles">${chips}</div>
+    <label class="ff-chk" style="margin:4px 0 10px;"><input type="checkbox" id="adPerm" ${session.add.perm?'checked':''}> Přidat cvik i do plánu (napořád)</label>
+    <div class="wo-picker-list" id="adList"></div>`;
+  const draw = ()=>{
+    document.querySelectorAll('#adMuscles button').forEach(b=>b.classList.toggle('on', !session.add.q && b.dataset.m===session.add.muscle));
+    const pool = sessAddPool();
+    const lvl = {1:'🟢',2:'🟡',3:'🔴'};
+    document.getElementById('adList').innerHTML = pool.length ? pool.map(x=>{
+      const sub = [exSub(x.alias?exCanon(x.name):x.name), lvl[x.level]||'', session.add.q ? (MUSCLE_LABELS[x.muscle]||'') : ''].filter(Boolean).join(' · ');
+      return `<div class="wpl-item" data-name="${homeEsc(x.name)}"><div class="wpl-main"><span class="wpl-name">${homeEsc(exDisp(x.name))}<small>${sub}</small></span></div></div>`;
+    }).join('') : '<p style="font-size:12px; color:var(--muted);">Nic nenalezeno.</p>';
+    document.querySelectorAll('#adList .wpl-item').forEach(it=>it.addEventListener('click', ()=>sessAddTo(it.dataset.name)));
+  };
+  draw();
+  document.getElementById('adBack').addEventListener('click', ()=>{ session.phase = session.addFrom || 'active'; session.add = null; renderSession(); });
+  document.getElementById('adQ').addEventListener('input', ev=>{ session.add.q = ev.target.value; draw(); });
+  document.getElementById('adPerm').addEventListener('change', ev=>{ session.add.perm = ev.target.checked; });
+  document.querySelectorAll('#adMuscles button').forEach(b=>b.addEventListener('click', ()=>{ session.add.muscle = b.dataset.m; session.add.q=''; document.getElementById('adQ').value=''; draw(); }));
+}
+function sessAddTo(name){
+  const plan = state.workoutPlan;
+  const meta = EXERCISES.concat(exRenamedEntries()).find(x=>x.name===name) || {muscle:'chest'};
+  const entry = Object.assign({}, woBuildEntry(plan, meta, name), {doneSets:0});
+  session.exercises.push(entry);
+  if(session.add && session.add.perm){
+    const day = plan.days[session.dayIndex];
+    if(day){ const pe = Object.assign({}, entry); delete pe.doneSets; day.exercises.push(pe); saveState(); }
+  }
+  const from = session.addFrom;
+  session.add = null; session.addFrom = null;
+  if(from === 'exdone' || from === 'complete'){
+    session.exIdx = session.exercises.length - 1;
+    session.setIdx = 0;
+    session.phase = 'active';
+  } else {
+    session.phase = from || 'active';
+  }
+  showToast('＋ Přidáno: ' + exDisp(name));
+  renderSession();
+}
+
 function sessProgress(){
   const total = session.exercises.length;
   const done = session.exIdx + (session.phase==='complete' ? 0 : 0);
@@ -7499,6 +7573,7 @@ function renderSession(){
   else if(session.phase==='nextprompt') renderSessNextPrompt(el);
   else if(session.phase==='exdone') renderSessExDone(el);
   else if(session.phase==='swap') renderSessSwap(el);
+  else if(session.phase==='add') renderSessAdd(el);
   else if(session.phase==='complete') renderSessComplete(el);
 }
 
@@ -7855,7 +7930,9 @@ function renderSessExDone(el){
       <div class="sed-check">✅</div>
       <div class="sed-name">${exDisp(e.name)} ${e.skipped && !(session.log[e.name]||[]).length ? 'PŘESKOČEN' : 'DOKONČEN'}</div>
       <button id="sessNextExBtn">${isLast ? '<span class="trophy-ic"></span> Dokončit trénink' : 'Další cvik →'}</button>
+      ${isLast ? '<button id="sessAddExBtn" class="sess-add-btn">＋ Přidat ještě cvik</button>' : ''}
     </div>`;
+  const addExBtn = document.getElementById('sessAddExBtn'); if(addExBtn) addExBtn.addEventListener('click', sessAddOpen);
   document.getElementById('sessNextExBtn').addEventListener('click', ()=>{
     if(isLast){
       session.phase = 'complete';
@@ -7930,8 +8007,10 @@ function renderSessComplete(el){
       ${prHTML}
       <div class="sess-xp-banner">+${xpEarned} XP celkem za trénink</div>
       ${recipesHTML}
+      <button class="sess-add-btn" id="sessAddMoreBtn">＋ Přidat ještě cvik</button>
       <button class="sess-save-btn" id="sessSaveBtn">💾 ULOŽIT TRÉNINK</button>
     </div>`;
+  document.getElementById('sessAddMoreBtn').addEventListener('click', sessAddOpen);
   document.querySelectorAll('.spw-recipe').forEach(el=>{
     el.addEventListener('click', ()=>{
       const r = postWorkoutRecipes[parseInt(el.dataset.ridx)];
@@ -8072,6 +8151,7 @@ function actuallyEndWorkoutSession(){
 }
 document.getElementById('sessClose').addEventListener('click', ()=>{
   if(session && session.phase!=='overview' && session.phase!=='complete'){
+    document.getElementById('endWorkoutAdd').style.display = (session.phase==='active' || session.phase==='exdone') ? '' : 'none';
     document.getElementById('endWorkoutConfirm').classList.add('open');
     return;
   }
@@ -8080,6 +8160,10 @@ document.getElementById('sessClose').addEventListener('click', ()=>{
 document.getElementById('endWorkoutOk').addEventListener('click', ()=>{
   document.getElementById('endWorkoutConfirm').classList.remove('open');
   actuallyEndWorkoutSession();
+});
+document.getElementById('endWorkoutAdd').addEventListener('click', ()=>{
+  document.getElementById('endWorkoutConfirm').classList.remove('open');
+  if(session) sessAddOpen();
 });
 document.getElementById('endWorkoutCancel').addEventListener('click', ()=>{
   document.getElementById('endWorkoutConfirm').classList.remove('open');
