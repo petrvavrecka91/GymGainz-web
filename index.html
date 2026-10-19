@@ -642,6 +642,8 @@
   .mission.done{border-color:var(--cut); opacity:0.75;}
   .mission .mtxt{flex:1; font-size:calc(15.1px * var(--font-scale));}
   .mission.done .mtxt{text-decoration:line-through; color:var(--muted);}
+  .mission-auto{font-family:'Space Mono',monospace; font-size:13px; color:var(--cut); white-space:nowrap;}
+  .mission-prog{font-size:13.4px; color:var(--muted); margin-top:3px;}
   .mission button{
     border:1px solid var(--cut); background:transparent; color:var(--cut);
     border-radius:8px; padding:6px 12px; cursor:pointer; font-family:'Oxanium',sans-serif;
@@ -1956,6 +1958,15 @@
   .wo-ex-top .wo-ex-actions button, .wo-ex-top .wo-ex-actions .wo-grip{flex:0 0 auto;}
   .wo-ex-actions .bp-ex-fav-btn{min-width:36px; min-height:36px;}
   .sess-card .sc-actions button{width:38px; height:38px;}
+  .bp-add-plan{display:block; margin-top:10px; width:100%; padding:11px; border-radius:10px; border:1.5px solid var(--cut); background:rgba(var(--cut-rgb),calc(0.14 * var(--gt))); color:var(--text); font-family:'Oxanium',sans-serif; font-weight:700; font-size:15px; cursor:pointer;}
+  .bp-add-sheet{position:fixed; inset:0; z-index:430; background:rgba(0,0,0,.55); display:none; align-items:flex-end; justify-content:center;}
+  .bp-add-sheet.open{display:flex;}
+  .bas-card{width:100%; max-width:520px; background:#12121a; border-top:2px solid var(--accent); border-radius:18px 18px 0 0; padding:16px 16px calc(20px + env(safe-area-inset-bottom,0px)); display:flex; flex-direction:column; gap:8px;}
+  .bas-title{font-family:'Oxanium',sans-serif; font-weight:700; font-size:16px; margin-bottom:4px;}
+  .bas-card button{padding:13px; border-radius:11px; border:1px solid var(--line); background:rgba(255,255,255,.06); color:var(--text); font-family:'Oxanium',sans-serif; font-weight:700; font-size:15.5px; cursor:pointer; text-align:left; display:flex; justify-content:space-between; align-items:center;}
+  .bas-card button small{color:var(--muted); font-weight:400; font-size:13px;}
+  .bas-card button:disabled{opacity:.45;}
+  .bas-card .bas-cancel{justify-content:center; color:var(--muted);}
   .fd-goalline{margin:4px 0 6px; font-size:calc(14.5px * var(--font-scale)); color:var(--muted);}
   .fd-goalline b{color:var(--text);}
   .sess-card .yticon{font-size:15px; vertical-align:middle;}
@@ -2809,21 +2820,13 @@
   <div id="restHomeBox"></div>
 
   <div class="home-tiles">
-    <button class="home-tile t-training" id="tileTraining">
-      <div class="ht-icon">🏋️</div>
-      <div><div class="ht-title">TRÉNINK</div><div class="ht-sub">Plán, cviky a Sešit</div></div>
-    </button>
-    <button class="home-tile t-body" id="tileBody">
-      <div class="ht-icon">💪</div>
-      <div><div class="ht-title">SVALOVÉ PARTIE</div><div class="ht-sub">Poznej své tělo</div></div>
-    </button>
-    <button class="home-tile t-kitchen" id="tileKitchen">
-      <div class="ht-icon">🍳</div>
-      <div><div class="ht-title">KUCHAŘKA</div><div class="ht-sub">Fuel Your Gainz</div></div>
-    </button>
     <button class="home-tile t-progress" id="tileProgress">
       <div class="ht-icon">📈</div>
-      <div><div class="ht-title">PROGRESS</div><div class="ht-sub">Skóre a Deník jídla</div></div>
+      <div><div class="ht-title">PROGRESS</div><div class="ht-sub" id="progTileSub">Gainz Score a Sešit</div></div>
+    </button>
+    <button class="home-tile t-kitchen" id="tileFood">
+      <div class="ht-icon">🍽️</div>
+      <div><div class="ht-title">DNES JÍDLO</div><div class="ht-sub" id="foodTileSub">Deník a makra</div></div>
     </button>
   </div>
 
@@ -2848,7 +2851,7 @@
     <button id="musicToggleBtn" class="home-bottom-btn" title="Hudba on/off">🔇 Hudba</button>
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29a · 2026-10-19</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29b · 2026-10-19</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -2948,20 +2951,21 @@
       <button class="hdr-btn exit-btn" id="progressClose">← Zpět</button>
     </header>
     <div class="wo-top-tabs" style="margin-top:16px;">
+      <button id="progTabPlan">🏋️ Trénink</button>
+      <button id="progTabNb">📓 Sešit</button>
       <button class="on">📈 Progress</button>
-      <button id="progTabFood">🍽️ Deník jídla</button>
     </div>
     <div class="gainz-score-box" style="margin-top:24px;">
       <div class="gsb-label">GAINZ SCORE</div>
       <div class="gsb-value" id="progGainzVal">0</div>
       <div class="gsb-tier" id="progGainzTier">🔴 NOVÁČEK</div>
       <div id="progGainzCategory" style="font-family:'Space Mono',monospace; font-size:13.4px; color:var(--muted); margin-top:4px;">Kategorie: 🟢 Začátečník</div>
-      <div class="gsb-percentile" id="progGainzPercentile">Jsi lepší než 0 % Gainz hráčů.</div>
+      <div class="gsb-percentile" id="progGainzPercentile">Pokrok v tvé kategorii: 0 %</div>
     </div>
 
     <div id="progFoodBox"></div>
 
-    <button class="prog-food-link" id="progToNb" style="margin-top:12px;"><span>🏆 Rekordy (PR), síla a grafy cviků</span><small>Najdeš je v Tréninku → 📓 Sešit (Statistiky a Cviky) →</small></button>
+    <button class="prog-food-link" id="progToNb" style="margin-top:12px;"><span>🏆 Rekordy (PR), síla a grafy cviků</span><small>Otevřít Sešit → Statistiky a Cviky →</small></button>
 
     <div class="prof-sec" style="border-top:none; margin-top:24px; padding-top:0;">
       <button class="wk-continue-btn" id="wToggleBtn" style="background:rgba(var(--accent-rgb),calc(0.14 * var(--gt))); border:1.5px solid var(--accent); color:var(--accent); box-shadow:none; display:flex; align-items:center; justify-content:space-between;">
@@ -2991,6 +2995,7 @@
     <div class="wo-top-tabs" style="margin-top:16px;">
       <button id="nbTabPlan">🏋️ Trénink</button>
       <button class="on">📓 Sešit</button>
+      <button id="nbTabProg">📈 Progress</button>
     </div>
     <div id="nbContent" style="margin-top:6px; padding-bottom:90px;"></div>
   </div>
@@ -3088,6 +3093,7 @@
     <div class="wo-top-tabs">
       <button class="on" id="woTabPlan">🏋️ Trénink</button>
       <button id="woTabNb">📓 Sešit</button>
+      <button id="woTabProg">📈 Progress</button>
     </div>
     <div id="woContent"></div>
   </div>
@@ -4749,9 +4755,8 @@ function openModal(r){
     state.cookedToday = (state.cookedToday||0) + 1;
     for(const m of state.missions){
       if(m.done) continue;
-      if(m.id==='cook2' && state.cookedToday >= 2){ m.done = true; addXP(m.xp, 'mise splněna'); }
-      if(m.id==='sweet' && r.category==='sweet'){ m.done = true; addXP(m.xp, 'mise splněna'); }
-      if(m.id==='light' && r.macros && r.macros.Kal <= 500){ m.done = true; addXP(m.xp, 'mise splněna'); }
+      if(m.id==='cook2' && state.cookedToday >= 2){ missionAward(m); }
+      if(m.id==='sweet' && r.category==='sweet'){ missionAward(m); }
     }
     saveState();
     renderMissions();
@@ -5735,14 +5740,15 @@ function addXP(n, reason){
 
 // ===== DENNÍ MISE =====
 const MISSION_POOL = [
-  {id:'protein', text:'Sněz 180 g bílkovin 💪', xp:25},
-  {id:'water', text:'Vypij 3 l vody 💧', xp:20},
+  {id:'train', text:'Dokonči dnešní trénink 🏋️', xp:40},
+  {id:'protein', text:'Sněz svůj denní cíl bílkovin 💪', xp:25},
+  {id:'water', text:'Vypij 3 l vody 💧', xp:0},
   {id:'cook2', text:'Uvař 2 recepty z appky 🍳', xp:30},
-  {id:'roulette', text:'Zatoč ruletou a uvař, co padne 🎰', xp:25},
-  {id:'light', text:'Dej si jídlo do 500 kcal 🔥', xp:20},
+  {id:'roulette', text:'Zatoč ruletou a uvař, co padne 🎰', xp:0},
+  {id:'light', text:'Zapiš si jídlo do 500 kcal 🔥', xp:20},
   {id:'sweet', text:'Uvař jeden sladký recept 🍰', xp:22},
-  {id:'steps', text:'Nachoď 10 000 kroků 🚶', xp:25},
-  {id:'nosugar', text:'Dnes žádný přidaný cukr 🚫🍬', xp:27},
+  {id:'steps', text:'Nachoď 10 000 kroků 🚶', xp:0},
+  {id:'nosugar', text:'Dnes žádný přidaný cukr 🚫🍬', xp:0},
 ];
 function todayKey(){ const d = new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
 function isoWeekKey(d){
@@ -6021,26 +6027,84 @@ function ensureMissions(){
   const mk = restActive() ? tk+'R' : tk; // v pauze (nemoc/regenerace) jsou jen jemné regenerační mise
   if(state.missionsDate !== mk){
     state.missionsDate = mk;
-    state.missions = seededPick(tk, restActive() ? REST_MISSIONS : MISSION_POOL, 3).map(m => ({...m, done:false}));
+    let pick = seededPick(tk, restActive() ? REST_MISSIONS : MISSION_POOL, 3);
+    if(!restActive() && state.workoutPlan && !pick.some(m=>m.id==='train')){
+      pick = [MISSION_POOL.find(m=>m.id==='train')].concat(pick.slice(0,2)); // dnešní trénink je vždy mezi misemi
+    }
+    state.missions = pick.map(m => ({...m, done:false}));
     saveState();
   }
 }
+// mise, které appka umí vyhodnotit sama z dat (trénink, deník jídla, vaření); ostatní jsou ruční návyky bez XP
+function missionAutoInfo(m){
+  const tk = todayKey();
+  if(m.id==='train'){
+    const done = state.lastWorkoutDay === tk;
+    return {auto:true, ok:done, prog: done ? 'Dnes odtrénováno' : 'Dokonči trénink v appce'};
+  }
+  if(m.id==='protein'){
+    const tot = foodDayTotals(tk), tg = foodTargets();
+    return {auto:true, ok: tot.n>0 && tot.p >= tg.p, prog: Math.round(tot.p)+' / '+tg.p+' g bílkovin (z Deníku jídla)'};
+  }
+  if(m.id==='light'){
+    const ok = foodLogArr().some(e=>e.date===tk && e.kcal>=100 && e.kcal<=500);
+    return {auto:true, ok, prog: ok ? 'Zapsáno jídlo do 500 kcal' : 'Zapiš jídlo (100–500 kcal) v Deníku'};
+  }
+  if(m.id==='cook2'){
+    const n = state.cookedDate===tk ? (state.cookedToday||0) : 0;
+    return {auto:true, ok:n>=2, prog: Math.min(n,2)+' / 2 recepty'};
+  }
+  if(m.id==='sweet'){
+    return {auto:true, ok:false, prog:'Označ sladký recept jako uvařený'};
+  }
+  return {auto:false};
+}
+function missionXp(m){ return (missionAutoInfo(m).auto || String(m.id).startsWith('r_')) ? m.xp : 0; }
+function missionAward(m, reason){
+  m.done = true;
+  const xp = missionXp(m);
+  if(xp > 0){
+    state.missionsTotal = (state.missionsTotal||0) + 1;
+    addXP(xp, reason || 'mise splněna');
+  }
+}
+let _missionSyncBusy = false;
+function missionsSync(){
+  if(_missionSyncBusy) return;
+  _missionSyncBusy = true;
+  try{
+    ensureMissions();
+    let changed = 0;
+    (state.missions||[]).forEach(m=>{
+      if(m.done) return;
+      const inf = missionAutoInfo(m);
+      if(inf.auto && inf.ok){ missionAward(m); changed++; showToast('✅ Mise splněna · +'+missionXp(m)+' XP'); }
+    });
+    if(changed){ saveState(); try{ checkAchievements(); }catch(e){} }
+  } finally { _missionSyncBusy = false; }
+}
 function renderMissions(){
-  ensureMissions();
+  missionsSync();
   const el = document.getElementById('missionsList');
-  el.innerHTML = state.missions.map((m,i)=>`
-    <div class="mission ${m.done?'done':''}">
-      <div class="mtxt">${m.text}<div class="mission-xp">+${m.xp} XP</div></div>
-      <button data-mi="${i}" ${m.done?'disabled':''}>${m.done?'✓ Splněno':'Splnit'}</button>
-    </div>`).join('');
+  el.innerHTML = state.missions.map((m,i)=>{
+    const inf = missionAutoInfo(m);
+    const isRest = String(m.id).startsWith('r_');
+    const manual = !inf.auto;
+    const xpTxt = manual && !isRest ? 'Návyk · bez XP' : '+'+m.xp+' XP';
+    const right = m.done ? '<button disabled>✓ Splněno</button>'
+      : inf.auto ? '<span class="mission-auto">⚡ automaticky</span>'
+      : `<button data-mi="${i}">Splnil jsem</button>`;
+    return `<div class="mission ${m.done?'done':''}">
+      <div class="mtxt">${m.text}<div class="mission-xp">${xpTxt}</div>${inf.auto && !m.done ? `<div class="mission-prog">${inf.prog}</div>` : ''}</div>
+      ${right}
+    </div>`;
+  }).join('') + '<p class="nb-note" style="margin-top:10px;">Mise s ⚡ se odškrtnou samy podle tvých tréninků a Deníku jídla. Ostatní jsou jen tvoje návyky – odškrtni si je pro radost, XP za ně nejsou.</p>';
   el.querySelectorAll('button[data-mi]').forEach(b=>{
     b.addEventListener('click', ()=>{
       const m = state.missions[parseInt(b.dataset.mi)];
       if(m.done) return;
-      m.done = true;
-      state.missionsTotal = (state.missionsTotal||0) + 1;
+      missionAward(m, 'mise splněna');
       saveState();
-      addXP(m.xp, 'mise splněna');
       renderMissions();
       checkAchievements();
     });
@@ -7156,6 +7220,7 @@ function renderWorkoutStep3(){
     state.lastWorkoutDay = todayKey();
     state.workoutsTotal = (state.workoutsTotal||0) + 1;
     trackWorkoutCompletion();
+    try{ missionsSync(); }catch(e){}
     if(!plan.cycleNum) plan.cycleNum = 1;
     if(!state.sessionLog) state.sessionLog = [];
     state.sessionLog.push({date: todayKey(), dayIndex: woActiveDay, cycle: plan.cycleNum, totalVolume:0, muscleVolumes:{}, newPRs:0});
@@ -8457,6 +8522,7 @@ function renderSessComplete(el){
     trackWorkoutCompletion();
     state.fullSessionsCompleted = (state.fullSessionsCompleted||0) + 1;
     state.lastWorkoutDay = todayKey();
+    try{ missionsSync(); }catch(e){}
     try{ setTimeout(()=>commSyncStats(true), 1500); }catch(e){}
     if(session.comeback) comebackAdvance();
     if(session.exercises.every(e => session.log[e.name] && session.log[e.name].length > 0)){
@@ -8607,6 +8673,7 @@ function renderBodyPartExercises(muscle){
           <div class="bp-ex-detail-row">💪 <b>Obtížnost:</b> ${tierLabel[e.level]}</div>
           <div class="bp-ex-detail-row" style="color:#fff; font-size:15.1px;">🎥 ${MUSCLE_TIPS[e.muscle] || 'Prováděj cvik kontrolovaně, s plným rozsahem pohybu.'}</div>
           <a href="${youtubeSearchUrl(exDisp(e.name), bpGender)}" target="_blank" rel="noopener">▶️ Video na YouTube</a>
+          <button type="button" class="bp-add-plan" data-name="${homeEsc(e.name)}">＋ Přidat do plánu</button>
           ${altHTML}
         </div>
       </div>`;
@@ -8629,7 +8696,7 @@ function renderBodyPartExercises(muscle){
   function wireTierListEvents(box){
     box.querySelectorAll('.bp-ex-item').forEach(item=>{
       item.addEventListener('click', (ev)=>{
-        if(ev.target.closest('.bp-ex-alt-chip') || ev.target.closest('a') || ev.target.closest('.bp-ex-fav-btn')) return;
+        if(ev.target.closest('.bp-ex-alt-chip') || ev.target.closest('a') || ev.target.closest('.bp-ex-fav-btn') || ev.target.closest('.bp-add-plan')) return;
         document.getElementById(item.dataset.id).classList.toggle('open');
       });
     });
@@ -8641,6 +8708,9 @@ function renderBodyPartExercises(muscle){
         btn.textContent = added ? '❤️' : '🤍';
         showToast(added ? '❤️ Přidáno do oblíbených cviků' : '💔 Odebráno z oblíbených');
       });
+    });
+    box.querySelectorAll('.bp-add-plan').forEach(btn=>{
+      btn.addEventListener('click', (ev)=>{ ev.stopPropagation(); bpAddToPlan(btn.dataset.name); });
     });
     box.querySelectorAll('.bp-ex-alt-chip').forEach(chip=>{
       chip.addEventListener('click', (ev)=>{
@@ -8693,6 +8763,34 @@ function renderBodyPartExercises(muscle){
 
   document.getElementById('bpExOverlay').classList.add('open');
 }
+function bpAddToPlan(name){
+  const plan = state.workoutPlan;
+  if(!plan || !plan.days || !plan.days.length){
+    showConfirm({icon:'🏋️', title:'Zatím nemáš plán', text:'Cvik jde přidat do tréninkového plánu. Nejdřív si ho v Tréninku vytvoř (zabere to pár vteřin).', okLabel:'Vytvořit plán', cancelLabel:'Zpět', onConfirm:()=>openHomeSub('training')});
+    return;
+  }
+  let sh = document.getElementById('bpAddSheet');
+  if(!sh){ sh = document.createElement('div'); sh.id = 'bpAddSheet'; sh.className = 'bp-add-sheet'; document.body.appendChild(sh); }
+  const canon = exCanon(name);
+  sh.innerHTML = `<div class="bas-card"><div class="bas-title">＋ Přidat „${homeEsc(exDisp(name))}“ do dne:</div>
+    ${plan.days.map((d,i)=>{ const has = d.exercises.some(x=>exCanon(x.name)===canon);
+      return `<button type="button" data-bd="${i}" ${has?'disabled':''}>${homeEsc(d.label)} <small>${d.exercises.length} cviků${has?' · už tam je':''}</small></button>`; }).join('')}
+    <button type="button" class="bas-cancel" id="basCancel">Zrušit</button></div>`;
+  sh.classList.add('open');
+  const close = ()=>sh.classList.remove('open');
+  sh.onclick = (e)=>{ if(e.target===sh) close(); };
+  document.getElementById('basCancel').onclick = close;
+  sh.querySelectorAll('[data-bd]').forEach(b=>b.addEventListener('click', ()=>{
+    const di = parseInt(b.dataset.bd), day = plan.days[di];
+    const meta = EXERCISES.concat(exRenamedEntries()).find(x=>x.name===name) || {muscle:'chest'};
+    const entry = woBuildEntry(plan, meta, name);
+    day.exercises.push(entry);
+    saveState(); close();
+    showUndo('Přidáno do dne „'+day.label+'“', ()=>{
+      const k = day.exercises.lastIndexOf(entry); if(k>=0){ day.exercises.splice(k,1); saveState(); }
+    });
+  }));
+}
 document.getElementById('bpExClose').addEventListener('click', ()=>{
   document.getElementById('bpExOverlay').classList.remove('open');
 });
@@ -8721,7 +8819,10 @@ document.getElementById('workoutToggle').addEventListener('click', ()=>{
 });
 document.getElementById('woTabNb').addEventListener('click', ()=>{ nbTab = 'diary'; nbOpenEx = null; openHomeSub('notebook'); });
 document.getElementById('nbTabPlan').addEventListener('click', ()=>openHomeSub('training'));
-document.getElementById('progTabFood').addEventListener('click', ()=>openHomeSub('food'));
+document.getElementById('progTabPlan').addEventListener('click', ()=>openHomeSub('training'));
+document.getElementById('progTabNb').addEventListener('click', ()=>{ nbTab = 'diary'; nbOpenEx = null; openHomeSub('notebook'); });
+document.getElementById('nbTabProg').addEventListener('click', ()=>openHomeSub('progress'));
+document.getElementById('woTabProg').addEventListener('click', ()=>openHomeSub('progress'));
 document.getElementById('foodTabRec').addEventListener('click', ()=>openHomeSub('kitchen'));
 document.getElementById('workoutClose').addEventListener('click', ()=>{
   document.getElementById('workoutOverlay').classList.remove('open');
@@ -10421,7 +10522,8 @@ document.getElementById('homeVipBtn').addEventListener('click', ()=>{
 });
 function renderHome(){
   renderVipBtn();
-  try{ renderHomeNotebookTile(); renderHomeFoodTile(); }catch(e){}
+  try{ missionsSync(); }catch(e){}
+  try{ renderHomeNotebookTile(); renderHomeFoodTile(); const pt = document.getElementById('progTileSub'); if(pt) pt.textContent = 'Gainz Score ' + calcGainzScore().toLocaleString('cs-CZ'); }catch(e){}
   syncDailyReminder();
   const lv = levelOf(state.xp);
   const rank = levelRank(lv);
@@ -10510,7 +10612,7 @@ function openHomeSub(section){
   document.getElementById('missionsOverlay').classList.remove('open');
   document.getElementById('achOverlay').classList.remove('open');
   document.getElementById('progressOverlay').classList.remove('open');
-  document.querySelectorAll('.bn-btn').forEach(b=>b.classList.toggle('on', b.dataset.nav===section || (b.dataset.nav==='food' && section==='kitchen')));
+  document.querySelectorAll('.bn-btn').forEach(b=>b.classList.toggle('on', b.dataset.nav===section || (b.dataset.nav==='food' && section==='kitchen') || (b.dataset.nav==='training' && (section==='notebook' || section==='progress'))));
   document.body.dataset.sec = section; // kuchyne (zakladni .wrap) je videt jen na zalozce JIDLO
   if(section==='training'){ woEditMode = false; woQuickIdx = null;
     document.getElementById('workoutOverlay').classList.add('open');
@@ -10552,7 +10654,7 @@ function renderProgress(){
   document.getElementById('progGainzTier').textContent = rank.emoji + ' ' + rank.name;
   const genderLabel = gender==='male' ? ' · 👨 Muž' : gender==='female' ? ' · 👩 Žena' : '';
   document.getElementById('progGainzCategory').textContent = 'Kategorie: ' + LEVEL_LABELS[lvl] + genderLabel;
-  document.getElementById('progGainzPercentile').textContent = 'Jsi lepší než ' + calcGainzPercentile(gScore, lvl, gender) + ' % hráčů ve tvé kategorii.';
+  document.getElementById('progGainzPercentile').textContent = 'Pokrok v tvé kategorii: ' + calcGainzPercentile(gScore, lvl, gender) + ' % (orientační odhad, ne srovnání s hráči).';
   renderWeightSection();
   renderPrList();
   try{ renderProgFood(); }catch(e){}
@@ -10561,9 +10663,7 @@ function renderProgress(){
 document.querySelectorAll('.bn-btn').forEach(b=>{
   b.addEventListener('click', ()=> openHomeSub(b.dataset.nav));
 });
-document.getElementById('tileTraining').addEventListener('click', ()=> openHomeSub('training'));
-document.getElementById('tileBody').addEventListener('click', ()=> openHomeSub('body'));
-document.getElementById('tileKitchen').addEventListener('click', ()=> openHomeSub('kitchen'));
+document.getElementById('tileFood').addEventListener('click', ()=> openHomeSub('food'));
 document.getElementById('tileProgress').addEventListener('click', ()=> openHomeSub('progress'));
 document.getElementById('tileCommunity').addEventListener('click', ()=>{
   closeModal();
@@ -11263,6 +11363,7 @@ function foodCommit(entry){
   }
   saveState();
   try{ renderDayMacros(); checkDailyMacroGoals(); }catch(e){}
+  try{ missionsSync(); }catch(e){}
   return entry;
 }
 function foodDelete(id){
