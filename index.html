@@ -2858,7 +2858,7 @@
     <button id="musicToggleBtn" class="home-bottom-btn" title="Hudba on/off">🔇 Hudba</button>
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29e · 2026-10-24</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29f · 2026-10-24</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -11697,6 +11697,20 @@ async function aiEstimateFood(name){
   if(per.kcal==null && per.p==null && per.c==null && per.f==null) throw aiErr('nofood','Tohle AI nepoznala jako jídlo');
   return {name: String(r.name||name).slice(0,60), per100: per, pieceG: (r.pieceG>0 ? r.pieceG : null), pieceLabel: r.pieceLabel||'ks'};
 }
+// foto jídla → {name, grams, per100, items}
+async function aiEstimatePhoto(b64, mime, hint){
+  const r = await aiGenerate([
+    {inlineData:{mimeType:mime||'image/jpeg', data:b64}},
+    {text:'Na fotce je jídlo na talíři nebo v obalu. Rozpoznej, co to je, odhadni hmotnost celé porce v gramech (grams) '+
+      'a průměrné nutriční hodnoty NA 100 g tohoto jídla (kcal, bílkoviny, sacharidy, z toho cukry, tuky, z toho nasycené, vláknina, sůl v gramech). '+
+      'name = krátký český název jídla (max 50 znaků). items = stručný výčet rozpoznaných částí s odhadem gramů, např. "kuřecí prsa ~150 g, rýže ~180 g". '+
+      (hint ? 'Upřesnění od uživatele (ber ho jako pravdivé): "'+String(hint).slice(0,200)+'". ' : '')+
+      'Pokud na fotce žádné jídlo není, vrať kcal null. Odpověz pouze JSON.'}],
+    {type:'OBJECT', properties:{name:{type:'STRING'}, grams:AI_NUM, items:{type:'STRING', nullable:true}, per100:AI_PER100}});
+  const per = aiCleanPer(r.per100);
+  if(per.kcal==null && per.p==null && per.c==null && per.f==null) throw aiErr('nofood','Na fotce AI nepoznala jídlo');
+  return {name:String(r.name||'Jídlo z fotky').slice(0,60), grams: r.grams>0 ? Math.round(r.grams) : 250, per100:per, items:r.items?String(r.items).slice(0,200):''};
+}
 // foto nutriční tabulky → {name, per100, basis, servingG}
 async function aiReadLabel(b64, mime){
   const r = await aiGenerate([
@@ -11890,6 +11904,7 @@ function renderFoodDiary(){
     </details>
     <div class="fd-actions">
       <button id="fdSearch" style="grid-column:1 / -1;">🔎 Hledat potravinu (jablko, rohlík…)</button>
+      <button id="fdPhoto" style="grid-column:1 / -1;">📸 Vyfotit jídlo (odhad AI)</button>
       <button id="fdLabel">📷 Vyfotit tabulku</button><button id="fdBarcode">📦 Čárový kód</button>
       <button id="fdRecipe">🍳 Z receptu</button><button id="fdLib">⭐ Moje potraviny</button>
       <button id="fdManual" style="grid-column:1 / -1;">✍️ Zapsat ručně</button>
@@ -11924,6 +11939,7 @@ function renderFoodDiary(){
     }});
   });
   document.getElementById('fdSearch').addEventListener('click', ()=>openFoodSearch(''));
+  document.getElementById('fdPhoto').addEventListener('click', openFoodPhotoPicker);
   document.getElementById('fdLabel').addEventListener('click', openFoodLabelPicker);
   document.getElementById('fdBarcode').addEventListener('click', openFoodBarcode);
   document.getElementById('fdRecipe').addEventListener('click', openFoodRecipePicker);
@@ -12251,6 +12267,33 @@ async function foodLookupBarcode(code){
   }catch(err){ showToast('⚠️ Nepodařilo se spojit s databází – zkontroluj internet'); }
 }
 
+// --- foto jídla → odhad od AI ---
+function openFoodPhotoPicker(){
+  if(!aiKey()){ openAiSetup(); return; }
+  foodPanel(`<h4>📸 Foto jídla → odhad od AI</h4>
+    <p class="nb-note" style="margin:0 0 10px;">Vyfoť jídlo seshora na světle, ať je vidět celá porce. AI odhadne, co to je, kolik váží a kolik má kalorií a maker. <b>Je to jen odhad</b> – dá se přesně upřesnit níže a před uložením všechno zkontroluješ.</p>
+    <label class="ff-lbl">Upřesnění (volitelné)<input type="text" id="fpHint" maxlength="200" placeholder="např. 150 g kuřecí, rýže, olej na vaření"></label>
+    <div class="fs-more">
+      <button id="fpShoot">📷 Vyfotit</button><button id="fpPick">🖼️ Vybrat z galerie</button>
+    </div>
+    <input type="file" id="fpCam" accept="image/*" capture="environment" style="display:none">
+    <input type="file" id="fpGal" accept="image/*" style="display:none">`);
+  const go = async f=>{
+    if(!f) return;
+    const hint = document.getElementById('fpHint').value.trim();
+    foodPanel('<h4>✨ AI se dívá na jídlo…</h4><div class="ff-prog"><div id="ffProgBar" style="width:60%"></div></div><p class="nb-note">Trvá to pár sekund.</p>');
+    try{
+      const b64 = await foodImageToJpegB64(f, 1280);
+      const r = await aiEstimatePhoto(b64, 'image/jpeg', hint);
+      openFoodForm({source:'ai', name:r.name, per100:r.per100, grams:r.grams, missing:[],
+        note:'✨ Odhad z fotky'+(r.items?' ('+homeEsc(r.items)+')':'')+'. Gramy a hodnoty jsou orientační – uprav podle skutečnosti.'});
+    }catch(e){ showToast(aiErrText(e)); openFoodPhotoPicker(); }
+  };
+  document.getElementById('fpShoot').addEventListener('click', ()=>document.getElementById('fpCam').click());
+  document.getElementById('fpPick').addEventListener('click', ()=>document.getElementById('fpGal').click());
+  document.getElementById('fpCam').addEventListener('change', e=>go(e.target.files[0]));
+  document.getElementById('fpGal').addEventListener('change', e=>go(e.target.files[0]));
+}
 // --- hledání potravin (místní databáze + Open Food Facts + AI) ---
 function foodPieceOf(it){ return it && it.pieceG>0 ? {g:it.pieceG, label:it.pieceLabel||'ks'} : null; }
 function foodItemLine(it){
