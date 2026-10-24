@@ -2858,7 +2858,7 @@
     <button id="musicToggleBtn" class="home-bottom-btn" title="Hudba on/off">🔇 Hudba</button>
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29d · 2026-10-24</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29e · 2026-10-24</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -6961,7 +6961,7 @@ function renderWorkoutStep3(){
     <button class="wo-add-ex" id="woAddEx">＋ Přidat cvik</button>
     ${(!plan.done[woActiveDay] && day.exercises.length) ? '<button class="sess-start-btn" id="woStartSession" style="margin-bottom:10px;">▶ START TRÉNINK</button>' : ''}
     <button class="wo-finish" id="woFinish" ${plan.done[woActiveDay]?'disabled':''}>
-      ${plan.done[woActiveDay] ? '✓ Trénink dokončen' : '✅ Označit hotovo bez trackování'}
+      ${plan.done[woActiveDay] ? '✓ Trénink dokončen' : '✅ Dokončit den bez zápisu sérií'}
     </button>`}`;
   document.querySelectorAll('.wex-rest-pick').forEach(bubbleifySelect);
   const woBulk = (scopeAll)=>{
@@ -11148,7 +11148,7 @@ function renderNotebook(){
   const entries = nbEntries();
   const TABS = [['diary','📅','Deník'],['calendar','🗓️','Kalendář'],['exercises','🏋️','Cviky'],['stats','📊','Statistiky'],['tools','🧮','Nástroje']];
   const tabs = `<div class="wo-mode-tabs nb-tabs">${TABS.map(([k,i,l])=>`<button data-nbt="${k}" class="${nbTab===k?'on':''}"><span>${i}</span>${l}</button>`).join('')}</div>`;
-  const addBtn = `<button class="nb-add-btn" id="nbAddBtn">✍️ Zapsat trénink ručně</button>`;
+  const addBtn = `<button class="nb-add-btn" id="nbAddBtn">✍️ Zapsat cvik ručně</button>`;
   const emptyMsg = `<div class="nb-empty">📓<p>Sešit je zatím prázdný.</p><p style="font-size:13.8px;">Každý trénink, který dokončíš v appce, se sem zapíše sám. Můžeš sem také ručně přidat trénink, který jsi dělal jinde.</p></div>`;
   let body = '';
   const needsData = ['diary','exercises','stats'].includes(nbTab);
@@ -11291,7 +11291,7 @@ function openNbEditor(opts){
   const known = [...new Set(EXERCISES.map(e=>e.name).concat(Object.keys(state.exerciseSetLog||{}), (state.notebook||[]).map(e=>e.name)).map(exDisp))].sort((a,b)=>a.localeCompare(b,'cs'));
   ov.innerHTML = `<div class="nb-add-card">
     <button class="prof-close" id="nbAddClose" style="float:none; position:absolute; top:12px; right:12px;">✕</button>
-    <h4>${ent ? '✏️ Upravit záznam' : '✍️ Zapsat trénink ručně'}</h4>
+    <h4>${ent ? '✏️ Upravit záznam' : '✍️ Zapsat cvik ručně'}</h4>
     <label>Datum</label><input type="date" id="nbAddDate" value="${nbEdit.date}" max="${todayIso}">
     <label>Cvik</label><input type="text" id="nbAddName" list="nbAddNames" maxlength="60" placeholder="Začni psát (např. bench, dřep, shyby)" autocomplete="off" value="${homeEsc(exDisp(nbEdit.name))}">
     <datalist id="nbAddNames">${known.map(n=>`<option value="${homeEsc(n)}">`).join('')}</datalist>
