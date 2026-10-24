@@ -1192,6 +1192,11 @@
   .ff-lbl input, .ff-lbl select{display:block; width:100%; margin-top:4px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:rgba(0,0,0,calc(var(--gs) * 0.9)); color:var(--text); font-family:inherit; font-size:15.7px; box-shadow:inset 0 1px 0 rgba(255,255,255,var(--gedge)), inset 0 -1px 0 rgba(255,255,255,calc(var(--gedge) * 0.35));}
   .ff-grid{display:grid; grid-template-columns:1fr 1fr; gap:0 10px;}
   .ff-miss{border-color:var(--bulk) !important; box-shadow:0 0 0 1px var(--bulk);}
+  .ff-sug{display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 0;}
+  .ff-sug button, .fs-more button{padding:9px 12px; border-radius:11px; border:1.5px solid var(--accent); background:rgba(var(--accent-rgb),0.1); color:var(--accent); font-family:inherit; font-weight:700; font-size:13.8px; cursor:pointer; min-height:40px;}
+  .fs-more{display:flex; flex-direction:column; gap:8px; margin:12px 0 0;}
+  .fs-more button:disabled{opacity:.6;}
+  .ai-steps{margin:0 0 6px 18px; padding:0; font-size:13.8px; color:var(--muted); line-height:1.5;}
   .ff-note{font-size:13.8px; color:var(--cyan); margin:0 0 6px; line-height:1.4;}
   .ff-preview{margin-top:10px; padding:10px 12px; border-radius:10px; background:rgba(var(--accent-rgb),calc(0.12 * var(--gt))); font-size:14px; line-height:1.5; backdrop-filter:blur(9px); -webkit-backdrop-filter:blur(9px);}
   .ff-warn{color:var(--bulk); margin-top:4px; font-size:13.8px;}
@@ -2853,7 +2858,7 @@
     <button id="musicToggleBtn" class="home-bottom-btn" title="Hudba on/off">🔇 Hudba</button>
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29c · 2026-10-19</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29d · 2026-10-24</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -3391,6 +3396,12 @@
         <div class="portion-note" style="margin-top:6px;">Ráno ti přijde oznámení, jaký trénink je dnes na řadě podle plánu, nebo že máš rest day.</div>
       </div>
       <div class="prof-row" id="obReplayBtn" style="cursor:pointer;"><span>🔄 Spustit úvodní nastavení znovu</span><span class="val">›</span></div>
+    </div>
+
+    <div class="prof-sec" data-ptab="set">
+      <h5>✨ AI asistent (Gemini)</h5>
+      <div class="portion-note" id="aiSetStatus"></div>
+      <div class="backup-row"><button id="aiSetBtn">🔑 Nastavit AI klíč</button></div>
     </div>
 
     <div class="prof-sec" data-ptab="set">
@@ -6772,6 +6783,7 @@ function woApplyEdits(day){
       day.exercises = items.map(x=>x.ex);
     }
   }
+  day.exercises.forEach(exRememberScheme);
   return {renamed, dup};
 }
 // ===== ODHAD DÉLKY TRÉNINKU =====
@@ -7186,6 +7198,7 @@ function renderWorkoutStep3(){
       if(mx) e.repsMax = mx;
       if(e.repsMax < e.repsMin){ if(mn && !mx) e.repsMax = e.repsMin; else e.repsMin = e.repsMax; }
       e.rest = rs; if(e.mode==='cardio') e.sets = 1;
+      exRememberScheme(e);
       woQuickIdx = null; saveState();
       showToast('✔ Uloženo: '+exDisp(e.name));
       renderWorkoutStep3();
@@ -7197,6 +7210,7 @@ function renderWorkoutStep3(){
       woQuickIdx = null;
       const ri = parseInt(b.dataset.idx);
       const removed = day.exercises.splice(ri, 1)[0];
+      exRememberScheme(removed);
       saveState();
       renderWorkoutStep3();
       if(removed) showUndo('Cvik odebrán: '+exDisp(removed.name), ()=>{
@@ -7250,7 +7264,7 @@ function renderWorkoutStep3(){
   });
 }
 
-function woBuildEntry(plan, exMeta, name){
+function woBuildEntryBase(plan, exMeta, name){
   if(plan.splitKey==='home') return homeEntry(Object.assign({}, exMeta, {name}), homeCtx(plan.home || HOME_DEFAULT_PROFILE));
   const s = schemeObj(plan.level);
   const isTime = exMeta.mode === 'time' || exMeta.mode === 'weightTime';
@@ -7260,6 +7274,18 @@ function woBuildEntry(plan, exMeta, name){
   return {name, muscle: MUSCLE_LABELS[exMeta.muscle] || exMeta.muscle, muscleKey: exMeta.muscle, mode: exMeta.mode,
     sets:s.sets, rest:s.rest,
     repsMin: isTime ? t.min : s.repsMin, repsMax: isTime ? t.max : s.repsMax};
+}
+// nový/vracený cvik dostane naposledy použité série, opakování a pauzu; když je nezná, vezme počet sérií z posledního tréninku
+function woBuildEntry(plan, exMeta, name){
+  const e = woBuildEntryBase(plan, exMeta, name);
+  const m = exSchemeFor(name, e.mode);
+  if(m){ e.sets = m.sets; e.repsMin = m.repsMin; e.repsMax = m.repsMax; e.rest = m.rest; }
+  else if(e.mode!=='cardio'){
+    const ls = exLastSets(name);
+    if(ls && ls.length) e.sets = Math.max(1, Math.min(10, ls.length));
+  }
+  if(e.mode==='cardio') e.sets = 1;
+  return e;
 }
 function openExercisePicker(dayIndex, replaceIndex){
   const plan = state.workoutPlan;
@@ -7328,7 +7354,7 @@ function woPickerCommit(names){
   names.forEach(name=>{
     const exMeta = pool.find(e=>e.name===name) || {muscle: woPicker.muscle};
     const entry = woBuildEntry(plan, exMeta, name);
-    if(woPicker.replaceIndex!==null) day.exercises[woPicker.replaceIndex] = entry;
+    if(woPicker.replaceIndex!==null){ exRememberScheme(day.exercises[woPicker.replaceIndex]); day.exercises[woPicker.replaceIndex] = entry; }
     else day.exercises.push(entry);
     added++;
     if(exMeta.muscle && MUSCLE_LABELS[exMeta.muscle]) state.woLastMuscle = exMeta.muscle;
@@ -7436,19 +7462,55 @@ function toggleFavExercise(name){
 function estOneRM(weight, reps){ return weight * (1 + reps/30); }
 
 // doporučí váhu podle STEJNÉ pozice série minule (1. série má často jinou váhu než 3. - pyramida apod.)
+// ===== PAMĚŤ CVIKU: série/opakování/pauza + poslední výkon ze Sešitu =====
+function exSchemeMem(){ if(!state.exScheme) state.exScheme = {}; return state.exScheme; }
+function exRememberScheme(e){
+  if(!e || !e.name) return;
+  const m = exSchemeMem();
+  m[exCanon(e.name)] = {sets:e.sets, repsMin:e.repsMin, repsMax:e.repsMax, rest:e.rest, mode:e.mode||''};
+  const ks = Object.keys(m); if(ks.length > 600) delete m[ks[0]];
+}
+function exRememberSess(e){ exRememberScheme(e && e._cb ? Object.assign({}, e, {sets:e.sets+1}) : e); }
+function exSchemeFor(name, mode){
+  const m = exSchemeMem()[exCanon(name)];
+  return (m && (m.mode||'') === (mode||'')) ? m : null;
+}
+// poslední známé pracovní série cviku: z historie tréninků i ze Sešitu (včetně ručně zapsaných), podle kanonického názvu
+function exLastSets(name){
+  const canon = exCanon(name);
+  let best = null; // {t, sets}
+  const hh = exHistory();
+  Object.keys(hh).forEach(k=>{
+    const h = hh[k];
+    if(!h || !h.lastSets || !h.lastSets.length) return;
+    if(k!==name && exCanon(k)!==canon) return;
+    const t = h.lastDate ? dateKeyToTime(h.lastDate) : 0;
+    if(!best || t>best.t || (k===name && t>=best.t)) best = {t, sets:h.lastSets};
+  });
+  try{
+    nbEntries().forEach(en=>{
+      if(!en.sets || !en.sets.length || exCanon(en.name)!==canon) return;
+      const work = en.sets.filter(x=>x.t!=='w' && ((x.weight||0)>0 || (x.reps||0)>0));
+      if(!work.length) return;
+      const t = dateKeyToTime(en.date);
+      if(!best || t>best.t) best = {t, sets:work.map(x=>({weight:x.weight||0, reps:x.reps||0, difficulty:x.difficulty}))};
+    });
+  }catch(e){}
+  return best ? best.sets : null;
+}
 function weightSuggestionForSet(name, setIndex, repsMin, repsMax){
   // predvyplni presne to, co uzivatel minule zadal na teto serii (kdyz serie chybi, posledni znama serie)
-  const hist = exHistory()[name];
-  if(!hist || !hist.lastSets || !hist.lastSets.length) return null;
+  const ls = exLastSets(name);
+  if(!ls || !ls.length) return null;
+  const hist = {lastSets: ls};
   const s = hist.lastSets[setIndex] || hist.lastSets[hist.lastSets.length-1];
   const w = s.weight || 0;
   return {weight: w, reps: s.reps, note: '↩️ Předvyplněno podle minula – přepiš, když jsi lepší', lastStr: `${w}kg×${s.reps}`};
 }
 
 function weightSuggestion(name, repsMin, repsMax){
-  const hist = exHistory()[name];
-  if(!hist || !hist.lastSets || !hist.lastSets.length) return null;
-  const sets = hist.lastSets;
+  const sets = exLastSets(name);
+  if(!sets || !sets.length) return null;
   const lastWeight = sets[sets.length-1].weight || 0;
   let weight = lastWeight, note = '⚖️ Stejná váha jako minule';
   const diffs = sets.map(s=>s.difficulty).filter(Boolean);
@@ -7706,7 +7768,8 @@ function sessSwapTo(name){
   const meta = EXERCISES.concat(exRenamedEntries()).find(x=>x.name===name) || {muscle:old.muscleKey};
   const built = woBuildEntry(plan, meta, name);
   const sameKind = (!!old.mode && old.mode===built.mode) || (!old.mode && !built.mode);
-  const entry = Object.assign({}, built, sameKind ? {sets:old.sets, rest:old.rest, repsMin:old.repsMin, repsMax:old.repsMax} : {}, {doneSets:0});
+  exRememberSess(old); // vyměněný cvik si pamatuje své série/opakování/pauzu pro případný návrat
+  const entry = Object.assign({}, built, (sameKind && !exSchemeFor(name, built.mode)) ? {sets:old.sets, rest:old.rest, repsMin:old.repsMin, repsMax:old.repsMax} : {}, {doneSets:0});
   if(isCurrentLive) sessEndExercise(old);
   const perm = session.swap && session.swap.perm;
   session.exercises[si] = entry;
@@ -7813,7 +7876,11 @@ function renderSession(){
   const el = document.getElementById('sessContent');
   const pop = document.getElementById('sessRestPop');
   const ph = session.phase;
-  if(ph !== 'rest'){ pop.style.display = 'none'; pop.innerHTML = ''; }
+  // pauza skončila, zatímco jsi vybíral/a cvik → po návratu hned pokračuj (další série / cvik)
+  if(ph==='rest' && session.restPending){ session.restPending = false; sessAfterRest(false); return; }
+  const restCounting = !!session.restTimerId && (ph==='swap' || ph==='add');
+  if(ph !== 'rest' && !restCounting){ pop.style.display = 'none'; pop.innerHTML = ''; }
+  if(restCounting){ pop.style.display = ''; renderSessRest(pop); }
   if(ph==='swap') renderSessSwap(el);
   else if(ph==='add') renderSessAdd(el);
   else if(ph==='complete') renderSessComplete(el);
@@ -7821,7 +7888,7 @@ function renderSession(){
 }
 
 // ===== SEZNAM CVIKŮ V TRÉNINKU: celý seznam zůstává na stránce, aktuální cvik se rozbalí =====
-const SESS_EDIT_PHASES = ['overview','active','nextprompt','exdone'];
+const SESS_EDIT_PHASES = ['overview','active','rest','nextprompt','exdone'];
 function sessCardState(i){
   if(session.phase==='overview') return 'pending';
   if(i < session.exIdx) return 'done';
@@ -7911,6 +7978,7 @@ function renderSessList(el){
     else if(act==='swap'){ session.editIdx = null; sessSwapOpen(i); }
     else if(act==='rm'){
       const removedEx = session.exercises[i];
+      exRememberSess(removedEx);
       session.exercises.splice(i,1); session.editIdx = null; session.dirty = true;
       renderSession();
       showUndo('Cvik odebrán: '+exDisp(removedEx.name), ()=>{
@@ -7933,6 +8001,7 @@ function renderSessList(el){
       if(e.repsMax < e.repsMin){ if(mn && !mx) e.repsMax = e.repsMin; else e.repsMin = e.repsMax; }
       e.rest = rs; if(e.mode==='cardio') e.sets = 1;
       delete e._cb;
+      exRememberScheme(e);
       session.editIdx = null; session.dirty = true;
       showToast('✔ Upraveno: '+exDisp(e.name));
       renderSession();
@@ -7958,6 +8027,7 @@ function sessSaveToPlan(){
     const c = Object.assign({}, e);
     delete c.doneSets; delete c.skipped; delete c.skippedSets;
     if(c._cb){ c.sets += 1; delete c._cb; }
+    exRememberScheme(c);
     return c;
   });
   saveState();
@@ -8290,6 +8360,12 @@ function renderSessRest(el){
 function sessAfterRest(forced){
   clearRestTimer();
   clearFinalCountdown();
+  if(session.phase==='swap' || session.phase==='add'){
+    // pauza doběhla v době, kdy se vybírá cvik – nepřeskakuj, počkej na návrat
+    session.restPending = true;
+    const pop = document.getElementById('sessRestPop'); if(pop){ pop.style.display = 'none'; pop.innerHTML = ''; }
+    return;
+  }
   const nx = session.restNextPhase || 'nextprompt';
   if(forced || state.sessAuto!==false){
     if(nx==='exdone' && session.exIdx < session.exercises.length-1){ session.exIdx++; session.setIdx = 0; }
@@ -11322,7 +11398,335 @@ const FOOD_GOALS = {
   maintain:{name:'Udržování', icon:'🔵', kcalAdj:0, prot:2.0},
   bulking:{name:'Nabírání', icon:'🟣', kcalAdj:350, prot:1.8},
 };
-const FOOD_SRC_ICON = {recipe:'🍳', label:'📷', barcode:'📦', manual:'✍️', library:'⭐'};
+const FOOD_SRC_ICON = {recipe:'🍳', label:'📷', barcode:'📦', manual:'✍️', library:'⭐', db:'🔎', off:'🌐', ai:'✨'};
+// ===== Databáze potravin (orientační hodnoty na 100 g) =====
+// řádek: název;aliasy;kcal;B;S;z toho cukry;T;gramy 1 kusu/porce;jak se to jmenuje (ks, lžíce…)
+const FOOD_DB_RAW = `Jablko;jablka jablek;52;0.3;14;10.4;0.2;180;ks
+Banán;banan banany;89;1.1;23;12;0.3;120;ks
+Pomeranč;pomeranc pomerance;47;0.9;12;9;0.1;150;ks
+Mandarinka;mandarinky;53;0.8;13;10.6;0.3;80;ks
+Citron;citrony;29;1.1;9;2.5;0.3;100;ks
+Grapefruit;grep;42;0.8;11;7;0.1;250;ks
+Hruška;hruska hrusky;57;0.4;15;9.8;0.1;170;ks
+Broskev;broskve;39;0.9;10;8.4;0.3;150;ks
+Nektarinka;nektarinky;44;1.1;11;7.9;0.3;140;ks
+Meruňka;merunka merunky;48;1.4;11;9.2;0.4;40;ks
+Švestka;svestka svestky;46;0.7;11;10;0.3;30;ks
+Třešně;tresne;63;1.1;16;13;0.2;100;hrst
+Višně;visne;50;1;12;8;0.3;100;hrst
+Jahody;jahoda;32;0.7;7.7;4.9;0.3;150;miska
+Maliny;malina;52;1.2;12;4.4;0.7;100;hrst
+Borůvky;boruvky boruvka;57;0.7;14;10;0.3;100;hrst
+Ostružiny;ostruziny;43;1.4;10;4.9;0.5;100;hrst
+Hroznové víno;hrozny hrozen vino hroznove;69;0.7;18;16;0.2;100;hrst
+Meloun vodní;melouny;30;0.6;7.6;6.2;0.2;300;plátek
+Meloun cukrový;;34;0.8;8;7.9;0.2;250;plátek
+Ananas;;50;0.5;13;9.9;0.1;100;plátek
+Kiwi;;61;1.1;15;9;0.5;75;ks
+Mango;;60;0.8;15;14;0.4;200;ks
+Avokádo;avokado;160;2;9;0.7;15;150;ks
+Datle sušené;datle;282;2.5;75;63;0.4;8;ks
+Meruňky sušené;merunky susene;241;3.4;63;53;0.5;8;ks
+Švestky sušené;svestky susene;240;2.2;64;38;0.4;10;ks
+Fíky sušené;fiky;249;3.3;64;48;0.9;20;ks
+Rozinky;;299;3.1;79;59;0.5;30;hrst
+Rajče;rajcata rajce paradajka;18;0.9;3.9;2.6;0.2;100;ks
+Okurka;okurky;15;0.7;3.6;1.7;0.1;300;ks
+Paprika;papriky;27;1;6;4;0.2;150;ks
+Mrkev;mrkve;41;0.9;10;4.7;0.2;80;ks
+Brambory vařené;brambora brambor varene;86;1.9;20;0.9;0.1;90;ks
+Brambory syrové;;77;2;17;0.8;0.1;100;ks
+Sladké brambory;batáty batat;86;1.6;20;4.2;0.1;200;ks
+Brokolice;;34;2.8;7;1.7;0.4;150;porce
+Květák;kvetak;25;1.9;5;1.9;0.3;150;porce
+Špenát;spenat;23;2.9;3.6;0.4;0.4;100;porce
+Salát ledový;salat ledovy hlavkovy;14;0.9;3;2;0.1;100;porce
+Zelí;zeli;25;1.3;5.8;3.2;0.1;100;porce
+Kysané zelí;kysane zeli;19;0.9;4.3;1.8;0.1;100;porce
+Cibule;cibulka;40;1.1;9.3;4.2;0.1;100;ks
+Česnek;cesnek;149;6.4;33;1;0.5;4;stroužek
+Cuketa;cukety;17;1.2;3.1;2.5;0.3;250;ks
+Lilek;;25;1;6;3.5;0.2;250;ks
+Dýně hokkaido;dyne dyn;34;1;8;3;0.1;150;porce
+Kukuřice konzervovaná;kukurice;86;3.3;19;6;1.4;100;porce
+Hrášek;hrasek;81;5.4;14;5.7;0.4;100;porce
+Fazole vařené;fazole;127;8.7;22.8;0.3;0.5;150;porce
+Čočka vařená;cocka;116;9;20;1.8;0.4;150;porce
+Cizrna vařená;cizrna;164;8.9;27;4.8;2.6;150;porce
+Žampiony;zampion houby;22;3.1;3.3;2;0.3;100;porce
+Řepa červená;repa cervena;43;1.6;10;6.8;0.2;100;porce
+Celer;;42;1.5;9;1.6;0.3;100;porce
+Ředkvička;redkvicka redkvicky;16;0.7;3.4;1.9;0.1;10;ks
+Pórek;porek;61;1.5;14;3.9;0.3;100;porce
+Chléb pšenično-žitný;chleb psenicny zitny kmínový kminovy;250;8;49;3;1.5;40;krajíc
+Chléb žitný;chleb zitny;250;8.5;48;3.5;1.2;40;krajíc
+Chléb celozrnný;chleb celozrnny;240;9;43;3;2.5;40;krajíc
+Rohlík;rohliky rohlik bile pecivo;285;9;56;3;2;43;ks
+Houska;housky;285;9;56;3;2;50;ks
+Rohlík celozrnný;celozrnne pecivo;265;10;47;3;3;50;ks
+Toastový chléb;toust toast toustak;265;8;49;4;3;25;plátek
+Bageta;bagety;270;9;55;3;1.5;60;kus
+Croissant;croasant rohlicek;406;8;45;11;21;60;ks
+Rýže bílá vařená;rize varena;130;2.7;28;0.1;0.3;150;porce
+Rýže bílá syrová;rize syrova;360;7;79;0.1;0.6;75;porce
+Rýže natural vařená;rize natural;123;2.7;26;0.4;1;150;porce
+Těstoviny vařené;testoviny spagety makarony nudle;158;5.8;31;0.6;0.9;200;porce
+Těstoviny syrové;testoviny suche;358;12.5;72;3;1.5;100;porce
+Ovesné vločky;vlocky ovesna kase;372;13;60;1.1;7;10;lžíce
+Müsli;musli granola;365;9;66;18;6;50;porce
+Cornflakes;kukuricne lupinky;375;7;84;8;0.9;30;porce
+Kuskus vařený;kuskus;112;3.8;23;0.1;0.2;150;porce
+Quinoa vařená;quinoa;120;4.4;21;0.9;1.9;150;porce
+Bulgur vařený;bulgur;83;3;19;0.1;0.2;150;porce
+Knedlíky houskové;knedlik knedliky;170;5;33;1.5;1.5;50;plátek
+Bramborová kaše;kase brambory pyre;100;2;15;1.5;3.5;200;porce
+Hranolky;hranolky;312;3.4;41;0.3;15;150;porce
+Bramborák;bramboraky;230;4;25;1;13;80;ks
+Palačinka;palacinky;190;6;24;5;7;70;ks
+Pizza;;266;11;33;3.6;10;107;kus
+Lasagne;lasagna;135;7;13;2;6;300;porce
+Kuřecí prsa syrová;kureci prsa maso kure;110;23;0;0;1.5;150;ks
+Kuřecí prsa vařená/pečená;kureci prsa upecena;165;31;0;0;3.6;120;ks
+Kuřecí stehno bez kůže;kureci stehno;125;19;0;0;5;150;ks
+Krůtí prsa;kruti prsa kruta;105;24;0;0;1;150;ks
+Hovězí libové;hovezi maso svickova;130;21;0;0;5;150;porce
+Hovězí mleté;mlete hovezi;250;18;0;0;20;150;porce
+Vepřová panenka;veprova panenka;120;21;0;0;3.5;150;porce
+Vepřová krkovice;veprove maso krkovice;250;17;0;0;20;150;porce
+Vepřové mleté;mlete veprove;260;17;0;0;21;150;porce
+Šunka;sunka sunkova;110;17;1;0.5;4;20;plátek
+Kuřecí šunka;kureci sunka;95;18;1;0.5;2;20;plátek
+Salám;salam vysocina;300;17;1;0.5;25;10;plátek
+Párek;parky parek;270;12;3;1;24;80;ks
+Klobása;klobasa;300;14;2;1;26;100;ks
+Slanina;slaninka;450;13;0.5;0;43;20;plátek
+Tuňák ve vlastní šťávě;tunak konzerva;115;26;0;0;1;80;porce
+Tuňák v oleji;tunak olej;190;25;0;0;10;80;porce
+Losos;;208;20;0;0;13;150;porce
+Treska;;82;18;0;0;0.7;150;porce
+Pstruh;;148;21;0;0;6.6;200;ks
+Sardinky v oleji;sardinky;208;25;0;0;11;100;porce
+Krevety;krevetky;85;18;0.2;0;1;100;porce
+Vejce;vajicko vejce slepici vajíčko;143;12.6;0.7;0.4;9.5;55;ks
+Vaječný bílek;bilek vejce bilek;52;11;0.7;0.7;0.2;33;ks
+Vaječný žloutek;zloutek;322;16;3.6;0.6;27;18;ks
+Mléko polotučné;mleko;47;3.4;4.8;4.8;1.5;250;sklenice
+Mléko plnotučné;mleko plnotucne;64;3.3;4.7;4.7;3.6;250;sklenice
+Mléko odtučněné;mleko odtucnene;34;3.4;4.9;4.9;0.1;250;sklenice
+Jogurt bílý;jogurt natur;61;4;4.7;4.7;3.5;150;kelímek
+Jogurt bílý nízkotučný;jogurt light;45;4.3;6;6;0.1;150;kelímek
+Jogurt ovocný;jogurt s prichuti;95;3.5;15;14;2.5;150;kelímek
+Řecký jogurt;recky jogurt;133;6;4;4;10;150;kelímek
+Řecký jogurt 0 %;recky jogurt odtucneny;57;10;3.6;3.6;0.2;150;kelímek
+Tvaroh polotučný;tvaroh;105;12.5;3.5;3.5;4.5;250;balení
+Tvaroh odtučněný;tvaroh nizkotucny;70;13;4;4;0.3;250;balení
+Cottage;cottage cheese;98;11;3.4;3.4;4.3;180;kelímek
+Skyr;;63;11;4;4;0.2;140;kelímek
+Eidam 30 %;eidam sýr syr;270;29;0.5;0.5;17;20;plátek
+Eidam 45 %;eidam plnotucny;350;26;0.5;0.5;27;20;plátek
+Hermelín;hermelin;300;20;0.5;0.5;24;80;ks
+Mozzarella;mozarela;250;18;2;1;19;125;ks
+Parmazán;parmezan;400;36;0;0;28;10;lžíce
+Tavený sýr;tavenak taveny syr zervé;270;14;5;3;21;20;porce
+Smetana ke šlehání;slehacka smetana 33;330;2;3;3;33;15;lžíce
+Smetana zakysaná;zakysana smetana 12;130;3;4;4;12;15;lžíce
+Máslo;maslo;740;0.7;0.6;0.6;82;10;porce
+Kefír;kefir;50;3.4;4.5;4.5;2;250;sklenice
+Podmáslí;podmasli;36;3.4;4.8;4.8;0.5;250;sklenice
+Sójový nápoj;sojove mleko sojovy napoj;33;3.3;0.8;0.5;1.8;250;sklenice
+Ovesný nápoj;ovesne mleko;45;0.5;8;4;1.5;250;sklenice
+Mandlový nápoj;mandlove mleko;13;0.4;0.3;0;1.1;250;sklenice
+Olivový olej;olej olivovy;884;0;0;0;100;13;lžíce
+Řepkový olej;olej repkovy slunecnicovy;884;0;0;0;100;13;lžíce
+Kokosový olej;olej kokosovy;892;0;0;0;99;13;lžíce
+Arašídové máslo;arasidove maslo;600;25;14;6;50;15;lžíce
+Arašídy;arasidy burak;567;26;16;4;49;30;hrst
+Mandle;;579;21;22;4;50;30;hrst
+Vlašské ořechy;vlasske orechy orechy;654;15;14;2.6;65;30;hrst
+Kešu;kesu;553;18;30;6;44;30;hrst
+Lískové ořechy;liskove orechy;628;15;17;4;61;30;hrst
+Pistácie;pistacie;560;20;28;8;45;30;hrst
+Chia semínka;chia seminka;486;17;42;0;31;12;lžíce
+Lněné semínko;lnene seminko;534;18;29;1.6;42;10;lžíce
+Slunečnicová semínka;slunecnicova seminka;584;21;20;2.6;51;30;hrst
+Dýňová semínka;dynova seminka;559;30;11;1.4;49;30;hrst
+Sezam;sezamova seminka;573;18;23;0.3;50;10;lžíce
+Med;;304;0.3;82;82;0;21;lžíce
+Cukr;cukr krystal;400;0;100;100;0;5;lžička
+Nutella;orechova pomazanka;539;6;58;56;31;15;lžíce
+Čokoláda mléčná;cokolada mlecna;535;7;59;56;30;5;dílek
+Čokoláda hořká;cokolada horka;598;8;46;24;43;5;dílek
+Marmeláda;marmelada dzem;250;0.4;62;60;0.1;20;lžíce
+Kečup;kecup;100;1.2;25;22;0.1;17;lžíce
+Majonéza;majoneza;680;1;2;2;75;15;lžíce
+Hořčice;horcice;66;4;6;3;3;10;lžička
+Sójová omáčka;sojova omacka;53;8;5;0.4;0.6;15;lžíce
+Tofu;;76;8;1.9;0.6;4.8;100;porce
+Tempeh;;192;20;7.6;0;11;100;porce
+Proteinový prášek;protein whey syrovatkovy;400;78;7;5;6;30;odměrka
+Proteinová tyčinka;protein bar tycinka;370;33;30;5;12;60;ks
+Hummus;humus;230;7;14;0.5;16;50;porce
+Cola;kola coca;42;0;10.6;10.6;0;330;plechovka
+Džus pomerančový;dzus pomerancovy;45;0.7;10;8.4;0.2;250;sklenice
+Džus jablečný;dzus jablecny;46;0.1;11;10;0.1;250;sklenice
+Pivo 12°;pivo;43;0.4;3.5;0;0;500;půllitr
+Pivo 10°;pivo desitka;40;0.4;3.2;0;0;500;půllitr
+Víno;vino;82;0.1;2.6;0.6;0;150;sklenka
+Energy drink;energeticky napoj redbull monster;45;0;11;11;0;250;plechovka
+Chipsy;brambůrky bramburky;536;6.5;53;0.5;34;30;hrst
+Snickers;;488;9;60;50;24;50;ks
+Müsli tyčinka;musli tycinka;410;6;65;28;14;25;ks
+Sušenky máslové;susenky;480;6.5;70;25;20;8;ks
+Zmrzlina vanilková;zmrzlina;207;3.5;24;21;11;50;kopeček
+Řízek smažený;rizek kureci veprovy;250;17;12;1;15;150;ks
+Smažený sýr;smazak;300;13;19;1;18;100;ks
+Guláš hovězí;gulas;140;11;4;1;9;300;porce
+Káva s mlékem;kava latte;30;1.6;2.4;2.4;1.5;250;hrnek
+Domácí hamburger;burger hamburger;250;13;24;4;11;200;ks
+Kebab;;215;12;20;3;10;300;ks`;
+let _foodDb = null;
+function foodDb(){
+  if(_foodDb) return _foodDb;
+  _foodDb = FOOD_DB_RAW.trim().split('\n').map(l=>{
+    const a = l.split(';'); const n = i=>(a[i]===''||a[i]==null) ? null : parseFloat(a[i]);
+    return {id:'D:'+a[0], name:a[0], alias:a[1]||'', per100:{kcal:n(2), p:n(3), c:n(4), s:n(5), f:n(6)}, pieceG:n(7), pieceLabel:a[8]||'ks', db:true};
+  });
+  return _foodDb;
+}
+function foodParseQuery(q){
+  q = String(q||'').trim();
+  let m = q.match(/^(\d+(?:[.,]\d+)?)\s*(g|gr|gramu|gramy|ks|kus|kusu|x|×)?\s*(.+)$/i);
+  if(m) return {text:m[3].trim(), qty:parseFloat(m[1].replace(',','.')), unit:(m[2]||'').toLowerCase()};
+  m = q.match(/^(.+?)\s+(\d+(?:[.,]\d+)?)\s*(g|gr|ks|kus|x)?$/i);
+  if(m) return {text:m[1].trim(), qty:parseFloat(m[2].replace(',','.')), unit:(m[3]||'').toLowerCase()};
+  return {text:q, qty:null, unit:''};
+}
+function foodSearchLocal(text, limit){
+  const nq = homeNorm(text||'').trim();
+  if(nq.length < 2) return [];
+  const tokens = nq.split(/\s+/).filter(Boolean);
+  const mine = (Array.isArray(state.myFoods) ? state.myFoods : []).map(x=>({id:x.id, name:x.name, alias:'', per100:x.per100, pieceG:x.servingG||null, pieceLabel:'porce', mine:true}));
+  const out = [];
+  mine.concat(foodDb()).forEach(it=>{
+    const nameN = homeNorm(it.name), hay = nameN+' '+homeNorm(it.alias);
+    const words = hay.split(/[\s,()\/\-]+/).filter(Boolean);
+    let total = 0;
+    for(const t of tokens){
+      let best = 0;
+      if(nameN.startsWith(t)) best = 100;
+      else if(words.some(w=>w.startsWith(t))) best = 80;
+      else {
+        for(let cut=1; cut<=2 && !best; cut++){
+          if(t.length-cut >= 4){ const s = t.slice(0, t.length-cut); if(words.some(w=>w.startsWith(s))) best = 60-cut*5; }
+        }
+        if(!best && t.length>=4 && hay.includes(t)) best = 30;
+      }
+      if(!best){ total = 0; break; }
+      total += best;
+    }
+    if(!total) return;
+    let sc = total/tokens.length;
+    if(nameN===nq) sc += 40;
+    if(it.mine) sc += 5;
+    out.push({it, sc: sc - Math.min(it.name.length, 40)*0.05});
+  });
+  out.sort((a,b)=>b.sc-a.sc);
+  return out.slice(0, limit||12).map(x=>x.it);
+}
+
+// ===== AI (Gemini) – vlastní klíč uživatele z Google AI Studia =====
+// klíč je v samostatném localStorage klíči, mimo `state` → nejde do záloh ani do cloudu
+const GG_KEY_LS = 'gg_gemini_key', GG_MODEL_LS = 'gg_gemini_model';
+function aiKey(){ try{ return localStorage.getItem(GG_KEY_LS) || ''; }catch(e){ return ''; } }
+function aiSetKey(k){ try{ if(k) localStorage.setItem(GG_KEY_LS, k); else localStorage.removeItem(GG_KEY_LS); localStorage.removeItem(GG_MODEL_LS); }catch(e){} }
+function aiModel(){ try{ return localStorage.getItem(GG_MODEL_LS) || 'gemini-flash-latest'; }catch(e){ return 'gemini-flash-latest'; } }
+const AI_BASE = 'https://generativelanguage.googleapis.com/v1beta/';
+function aiErr(code, msg){ const e = new Error(msg||code); e.code = code; return e; }
+async function aiFetch(url, opts){
+  let r;
+  try{ r = await fetch(url, opts); }catch(e){ throw aiErr('net','Bez připojení k internetu'); }
+  if(r.ok) return r.json();
+  let body = null; try{ body = await r.json(); }catch(e){}
+  const msg = body && body.error && body.error.message || '';
+  if(r.status===429) throw aiErr('quota','Vyčerpán bezplatný limit – zkus to za chvíli');
+  if(r.status===400 && /API key|API_KEY/i.test(msg)) throw aiErr('badkey','Klíč není platný');
+  if(r.status===401 || r.status===403) throw aiErr('badkey','Klíč nemá oprávnění nebo není platný');
+  if(r.status===404) throw aiErr('nomodel','Model nenalezen');
+  throw aiErr('http', msg || ('Chyba '+r.status));
+}
+// vybere nejnovější dostupný Flash model (názvy se u Googlu mění, proto se ptáme na seznam)
+async function aiPickModel(){
+  const j = await aiFetch(AI_BASE+'models?pageSize=200', {headers:{'x-goog-api-key':aiKey()}});
+  const cand = (j.models||[]).filter(m=>(m.supportedGenerationMethods||[]).includes('generateContent'))
+    .map(m=>String(m.name||'').replace(/^models\//,''))
+    .filter(n=>/^gemini-[\d.]+-flash$/.test(n));
+  cand.sort((a,b)=>parseFloat(b.split('-')[1]) - parseFloat(a.split('-')[1]));
+  const pick = cand[0] || 'gemini-flash-latest';
+  try{ localStorage.setItem(GG_MODEL_LS, pick); }catch(e){}
+  return pick;
+}
+async function aiGenerate(parts, schema){
+  if(!aiKey()) throw aiErr('nokey','Chybí klíč');
+  const run = model => aiFetch(AI_BASE+'models/'+model+':generateContent', {
+    method:'POST', headers:{'Content-Type':'application/json','x-goog-api-key':aiKey()},
+    body: JSON.stringify({contents:[{role:'user', parts}], generationConfig:{responseMimeType:'application/json', responseSchema:schema, temperature:0.1}})});
+  let j;
+  try{ j = await run(aiModel()); }
+  catch(e){ if(e.code==='nomodel'){ j = await run(await aiPickModel()); } else throw e; }
+  const txt = (((j.candidates||[])[0]||{}).content||{}).parts;
+  const s = (txt||[]).map(p=>p.text||'').join('').replace(/^```(?:json)?/i,'').replace(/```$/,'').trim();
+  if(!s) throw aiErr('empty','AI nevrátila odpověď');
+  try{ return JSON.parse(s); }catch(e){ throw aiErr('parse','AI vrátila nečitelnou odpověď'); }
+}
+const AI_NUM = {type:'NUMBER', nullable:true};
+const AI_PER100 = {type:'OBJECT', properties:{kcal:AI_NUM, p:AI_NUM, c:AI_NUM, s:AI_NUM, f:AI_NUM, sf:AI_NUM, fiber:AI_NUM, salt:AI_NUM}};
+function aiCleanPer(o){
+  const out = {};
+  ['kcal','p','c','s','f','sf','fiber','salt'].forEach(k=>{ const v = o && o[k]; out[k] = (typeof v==='number' && isFinite(v) && v>=0) ? v : null; });
+  return out;
+}
+// odhad potraviny podle názvu → {name, per100, pieceG, pieceLabel}
+async function aiEstimateFood(name){
+  const r = await aiGenerate([{text:
+    'Jsi výživový poradce. Uživatel si zapisuje jídlo do deníku. Odhadni průměrné nutriční hodnoty NA 100 g jedlé části pro potravinu nebo jídlo: "'+name+'". '+
+    'Kalorie (kcal), bílkoviny, sacharidy, z toho cukry, tuky, z toho nasycené, vláknina a sůl v gramech. '+
+    'Dále typická hmotnost jednoho kusu nebo porce v gramech (pieceG) a jak se jednotka česky jmenuje (pieceLabel, např. "ks", "plátek", "lžíce", "porce"). '+
+    'Pokud je to nesmysl a nejde o jídlo, vrať kcal null. Odpověz pouze JSON.'}],
+    {type:'OBJECT', properties:{name:{type:'STRING'}, per100:AI_PER100, pieceG:AI_NUM, pieceLabel:{type:'STRING', nullable:true}}});
+  const per = aiCleanPer(r.per100);
+  if(per.kcal==null && per.p==null && per.c==null && per.f==null) throw aiErr('nofood','Tohle AI nepoznala jako jídlo');
+  return {name: String(r.name||name).slice(0,60), per100: per, pieceG: (r.pieceG>0 ? r.pieceG : null), pieceLabel: r.pieceLabel||'ks'};
+}
+// foto nutriční tabulky → {name, per100, basis, servingG}
+async function aiReadLabel(b64, mime){
+  const r = await aiGenerate([
+    {inlineData:{mimeType:mime||'image/jpeg', data:b64}},
+    {text:'Na fotce je nutriční tabulka potraviny (nejspíš česky). Přepiš hodnoty přesně tak, jak jsou vytištěné. '+
+      'Pokud tabulka obsahuje sloupec "na 100 g" (nebo 100 ml), použij ho a basis="100". '+
+      'Pokud je jen sloupec "na porci", vrať hodnoty na porci, basis="serving" a servingG = hmotnost porce v gramech (pokud je uvedena, jinak null). '+
+      'Energie v kcal (když je jen kJ, přepočti: kJ/4,184). Sůl v gramech. Nenaznačuj hodnoty, které na fotce nejsou – dej null. '+
+      'Pokud je na fotce vidět název výrobku, vyplň name. Odpověz pouze JSON.'}],
+    {type:'OBJECT', properties:{name:{type:'STRING', nullable:true}, basis:{type:'STRING', enum:['100','serving']}, servingG:AI_NUM, per100:AI_PER100}});
+  const per = aiCleanPer(r.per100);
+  const found = Object.values(per).filter(v=>v!=null).length;
+  if(found < 2) throw aiErr('unread','Tabulku se nepodařilo přečíst');
+  return {name: r.name ? String(r.name).slice(0,60) : '', per100: per, basis: r.basis==='serving' ? 'serving' : '100', servingG: r.servingG>0 ? r.servingG : null};
+}
+function foodImageToJpegB64(file, maxSide){
+  return new Promise((res,rej)=>{
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = ()=>{
+      const sc = Math.min(1, maxSide/Math.max(img.width, img.height));
+      const c = document.createElement('canvas'); c.width = Math.round(img.width*sc); c.height = Math.round(img.height*sc);
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      URL.revokeObjectURL(url);
+      res(c.toDataURL('image/jpeg',0.85).split(',')[1]);
+    };
+    img.onerror = ()=>{ URL.revokeObjectURL(url); rej(new Error('img')); };
+    img.src = url;
+  });
+}
+
 function foodNum(v){ if(v===null||v===undefined||v==='') return null; const n = parseFloat(String(v).replace(',','.').replace(/[^\d.\-]/g,'')); return isFinite(n) ? n : null; }
 function foodR1(n){ return Math.round((n||0)*10)/10; }
 function foodFmt(n){ return String(Math.round((n||0)*10)/10).replace('.',','); }
@@ -11485,6 +11889,7 @@ function renderFoodDiary(){
       <button class="dm-reset" id="dmReset">Vynulovat dnešek</button>
     </details>
     <div class="fd-actions">
+      <button id="fdSearch" style="grid-column:1 / -1;">🔎 Hledat potravinu (jablko, rohlík…)</button>
       <button id="fdLabel">📷 Vyfotit tabulku</button><button id="fdBarcode">📦 Čárový kód</button>
       <button id="fdRecipe">🍳 Z receptu</button><button id="fdLib">⭐ Moje potraviny</button>
       <button id="fdManual" style="grid-column:1 / -1;">✍️ Zapsat ručně</button>
@@ -11518,6 +11923,7 @@ function renderFoodDiary(){
       saveState(); renderFoodDiary();
     }});
   });
+  document.getElementById('fdSearch').addEventListener('click', ()=>openFoodSearch(''));
   document.getElementById('fdLabel').addEventListener('click', openFoodLabelPicker);
   document.getElementById('fdBarcode').addEventListener('click', openFoodBarcode);
   document.getElementById('fdRecipe').addEventListener('click', openFoodRecipePicker);
@@ -11543,16 +11949,19 @@ function openFoodForm(init){
   const basis = init.basis || '100';
   const inp = (k,l)=>`<label class="ff-lbl">${l}<input type="text" inputmode="decimal" data-ff="${k}" value="${v[k]!=null ? homeEsc(String(v[k]).replace('.',',')) : ''}" class="${init.missing && init.missing.includes(k) ? 'ff-miss' : ''}"></label>`;
   const ov = foodPanel(`
-    <h4>${init.source==='label'?'📷 Z fotky tabulky':init.source==='barcode'?'📦 Z čárového kódu':init.source==='library'?'⭐ Z mých potravin':'✍️ Zapsat jídlo'}</h4>
+    <h4>${init.source==='label'?'📷 Z fotky tabulky':init.source==='barcode'?'📦 Z čárového kódu':init.source==='library'?'⭐ Z mých potravin':init.source==='db'?'🔎 Z databáze potravin':init.source==='off'?'🌐 Z Open Food Facts':init.source==='ai'?'✨ Odhad od AI':'✍️ Zapsat jídlo'}</h4>
     ${init.note ? `<div class="ff-note">${init.note}</div>` : ''}
     <label class="ff-lbl">Název jídla<input type="text" id="ffName" maxlength="60" value="${homeEsc(init.name||'')}" placeholder="např. Tvaroh polotučný"></label>
+    <div id="ffSug" class="ff-sug"></div>
+    ${(init.source==='manual'||!init.source) ? '<div class="fs-more" style="margin:6px 0 2px;"><button id="ffSearchBtn">🔎 Hledat v databázi</button><button id="ffAiBtn">✨ Doplnit pomocí AI</button></div>' : ''}
     <label class="ff-lbl">Hodnoty z obalu jsou na
       <select id="ffBasis"><option value="100" ${basis==='100'?'selected':''}>100 g</option><option value="serving" ${basis==='serving'?'selected':''}>jednu porci</option></select></label>
     <label class="ff-lbl" id="ffServWrap" style="display:${basis==='serving'?'block':'none'}">Jedna porce váží (g)<input type="text" inputmode="decimal" id="ffServ" value="${init.servingG||''}"></label>
     <div class="ff-grid">${FOOD_FIELDS.map(([k,l])=>inp(k,l)).join('')}</div>
+    <label class="ff-lbl" id="ffPieceWrap" style="display:none"><span id="ffPieceTxt"></span><input type="text" inputmode="decimal" id="ffCount" value="1"></label>
     <label class="ff-lbl">Kolik jsi snědl/a (g)<input type="text" inputmode="decimal" id="ffGrams" value="${init.grams||init.servingG||100}"></label>
     <div id="ffPreview" class="ff-preview"></div>
-    ${init.source==='library' ? '' : '<label class="ff-chk"><input type="checkbox" id="ffSave" checked> Uložit do Mých potravin</label>'}
+    ${init.source==='library' ? '' : '<label class="ff-chk"><input type="checkbox" id="ffSave" '+(['db','off','ai'].includes(init.source)?'':'checked')+'> Uložit do Mých potravin</label>'}
     ${init.raw ? `<details class="ff-raw"><summary>Rozpoznaný text z fotky</summary><pre>${homeEsc(init.raw)}</pre></details>` : ''}
     <button class="paywall-cta" id="ffAdd" style="background:var(--accent); color:#14041f; margin:12px 0 0;">➕ Přidat do deníku</button>`);
   const read = ()=>{
@@ -11578,16 +11987,65 @@ function openFoodForm(init){
   };
   ov.querySelectorAll('input,select').forEach(i=>{ i.addEventListener('input', refresh); i.addEventListener('change', refresh); });
   refresh();
+  let srcNow = init.source||'manual', piece = null;
+  const nameEl = document.getElementById('ffName'), gramsEl = document.getElementById('ffGrams'), cntEl = document.getElementById('ffCount');
+  const fmtN = n=>String(n).replace('.',',');
+  const setPiece = (p,count)=>{
+    piece = p; const w = document.getElementById('ffPieceWrap');
+    if(!p){ w.style.display = 'none'; return; }
+    w.style.display = 'block'; document.getElementById('ffPieceTxt').textContent = 'Počet ('+p.label+', á '+foodFmt(p.g)+' g)';
+    cntEl.value = fmtN(Math.round((count||1)*100)/100);
+  };
+  cntEl.addEventListener('input', ()=>{ const c = foodNum(cntEl.value); if(piece && c>0){ gramsEl.value = fmtN(Math.round(c*piece.g*10)/10); refresh(); } });
+  gramsEl.addEventListener('input', ()=>{ const g = foodNum(gramsEl.value); if(piece && g>0) cntEl.value = fmtN(Math.round(g/piece.g*100)/100); });
+  if(init.piece) setPiece(init.piece, init.count);
+  const allEmpty = ()=>![...ov.querySelectorAll('[data-ff]')].some(i=>i.value.trim()!=='');
+  const sugEl = document.getElementById('ffSug');
+  const ffFill = (it, qty)=>{
+    ov.querySelectorAll('[data-ff]').forEach(i=>{ const v = (it.per100||{})[i.dataset.ff]; i.value = v!=null ? fmtN(foodR1(v)) : ''; i.classList.remove('ff-miss'); });
+    document.getElementById('ffBasis').value = '100'; document.getElementById('ffServ').value = '';
+    if(it.name) nameEl.value = it.name;
+    const pc = foodPieceOf(it), q = foodQtyToGrams(pc, qty);
+    setPiece(pc, q.count); gramsEl.value = fmtN(Math.round(q.grams*10)/10);
+    srcNow = it.mine ? 'library' : (it.ai ? 'ai' : 'db');
+    const sv = document.getElementById('ffSave'); if(sv) sv.checked = false;
+    sugEl.innerHTML = ''; refresh();
+  };
+  if(srcNow==='manual'){
+    const drawSug = ()=>{
+      const pq = foodParseQuery(nameEl.value);
+      const list = (allEmpty() && pq.text.length>=2) ? foodSearchLocal(pq.text, 4) : [];
+      sugEl.innerHTML = list.map((it,i)=>`<button data-sg="${i}">${it.mine?'⭐ ':''}${homeEsc(it.name)} · ${Math.round(it.per100.kcal||0)} kcal/100 g</button>`).join('');
+      sugEl.querySelectorAll('[data-sg]').forEach(b=>b.addEventListener('click', ()=>ffFill(list[+b.dataset.sg], foodParseQuery(nameEl.value))));
+    };
+    nameEl.addEventListener('input', drawSug); drawSug();
+    document.getElementById('ffSearchBtn').addEventListener('click', ()=>openFoodSearch(nameEl.value));
+    const aiB = document.getElementById('ffAiBtn');
+    aiB.addEventListener('click', async ()=>{
+      const pq = foodParseQuery(nameEl.value);
+      if(pq.text.length<2){ showToast('⚠️ Napiš název jídla'); return; }
+      if(!aiKey()){ openAiSetup(); return; }
+      aiB.disabled = true; aiB.textContent = '⏳ AI odhaduje…';
+      try{ const r = await aiEstimateFood(pq.text); ffFill({ai:true, name:r.name, per100:r.per100, pieceG:r.pieceG, pieceLabel:r.pieceLabel}, pq); showToast('✨ Odhad od AI – zkontroluj čísla'); }
+      catch(e){ showToast(aiErrText(e)); }
+      finally{ aiB.disabled = false; aiB.textContent = '✨ Doplnit pomocí AI'; }
+    });
+  }
   document.getElementById('ffAdd').addEventListener('click', ()=>{
     const name = document.getElementById('ffName').value.replace(/[<>"&`\\]/g,'').trim();
     const r = read();
     if(!name){ showToast('⚠️ Napiš název jídla'); return; }
+    if(allEmpty()){   // jen název bez hodnot → zkusíme doplnit z databáze
+      const pq = foodParseQuery(name), hit = foodSearchLocal(pq.text, 1)[0];
+      if(hit){ ffFill(hit, pq); showToast('🔎 Doplněno z databáze – zkontroluj a potvrď'); return; }
+      showToast(aiKey() ? '🤔 V databázi nic – zkus ✨ Doplnit pomocí AI' : '🤔 V databázi nic – použij 🔎 Hledat, nebo zadej hodnoty'); return;
+    }
     if(r.mult==null){ showToast('⚠️ Zadej váhu jedné porce'); return; }
     if(!(r.grams>0)){ showToast('⚠️ Zadej, kolik gramů jsi snědl/a'); return; }
     const p = r.per100;
     if(p.kcal==null){ showToast('⚠️ Zadej aspoň kalorie nebo makra'); return; }
     const f = r.grams/100;
-    foodCommit({date: (foodDate||todayKey()), name, source: init.source||'manual', grams: r.grams,
+    foodCommit({date: (foodDate||todayKey()), name, source: srcNow, grams: r.grams,
       kcal:(p.kcal||0)*f, p:(p.p||0)*f, c:(p.c||0)*f, f:(p.f||0)*f, s: p.s==null ? null : p.s*f});
     const sv = document.getElementById('ffSave');
     if(sv && sv.checked){
@@ -11681,7 +12139,7 @@ function foodImageToCanvas(file, maxW){
 }
 function openFoodLabelPicker(){
   foodPanel(`<h4>📷 Foto nutriční tabulky</h4>
-    <p class="nb-note" style="margin:0 0 12px;">Vyfoť tabulku z obalu zblízka, rovně a na světle. Appka přečte hodnoty a ty si před uložením zkontroluješ. Při prvním použití se stáhne čtečka textu (pár MB, potřebuje internet).</p>
+    <p class="nb-note" style="margin:0 0 12px;">Vyfoť tabulku z obalu zblízka, rovně a na světle. Appka přečte hodnoty a ty si před uložením zkontroluješ. ${aiKey() ? '✨ Čte AI (Gemini).' : 'Bez AI se při prvním použití stáhne čtečka textu (pár MB, potřebuje internet) a čte hůř – s AI (Profil → Nastavení) to jde mnohem líp.'}</p>
     <button class="paywall-cta" id="flShoot" style="background:var(--accent); color:#14041f; margin:0 0 10px;">📷 Vyfotit</button>
     <button class="paywall-cta" id="flPick" style="background:transparent; color:var(--accent); border:1.5px solid var(--accent); margin:0;">🖼️ Vybrat z galerie</button>
     <input type="file" id="flFileCam" accept="image/*" capture="environment" style="display:none">
@@ -11695,6 +12153,21 @@ function openFoodLabelPicker(){
 async function foodScanLabel(file){
   const ov = foodPanel(`<h4>📷 Čtu tabulku…</h4><div class="ff-prog"><div id="ffProgBar"></div></div><p class="nb-note" id="ffProgTxt">Připravuji obrázek…</p>`);
   const setP = (t,p)=>{ const a = document.getElementById('ffProgTxt'), b = document.getElementById('ffProgBar'); if(a) a.textContent = t; if(b) b.style.width = Math.round((p||0)*100)+'%'; };
+  let aiNote = '';
+  if(aiKey()){
+    setP('✨ AI čte tabulku…', 0.4);
+    try{
+      const b64 = await foodImageToJpegB64(file, 1600);
+      const r = await aiReadLabel(b64, 'image/jpeg');
+      openFoodForm({source:'label', name:r.name, per100:r.per100, basis:r.basis, servingG:r.servingG, grams: r.basis==='serving' && r.servingG ? r.servingG : 100, missing:[],
+        note:'✨ Přečetla AI. Zkontroluj, jestli čísla sedí s obalem.'});
+      return;
+    }catch(e){
+      if(e.code==='badkey' || e.code==='quota') showToast(aiErrText(e));
+      aiNote = e.code==='unread' ? 'AI tabulku nepřečetla, zkouším klasickou čtečku. ' : 'AI teď není dostupná, zkouším klasickou čtečku. ';
+      setP('Zkouším klasickou čtečku textu…', 0.1);
+    }
+  }
   try{
     const canvas = await foodImageToCanvas(file, 1800);
     setP('Stahuji čtečku textu (jen poprvé)…', 0.05);
@@ -11715,15 +12188,15 @@ async function foodScanLabel(file){
     const parsed = parseNutritionText(text);
     if(parsed.found < 2){
       showToast('⚠️ Tabulku se nepodařilo přečíst – zadej hodnoty ručně');
-      openFoodForm({source:'label', raw:text, note:'Z fotky se nepodařilo spolehlivě přečíst hodnoty. Přepiš je z obalu.', missing:['kcal','p','c','f']});
+      openFoodForm({source:'label', raw:text, note: aiNote + 'Z fotky se nepodařilo spolehlivě přečíst hodnoty. Přepiš je z obalu'+(aiKey()?'.':' – s AI (Profil → Nastavení) se čtení fotek výrazně zlepší.'), missing:['kcal','p','c','f']});
       return;
     }
     const miss = parsed.missing.length ? parsed.missing : [];
     openFoodForm({source:'label', per100:parsed.values, basis:parsed.basis, raw:text, missing:miss,
-      note:'Zkontroluj, jestli čísla sedí s obalem. Červeně označená políčka se nepodařilo přečíst.'});
+      note: aiNote + 'Zkontroluj, jestli čísla sedí s obalem. Červeně označená políčka se nepodařilo přečíst.'});
   } catch(err){
     showToast('⚠️ Čtečka se nenačetla (zkontroluj internet) – zadej hodnoty ručně');
-    openFoodForm({source:'label', note:'Čtečka textu se nenačetla. Zadej hodnoty z obalu ručně.'});
+    openFoodForm({source:'label', note: aiNote + 'Čtečka textu se nenačetla (chybí internet?). Zadej hodnoty z obalu ručně'+(aiKey()?'.':' nebo zapni AI v Profilu → Nastavení.')});
   }
 }
 
@@ -11776,6 +12249,116 @@ async function foodLookupBarcode(code){
       servingG: pr.serving_quantity ? Number(pr.serving_quantity) : null, grams: pr.serving_quantity ? Number(pr.serving_quantity) : 100,
       missing: [], note:'Údaje pocházejí z databáze Open Food Facts (přidávají je uživatelé). Zkontroluj je podle obalu.'});
   }catch(err){ showToast('⚠️ Nepodařilo se spojit s databází – zkontroluj internet'); }
+}
+
+// --- hledání potravin (místní databáze + Open Food Facts + AI) ---
+function foodPieceOf(it){ return it && it.pieceG>0 ? {g:it.pieceG, label:it.pieceLabel||'ks'} : null; }
+function foodItemLine(it){
+  const p = it.per100||{};
+  return `na 100 g: ${Math.round(p.kcal||0)} kcal · B ${foodFmt(p.p)} · S ${foodFmt(p.c)} · T ${foodFmt(p.f)}` + (it.pieceG>0 ? ` · 1 ${homeEsc(it.pieceLabel||'ks')} ≈ ${foodFmt(it.pieceG)} g` : '');
+}
+function foodQtyToGrams(piece, qty){
+  let count = 1, grams = piece ? piece.g : 100;
+  if(qty && qty.qty>0){
+    if(/^(g|gr|gramu|gramy)$/.test(qty.unit)){ grams = qty.qty; count = piece ? qty.qty/piece.g : 1; }
+    else if(piece){ count = qty.qty; grams = qty.qty*piece.g; }
+    else { grams = qty.qty; }   // číslo bez jednotky u potraviny bez kusů = gramy
+  }
+  return {count, grams};
+}
+function foodOpenItem(it, qty){
+  const piece = foodPieceOf(it);
+  const {count, grams} = foodQtyToGrams(piece, qty);
+  openFoodForm({source: it.mine ? 'library' : (it.off ? 'off' : (it.ai ? 'ai' : 'db')), name: it.name, per100: it.per100, servingG: it.mine ? it.pieceG : null,
+    piece, count, grams: Math.round(grams*10)/10,
+    note: it.mine ? '' : (it.off ? 'Údaje z Open Food Facts (přidávají je uživatelé) – zkontroluj podle obalu.' : (it.ai ? '✨ Odhad od AI – je orientační, hlavně u hotových jídel.' : 'Orientační průměrné hodnoty na 100 g. Pro přesnost použij údaje z obalu.'))});
+}
+function openFoodSearch(q0){
+  const ov = foodPanel(`<h4>🔎 Hledat potravinu</h4>
+    <input type="text" id="fsQ" class="wo-scratch-input" placeholder="např. jablko, 2 rohlíky, 150 g rýže" value="${homeEsc(q0||'')}" autocomplete="off" style="margin-bottom:10px;">
+    <div id="fsRes"></div><div id="fsOnlineRes"></div>
+    <div class="fs-more">
+      <button id="fsOnline">🌐 Hledat online (Open Food Facts)</button>
+      <button id="fsAi">✨ Odhadnout pomocí AI</button>
+      <button id="fsManual">✍️ Zadat hodnoty ručně</button>
+    </div>`);
+  const qEl = document.getElementById('fsQ'), res = document.getElementById('fsRes');
+  let shown = [];
+  const draw = ()=>{
+    const pq = foodParseQuery(qEl.value);
+    shown = foodSearchLocal(pq.text, 10);
+    res.innerHTML = pq.text.length<2 ? '<p class="nb-note">Napiš název (aspoň 2 písmena). Můžeš i s množstvím: „2 vejce“, „150 g tvaroh“.</p>'
+      : (shown.length ? shown.map((it,i)=>`<div class="fd-lib"><button data-fs="${i}"><b>${it.mine?'⭐ ':''}${homeEsc(it.name)}</b><small>${foodItemLine(it)}</small></button></div>`).join('')
+        : '<p class="nb-note">V databázi nic nenalezeno. Zkus hledat online nebo odhad od AI.</p>');
+    res.querySelectorAll('[data-fs]').forEach(b=>b.addEventListener('click', ()=>foodOpenItem(shown[+b.dataset.fs], pq)));
+  };
+  qEl.addEventListener('input', draw); draw();
+  document.getElementById('fsManual').addEventListener('click', ()=>openFoodForm({source:'manual', name: foodParseQuery(qEl.value).text}));
+  document.getElementById('fsOnline').addEventListener('click', async ()=>{
+    const pq = foodParseQuery(qEl.value); const box = document.getElementById('fsOnlineRes');
+    if(pq.text.length<2){ showToast('⚠️ Napiš, co hledáš'); return; }
+    box.innerHTML = '<p class="nb-note">🌐 Hledám v Open Food Facts…</p>';
+    let list = [];
+    try{
+      const ctl = new AbortController(); const to = setTimeout(()=>ctl.abort(), 15000);
+      const r = await fetch('https://world.openfoodfacts.org/cgi/search.pl?search_terms='+encodeURIComponent(pq.text)+'&search_simple=1&action=process&json=1&page_size=20&cc=cz&lc=cs&fields=product_name,brands,nutriments,serving_quantity', {signal:ctl.signal});
+      clearTimeout(to);
+      const j = await r.json();
+      (j.products||[]).forEach(pr=>{
+        const n = pr.nutriments||{}, g = k=>(n[k]!=null && n[k]!=='') ? Number(n[k]) : null;
+        let kcal = g('energy-kcal_100g'); if(kcal==null && g('energy_100g')!=null) kcal = Math.round(g('energy_100g')/4.184);
+        if(kcal==null || !pr.product_name) return;
+        list.push({off:true, name:[pr.product_name, pr.brands && String(pr.brands).split(',')[0]].filter(Boolean).join(' – ').slice(0,60),
+          per100:{kcal, p:g('proteins_100g'), c:g('carbohydrates_100g'), s:g('sugars_100g'), f:g('fat_100g'), sf:g('saturated-fat_100g'), fiber:g('fiber_100g'), salt:g('salt_100g')},
+          pieceG: pr.serving_quantity ? Number(pr.serving_quantity) : null, pieceLabel:'porce'});
+      });
+    }catch(e){ box.innerHTML = '<p class="nb-note">⚠️ Online databáze teď neodpovídá (nebo nejsi online). Zkus to později, nebo odhad od AI.</p>'; return; }
+    list = list.slice(0,10);
+    box.innerHTML = list.length ? '<h4 class="fd-h" style="margin-top:12px;">🌐 Z Open Food Facts</h4>' + list.map((it,i)=>`<div class="fd-lib"><button data-fo="${i}"><b>${homeEsc(it.name)}</b><small>${foodItemLine(it)}</small></button></div>`).join('')
+      : '<p class="nb-note">Online nic nenalezeno.</p>';
+    box.querySelectorAll('[data-fo]').forEach(b=>b.addEventListener('click', ()=>foodOpenItem(list[+b.dataset.fo], pq)));
+  });
+  document.getElementById('fsAi').addEventListener('click', ()=>foodAiFor(qEl.value));
+}
+function aiErrText(e){
+  return e.code==='nokey' ? 'Nejdřív nastav AI klíč' : e.code==='net' ? 'Bez internetu AI nefunguje' : e.code==='quota' ? '⏳ Limit AI je vyčerpaný, zkus to za minutu' : e.code==='badkey' ? '🔑 Klíč není platný – zkontroluj ho v nastavení' : e.code==='nofood' ? 'Tohle AI nepoznala jako jídlo' : e.code==='unread' ? 'Tabulku AI nepřečetla – vyfoť ji blíž a na světle' : ('AI: ' + (e.message||'chyba'));
+}
+async function foodAiFor(text){
+  const pq = foodParseQuery(text);
+  if(pq.text.length<2){ showToast('⚠️ Napiš, co jsi jedl/a'); return; }
+  if(!aiKey()){ openAiSetup(); return; }
+  showToast('✨ AI odhaduje…');
+  try{
+    const r = await aiEstimateFood(pq.text);
+    foodOpenItem({ai:true, name:r.name, per100:r.per100, pieceG:r.pieceG, pieceLabel:r.pieceLabel}, pq);
+  }catch(e){ showToast(aiErrText(e)); }
+}
+// --- nastavení AI klíče ---
+function aiSetupHTML(){
+  const has = !!aiKey();
+  return `<h4>✨ AI asistent (Gemini)</h4>
+    <p class="nb-note" style="margin:0 0 10px;">AI umí přečíst nutriční tabulku z fotky a odhadnout kalorie jídla, které není v databázi. Je zdarma – potřebuješ vlastní klíč od Googlu:</p>
+    <ol class="ai-steps"><li>Otevři <b>aistudio.google.com/apikey</b> a přihlas se Google účtem.</li><li>Klepni na <b>Create API key</b> a zkopíruj klíč.</li><li>Vlož ho sem:</li></ol>
+    <label class="ff-lbl">API klíč<input type="password" id="aiKeyIn" autocomplete="off" placeholder="${has?'•••••••• (uložen)':'AIza…'}"></label>
+    <div class="fs-more"><button id="aiKeySave">💾 Uložit a vyzkoušet</button>${has?'<button id="aiKeyDel">🗑️ Odebrat klíč</button>':''}</div>
+    <p class="nb-note" style="margin-top:10px;">Klíč zůstane jen v tomto zařízení (není v záloze ani v cloudu). Na bezplatném tarifu může Google odeslané fotky a texty použít ke zlepšování svých služeb – nefoť nic soukromého.</p>`;
+}
+function openAiSetup(){
+  const ov = foodPanel(aiSetupHTML());
+  const save = ov.querySelector('#aiKeySave'), del = ov.querySelector('#aiKeyDel');
+  save.addEventListener('click', async ()=>{
+    const k = ov.querySelector('#aiKeyIn').value.trim();
+    if(k){ if(!/^[\w\-]{20,}$/.test(k)){ showToast('⚠️ Klíč vypadá divně – zkopíruj ho celý'); return; } aiSetKey(k); }
+    if(!aiKey()){ showToast('⚠️ Vlož klíč'); return; }
+    save.disabled = true; save.textContent = '⏳ Zkouším…';
+    try{ await aiEstimateFood('jablko'); showToast('✅ AI funguje'); closeFoodPanel(); try{ renderAiSetting(); }catch(e){} }
+    catch(e){ if(e.code==='badkey') aiSetKey(''); showToast(aiErrText(e)); save.disabled = false; save.textContent = '💾 Uložit a vyzkoušet'; }
+  });
+  if(del) del.addEventListener('click', ()=>{ aiSetKey(''); closeFoodPanel(); showToast('Klíč odebrán'); try{ renderAiSetting(); }catch(e){} });
+}
+function renderAiSetting(){
+  const el = document.getElementById('aiSetStatus'); if(!el) return;
+  el.innerHTML = aiKey() ? '✅ Zapnuto – fotky tabulek čte AI a kalorie jídel umí odhadnout.' : 'Vypnuto. Zapni a appka přečte tabulku z fotky a odhadne kalorie čehokoli.';
 }
 
 // --- moje potraviny + recepty ---
@@ -12557,6 +13140,8 @@ function bkRestoreState(o, label){
       setTimeout(()=>location.reload(), 900);
     }});
 }
+document.getElementById('aiSetBtn').addEventListener('click', openAiSetup);
+try{ renderAiSetting(); }catch(e){}
 document.getElementById('bkFileExport').addEventListener('click', async ()=>{
   const json = JSON.stringify(state);
   const d = new Date(), pad = n=>String(n).padStart(2,'0');
