@@ -2858,7 +2858,7 @@
     <button id="musicToggleBtn" class="home-bottom-btn" title="Hudba on/off">🔇 Hudba</button>
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29f · 2026-10-24</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29g · 2026-10-25</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -5762,6 +5762,13 @@ function addXP(n, reason){
 }
 
 // ===== DENNÍ MISE =====
+// (přesunuto sem: mise se vyhodnocují už při startu a potřebují cíle jídla)
+const FOOD_COLORS = {green:'#34d399', yellow:'#fbbf24', orange:'#fb923c', red:'#ef4444', blue:'#60a5fa', track:'rgba(255,255,255,0.09)'};
+const FOOD_GOALS = {
+  cutting:{name:'Hubnutí', icon:'🟢', kcalAdj:-500, prot:2.2},
+  maintain:{name:'Udržování', icon:'🔵', kcalAdj:0, prot:2.0},
+  bulking:{name:'Nabírání', icon:'🟣', kcalAdj:350, prot:1.8},
+};
 const MISSION_POOL = [
   {id:'train', text:'Dokonči dnešní trénink 🏋️', xp:40},
   {id:'protein', text:'Sněz svůj denní cíl bílkovin 💪', xp:25},
@@ -11392,12 +11399,6 @@ function renderHomeNotebookTile(){
 //       state.myFoods  [{id,name,per100:{kcal,p,c,s,f,sf,fiber,salt}, servingG}]
 // Součty dne se zrcadlí do starého state.dayMacros (mise a achievementy zůstávají funkční).
 // ============================================================
-const FOOD_COLORS = {green:'#34d399', yellow:'#fbbf24', orange:'#fb923c', red:'#ef4444', blue:'#60a5fa', track:'rgba(255,255,255,0.09)'};
-const FOOD_GOALS = {
-  cutting:{name:'Hubnutí', icon:'🟢', kcalAdj:-500, prot:2.2},
-  maintain:{name:'Udržování', icon:'🔵', kcalAdj:0, prot:2.0},
-  bulking:{name:'Nabírání', icon:'🟣', kcalAdj:350, prot:1.8},
-};
 const FOOD_SRC_ICON = {recipe:'🍳', label:'📷', barcode:'📦', manual:'✍️', library:'⭐', db:'🔎', off:'🌐', ai:'✨'};
 // ===== Databáze potravin (orientační hodnoty na 100 g) =====
 // řádek: název;aliasy;kcal;B;S;z toho cukry;T;gramy 1 kusu/porce;jak se to jmenuje (ks, lžíce…)
