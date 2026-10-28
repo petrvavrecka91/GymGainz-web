@@ -2006,7 +2006,7 @@
     background:rgba(20,14,8,.94); box-shadow:0 8px 28px rgba(0,0,0,.5), 0 0 18px rgba(251,146,60,.35);
     backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); animation:restPopIn .28s cubic-bezier(.2,1.3,.4,1);}
   html.nofx .sess-rest-pop{backdrop-filter:none; -webkit-backdrop-filter:none;}
-  body.theme-light .sess-rest-pop{background:rgba(255,248,240,.96);}
+  body.theme-light .sess-rest-pop{background:rgba(20,14,8,.97); color:#f4f1ee; --text:#f4f1ee; --muted:#b9b0a6;}
   .sess-rest-pop .sess-rest-wrap{padding:4px 0 0;}
   .sess-rest-pop .sess-timer{font-size:46px; margin:0;}
   .sess-rest-pop .sess-rest-label{margin-bottom:0;}
@@ -2858,7 +2858,7 @@
     <button id="musicToggleBtn" class="home-bottom-btn" title="Hudba on/off">🔇 Hudba</button>
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29g · 2026-10-25</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29h · 2026-10-28</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -7699,7 +7699,7 @@ function sessEndExercise(e){
 function sessGoNextExercise(){ // bez odpočinku (po přeskočení / výměně)
   const isLast = session.exIdx >= session.exercises.length-1;
   if(isLast){ session.phase = 'exdone'; }
-  else { session.exIdx++; session.setIdx = 0; session.phase = 'active'; }
+  else { session.exIdx++; session.setIdx = sessStartIdxFor(session.exercises[session.exIdx]); session.phase = 'active'; }
   renderSession();
 }
 function sessSkipSet(){
@@ -7896,6 +7896,39 @@ function renderSession(){
 
 // ===== SEZNAM CVIKŮ V TRÉNINKU: celý seznam zůstává na stránce, aktuální cvik se rozbalí =====
 const SESS_EDIT_PHASES = ['overview','active','rest','nextprompt','exdone'];
+// „živý“ rozdělaný cvik = jde ho přehodit za jiný (ne když je už hotový a běží jen pauza před dalším)
+function sessLive(){
+  const ph = session.phase;
+  return ph==='active' || ph==='nextprompt' || (ph==='rest' && session.restNextPhase!=='exdone');
+}
+// kolikátou sérii cviku pokračovat (po návratu k rozdělanému cviku se nezačíná od nuly)
+function sessStartIdxFor(e){
+  if(!e) return 0;
+  const n = (session.log[e.name]||[]).filter(x=>x.t!=='w').length + (e.skippedSets||0);
+  return Math.max(0, Math.min(n, (e.sets||1)-1));
+}
+// po změně počtu sérií rozdělaného cviku: dokončit / znovu otevřít cvik podle toho, kolik sérií už je hotových
+function sessAfterSetsChange(e){
+  if(e.mode==='cardio') return false;
+  const ph = session.phase, done = session.setIdx;
+  const isLast = session.exIdx >= session.exercises.length-1;
+  if(ph==='active' || ph==='nextprompt'){
+    if(e.sets <= done){ sessEndExercise(e); sessGoNextExercise(); return true; }
+  } else if(ph==='rest'){
+    if(e.sets <= done && session.restNextPhase!=='exdone'){
+      sessEndExercise(e);
+      if(isLast){ clearRestTimer(); clearFinalCountdown(); session.phase = 'exdone'; renderSession(); return true; }
+      session.restNextPhase = 'exdone';
+    } else if(e.sets > done && session.restNextPhase==='exdone'){
+      session.restNextPhase = 'nextprompt';
+    }
+  } else if(ph==='exdone'){
+    if(e.sets > done) session.phase = 'active';
+  }
+  return false;
+}
+function sessReadInputs(){ const o = {}; ['sessWeight','sessReps','sessRIR','sessNote'].forEach(id=>{ const x = document.getElementById(id); if(x) o[id] = x.value; }); return o; }
+function sessRestoreInputs(o){ Object.keys(o||{}).forEach(id=>{ const x = document.getElementById(id); if(x && o[id]!=='') x.value = o[id]; }); }
 function sessCardState(i){
   if(session.phase==='overview') return 'pending';
   if(i < session.exIdx) return 'done';
@@ -7925,10 +7958,12 @@ function sessEditPanelHTML(e,i){
 }
 function renderSessList(el){
   const ph = session.phase;
+  const keepIn = session._keepInputs ? sessReadInputs() : null; session._keepInputs = false;
   const canEdit = SESS_EDIT_PHASES.includes(ph);
   const cards = session.exercises.map((e,i)=>{
     const st = sessCardState(i);
     const editable = canEdit && st==='pending';
+    const editCur = canEdit && st==='current' && ph!=='overview';
     const sugg = (st==='pending' && e.mode!=='cardio') ? weightSuggestion(e.name, e.repsMin, e.repsMax) : null;
     const bwE = exIsBodyweight(e.name) && e.mode!=='cardio' && e.mode!=='time';
     const suggStr = sugg ? (bwE && !(sugg.weight>0) ? '↩️ naposledy: '+sugg.lastStr.replace(/0kg×/g,'')+' opak.' : sugg.note+' · naposledy '+sugg.lastStr) : '';
@@ -7946,9 +7981,10 @@ function renderSessList(el){
           ${logged ? `<div class="sc-sugg">${logged}</div>` : ''}
         </div>
         ${statusIcon ? `<span class="sc-status">${statusIcon}</span>` : ''}
+        ${editCur ? `<div class="sc-actions"><button data-act="edit" data-i="${i}" title="Změnit počet sérií a opakování">✏️</button></div>` : ''}
         ${editable ? `<div class="sc-actions"><button data-act="edit" data-i="${i}" title="Upravit série a opakování">✏️</button><button data-act="swap" data-i="${i}" title="Vyměnit cvik">🔁</button>${session.exercises.length>1?`<button data-act="rm" data-i="${i}" title="Odebrat cvik" class="danger">✕</button>`:''}</div>` : ''}
       </div>
-      ${(editable && session.editIdx===i) ? sessEditPanelHTML(e,i) : ''}
+      ${((editable||editCur) && session.editIdx===i) ? sessEditPanelHTML(e,i) : ''}
       ${showBody ? '<div class="sc-body" id="sessCardBody"></div>' : ''}
     </div>`;
   }).join('');
@@ -7964,7 +8000,7 @@ function renderSessList(el){
     ${ph==='overview' ? '<button class="sess-start-btn" id="sessBeginBtn">▶ START</button>' : ''}`;
   // tělo aktuálního cviku / vyskakovací pauza
   const body = document.getElementById('sessCardBody');
-  if(ph==='active') renderSessActive(body);
+  if(ph==='active'){ renderSessActive(body); if(keepIn) sessRestoreInputs(keepIn); }
   else if(ph==='setdone') renderSessSetDone(body);
   else if(ph==='nextprompt') renderSessNextPrompt(body);
   else if(ph==='exdone') renderSessExDone(body);
@@ -7981,7 +8017,7 @@ function renderSessList(el){
   const savePl = document.getElementById('sessSavePlan'); if(savePl) savePl.addEventListener('click', sessSaveToPlan);
   el.querySelectorAll('.sc-actions button').forEach(b=>b.addEventListener('click', ()=>{
     const i = parseInt(b.dataset.i), act = b.dataset.act;
-    if(act==='edit'){ session.editIdx = (session.editIdx===i) ? null : i; renderSession(); }
+    if(act==='edit'){ session.editIdx = (session.editIdx===i) ? null : i; session._keepInputs = true; renderSession(); }
     else if(act==='swap'){ session.editIdx = null; sessSwapOpen(i); }
     else if(act==='rm'){
       const removedEx = session.exercises[i];
@@ -8011,9 +8047,10 @@ function renderSessList(el){
       exRememberScheme(e);
       session.editIdx = null; session.dirty = true;
       showToast('✔ Upraveno: '+exDisp(e.name));
-      renderSession();
+      if(i===session.exIdx && session.phase!=='overview' && sessAfterSetsChange(e)) return;
+      session._keepInputs = true; renderSession();
     });
-    document.getElementById('sedCancel').addEventListener('click', ()=>{ session.editIdx = null; renderSession(); });
+    document.getElementById('sedCancel').addEventListener('click', ()=>{ session.editIdx = null; session._keepInputs = true; renderSession(); });
     document.querySelectorAll('#sedSets,#sedMin,#sedMax').forEach(x=>x.addEventListener('focus', ()=>x.select && x.select()));
     document.querySelectorAll('.sc-edit .wex-rest-pick').forEach(bubbleifySelect);
   }
@@ -8050,7 +8087,9 @@ function sessAttachDrag(){
       const card = g.closest('.sess-card'); if(!card) return;
       const all = [...document.querySelectorAll('#sessList .sess-card')];
       const pend = all.filter(c=>c.classList.contains('pending'));
-      const from = all.indexOf(card), minIdx = all.indexOf(pend[0]);
+      const live = sessLive();
+      const from = all.indexOf(card), minIdx = live ? session.exIdx : all.indexOf(pend[0]);
+      const slots = all.slice(minIdx);
       let sp = card.parentElement; while(sp && sp !== document.body){ const o = getComputedStyle(sp).overflowY; if((o==='auto'||o==='scroll') && sp.scrollHeight > sp.clientHeight) break; sp = sp.parentElement; }
       const scroller = (sp && sp !== document.body) ? sp : null;
       const sc0 = scroller ? scroller.scrollTop : 0;
@@ -8058,7 +8097,7 @@ function sessAttachDrag(){
       try{ g.setPointerCapture(ev.pointerId); }catch(e){}
       card.classList.add('sess-dragging');
       const mark = ()=>{
-        const others = pend.filter(c=>c!==card);
+        const others = slots.filter(c=>c!==card);
         let rel = 0; others.forEach(c=>{ const r = c.getBoundingClientRect(); if(r.top + r.height/2 < lastY) rel++; });
         to = minIdx + rel;
         all.forEach(c=>c.classList.remove('drop-before','drop-after'));
@@ -8083,7 +8122,11 @@ function sessAttachDrag(){
           const t = session.exercises.splice(from,1)[0];
           session.exercises.splice(to,0,t);
           session.editIdx = null; session.dirty = true;
-          showToast('↕ Cvik přesunut na pozici ' + (to+1));
+          if(live && to === session.exIdx){   // přetažen nad rozdělaný cvik → rozdělaný se zavře, otevře se tenhle
+            session.setIdx = sessStartIdxFor(t); session.setType = ''; session.pendingSet = null;
+            if(session.phase==='nextprompt') session.phase = 'active';
+            showToast('🔀 Teď cvičíš: ' + exDisp(t.name));
+          } else showToast('↕ Cvik přesunut na pozici ' + (to+1));
           renderSession();
         }
       };
@@ -8375,7 +8418,7 @@ function sessAfterRest(forced){
   }
   const nx = session.restNextPhase || 'nextprompt';
   if(forced || state.sessAuto!==false){
-    if(nx==='exdone' && session.exIdx < session.exercises.length-1){ session.exIdx++; session.setIdx = 0; }
+    if(nx==='exdone' && session.exIdx < session.exercises.length-1){ session.exIdx++; session.setIdx = sessStartIdxFor(session.exercises[session.exIdx]); }
     session.phase = 'active';
   } else {
     session.phase = nx;
@@ -8460,7 +8503,7 @@ function renderSessExDone(el){
       session.phase = 'complete';
     } else {
       session.exIdx++;
-      session.setIdx = 0;
+      session.setIdx = sessStartIdxFor(session.exercises[session.exIdx]);
       session.phase = 'active';
     }
     renderSession();
