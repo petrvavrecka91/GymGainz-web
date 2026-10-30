@@ -2006,7 +2006,17 @@
     background:rgba(20,14,8,.94); box-shadow:0 8px 28px rgba(0,0,0,.5), 0 0 18px rgba(251,146,60,.35);
     backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); animation:restPopIn .28s cubic-bezier(.2,1.3,.4,1);}
   html.nofx .sess-rest-pop{backdrop-filter:none; -webkit-backdrop-filter:none;}
-  body.theme-light .sess-rest-pop{background:rgba(20,14,8,.97); color:#f4f1ee; --text:#f4f1ee; --muted:#b9b0a6;}
+  .sess-rest-pop, body.theme-light .sess-rest-pop{background:#15100a !important; color:#f4f1ee !important; --text:#f4f1ee; --muted:#b9b0a6; --line:rgba(255,255,255,.24); position:sticky;}
+  .sess-rest-pop .sess-rest-label{color:#d4cbc0 !important; padding:0 42px; font-size:13.8px;}
+  .sess-rest-pop .sess-timer-controls button{background:rgba(255,255,255,.1) !important; color:#f4f1ee !important; border-color:rgba(255,255,255,.3) !important;}
+  .sess-rest-pop .sess-skip-btn{color:#f4f1ee !important; border-color:rgba(255,255,255,.6) !important; background:rgba(255,255,255,.06) !important; font-weight:700;}
+  .sess-rest-pop .sess-auto-chip{color:#d4cbc0 !important; border-color:rgba(255,255,255,.3) !important;}
+  .sess-rest-pop .sess-auto-chip.on{color:var(--accent) !important; border-color:var(--accent) !important;}
+  .sess-rest-pop .sess-upnext{background:rgba(255,255,255,.07) !important; border-color:rgba(255,255,255,.2) !important;}
+  .sess-rest-pop .sun-name{color:#f4f1ee !important;} .sess-rest-pop .sun-sub, .sess-rest-pop .sun-then{color:#b9b0a6 !important;}
+  .sess-rest-pop .sess-pop-toggle{position:absolute; top:6px; right:8px; width:34px; height:34px; border-radius:10px; border:1px solid rgba(255,255,255,.3); background:rgba(255,255,255,.1); color:#f4f1ee; font-size:15px; cursor:pointer; padding:0;}
+  .sess-rest-pop.compact .sess-rest-label, .sess-rest-pop.compact .sess-timer-controls, .sess-rest-pop.compact .sess-skip-btn, .sess-rest-pop.compact .sess-auto-chip, .sess-rest-pop.compact .sess-upnext{display:none;}
+  .sess-rest-pop.compact .sess-timer{font-size:34px;}
   .sess-rest-pop .sess-rest-wrap{padding:4px 0 0;}
   .sess-rest-pop .sess-timer{font-size:46px; margin:0;}
   .sess-rest-pop .sess-rest-label{margin-bottom:0;}
@@ -2858,7 +2868,7 @@
     <button id="musicToggleBtn" class="home-bottom-btn" title="Hudba on/off">🔇 Hudba</button>
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29h · 2026-10-28</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29i · 2026-10-30</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -3305,6 +3315,8 @@
       <div class="prof-row"><span>🔥 Aktuální série</span><span class="val" id="pStreak">0 dní</span></div>
       <div class="prof-row"><span>🏋️ Tréninky celkem</span><span class="val" id="pWorkoutCnt">0</span></div>
       <div class="prof-row"><span>⚖️ Celkový objem</span><span class="val" id="pTotalVolume">0 kg</span></div>
+      <div class="prof-row"><span>📅 Objem tento měsíc</span><span class="val" id="pMonthVolume">0 kg</span></div>
+      <details class="prof-month-hist"><summary style="cursor:pointer; padding:8px 0; color:var(--muted); font-size:13.8px;">📚 Historie objemu po měsících</summary><div id="pMonthHist"></div></details>
       <div class="prof-row"><span>🥇 Osobní rekordy</span><span class="val" id="pPrCnt">0</span></div>
     </div>
 
@@ -3402,6 +3414,13 @@
       <h5>✨ AI asistent (Gemini)</h5>
       <div class="portion-note" id="aiSetStatus"></div>
       <div class="backup-row"><button id="aiSetBtn">🔑 Nastavit AI klíč</button></div>
+    </div>
+
+    <div class="prof-sec" data-ptab="set">
+      <h5>🧹 Reset profilu</h5>
+      <div class="portion-note">Vynuluje celý pokrok: XP a level, objem (celkový i měsíční), tréninky, rekordy, Sešit, odznaky, mise, deník jídla, váhu v čase a streak. Zůstane nick, výška, věk, pohlaví, tréninkový plán, moje recepty a potraviny a nastavení appky.</div>
+      <div class="backup-row"><button id="resetProfileBtn" style="border-color:#ef4444; color:#ef4444;">🧹 Resetovat profil do nuly</button></div>
+      <div class="backup-row" id="resetUndoRow" style="display:none;"><button id="resetUndoBtn">↩️ Vrátit stav před posledním resetem / obnovením</button></div>
     </div>
 
     <div class="prof-sec" data-ptab="set">
@@ -5511,6 +5530,38 @@ function seedDemoExerciseData(){
 // seedDemoExerciseData(); // VYPNUTO pro ostry provoz - zavolej rucne z konzole pro testovaci data
 
 let _undoTimer = null;
+// ===== Měsíční objem: celkový objem se počítá dál, vedle něj běží objem aktuálního měsíce; po měsíci se uloží do historie =====
+const MONTHS_CZ = ['Leden','Únor','Březen','Duben','Květen','Červen','Červenec','Srpen','Září','Říjen','Listopad','Prosinec'];
+function monthKeyNow(){ const d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); }
+function monthKeyOfDK(dk){ const p = String(dk).split('-').map(Number); return p[0]+'-'+String(p[1]||1).padStart(2,'0'); }
+function monthVolSync(){
+  const key = monthKeyNow();
+  if(!Array.isArray(state.monthHist)){   // poprvé: dopočítat z deníku dokončených tréninků
+    state.monthHist = []; const by = {};
+    (state.sessionLog||[]).forEach(x=>{ if(!x.date || !(x.totalVolume>0)) return; const k = monthKeyOfDK(x.date); by[k] = by[k] || {key:k, vol:0, workouts:0}; by[k].vol += x.totalVolume; by[k].workouts++; });
+    Object.keys(by).sort().forEach(k=>{ if(k!==key) state.monthHist.push(by[k]); });
+    state.monthVol = by[key] || {key, vol:0, workouts:0};
+    saveState();
+  }
+  if(!state.monthVol || state.monthVol.key!==key){
+    const old = state.monthVol;
+    if(old && old.key && (old.vol>0 || old.workouts>0) && !state.monthHist.some(h=>h.key===old.key)) state.monthHist.push(old);
+    state.monthHist.sort((a,b)=>a.key<b.key?-1:1);
+    if(state.monthHist.length > 60) state.monthHist = state.monthHist.slice(-60);
+    state.monthVol = {key, vol:0, workouts:0};
+    saveState();
+  }
+  return state.monthVol;
+}
+function monthLabel(k){ const p = String(k).split('-'); return MONTHS_CZ[(+p[1]||1)-1]+' '+p[0]; }
+function renderMonthVolume(){
+  const el = document.getElementById('pMonthVolume'), hist = document.getElementById('pMonthHist'); if(!el) return;
+  const m = monthVolSync();
+  el.textContent = Math.round(m.vol).toLocaleString('cs-CZ') + ' kg';
+  const list = (state.monthHist||[]).slice().reverse();
+  hist.innerHTML = list.length ? list.map(h=>`<div class="prof-row"><span>${monthLabel(h.key)}</span><span class="val">${Math.round(h.vol).toLocaleString('cs-CZ')} kg · ${h.workouts}×</span></div>`).join('')
+    : '<div class="portion-note">Zatím žádný ukončený měsíc. Po skončení měsíce se jeho objem uloží sem a počítadlo „tento měsíc“ začne od nuly. Celkový objem se počítá dál.</div>';
+}
 function showUndo(msg, fn){
   let bar = document.getElementById('undoBar');
   if(!bar){
@@ -7704,11 +7755,21 @@ function sessGoNextExercise(){ // bez odpočinku (po přeskočení / výměně)
 }
 function sessSkipSet(){
   const e = session.exercises[session.exIdx];
+  const prev = {exIdx:session.exIdx, setIdx:session.setIdx, skipped:e.skippedSets||0};
   e.skippedSets = (e.skippedSets||0)+1;
   session.setIdx++;
   session.setType = '';
   if(session.setIdx >= e.sets){ sessEndExercise(e); sessGoNextExercise(); }
   else { session.phase = 'active'; renderSession(); }
+  const after = {exIdx:session.exIdx, setIdx:session.setIdx, phase:session.phase};
+  showUndo('Série přeskočena', ()=>{
+    if(!session || session.exIdx!==after.exIdx || session.setIdx!==after.setIdx || session.phase!==after.phase){ showToast('Už to nejde vrátit'); return; }
+    clearRestTimer(); clearFinalCountdown();
+    e.skippedSets = prev.skipped;
+    session.exIdx = prev.exIdx; session.setIdx = prev.setIdx; session.setType = '';
+    session.phase = 'active';
+    renderSession();
+  });
 }
 function sessSkipExercise(){
   const e = session.exercises[session.exIdx];
@@ -8096,6 +8157,7 @@ function sessAttachDrag(){
       const y0 = ev.clientY; let lastY = y0, to = from, raf = null;
       try{ g.setPointerCapture(ev.pointerId); }catch(e){}
       card.classList.add('sess-dragging');
+      const popEl = document.getElementById('sessRestPop'); if(popEl) popEl.style.visibility = 'hidden';
       const mark = ()=>{
         const others = slots.filter(c=>c!==card);
         let rel = 0; others.forEach(c=>{ const r = c.getBoundingClientRect(); if(r.top + r.height/2 < lastY) rel++; });
@@ -8118,6 +8180,7 @@ function sessAttachDrag(){
         if(raf) cancelAnimationFrame(raf);
         all.forEach(c=>c.classList.remove('drop-before','drop-after'));
         card.classList.remove('sess-dragging'); card.style.transform = '';
+        const popEl2 = document.getElementById('sessRestPop'); if(popEl2) popEl2.style.visibility = '';
         if(e2.type !== 'pointercancel' && to !== from){
           const t = session.exercises.splice(from,1)[0];
           session.exercises.splice(to,0,t);
@@ -8344,7 +8407,9 @@ function renderSessSetDone(el){
 
 function renderSessRest(el){
   const isBetweenExercises = session.restNextPhase === 'exdone';
+  el.classList.toggle('compact', !!session.restCompact);
   el.innerHTML = `
+    <button class="sess-pop-toggle" id="sessPopToggle" title="Zmenšit / zvětšit okno pauzy">${session.restCompact?'▾':'▴'}</button>
     <div class="sess-rest-wrap">
       <div class="sess-rest-label">${isBetweenExercises ? 'Odpočinek před dalším cvikem' : 'Odpočinek'}</div>
       <div class="sess-timer" id="sessTimerVal">${sessFmtTime(session.restRemaining)}</div>
@@ -8357,6 +8422,10 @@ function renderSessRest(el){
       <button class="sess-auto-chip ${state.sessAuto===false?'':'on'}" id="sessAutoChip">${state.sessAuto===false?'🔕 Auto-pokračování: vyp':'⚡ Auto-pokračování: zap'}</button>
       ${sessUpcomingHTML()}
     </div>`;
+  document.getElementById('sessPopToggle').addEventListener('click', function(){
+    session.restCompact = !session.restCompact;
+    el.classList.toggle('compact', session.restCompact); this.textContent = session.restCompact ? '▾' : '▴';
+  });
   document.getElementById('sessAutoChip').addEventListener('click', function(){
     state.sessAuto = (state.sessAuto===false) ? true : false;
     saveState();
@@ -8641,6 +8710,7 @@ function renderSessComplete(el){
       state.sessionsWithImprovement = (state.sessionsWithImprovement||0) + 1;
     }
     state.totalVolumeAllTime = (state.totalVolumeAllTime||0) + totalVolume;
+    try{ const mv = monthVolSync(); mv.vol += totalVolume; mv.workouts++; }catch(e){}
     if(!state.volumeLog) state.volumeLog = [];
     state.volumeLog.push({d: todayKey(), total: state.totalVolumeAllTime});
     if(state.volumeLog.length > 30) state.volumeLog.shift();
@@ -12724,6 +12794,7 @@ function renderProfile(){
   try{ renderRestProfile(); }catch(e){}
   document.getElementById('pWorkoutCnt').textContent = state.workoutsTotal || 0;
   document.getElementById('pTotalVolume').textContent = Math.round(state.totalVolumeAllTime||0).toLocaleString('cs-CZ') + ' kg';
+  try{ renderMonthVolume(); }catch(e){}
   document.querySelectorAll('#avatarPick span').forEach(s=>s.classList.toggle('on', s.dataset.av===p.avatar));
   renderWeightChart();
   renderPrList();
@@ -13228,6 +13299,31 @@ function bkRestoreState(o, label){
     }});
 }
 document.getElementById('aiSetBtn').addEventListener('click', openAiSetup);
+// reset profilu: vynuluje pokrok, nastavení a plán nechá; stav před resetem se uloží stranou
+const RESET_KEEP = ['onboardingDone','onboardingVer','theme','glass','fontScale','sfxMuted','musicMuted','sessAuto','reminder','notifAsked','premium','customCut','customAccent','customBgPhoto','exLang','exAlias','homeProfile','myRecipes','myFoods','favorites','favoriteExercises','shopping','foodGoal','schedule','dmTargets','dmTargetsManual','pendingNick','cloudBkAt','fdTgOpen'];
+function resetProfileNow(){
+  const old = state;
+  const fresh = {xp:0, favorites:[], shopping:[], missionsDate:'', missions:[], cooked:[]};
+  RESET_KEEP.forEach(k=>{ if(old[k]!==undefined) fresh[k] = JSON.parse(JSON.stringify(old[k])); });
+  if(old.profile){ const p = Object.assign({}, old.profile); p.weightLog = []; fresh.profile = p; }
+  if(old.workoutPlan){ const wp = JSON.parse(JSON.stringify(old.workoutPlan)); wp.done = (wp.days||[]).map(()=>false); wp.cycleNum = 1; fresh.workoutPlan = wp; }
+  if(fresh.theme && fresh.theme!=='dark' && fresh.theme!=='light' && fresh.theme!=='custom') fresh.theme = 'dark';
+  try{ localStorage.setItem('gymgainz_state_prev', JSON.stringify(old)); }catch(e){}
+  state = fresh; saveState();
+  showToast('🧹 Profil vynulován. Načítám…');
+  setTimeout(()=>location.reload(), 900);
+}
+document.getElementById('resetProfileBtn').addEventListener('click', ()=>{
+  showConfirm({icon:'🧹', title:'Resetovat profil do nuly?', text:'Zmizí všechen pokrok: XP, level, objem, tréninky, rekordy, Sešit, odznaky, deník jídla. Nick, plán a nastavení zůstanou. Doporučuju si nejdřív uložit zálohu do souboru.',
+    okLabel:'Pokračovat', cancelLabel:'Zrušit',
+    onConfirm:()=>setTimeout(()=>showConfirm({icon:'⚠️', title:'Opravdu vynulovat?', text:'Tohle je poslední otázka. Stav před resetem se uloží stranou a jde vrátit tlačítkem v Nastavení, dokud neuděláš další reset nebo obnovení.', okLabel:'Ano, vynulovat', cancelLabel:'Ne', onConfirm:resetProfileNow}), 250)});
+});
+(function(){ try{ if(localStorage.getItem('gymgainz_state_prev')) document.getElementById('resetUndoRow').style.display = ''; }catch(e){} })();
+document.getElementById('resetUndoBtn').addEventListener('click', ()=>{
+  let prev = null; try{ prev = JSON.parse(localStorage.getItem('gymgainz_state_prev')); }catch(e){}
+  if(!prev){ showToast('Není co vracet'); return; }
+  bkRestoreState(prev, 'stav před posledním resetem / obnovením');
+});
 try{ renderAiSetting(); }catch(e){}
 document.getElementById('bkFileExport').addEventListener('click', async ()=>{
   const json = JSON.stringify(state);
