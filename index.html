@@ -1916,6 +1916,17 @@
     color:var(--bulk); width:46px; height:46px; border-radius:12px; cursor:pointer;
     font-size:23.5px; font-weight:700; box-shadow:0 0 12px rgba(255,46,77,0.25); backdrop-filter:blur(9px); -webkit-backdrop-filter:blur(9px);}
   .sess-close:active{background:var(--bulk); color:#fff;}
+  .sess-close.sess-min{margin-right:10px; border-color:var(--accent); color:var(--accent); background:rgba(var(--accent-rgb),calc(0.14 * var(--gt))); box-shadow:0 0 12px var(--accent-glow); font-size:25px; line-height:1;}
+  .sess-close.sess-min:active{background:var(--accent); color:#14041f;}
+  #sessMini{position:fixed; left:10px; right:10px; bottom:calc(74px + env(safe-area-inset-bottom,0px)); z-index:305; display:none; max-width:520px; margin:0 auto;}
+  #sessMini.show{display:block;}
+  #sessMini button{width:100%; display:flex; align-items:center; gap:10px; text-align:left; padding:10px 14px; border-radius:16px; border:2px solid #fb923c; background:#15100a; color:#f4f1ee; cursor:pointer; box-shadow:0 8px 24px rgba(0,0,0,.55), 0 0 16px rgba(251,146,60,.35); font-family:inherit;}
+  #sessMini .smi-txt{flex:1; min-width:0;} #sessMini .smi-txt b{display:block; font-family:'Oxanium',sans-serif; font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  #sessMini .smi-txt small{display:block; color:#b9b0a6; font-size:13px;}
+  #sessMini .smi-time{font-family:'Space Mono',monospace; font-weight:700; font-size:22px; color:var(--bulk);}
+  #sessMini.ready button{border-color:var(--accent); animation:miniPulse 1.4s ease-in-out infinite;}
+  #sessMini.ready .smi-time{color:var(--accent); font-size:15px;}
+  @keyframes miniPulse{0%,100%{box-shadow:0 8px 24px rgba(0,0,0,.55), 0 0 10px var(--accent-glow);} 50%{box-shadow:0 8px 24px rgba(0,0,0,.55), 0 0 26px var(--accent-glow);}}
   .sess-progress-wrap{margin-bottom:20px; clear:both; padding-top:6px;}
   .sess-progress-label{
     display:flex; justify-content:space-between; font-family:'Space Mono',monospace;
@@ -2800,9 +2811,11 @@
   </div>
 </div>
 
+<div id="sessMini"><button type="button" id="sessMiniBtn"><span style="font-size:22px;">🏋️</span><span class="smi-txt"><b id="smiName"></b><small id="smiSub"></small></span><span class="smi-time" id="smiTime"></span></button></div>
 <div class="session-overlay" id="sessionOverlay">
   <div class="session-card">
-    <button class="sess-close" id="sessClose">✕</button>
+    <button class="sess-close" id="sessClose" title="Ukončit trénink">✕</button>
+    <button class="sess-close sess-min" id="sessMin" title="Minimalizovat trénink (běží dál)">—</button>
     <div class="sess-progress-wrap">
       <div class="sess-progress-label"><span id="sessProgLabel">0 / 0 cviků</span><span id="sessTimeLabel"></span></div>
       <div class="sess-progress-track"><div class="sess-progress-fill" id="sessProgFill" style="width:0%"></div></div>
@@ -2868,7 +2881,7 @@
     <button id="musicToggleBtn" class="home-bottom-btn" title="Hudba on/off">🔇 Hudba</button>
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29i · 2026-10-30</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29j · 2026-11-02</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -7334,8 +7347,13 @@ function woBuildEntryBase(plan, exMeta, name){
     repsMin: isTime ? t.min : s.repsMin, repsMax: isTime ? t.max : s.repsMax};
 }
 // nový/vracený cvik dostane naposledy použité série, opakování a pauzu; když je nezná, vezme počet sérií z posledního tréninku
+// cviky po jedné noze / ruce (střídají se strany) – appka u nich nabídne krátký dech mezi stranami
+function exIsUnilateral(name){
+  return /lunge|výpad|split squat|bulhar|single[- ](arm|leg)|jednonoh|jednoruční|pistol|step[- ]?up|výstup|kickback|concentration curl|dumbbell row/i.test(String(name||'')+' '+String(exCanon(name)||''));
+}
 function woBuildEntry(plan, exMeta, name){
   const e = woBuildEntryBase(plan, exMeta, name);
+  if(e.mode!=='cardio' && e.sides===undefined && exIsUnilateral(name)) e.sides = true;
   const m = exSchemeFor(name, e.mode);
   if(m){ e.sets = m.sets; e.repsMin = m.repsMin; e.repsMax = m.repsMax; e.rest = m.rest; }
   else if(e.mode!=='cardio'){
@@ -7665,6 +7683,7 @@ try{
 
 let restOverrideOnce = false;
 function startWorkoutSession(dayIndex){
+  if(session && session.minimized){ sessRestoreFromMini(); showToast('▶ Pokračuješ v rozdělaném tréninku'); return; }
   if(restActive() && !restOverrideOnce){
     const sick = state.rest.type !== 'recovery';
     showConfirm({icon:(REST_TYPES[state.rest.type]||{}).icon||'🛌', title:'Máš zapnutou pauzu',
@@ -7679,7 +7698,7 @@ function startWorkoutSession(dayIndex){
   saveState();
   session = {
     dayIndex,
-    exercises: day.exercises.map(e=>({...e, doneSets:0})),
+    exercises: day.exercises.map(e=>({...e, doneSets:0, sides: (e.mode==='cardio') ? false : (e.sides!==undefined ? e.sides : exIsUnilateral(e.name))})),
     exIdx: 0, setIdx: 0,
     log: {}, // name -> [{weight,reps,rir,note}]
     startTime: Date.now(),
@@ -7712,6 +7731,7 @@ function sessUpcoming(){
     const n = session.exercises[session.exIdx+1];
     return n ? {kind:'exercise', ex:n, idx:session.exIdx+1} : null;
   }
+  if(session.restKind==='side') return {kind:'side', ex:e, setNo:session.setIdx+1};
   return {kind:'set', ex:e, setNo:session.setIdx+1};
 }
 function sessSchemeStr(e){
@@ -7725,7 +7745,9 @@ function sessUpcomingHTML(){
   const e = up.ex;
   const bw = exIsBodyweight(e.name);
   let html = '<div class="sess-upnext">';
-  if(up.kind==='set'){
+  if(up.kind==='side'){
+    html += `<div class="sun-label">↔ Teď druhá strana</div><div class="sun-name">${homeEsc(exDisp(e.name))}</div><div class="sun-sub">Levá strana · série ${up.setNo} / ${e.sets}</div>`;
+  } else if(up.kind==='set'){
     html += `<div class="sun-label">⏭ Další série</div><div class="sun-name">${homeEsc(exDisp(e.name))}</div><div class="sun-sub">Série ${up.setNo} / ${e.sets} · ${e.repsMin===e.repsMax?e.repsMin:e.repsMin+'-'+e.repsMax} ${e.mode==='cardio'?'min':(e.mode==='time'||e.mode==='weightTime'?'s':'opak.')}</div>`;
   } else {
     const sugg = (e.mode==='cardio'||bw) ? null : weightSuggestion(e.name, e.repsMin, e.repsMax);
@@ -7756,6 +7778,7 @@ function sessGoNextExercise(){ // bez odpočinku (po přeskočení / výměně)
 function sessSkipSet(){
   const e = session.exercises[session.exIdx];
   const prev = {exIdx:session.exIdx, setIdx:session.setIdx, skipped:e.skippedSets||0};
+  e._side = 'P'; delete e._sideP; session.restKind = '';
   e.skippedSets = (e.skippedSets||0)+1;
   session.setIdx++;
   session.setType = '';
@@ -8130,7 +8153,7 @@ function sessSaveToPlan(){
   if(!day) return;
   day.exercises = session.exercises.map(e=>{
     const c = Object.assign({}, e);
-    delete c.doneSets; delete c.skipped; delete c.skippedSets;
+    delete c.doneSets; delete c.skipped; delete c.skippedSets; delete c._side; delete c._sideP;
     if(c._cb){ c.sets += 1; delete c._cb; }
     exRememberScheme(c);
     return c;
@@ -8236,7 +8259,10 @@ function renderSessActive(el){
   const unitLabel = isCardio ? 'minut' : ((isTimeOnly || isWeightTime) ? 'sekund' : 'opakování');
   const repsTarget = e.repsMin===e.repsMax ? e.repsMin : (e.repsMin+'-'+e.repsMax);
   const prefillWeight = (setSugg && setSugg.weight>0) ? (session.comeback ? comebackWeight(setSugg.weight) : setSugg.weight) : '';
-  const prefillReps = setSugg ? setSugg.reps : (isTimeOnly || isWeightTime ? e.repsMin : ''); // opakovani nechavame prazdne - vypise uzivatel
+  let prefillReps = setSugg ? setSugg.reps : (isTimeOnly || isWeightTime ? e.repsMin : ''); // opakovani nechavame prazdne - vypise uzivatel
+  const sidesOn = !!e.sides && !isCardio, sideNow = (e._side==='L') ? 'L' : 'P';
+  let prefillWeightS = prefillWeight;
+  if(sidesOn && sideNow==='L' && e._sideP){ prefillReps = e._sideP.reps; if(e._sideP.weight>0) prefillWeightS = e._sideP.weight; }
   let tipHTML = '';
   if(setSugg){
     if(isTimeOnly){
@@ -8253,27 +8279,28 @@ function renderSessActive(el){
   let _wn = 0;
   const logHTML = log.length ? `<div class="sess-set-log">${log.map((s,i)=>{
     if(s.t!=='w') _wn++;
-    const valStr = isCardio ? `${s.reps} min` : isTimeOnly ? `${s.reps} s` : isWeightTime ? `${s.weight} kg × ${s.reps} s` : (isBW && !(s.weight>0) ? `${s.reps} opak.` : `${s.weight} kg × ${s.reps}`);
+    const valStr = isCardio ? `${s.reps} min` : isTimeOnly ? `${s.reps} s` : isWeightTime ? `${s.weight} kg × ${s.reps} s` : (isBW && !(s.weight>0) ? `${s.reps} opak.` : `${s.weight} kg × ${s.reps}`) + (s.repsP>0 ? ` <small>(P ${s.repsP} / L ${s.reps})</small>` : '');
     return `<div class="ssl-row ${s.isPR?'pr':''}"><span>${s.t==='w' ? '🔥 Rozcvička' : 'Série '+_wn+(s.t==='d'?' ⬇️':s.t==='f'?' 💥':'')} ${s.difficulty==='easy'?'😎':s.difficulty==='hard'?'🥵':s.difficulty==='ok'?'💪':''}</span><span>${valStr}${s.isPR?' <span class="trophy-ic"></span> PR!':''}</span></div>`;
   }).join('')}</div>` : '';
   const inputsHTML = isTimeOnly
     ? `<div class="sess-inputs"><div><label>${isCardio ? 'Čas (minuty)' : 'Čas (sekundy)'}</label><input type="number" id="sessReps" inputmode="numeric" value="${prefillReps}"></div></div>`
     : isWeightTime
       ? `<div class="sess-inputs">
-          <div><label>Váha (kg)</label><input type="number" id="sessWeight" step="0.5" value="${prefillWeight}"></div>
+          <div><label>Váha (kg)</label><input type="number" id="sessWeight" step="0.5" value="${prefillWeightS}"></div>
           <div><label>Čas (sekundy)</label><input type="number" id="sessReps" value="${prefillReps}"></div>
         </div>`
       : bwHide
         ? `<div class="sess-inputs"><div><label>Opakování <span style="opacity:.6;">(vlastní váha)</span></label><input type="number" id="sessReps" inputmode="numeric" value="${prefillReps}"></div></div>
            <button type="button" class="sess-addw-btn" id="sessAddWeight">＋ Přidat zátěž (vesta, kotouč…)</button>`
         : `<div class="sess-inputs">
-          <div><label>Váha (kg)${isBW ? ' <span style="opacity:.6;">(zátěž navíc)</span>' : ''}</label><input type="number" id="sessWeight" step="0.5" value="${prefillWeight}"></div>
+          <div><label>Váha (kg)${isBW ? ' <span style="opacity:.6;">(zátěž navíc)</span>' : ''}</label><input type="number" id="sessWeight" step="0.5" value="${prefillWeightS}"></div>
           <div><label>Opakování</label><input type="number" id="sessReps" inputmode="numeric" value="${prefillReps}"></div>
         </div>`;
   el.innerHTML = `
     <a class="sess-active-name" href="${youtubeSearchUrl(exDisp(e.name), state.sex)}" target="_blank" rel="noopener">${exDisp(e.name)} <span class="yticon">▶️</span></a>
-    <div class="sess-active-sub">Série ${session.setIdx+1} / ${e.sets}</div>
+    <div class="sess-active-sub">Série ${session.setIdx+1} / ${e.sets}${sidesOn ? ' · '+(sideNow==='L' ? '⬅️ levá strana' : '➡️ pravá strana') : ''}</div>
     <div class="sess-active-target">${repsTarget} ${unitLabel}</div>
+    ${!isCardio ? `<button type="button" class="sess-auto-chip ${e.sides?'on':''}" id="sessSidesChip" style="margin:0 auto 10px;">↔ Každá strana zvlášť: ${e.sides?'zap':'vyp'}</button>` : ''}
     ${tipHTML}
     ${inputsHTML}
     <div class="sess-inputs" style="margin-bottom:6px;">
@@ -8290,6 +8317,12 @@ function renderSessActive(el){
     </div>
     ${sessNextLine()}
     ${logHTML}`;
+  const sidesChip = document.getElementById('sessSidesChip');
+  if(sidesChip) sidesChip.addEventListener('click', ()=>{
+    e.sides = !e.sides; e._side = 'P'; delete e._sideP; session.dirty = true;
+    showToast(e.sides ? '↔ Po každé straně dostaneš krátký dech' : '↔ Strany se nestřídají');
+    session._keepInputs = true; renderSession();
+  });
   document.getElementById('sessSkipSet').addEventListener('click', sessSkipSet);
   document.getElementById('sessSwapEx').addEventListener('click', sessSwapOpen);
   document.getElementById('sessSkipEx').addEventListener('click', sessSkipExercise);
@@ -8308,7 +8341,15 @@ function renderSessActive(el){
     if(!(reps > 0)){ showToast(isCardio ? 'Zadej počet minut' : 'Zadej počet opakování'); document.getElementById('sessReps').focus(); return; }
     // PR se NEvyhodnocuje po kazde serii - az po dokonceni cviku (viz evaluateExercisePR)
     const isPR = false, prevWeight = null;
-    session.pendingSet = {weight, reps, rir, note, isPR, prevWeight, t: session.setType || ''};
+    const typeNow = session.setType || '';
+    if(sidesOn && typeNow!=='w' && sideNow==='P'){   // první strana hotová → krátký dech a druhá strana
+      e._sideP = {weight, reps}; e._side = 'L';
+      session.restTotal = e.sideRest || 20; session.restRemaining = session.restTotal; session.restPaused = false;
+      session.restNextPhase = 'nextprompt'; session.restKind = 'side';
+      session.phase = 'rest'; renderSession(); return;
+    }
+    session.pendingSet = {weight, reps, rir, note, isPR, prevWeight, t: typeNow};
+    if(sidesOn && typeNow!=='w'){ if(e._sideP) session.pendingSet.repsP = e._sideP.reps; e._side = 'P'; delete e._sideP; }
     session.setType = '';
     session.phase = 'setdone';
     renderSession();
@@ -8359,6 +8400,7 @@ function renderSessSetDone(el){
       </div>
     </div>`;
   function finishSet(difficulty){
+      session.restKind = '';
       const setEntry = {...session.pendingSet, difficulty};
       if(!session.log[e.name]) session.log[e.name] = [];
       session.log[e.name].push(setEntry);
@@ -8411,7 +8453,7 @@ function renderSessRest(el){
   el.innerHTML = `
     <button class="sess-pop-toggle" id="sessPopToggle" title="Zmenšit / zvětšit okno pauzy">${session.restCompact?'▾':'▴'}</button>
     <div class="sess-rest-wrap">
-      <div class="sess-rest-label">${isBetweenExercises ? 'Odpočinek před dalším cvikem' : 'Odpočinek'}</div>
+      <div class="sess-rest-label">${session.restKind==='side' ? '😮‍💨 Dech před druhou stranou' : (isBetweenExercises ? 'Odpočinek před dalším cvikem' : 'Odpočinek')}</div>
       <div class="sess-timer" id="sessTimerVal">${sessFmtTime(session.restRemaining)}</div>
       <div class="sess-timer-controls">
         <button id="sessMinus15">−15s</button>
@@ -8547,7 +8589,7 @@ function clearFinalCountdown(){
 function renderSessNextPrompt(el){
   el.innerHTML = `
     <div class="sess-next-prompt">
-      <div class="snp-label">🔔 Další série</div>
+      <div class="snp-label">${(session.exercises[session.exIdx]||{})._side==='L' && (session.exercises[session.exIdx]||{}).sides ? '🔔 Druhá strana (levá)' : '🔔 Další série'}</div>
       <button id="sessNextSetBtn">START</button>
     </div>`;
   document.getElementById('sessNextSetBtn').addEventListener('click', ()=>{
@@ -8604,7 +8646,7 @@ function renderSessComplete(el){
     sets.forEach(s=>{
       if(s.t==='w') return;
       totalSets++;
-      if(!isTimeBased){ totalReps += s.reps; totalVolume += s.weight*s.reps; }
+      if(!isTimeBased){ totalReps += s.reps + (s.repsP>0 ? s.repsP : 0); totalVolume += s.weight*(s.reps + (s.repsP>0 ? s.repsP : 0)); }
     });
   });
   const estCalories = Math.round(totalVolume*0.03 + totalSets*4.5);
@@ -8746,7 +8788,7 @@ function renderSessComplete(el){
       const doneCount = state.workoutPlan.done.filter(d=>d).length;
       showToast(`<span class="trophy-ic"></span> Trénink uložen! ${doneCount}/${state.workoutPlan.done.length} tréninky dokončeny`);
     }
-    clearRestTimer();
+    clearRestTimer(); sessMiniHide();
     document.getElementById('sessionOverlay').classList.remove('open');
     session = null;
     if(allDone) setTimeout(()=>showWeeklyReport(), 600);
@@ -8777,7 +8819,50 @@ document.getElementById('genericConfirmOk').addEventListener('click', ()=>{
   if(cb) cb();
 });
 
+// ----- minimalizace tréninku: trénink běží dál, v appce můžeš dělat cokoliv, dole je pruh pro návrat -----
+let _miniTimer = null;
+function sessMiniHide(){ const m = document.getElementById('sessMini'); if(m) m.classList.remove('show'); if(_miniTimer){ clearInterval(_miniTimer); _miniTimer = null; } }
+function sessMiniTick(){
+  const m = document.getElementById('sessMini');
+  if(!session || !session.minimized){ sessMiniHide(); return; }
+  const e = session.exercises[session.exIdx] || {};
+  const ph = session.phase;
+  let sub = '', time = '', ready = false;
+  if(ph==='rest'){
+    const rem = session.restPaused ? session.restRemaining : Math.max(0, Math.round((session.restEndAt - Date.now())/1000));
+    sub = (session.restKind==='side' ? 'Dech před druhou stranou' : 'Pauza') + (session.restPaused ? ' (pozastaveno)' : '');
+    time = sessFmtTime(rem);
+  } else if(ph==='overview'){ sub = 'Trénink čeká na START'; time = 'Otevřít'; ready = true; }
+  else if(ph==='complete'){ sub = 'Trénink dokončen – ulož ho'; time = 'Otevřít'; ready = true; }
+  else if(ph==='exdone'){ sub = 'Cvik hotový'; time = 'Pokračuj'; ready = true; }
+  else { sub = 'Série '+(session.setIdx+1)+' / '+(e.sets||'?'); time = '▶ Pokračuj'; ready = true; }
+  document.getElementById('smiName').textContent = ph==='overview' ? (state.workoutPlan.days[session.dayIndex]||{}).label || 'Trénink' : exDisp(e.name||'Trénink');
+  document.getElementById('smiSub').textContent = sub;
+  document.getElementById('smiTime').textContent = time;
+  m.classList.toggle('ready', ready);
+  m.classList.add('show');
+}
+function sessMinimize(){
+  if(!session) return;
+  session.minimized = true;
+  document.getElementById('sessionOverlay').classList.remove('open');
+  try{ goHome(); }catch(e){}
+  sessMiniTick();
+  if(_miniTimer) clearInterval(_miniTimer);
+  _miniTimer = setInterval(sessMiniTick, 500);
+}
+function sessRestoreFromMini(){
+  if(!session) return;
+  session.minimized = false;
+  sessMiniHide();
+  document.querySelectorAll('.page-overlay.open, .profile-overlay.open').forEach(o=>{ if(o.id!=='sessionOverlay') o.classList.remove('open'); });
+  document.getElementById('sessionOverlay').classList.add('open');
+  renderSession();
+}
+document.getElementById('sessMin').addEventListener('click', sessMinimize);
+document.getElementById('sessMiniBtn').addEventListener('click', sessRestoreFromMini);
 function actuallyEndWorkoutSession(){
+  sessMiniHide();
   clearRestTimer();
   clearFinalCountdown();
   document.getElementById('sessionOverlay').classList.remove('open');
