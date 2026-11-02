@@ -2125,6 +2125,9 @@
   .sess-upnext .sun-label{font-family:'Oxanium',sans-serif; font-size:13.4px; text-transform:uppercase; letter-spacing:.06em; color:var(--accent);}
   .sess-upnext .sun-name{font-family:'Oxanium',sans-serif; font-size:17.9px; font-weight:700; margin-top:2px;}
   .sess-upnext .sun-sub{font-size:13.8px; color:var(--muted); margin-top:2px;}
+  .sess-upnext .sun-weight{font-family:'Oxanium',sans-serif; font-size:20px; margin-top:8px; color:var(--accent);} .sess-upnext .sun-weight b{font-size:24px;}
+  .sess-rest-pop .sun-weight{color:var(--accent) !important;}
+  .snp-label + .sun-weight{text-align:center; margin:8px 0;}
   .sess-upnext .sun-then{font-size:13.4px; color:var(--muted); margin-top:8px; opacity:.85;}
   .sess-auto-chip{display:block; margin:12px auto 0; border:1px solid var(--line); background:transparent; color:var(--muted); border-radius:999px; padding:6px 14px; cursor:pointer; font-size:13.4px; font-family:'Space Mono',monospace;}
   .sess-auto-chip.on{border-color:var(--accent); color:var(--accent);}
@@ -2881,7 +2884,7 @@
     <button id="musicToggleBtn" class="home-bottom-btn" title="Hudba on/off">🔇 Hudba</button>
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29j · 2026-11-02</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29k · 2026-11-02</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -7739,6 +7742,21 @@ function sessSchemeStr(e){
   if(e.mode==='cardio') return `${e.repsMin===e.repsMax?e.repsMin:e.repsMin+'-'+e.repsMax} min`;
   return `${e.sets}× ${e.repsMin===e.repsMax?e.repsMin:e.repsMin+'-'+e.repsMax}${isTimeBased?' s':''}`;
 }
+// kolik kg nachystat na danou sérii (stejná hodnota, která se pak předvyplní v poli Váha)
+function sessPrefillWeight(e, setIdx){
+  if(!e || e.mode==='cardio' || e.mode==='time') return 0;
+  if(e.sides && e._side==='L' && e._sideP && e._sideP.weight>0) return e._sideP.weight;
+  const lg = (session.log[e.name]||[]).filter(x=>x.t!=='w' && x.t!=='d' && x.weight>0);
+  if(setIdx>0 && lg.length) return lg[lg.length-1].weight;
+  const sg = weightSuggestionForSet(e.name, setIdx, e.repsMin, e.repsMax);
+  if(sg && sg.weight>0) return session.comeback ? comebackWeight(sg.weight) : sg.weight;
+  return 0;
+}
+function sessWeightLine(e, setIdx){
+  const w = sessPrefillWeight(e, setIdx);
+  if(w>0) return `<div class="sun-weight">🏋️ Nachystej <b>${String(w).replace('.',',')} kg</b></div>`;
+  return exIsBodyweight(e.name) && e.mode!=='cardio' ? '<div class="sun-weight">🤸 Vlastní váha</div>' : '';
+}
 function sessUpcomingHTML(){
   const up = sessUpcoming();
   if(!up) return '';
@@ -7746,12 +7764,12 @@ function sessUpcomingHTML(){
   const bw = exIsBodyweight(e.name);
   let html = '<div class="sess-upnext">';
   if(up.kind==='side'){
-    html += `<div class="sun-label">↔ Teď druhá strana</div><div class="sun-name">${homeEsc(exDisp(e.name))}</div><div class="sun-sub">Levá strana · série ${up.setNo} / ${e.sets}</div>`;
+    html += `<div class="sun-label">↔ Teď druhá strana</div><div class="sun-name">${homeEsc(exDisp(e.name))}</div><div class="sun-sub">Levá strana · série ${up.setNo} / ${e.sets}</div>${sessWeightLine(e, up.setNo-1)}`;
   } else if(up.kind==='set'){
-    html += `<div class="sun-label">⏭ Další série</div><div class="sun-name">${homeEsc(exDisp(e.name))}</div><div class="sun-sub">Série ${up.setNo} / ${e.sets} · ${e.repsMin===e.repsMax?e.repsMin:e.repsMin+'-'+e.repsMax} ${e.mode==='cardio'?'min':(e.mode==='time'||e.mode==='weightTime'?'s':'opak.')}</div>`;
+    html += `<div class="sun-label">⏭ Další série</div><div class="sun-name">${homeEsc(exDisp(e.name))}</div><div class="sun-sub">Série ${up.setNo} / ${e.sets} · ${e.repsMin===e.repsMax?e.repsMin:e.repsMin+'-'+e.repsMax} ${e.mode==='cardio'?'min':(e.mode==='time'||e.mode==='weightTime'?'s':'opak.')}</div>${sessWeightLine(e, up.setNo-1)}`;
   } else {
     const sugg = (e.mode==='cardio'||bw) ? null : weightSuggestion(e.name, e.repsMin, e.repsMax);
-    html += `<div class="sun-label">⏭ Další cvik</div><div class="sun-name">${homeEsc(exDisp(e.name))}</div><div class="sun-sub">${sessSchemeStr(e)}${sugg&&sugg.weight?' · '+sugg.weight+' kg':''}</div>`;
+    html += `<div class="sun-label">⏭ Další cvik</div><div class="sun-name">${homeEsc(exDisp(e.name))}</div><div class="sun-sub">${sessSchemeStr(e)}</div>${sessWeightLine(e, sessStartIdxFor(e))}`;
     const rest = session.exercises.slice(up.idx+1, up.idx+3);
     if(rest.length) html += `<div class="sun-then">Poté: ${rest.map(x=>homeEsc(exDisp(x.name))).join(' → ')}</div>`;
   }
@@ -8258,7 +8276,8 @@ function renderSessActive(el){
   const bwHide = isBW && !session.bwExtra[e.name] && !(setSugg && setSugg.weight>0);
   const unitLabel = isCardio ? 'minut' : ((isTimeOnly || isWeightTime) ? 'sekund' : 'opakování');
   const repsTarget = e.repsMin===e.repsMax ? e.repsMin : (e.repsMin+'-'+e.repsMax);
-  const prefillWeight = (setSugg && setSugg.weight>0) ? (session.comeback ? comebackWeight(setSugg.weight) : setSugg.weight) : '';
+  const _pw = sessPrefillWeight(e, session.setIdx);
+  const prefillWeight = _pw>0 ? _pw : '';
   let prefillReps = setSugg ? setSugg.reps : (isTimeOnly || isWeightTime ? e.repsMin : ''); // opakovani nechavame prazdne - vypise uzivatel
   const sidesOn = !!e.sides && !isCardio, sideNow = (e._side==='L') ? 'L' : 'P';
   let prefillWeightS = prefillWeight;
@@ -8590,6 +8609,7 @@ function renderSessNextPrompt(el){
   el.innerHTML = `
     <div class="sess-next-prompt">
       <div class="snp-label">${(session.exercises[session.exIdx]||{})._side==='L' && (session.exercises[session.exIdx]||{}).sides ? '🔔 Druhá strana (levá)' : '🔔 Další série'}</div>
+      ${(()=>{ const ex = session.exercises[session.exIdx]; return ex ? sessWeightLine(ex, session.setIdx) : ''; })()}
       <button id="sessNextSetBtn">START</button>
     </div>`;
   document.getElementById('sessNextSetBtn').addEventListener('click', ()=>{
