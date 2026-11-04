@@ -2916,7 +2916,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29l · 2026-11-04</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29m · 2026-11-04</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -11242,10 +11242,10 @@ function nbCalendarHTML(entries){
 }
 // ---------- cviky ----------
 function nbSessionsFor(entries, name){
-  return entries.filter(e=>e.name===name).sort((a,b)=>dateKeyToTime(a.date)-dateKeyToTime(b.date));
+  return entries.filter(e=>e.name===name && e.sets && e.sets.length).sort((a,b)=>dateKeyToTime(a.date)-dateKeyToTime(b.date));
 }
 function nbExercisesHTML(entries){
-  const names = [...new Set(entries.map(e=>e.name))].sort((a,b)=>exDisp(a).localeCompare(exDisp(b),'cs'));
+  const names = [...new Set(entries.filter(e=>e.sets && e.sets.length).map(e=>e.name))].sort((a,b)=>exDisp(a).localeCompare(exDisp(b),'cs'));
   const q = homeNorm(nbSearch);
   const shown = q ? names.filter(n=>exMatches(n, nbSearch)) : names;
   const search = `<input type="text" id="nbSearch" class="wo-scratch-input" placeholder="🔎 Hledat cvik…" value="${homeEsc(nbSearch)}" style="margin-bottom:10px;">`;
@@ -11397,7 +11397,7 @@ function nbStatsTabHTML(entries){
   // nejvíc odcvičené
   const topEx = Object.entries(exVol).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]).slice(0,5);
   const maxEx = topEx.length ? topEx[0][1] : 1;
-  const topHTML = topEx.length ? topEx.map(([n,v],i)=>`<div class="nb-mrow"><span class="nb-mname" style="flex-basis:130px;">${i+1}. ${homeEsc(n)}</span><div class="nb-mbar"><i style="width:${v/maxEx*100}%; background:${c1};"></i></div><span class="nb-mval" style="flex-basis:60px;">${nbVolShort(v)}</span></div>`).join('') : '<p class="nb-none" style="padding:8px 0;">V tomto období zatím nic.</p>';
+  const topHTML = topEx.length ? topEx.map(([n,v],i)=>`<div class="nb-mrow"><span class="nb-mname" style="flex-basis:130px;">${i+1}. ${homeEsc(n)}</span><div class="nb-mbar"><i style="width:${v/maxEx*100}%; background:${themeColor('--accent')};"></i></div><span class="nb-mval" style="flex-basis:60px;">${nbVolShort(v)}</span></div>`).join('') : '<p class="nb-none" style="padding:8px 0;">V tomto období zatím nic.</p>';
   // nejlepší odhady 1RM (celá historie)
   const best1 = {};
   entries.forEach(e=>{
