@@ -1885,13 +1885,14 @@
   .wo-hub{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:12px; margin:6px 0 16px;}
   .wo-grip, .sess-grip{color:var(--accent) !important;}
   /* zelená nápověda ? – sbalitelná, pod čarou vpravo */
-  .qh{margin:16px 0 6px; border-top:1px solid var(--line); text-align:right;}
-  .qh-btn{margin-top:8px; width:30px; height:30px; border-radius:50%; border:2px solid #2ee66b; background:rgba(46,230,107,0.12); color:#2ee66b; font-family:'Oxanium',sans-serif; font-weight:800; font-size:17px; line-height:1; cursor:pointer; padding:0; box-shadow:0 0 10px rgba(46,230,107,0.25); transition:background .3s ease, transform .3s ease;}
+  .qh{position:relative; text-align:right; margin:2px 0 8px; height:34px;}
+  .qh-btn{width:30px; height:30px; border-radius:50%; border:2px solid #2ee66b; background:rgba(46,230,107,0.12); color:#2ee66b; font-family:'Oxanium',sans-serif; font-weight:800; font-size:17px; line-height:1; cursor:pointer; padding:0; box-shadow:0 0 10px rgba(46,230,107,0.25); transition:background .35s ease, color .35s ease;}
   .qh.open .qh-btn{background:#2ee66b; color:#04170c;}
-  .qh-body{display:none; text-align:left; margin-top:10px; padding:12px 14px; border:1px solid rgba(46,230,107,0.35); border-radius:14px; background:rgba(46,230,107,0.06);}
-  .qh.open .qh-body{display:block; animation:subFade .55s cubic-bezier(.22,.61,.36,1) both;}
+  .qh-body{display:none; position:absolute; right:0; top:40px; z-index:80; width:min(340px, calc(100vw - 36px)); text-align:left; padding:14px 16px; border:1.5px solid #2ee66b; border-radius:16px; background:var(--surface,#0d0d12); box-shadow:0 14px 36px rgba(0,0,0,0.65), 0 0 18px rgba(46,230,107,0.18);}
+  .qh-body::before{content:''; position:absolute; top:-8px; right:9px; width:14px; height:14px; background:var(--surface,#0d0d12); border-left:1.5px solid #2ee66b; border-top:1.5px solid #2ee66b; transform:rotate(45deg);}
+  .qh.open .qh-body{display:block; animation:subFade .45s cubic-bezier(.22,.61,.36,1) backwards;}
   .qh-body .qh-t{font-family:'Oxanium',sans-serif; font-weight:800; font-size:14px; margin-bottom:6px; color:#2ee66b;}
-  .qh-body ul{margin:0; padding-left:18px; color:var(--text); font-size:13.2px; line-height:1.5; opacity:.92;}
+  .qh-body ul{margin:0; padding-left:18px; color:var(--text); font-size:13.2px; line-height:1.5;}
   .qh-body li{margin-bottom:3px;}
   .wo-explain{margin:16px 0 8px; padding:12px 14px; border:1px dashed var(--line); border-radius:14px; background:rgba(0,0,0,0.2);}
   .wo-explain-t{font-family:'Oxanium',sans-serif; font-weight:800; font-size:14px; margin-bottom:6px;}
@@ -2965,7 +2966,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29q · 2026-11-05</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29r · 2026-11-05</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -3072,6 +3073,7 @@
       <div class="gsb-percentile" id="progGainzPercentile">Pokrok v tvé kategorii: 0 %</div>
     </div>
 
+    <div data-qh="progress" style="margin-top:12px;"></div>
     <div id="progVolBox"></div>
     <div id="progFoodBox"></div>
 
@@ -3415,6 +3417,7 @@
 
     <div class="prof-sec" data-ptab="set">
       <h5>⚙️ Nastavení</h5>
+      <div data-qh="settings"></div>
       <div style="margin-bottom:12px;">
         <label style="display:block; font-family:'Space Mono',monospace; font-size:13.4px; color:var(--muted); margin-bottom:8px;">🎨 Vzhled appky <span style="opacity:0.7;">— zamčené motivy jsou odměna za postup, klepnutím zjistíš podmínku</span></label>
         <div class="font-size-picker" id="themePicker">
@@ -3495,14 +3498,12 @@
         <div class="portion-note" style="margin-top:6px;">Ráno ti přijde oznámení, jaký trénink je dnes na řadě podle plánu, nebo že máš rest day.</div>
       </div>
       <div class="prof-row" id="obReplayBtn" style="cursor:pointer;"><span>🔄 Spustit úvodní nastavení znovu</span><span class="val">›</span></div>
-      <div data-qh="settings"></div>
     </div>
 
     <div class="prof-sec" data-ptab="set">
       <h5>✨ AI asistent (Gemini)</h5>
       <div class="portion-note" id="aiSetStatus"></div>
       <div class="backup-row"><button id="aiSetBtn">🔑 Nastavit AI klíč</button></div>
-      <div data-qh="ai"></div>
     </div>
 
     <div class="prof-sec" data-ptab="set">
@@ -3510,7 +3511,6 @@
       <div class="portion-note">Vynuluje celý pokrok: XP a level, objem (celkový i měsíční), tréninky, rekordy, Sešit, odznaky, mise, deník jídla, váhu v čase a streak. Zůstane nick, výška, věk, pohlaví, tréninkový plán, moje recepty a potraviny a nastavení appky.</div>
       <div class="backup-row"><button id="resetProfileBtn" style="border-color:#ef4444; color:#ef4444;">🧹 Resetovat profil do nuly</button></div>
       <div class="backup-row" id="resetUndoRow" style="display:none;"><button id="resetUndoBtn">↩️ Vrátit stav před posledním resetem / obnovením</button></div>
-      <div data-qh="reset"></div>
     </div>
 
     <div class="prof-sec" data-ptab="set">
@@ -3531,7 +3531,6 @@
         <button id="bkExport">📤 Zkopírovat kód</button>
         <button id="bkImport">📥 Vložit kód</button>
       </div>
-      <div data-qh="backup"></div>
     </div>
 
     <div class="prof-sec" data-ptab="set">
@@ -5788,9 +5787,9 @@ function xpNeededForLevel(lv){
   const i = lv > 75 ? 24 : (lv-1) % 25;   // pozice v ere 0..24 (od levelu 76 stale nejvyssi cena)
   let c;
   if(lv <= 25){
-    c = i < 12 ? 600 + (1950-600)*i/11 : 2400 + (4780-2400)*(i-12)/12;
+    c = i < 12 ? 350 + (1000-350)*i/11 : 1100 + (2800-1100)*(i-12)/12;   // první ~3 měsíce rychleji, celá éra ≈ rok
   } else {
-    c = 2480 * (0.4 + 1.2*i/24);
+    c = 1700 * (0.4 + 1.2*i/24);
   }
   return Math.round(c/5)*5;
 }
@@ -6148,6 +6147,7 @@ function openRestSetup(){
   ov.innerHTML = `<div class="nb-add-card rest-setup">
     <button class="prof-close" id="restClose" style="float:none; position:absolute; top:12px; right:12px;">✕</button>
     <h4>🤒 Nemoc / Regenerace</h4>
+    ${qhelp('rest')}
     <p class="rest-p" style="margin-top:0;">Dej tělu čas. O svůj progres nepřijdeš.</p>
     <label>Co se děje?</label>
     <div class="rest-chips" id="restTypeChips">${Object.entries(REST_TYPES).map(([k,v])=>`<button data-rt="${k}" class="${k==='sick'?'on':''}">${v.icon} ${v.title}</button>`).join('')}</div>
@@ -6166,7 +6166,6 @@ function openRestSetup(){
       <li>Po pauze dostaneš lehčí první trénink, ne rovnou plnou zátěž.</li>
     </ul>
     <button class="paywall-cta" id="restGo" style="background:var(--accent); color:#14041f; margin:12px 0 0;">✅ Zapnout režim</button>
-    ${qhelp('rest')}
   </div>`;
   ov.classList.add('open');
   ov.querySelectorAll('[data-rt]').forEach(b=>b.addEventListener('click', ()=>{ restSel.type = b.dataset.rt; ov.querySelectorAll('[data-rt]').forEach(x=>x.classList.toggle('on', x===b)); }));
@@ -6571,6 +6570,146 @@ const ACHIEVEMENTS = [
   {id:'noPain',  icon:'💀', name:'No Pain No Gainz', desc:'Dokonči 10 sérií s hodnocením obtížnosti „hard"', stat:'hardSetsCount', goal:10, xp:250, secret:true},
   {id:'smartLifter', icon:'🧠', name:'Smart Lifter', desc:'Použij doporučenou váhu 10×',   stat:'suggestedWeightUsedCount', goal:10, xp:150, secret:true},
   {id:'legend75', icon:'👑', name:'Gym Gainz Legend', desc:'Dosáhni Levelu 75',            stat:'level', goal:75, xp:2000, secret:true},
+  // ===== 🆕 Další achievementy =====
+  // 🏋️ Tréninky
+  {id:'wo2',     icon:'🥉', name:'Druhý krok',       desc:'Dokonči 2 tréninky',             stat:'workoutsTotal', goal:2,   xp:50},
+  {id:'wo3',     icon:'🥈', name:'Hattrick',          desc:'Dokonči 3 tréninky',             stat:'workoutsTotal', goal:3,   xp:60},
+  {id:'wo15',    icon:'🏃', name:'Zapadl jsi',        desc:'Dokonči 15 tréninků',            stat:'workoutsTotal', goal:15,  xp:120},
+  {id:'wo40',    icon:'🧱', name:'Základ stojí',      desc:'Dokonči 40 tréninků',            stat:'workoutsTotal', goal:40,  xp:200},
+  {id:'wo75',    icon:'🛡️', name:'Pravidelný host',   desc:'Dokonči 75 tréninků',            stat:'workoutsTotal', goal:75,  xp:300},
+  {id:'wo150',   icon:'🔩', name:'Stálice',           desc:'Dokonči 150 tréninků',           stat:'workoutsTotal', goal:150, xp:450},
+  {id:'wo300',   icon:'🏛️', name:'Pilíř gymu',        desc:'Dokonči 300 tréninků',           stat:'workoutsTotal', goal:300, xp:800},
+  {id:'wo500',   icon:'🗿', name:'Socha v posilovně', desc:'Dokonči 500 tréninků',           stat:'workoutsTotal', goal:500, xp:1500},
+  {id:'week5',   icon:'🌋', name:'Pětidenní týden',   desc:'Dokonči 5 tréninků během jednoho týdne', stat:'weekWorkoutMax', goal:5, xp:200},
+  {id:'week6',   icon:'☄️', name:'Šest dní v kuse',   desc:'Dokonči 6 tréninků během jednoho týdne', stat:'weekWorkoutMax', goal:6, xp:350},
+  // 📈 Progres
+  {id:'imp3',    icon:'📶', name:'Trojka za sebou',   desc:'Zlepši svůj výkon 3×',           stat:'improveCount', goal:3,  xp:70},
+  {id:'imp30',   icon:'🧗', name:'Šplháš nahoru',     desc:'Zlepši svůj výkon 30×',          stat:'improveCount', goal:30, xp:250},
+  {id:'imp50',   icon:'🏔️', name:'Vysoko nad mraky',  desc:'Zlepši svůj výkon 50×',          stat:'improveCount', goal:50, xp:400},
+  {id:'imp100',  icon:'🌠', name:'Stovka zlepšení',   desc:'Zlepši svůj výkon 100×',         stat:'improveCount', goal:100, xp:800},
+  {id:'sImp5',   icon:'📊', name:'Pětkrát lepší',     desc:'Zlepši výkon v 5 trénincích',    stat:'sessionsWithImprovement', goal:5, xp:120},
+  {id:'sImp50',  icon:'📈', name:'Progres jako zvyk', desc:'Zlepši výkon v 50 trénincích',   stat:'sessionsWithImprovement', goal:50, xp:500},
+  // 🔢 Série a opakování
+  {id:'sets25',  icon:'🔢', name:'Prvních 25 sérií',  desc:'Zaznamenej 25 pracovních sérií', stat:'totalSetsLogged', goal:25, xp:60},
+  {id:'sets250', icon:'🧮', name:'Čtvrt tisíce sérií',desc:'Zaznamenej 250 pracovních sérií',stat:'totalSetsLogged', goal:250, xp:180},
+  {id:'sets500', icon:'🧱', name:'Půl tisíce sérií',  desc:'Zaznamenej 500 pracovních sérií',stat:'totalSetsLogged', goal:500, xp:250},
+  {id:'sets1000',icon:'🏗️', name:'Tisíc sérií',       desc:'Zaznamenej 1 000 pracovních sérií', stat:'totalSetsLogged', goal:1000, xp:450},
+  {id:'sets2500',icon:'🏭', name:'Továrna na série',  desc:'Zaznamenej 2 500 pracovních sérií', stat:'totalSetsLogged', goal:2500, xp:800},
+  {id:'reps250', icon:'🔁', name:'250 opakování',     desc:'Proveď 250 opakování',           stat:'totalRepsLogged', goal:250, xp:60},
+  {id:'reps2500',icon:'♾️', name:'2 500 opakování',   desc:'Proveď 2 500 opakování',         stat:'totalRepsLogged', goal:2500, xp:250},
+  {id:'reps5000',icon:'🔥', name:'5 000 opakování',   desc:'Proveď 5 000 opakování',         stat:'totalRepsLogged', goal:5000, xp:350},
+  {id:'reps10000',icon:'🌀', name:'10 000 opakování', desc:'Proveď 10 000 opakování',        stat:'totalRepsLogged', goal:10000, xp:600},
+  {id:'reps25000',icon:'🌪️', name:'25 000 opakování', desc:'Proveď 25 000 opakování',        stat:'totalRepsLogged', goal:25000, xp:1000},
+  // 🏆 PR a váhy
+  {id:'pr3',     icon:'🥈', name:'Tři rekordy',       desc:'Zlom 3 osobní rekordy',          stat:'totalPRsBroken', goal:3,  xp:100},
+  {id:'pr100',   icon:'💎', name:'PR Legend',         desc:'Zlom 100 osobních rekordů',      stat:'totalPRsBroken', goal:100, xp:1000},
+  {id:'prEx5',   icon:'🗂️', name:'Rekordy ve víc cvicích', desc:'Měj osobní rekord v 5 různých cvicích', stat:'prExCount', goal:5, xp:120},
+  {id:'prEx15',  icon:'🗃️', name:'Všestranný',        desc:'Měj osobní rekord v 15 různých cvicích', stat:'prExCount', goal:15, xp:300},
+  {id:'prEx30',  icon:'🏅', name:'Sbírka rekordů',    desc:'Měj osobní rekord v 30 různých cvicích', stat:'prExCount', goal:30, xp:600},
+  {id:'w60',     icon:'🏋️', name:'Šedesátka',         desc:'Zvedni 60 kg na libovolný cvik', stat:'anyMaxWeight', goal:60,  xp:100},
+  {id:'w100',    icon:'💯', name:'Stovka',            desc:'Zvedni 100 kg na libovolný cvik',stat:'anyMaxWeight', goal:100, xp:200},
+  {id:'w120',    icon:'🦾', name:'Sto dvacet',        desc:'Zvedni 120 kg na libovolný cvik',stat:'anyMaxWeight', goal:120, xp:250},
+  {id:'w250',    icon:'🏗️', name:'Čtvrt tuny',        desc:'Zvedni 250 kg na libovolný cvik',stat:'anyMaxWeight', goal:250, xp:800},
+  {id:'bench60', icon:'🛏️', name:'Lavice 60',         desc:'Zvedni 60 kg na Bench Press',    stat:'benchPR', goal:60,  xp:100},
+  {id:'bench80', icon:'🛏️', name:'Lavice 80',         desc:'Zvedni 80 kg na Bench Press',    stat:'benchPR', goal:80,  xp:160},
+  {id:'bench120',icon:'🛏️', name:'Lavice 120',        desc:'Zvedni 120 kg na Bench Press',   stat:'benchPR', goal:120, xp:400},
+  {id:'bench140',icon:'🛏️', name:'Lavice 140',        desc:'Zvedni 140 kg na Bench Press',   stat:'benchPR', goal:140, xp:600},
+  // ⚖️ Objem
+  {id:'vol1k',   icon:'⚖️', name:'První tuna',        desc:'Zvedni celkem 1 000 kg',         stat:'totalVolume', goal:1000, xp:60},
+  {id:'vol5k',   icon:'⚖️', name:'5 tun',             desc:'Zvedni celkem 5 000 kg',         stat:'totalVolume', goal:5000, xp:120},
+  {id:'vol250k', icon:'⚖️', name:'250 tun',           desc:'Zvedni celkem 250 000 kg',       stat:'totalVolume', goal:250000, xp:1000},
+  {id:'vol1m',   icon:'🚀', name:'Milion kilo',       desc:'Zvedni celkem 1 000 000 kg',     stat:'totalVolume', goal:1000000, xp:2500},
+  {id:'sess5k',  icon:'🏋️', name:'Těžký trénink',     desc:'Zvedni 5 000 kg v jednom tréninku',  stat:'bestSessionVol', goal:5000, xp:100},
+  {id:'sess10k', icon:'🏋️', name:'Desetitunový den',  desc:'Zvedni 10 000 kg v jednom tréninku', stat:'bestSessionVol', goal:10000, xp:250},
+  {id:'sess20k', icon:'🐘', name:'Slon v gymu',       desc:'Zvedni 20 000 kg v jednom tréninku', stat:'bestSessionVol', goal:20000, xp:500},
+  // 🔄 Konzistence
+  {id:'streak3', icon:'🔥', name:'Tři dny v řadě',    desc:'Udrž sérii 3 dny',               stat:'streak', goal:3,  xp:40},
+  {id:'streak21',icon:'🔥', name:'Zvyk na 21 dní',    desc:'Udrž sérii 21 dní',              stat:'streak', goal:21, xp:200},
+  {id:'streak60',icon:'🧊', name:'Ocelová série',     desc:'Udrž sérii 60 dní',              stat:'streak', goal:60, xp:500},
+  {id:'streak100',icon:'💎',name:'Stovka v řadě',     desc:'Udrž sérii 100 dní',             stat:'streak', goal:100, xp:900},
+  {id:'active7', icon:'📆', name:'První týden',       desc:'Buď aktivní 7 dní',              stat:'totalActiveDays', goal:7,   xp:50},
+  {id:'active14',icon:'📆', name:'Dva týdny',         desc:'Buď aktivní 14 dní',             stat:'totalActiveDays', goal:14,  xp:100},
+  {id:'active120',icon:'🗓️',name:'Čtvrt roku a víc',  desc:'Buď aktivní 120 dní',            stat:'totalActiveDays', goal:120, xp:500},
+  {id:'active270',icon:'🗓️',name:'Tři čtvrtě roku',   desc:'Buď aktivní 270 dní',            stat:'totalActiveDays', goal:270, xp:900},
+  // 🎖️ Level a XP
+  {id:'lvl5',    icon:'🎖️', name:'Level 5',           desc:'Dosáhni Level 5',                stat:'level', goal:5,  xp:60},
+  {id:'lvl10',   icon:'🎖️', name:'Level 10',          desc:'Dosáhni Level 10',               stat:'level', goal:10, xp:120},
+  {id:'lvl15',   icon:'🎖️', name:'Level 15',          desc:'Dosáhni Level 15',               stat:'level', goal:15, xp:200},
+  {id:'lvl20',   icon:'🎖️', name:'Level 20',          desc:'Dosáhni Level 20',               stat:'level', goal:20, xp:300},
+  {id:'lvl30',   icon:'🥇', name:'Level 30 – Pokročilý', desc:'Dosáhni Level 30',            stat:'level', goal:30, xp:500},
+  {id:'lvl40',   icon:'🔥', name:'Level 40',          desc:'Dosáhni Level 40',               stat:'level', goal:40, xp:700},
+  {id:'lvl50',   icon:'⚡', name:'Level 50',          desc:'Dosáhni Level 50',               stat:'level', goal:50, xp:1000},
+  {id:'lvl60',   icon:'👑', name:'Level 60',          desc:'Dosáhni Level 60',               stat:'level', goal:60, xp:1400},
+  {id:'xp5k',    icon:'✨', name:'5 000 XP',          desc:'Získej 5 000 XP',                stat:'xp', goal:5000,  xp:150},
+  {id:'xp10k',   icon:'✨', name:'10 000 XP',         desc:'Získej 10 000 XP',               stat:'xp', goal:10000, xp:300},
+  {id:'xp25k',   icon:'🌟', name:'25 000 XP',         desc:'Získej 25 000 XP',               stat:'xp', goal:25000, xp:600},
+  {id:'xp50k',   icon:'💫', name:'50 000 XP',         desc:'Získej 50 000 XP',               stat:'xp', goal:50000, xp:1200},
+  // 🍳 Jídlo a mise
+  {id:'cook5',   icon:'🥘', name:'Pětka z kuchyně',   desc:'Uvař 5 receptů',                 stat:'cookedTotal', goal:5,   xp:50},
+  {id:'cook25',  icon:'🍲', name:'Domácí kuchař',     desc:'Uvař 25 receptů',                stat:'cookedTotal', goal:25,  xp:130},
+  {id:'cook200', icon:'🍱', name:'Mistr sporáku',     desc:'Uvař 200 receptů',               stat:'cookedTotal', goal:200, xp:500},
+  {id:'food1',   icon:'📝', name:'První zápis jídla', desc:'Zapiš první jídlo do deníku',    stat:'foodLogCount', goal:1,   xp:40},
+  {id:'food25',  icon:'🍽️', name:'Deník roste',       desc:'Zapiš 25 jídel do deníku',       stat:'foodLogCount', goal:25,  xp:100},
+  {id:'food100', icon:'📒', name:'Stovka jídel',      desc:'Zapiš 100 jídel do deníku',      stat:'foodLogCount', goal:100, xp:250},
+  {id:'food500', icon:'📚', name:'Kronikář jídla',    desc:'Zapiš 500 jídel do deníku',      stat:'foodLogCount', goal:500, xp:700},
+  {id:'cal1',    icon:'🎯', name:'Kalorický zásah',   desc:'Splň denní kalorický cíl',       stat:'calGoalMetCount', goal:1, xp:40},
+  {id:'cal14',   icon:'🎯', name:'Dva týdny v cíli',  desc:'Splň kalorický cíl 14×',         stat:'calGoalMetCount', goal:14, xp:220},
+  {id:'cal30',   icon:'🎯', name:'Měsíc v cíli',      desc:'Splň kalorický cíl 30×',         stat:'calGoalMetCount', goal:30, xp:400},
+  {id:'cal100',  icon:'🏹', name:'Sniper kalorií',    desc:'Splň kalorický cíl 100×',        stat:'calGoalMetCount', goal:100, xp:900},
+  {id:'prot1',   icon:'🥚', name:'První protein',     desc:'Splň proteinový cíl',            stat:'proteinGoalMetCount', goal:1, xp:40},
+  {id:'prot5',   icon:'🥩', name:'Protein Rookie',    desc:'Splň proteinový cíl 5×',         stat:'proteinGoalMetCount', goal:5, xp:90},
+  {id:'prot100', icon:'🍖', name:'Protein Legend',    desc:'Splň proteinový cíl 100×',       stat:'proteinGoalMetCount', goal:100, xp:900},
+  {id:'mis1',    icon:'🎯', name:'První mise',        desc:'Splň první denní misi',          stat:'missionsTotal', goal:1,   xp:30},
+  {id:'mis20',   icon:'🎯', name:'Mise na denním pořádku', desc:'Splň 20 denních misí',      stat:'missionsTotal', goal:20,  xp:150},
+  {id:'mis200',  icon:'💀', name:'Mission Legend',    desc:'Splň 200 denních misí',          stat:'missionsTotal', goal:200, xp:900},
+  {id:'spin25',  icon:'🎰', name:'Rulety nikdy dost', desc:'Zatoč 25× ruletou',              stat:'spinsTotal', goal:25,  xp:100},
+  {id:'spin100', icon:'🎲', name:'Bůh rulety',        desc:'Zatoč 100× ruletou',             stat:'spinsTotal', goal:100, xp:300},
+  // 🗒️ Organizace a ostatní
+  {id:'fav1',    icon:'❤️', name:'První srdíčko',     desc:'Přidej recept do oblíbených',    stat:'favCount', goal:1,  xp:20},
+  {id:'fav15',   icon:'💞', name:'Kuchařka oblíbených', desc:'Přidej 15 receptů do oblíbených', stat:'favCount', goal:15, xp:80},
+  {id:'favex1',  icon:'💚', name:'První oblíbený cvik', desc:'Přidej cvik do oblíbených',    stat:'favExCount', goal:1, xp:20},
+  {id:'favex15', icon:'🍀', name:'Cvičební výběr',    desc:'Přidej 15 cviků do oblíbených',  stat:'favExCount', goal:15, xp:80},
+  {id:'weight1', icon:'⚖️', name:'Vážení',            desc:'Zapiš svou tělesnou váhu',       stat:'weightLogCount', goal:1,  xp:30},
+  {id:'weight10',icon:'📉', name:'Sleduješ tělo',     desc:'Zapiš tělesnou váhu 10×',        stat:'weightLogCount', goal:10, xp:120},
+  {id:'weight30',icon:'📊', name:'Měsíc vážení',      desc:'Zapiš tělesnou váhu 30×',        stat:'weightLogCount', goal:30, xp:300},
+  {id:'sched1',  icon:'📆', name:'Plánovač',          desc:'Naplánuj trénink v kalendáři',   stat:'schedCount', goal:1,  xp:30},
+  {id:'sched10', icon:'🗓️', name:'Rozvrh na měsíc',   desc:'Naplánuj 10 dní v kalendáři',    stat:'schedCount', goal:10, xp:100},
+  {id:'nb1',     icon:'📓', name:'První zápis v sešitu', desc:'Měj první záznam v sešitu',   stat:'nbCount', goal:1,  xp:30},
+  {id:'nb25',    icon:'📔', name:'Sešit se plní',     desc:'Měj 25 záznamů v sešitu',        stat:'nbCount', goal:25, xp:100},
+  {id:'ex3imp',  icon:'🧩', name:'Tři cviky nahoru',  desc:'Přidej váhu u 3 různých cviků',  stat:'exercisesImprovedCount', goal:3,  xp:100},
+  {id:'ex10imp', icon:'🧩', name:'Deset cviků nahoru',desc:'Přidej váhu u 10 různých cviků', stat:'exercisesImprovedCount', goal:10, xp:300},
+  {id:'ach5',    icon:'🎁', name:'Pět odměn',         desc:'Odemkni 5 achievementů',         stat:'achievementCount', goal:5,  xp:60},
+  {id:'ach15',   icon:'🎁', name:'Patnáctka odměn',   desc:'Odemkni 15 achievementů',        stat:'achievementCount', goal:15, xp:200},
+  {id:'ach35',   icon:'🏆', name:'Třicet pět',        desc:'Odemkni 35 achievementů',        stat:'achievementCount', goal:35, xp:600},
+  {id:'ach75',   icon:'🏆', name:'Tři čtvrtiny',      desc:'Odemkni 75 achievementů',        stat:'achievementCount', goal:75, xp:1500},
+  {id:'ach100',  icon:'👑', name:'Stovka úspěchů',    desc:'Odemkni 100 achievementů',       stat:'achievementCount', goal:100, xp:2500},
+  {id:'hard1',   icon:'🥵', name:'Dřina',             desc:'Dokonči sérii s hodnocením „hard"', stat:'hardSetsCount', goal:1, xp:40, secret:true},
+  {id:'hard50',  icon:'💀', name:'Bolest je dočasná', desc:'Dokonči 50 sérií s hodnocením „hard"', stat:'hardSetsCount', goal:50, xp:500, secret:true},
+  {id:'sugg1',   icon:'🧠', name:'Poslechl jsi radu', desc:'Použij doporučenou váhu',        stat:'suggestedWeightUsedCount', goal:1, xp:40, secret:true},
+  {id:'sugg50',  icon:'🧠', name:'Chytrý vzpěrač',    desc:'Použij doporučenou váhu 50×',    stat:'suggestedWeightUsedCount', goal:50, xp:400, secret:true},
+  {id:'wo750', icon:'🏋️', name:'Železná disciplína', desc:'Dokonči 750 tréninků', stat:'workoutsTotal', goal:750, xp:3000},
+  {id:'wo1000', icon:'🏋️', name:'Tisíc tréninků', desc:'Dokonči 1000 tréninků', stat:'workoutsTotal', goal:1000, xp:5000},
+  {id:'sets5k', icon:'💪', name:'Pětitisíc sérií', desc:'Odcvič 5000 sérií', stat:'totalSetsLogged', goal:5000, xp:2500},
+  {id:'sets10k', icon:'💪', name:'Deset tisíc sérií', desc:'Odcvič 10000 sérií', stat:'totalSetsLogged', goal:10000, xp:5000},
+  {id:'reps50k', icon:'🔁', name:'Padesát tisíc opakování', desc:'Udělej 50000 opakování', stat:'totalRepsLogged', goal:50000, xp:4000},
+  {id:'vol2m', icon:'📦', name:'Dva miliony kg', desc:'Zvedni celkem 2 000 000 kg', stat:'totalVolume', goal:2000000, xp:3500},
+  {id:'vol5m', icon:'📦', name:'Pět milionů kg', desc:'Zvedni celkem 5 000 000 kg', stat:'totalVolume', goal:5000000, xp:6000},
+  {id:'streak200', icon:'🔥', name:'Dvě stě dní v řadě', desc:'Série 200 dní v řadě', stat:'streak', goal:200, xp:6000},
+  {id:'streak365', icon:'🔥', name:'Celý rok bez přestávky', desc:'Série 365 dní v řadě', stat:'streak', goal:365, xp:10000},
+  {id:'lvl70', icon:'⭐', name:'Level 70', desc:'Dosáhni levelu 70', stat:'level', goal:70, xp:5000},
+  {id:'lvl80', icon:'⭐', name:'Level 80', desc:'Dosáhni levelu 80', stat:'level', goal:80, xp:7000},
+  {id:'lvl100', icon:'👑', name:'Level 100', desc:'Dosáhni levelu 100', stat:'level', goal:100, xp:12000},
+  {id:'food750', icon:'🍽️', name:'Jídelní deník 750', desc:'Zapiš 750 jídel', stat:'foodLogCount', goal:750, xp:2500},
+  {id:'food1000', icon:'🍽️', name:'Jídelní deník 1000', desc:'Zapiš 1000 jídel', stat:'foodLogCount', goal:1000, xp:4000},
+  {id:'cook300', icon:'👨‍🍳', name:'Kuchař 300', desc:'Uvař 300 receptů', stat:'cookedTotal', goal:300, xp:3000},
+  {id:'cook500', icon:'👨‍🍳', name:'Kuchař 500', desc:'Uvař 500 receptů', stat:'cookedTotal', goal:500, xp:5000},
+  {id:'weight60', icon:'⚖️', name:'Šedesát vážení', desc:'Zapiš váhu 60×', stat:'weightLogCount', goal:60, xp:1200},
+  {id:'weight100', icon:'⚖️', name:'Sto vážení', desc:'Zapiš váhu 100×', stat:'weightLogCount', goal:100, xp:2500},
+  {id:'sched30', icon:'📅', name:'Plánovač 30', desc:'Naplánuj 30 tréninků v kalendáři', stat:'schedCount', goal:30, xp:1000},
+  {id:'nb100', icon:'📓', name:'Sešit 100', desc:'Zapiš 100 cviků do sešitu', stat:'nbCount', goal:100, xp:1500},
+  {id:'ach150', icon:'🏆', name:'Sběratel 150', desc:'Odemkni 150 achievementů', stat:'achievementCount', goal:150, xp:6000},
+  {id:'ach177', icon:'🏆', name:'Téměř všechno', desc:'Odemkni 177 achievementů', stat:'achievementCount', goal:177, xp:10000},
+  {id:'mis300', icon:'🎯', name:'Mistr misí', desc:'Splň 300 misí', stat:'missionsTotal', goal:300, xp:3000},
 ];
 // Zdarma je 10 nejlehcich (nejnizsi odmena, bez tajnych). Zbytek je jen pro VIP.
 const ACH_FREE_IDS = new Set(
@@ -6591,11 +6730,17 @@ function statVal(stat){
   }
   if(stat==='exercisesImprovedCount') return (state.exercisesImproved||[]).length;
   if(stat==='achievementCount') return (state.achievements||[]).length;
+  if(stat==='weightLogCount'){ try{ return (profState().weightLog||[]).length; }catch(e){ return 0; } }
+  if(stat==='schedCount') return Object.keys(state.schedule||{}).length;
+  if(stat==='foodLogCount') return Array.isArray(state.foodLog) ? state.foodLog.length : 0;
+  if(stat==='nbCount') return Array.isArray(state.notebook) ? state.notebook.length : 0;
+  if(stat==='bestSessionVol') return Math.max(0, ...(state.sessionLog||[]).map(x=>x.totalVolume||0));
+  if(stat==='prExCount') return Object.keys(state.exercisePRs||{}).length;
   return state[stat] || 0;
 }
-// XP odmeny za achievementy jsou 5x mensi nez puvodni hodnoty (tempo levelovani)
-function achXp(a){ return Math.max(5, Math.round(a.xp*0.2/5)*5); }
-const ACH_PER_DAY_MAX = 3; // max. odemcenych achievementu za jeden den - zbytek pocka na dalsi den
+// XP odmeny za achievementy = 40 % puvodni hodnoty (tempo levelovani)
+function achXp(a){ return Math.max(10, Math.round(a.xp*0.4/5)*5); }
+const ACH_PER_DAY_MAX = 5; // max. odemcenych achievementu za jeden den - zbytek pocka na dalsi den
 function checkAchievements(){
   if(!state.achievements) state.achievements = [];
   const tkA = todayKey();
@@ -7017,10 +7162,7 @@ const QH_TEXTS = {
   sess:['<b>Váha a opakování</b> – vyplň a potvrď ✅ HOTOVO; po sérii se spustí pauza.','<b>＋ Více</b> – RIR (rezerva do selhání), poznámka, typ série (rozcvička, drop, selhání) a střídání stran.','<b>＋ Přidat sérii / ⏭ Přeskočit sérii</b> – změní počet sérií u cviku.','<b>🔁 Jiný cvik / ⏩ Přeskočit cvik</b> – vyměnění nebo vynechání cviku.','<b>↕</b> – nehotové cviky můžeš přetáhnout; přetažení nad rozdělaný cvik ho nahradí.','<b>—</b> – tlačítko vpravo nahoře minimalizuje trénink, ✕ ho ukončí.'],
   nbcal:['<b>Klepni na den</b> – vybereš trénink nebo volno a potvrdíš.','<b>Rozvrhnout automaticky</b> – naplánuje víc týdnů podle dnů, které zvolíš.','<b>Barva dne</b> – čím víc zápisů, tím výraznější; „D1/D2…“ je naplánovaný trénink.'],
   food:['<b>Přidat jídlo</b> – z fotky tabulky, čárového kódu, vyhledání, mých potravin, receptu nebo ručně.','<b>Cíle</b> – kalorie a makra se počítají podle tvého cíle (změníš ho v Profilu); „Upravit denní cíle“ nastaví vlastní čísla.','<b>🗑️</b> – smaže záznam.','<b>‹ ›</b> – přepíná dny.'],
-  settings:['<b>Vzhled</b> – téma, vlastní pozadí a barvy.','<b>Průhlednost bublin</b> – jak moc je vidět pozadí pod kartami; „Úsporný režim“ vypne rozmazání.','<b>Hudba a zvuky</b> – hudbu na pozadí a zvukové hlášky zapneš nebo vypneš zvlášť.','<b>Připomínka</b> – denní upozornění na trénink.'],
-  ai:['<b>AI klíč</b> – vlastní klíč od Gemini; ukládá se jen v tomto zařízení.','Používá se pro odhad jídla z fotky a čtení nutriční tabulky.'],
-  reset:['<b>Reset profilu</b> – vynuluje statistiky a postup; nick, údaje o těle, plán, vlastní recepty a potraviny a nastavení zůstanou.','<b>Vrátit stav</b> – obnoví stav těsně před posledním resetem nebo obnovením zálohy.'],
-  backup:['<b>Záloha</b> – uloží data do souboru, který můžeš později načíst zpět.','Doporučuju zálohovat před větší změnou nebo přeinstalováním.'],
+  settings:['<b>Vzhled</b> – téma, vlastní pozadí a barvy.','<b>Průhlednost bublin</b> – jak moc je vidět pozadí pod kartami; „Úsporný režim“ vypne rozmazání.','<b>Hudba a zvuky</b> – hudbu na pozadí a zvukové hlášky zapneš nebo vypneš zvlášť.','<b>Připomínka</b> – denní upozornění na trénink.','<b>AI asistent</b> – vlastní klíč od Gemini (ukládá se jen v tomto zařízení) pro odhad jídla z fotky a čtení tabulky.','<b>Reset profilu</b> – vynuluje statistiky a postup; nick, údaje o těle, plán, vlastní recepty a potraviny a nastavení zůstanou. „Vrátit stav“ obnoví stav před posledním resetem.','<b>Záloha</b> – uloží data do souboru, který můžeš později načíst zpět; zálohuj před větší změnou nebo přeinstalací.'],
   rest:['<b>Co se děje</b> – nemoc, únava nebo regenerace; trénink se na dobu pauzy pozastaví.','<b>Délka</b> – vyber počet dní nebo vlastní datum konce.','O svůj progres a sérii nepřijdeš.'],
   progress:['<b>Objem po týdnech</b> – součet zvednutých kg po týdnech (pondělí–neděle).','<b>Objem po tréninku</b> – každý trénink s porovnáním oproti minulému stejnému dni.']
 };
@@ -7030,7 +7172,9 @@ function qhelp(key){
 }
 function qhInitStatic(){ document.querySelectorAll('[data-qh]').forEach(el=>{ if(!el.dataset.done){ el.innerHTML = qhelp(el.dataset.qh); el.dataset.done = '1'; } }); }
 document.addEventListener('click', e=>{
-  const b = e.target.closest ? e.target.closest('.qh-btn') : null; if(!b) return;
+  const b = e.target.closest ? e.target.closest('.qh-btn') : null;
+  document.querySelectorAll('.qh.open').forEach(q=>{ if(!b || q !== b.closest('.qh')){ q.classList.remove('open'); const bb = q.querySelector('.qh-btn'); if(bb) bb.setAttribute('aria-expanded','false'); } });
+  if(!b) { if(e.target.closest && e.target.closest('.qh-body')) return; return; }
   const q = b.closest('.qh'); const on = q.classList.toggle('open'); b.setAttribute('aria-expanded', on ? 'true' : 'false');
 });
 let woMenuIdx = null, woEditSub = null, woEditOpen = null, woPopNext = false;
@@ -7169,8 +7313,7 @@ function renderWorkoutStep3(){
     ${(!plan.done[woActiveDay] && day.exercises.length) ? '<button class="sess-start-btn" id="woStartSession" style="margin-bottom:10px;">▶ START TRÉNINK</button>' : ''}
     ${plan.done[woActiveDay]
       ? '<button class="wo-finish" id="woFinish" disabled>✓ Trénink dokončen</button>'
-      : '<button class="wo-finish-link" id="woFinish">Jen odškrtnout den (bez zápisu sérií)</button>'}
-    ${qhelp('train')}`;
+      : '<button class="wo-finish-link" id="woFinish">Jen odškrtnout den (bez zápisu sérií)</button>'}`;
   } else if(!woEditSub){
     woBody = `
     <h3 class="wo-page-title">✏️ Upravit trénink</h3>
@@ -7179,8 +7322,7 @@ function renderWorkoutStep3(){
       <button class="home-tile t-notebook" data-hub="cal"><div class="ht-icon">📆</div><div><div class="ht-title">KALENDÁŘ</div><div class="ht-sub">${schedActive() ? 'Rozvrh aktivní ✓' : 'Rozvrh a práce s dny'}</div></div></button>
       <button class="home-tile t-training" data-hub="ex"><div class="ht-icon">🏋️</div><div><div class="ht-title">ÚPRAVA CVIKŮ</div><div class="ht-sub">${plan.days.length} ${plan.days.length===1?'den':(plan.days.length<5?'dny':'dní')} · ${totalEx} cviků</div></div></button>
       <button class="home-tile t-progress" data-hub="plan" style="grid-column:1 / -1;"><div class="ht-icon">🗂</div><div><div class="ht-title">PLÁN</div><div class="ht-sub">${LEVEL_LABELS[plan.level]} · ${plan.splitName}</div></div></button>
-    </div>
-    ${qhelp('hub')}`;
+    </div>`;
   } else if(woEditSub==='cal'){
     woBody = `
     <h3 class="wo-page-title">📆 Kalendář a dny</h3>
@@ -7197,7 +7339,7 @@ function renderWorkoutStep3(){
         ${plan.days.length>1 ? '<button id="woDayDel" class="danger" title="Smazat tento den">🗑 Smazat den</button>' : ''}
       </div>
     </div>
-${explainHTML('cal')}
+
     <button class="sess-start-btn" id="woEditSave" style="margin:12px 0 10px;">💾 Uložit změny</button>`;
   } else if(woEditSub==='ex'){
     woBody = `
@@ -7222,7 +7364,7 @@ ${explainHTML('cal')}
     <div class="wo-bulk-t" style="margin:14px 2px 8px;">📋 Seznam cviků · ${homeEsc(day.label)}</div>
     ${exEditHTML}
     <button class="wo-add-ex" id="woAddEx">＋ Přidat cvik</button>
-${explainHTML('ex')}
+
     <button class="sess-start-btn" id="woEditSave" style="margin:12px 0 10px;">💾 Uložit změny</button>`;
   } else {
     woBody = `
@@ -7232,8 +7374,9 @@ ${explainHTML('ex')}
       <button class="wo-edit-toggle" id="woBack2">🔄 Změnit plán (hotové · 🏠 doma · vlastní)</button>
       ${(plan.splitKey!=='custom' && plan.splitKey!=='blank') ? '<button class="wo-edit-toggle" id="woRegen">🔁 Přegenerovat cviky plánu</button>' : ''}
     </div>
-${explainHTML('plan')}`;
+`;
   }
+  woBody = qhelp(!woEditMode ? 'train' : (!woEditSub ? 'hub' : woEditSub)) + woBody;
   document.getElementById('woContent').innerHTML = `<div class="${woPopNext?'wo-sub-pop':''}">${woBody}</div>`; woPopNext = false;
   if(!woSnap) woSnapTake();
   document.querySelectorAll('.wo-ex-menu button').forEach(b=>b.addEventListener('click', ()=>{ if(!b.dataset.fav){ woMenuIdx = null; woEditOpen = null; } }));
@@ -8556,6 +8699,7 @@ function renderSessActive(el){
           <div><label>Opakování</label><input type="number" id="sessReps" inputmode="numeric" value="${prefillReps}"></div>
         </div>`;
   el.innerHTML = `
+    ${qhelp('sess')}
     <a class="sess-active-name" href="${youtubeSearchUrl(exDisp(e.name), state.sex)}" target="_blank" rel="noopener">${exDisp(e.name)} <span class="yticon">▶️</span></a>
     <div class="sess-active-sub">Série ${session.setIdx+1} / ${e.sets}${sidesOn ? ' · '+(sideNow==='L' ? '⬅️ levá strana' : '➡️ pravá strana') : ''}</div>
     <div class="sess-active-target">${repsTarget} ${unitLabel}</div>
@@ -8579,8 +8723,7 @@ function renderSessActive(el){
       <button id="sessSkipEx">⏩ Přeskočit cvik</button>
     </div>
     ${sessNextLine()}
-    ${logHTML}
-    ${qhelp('sess')}`;
+    ${logHTML}`;
   const sidesChip = document.getElementById('sessSidesChip');
   if(sidesChip) sidesChip.addEventListener('click', ()=>{
     e.sides = !e.sides; e._side = 'P'; delete e._sideP; session.dirty = true;
@@ -8676,7 +8819,7 @@ function renderSessSetDone(el){
       if(!session.log[e.name]) session.log[e.name] = [];
       session.log[e.name].push(setEntry);
       saveState();
-      if(setEntry.t !== 'w') addXP(1); // tichá XP odměna za sérii
+      if(setEntry.t !== 'w') addXP(2); // tichá XP odměna za sérii
       session.pendingSet = null;
       if(setEntry.t === 'w'){ // rozcvička se nepočítá do plánovaných sérií
         session.restTotal = Math.min(e.rest, 45);
@@ -9062,7 +9205,7 @@ function renderSessComplete(el){
       state.hasFullSend = true;
     }
     saveState();
-    addXP(25, 'trénink dokončen');
+    addXP(40, 'trénink dokončen');
     checkAchievements();
     const allDone = state.workoutPlan.done.every(d=>d);
     if(allDone){
@@ -11377,7 +11520,7 @@ function nbTop(name, sets){
 function nbVolume(name, sets){
   const mode = nbMode(name);
   if(mode==='cardio' || mode==='time' || mode==='weightTime') return 0;
-  return (sets||[]).filter(s=>s.t!=='w').reduce((a,s)=>a + (s.weight||0)*(s.reps||0), 0);
+  return (sets||[]).filter(s=>s.t!=='w').reduce((a,s)=>a + (Number(s.weight)||0)*(Number(s.reps)||0), 0);
 }
 function nbStatsHTML(entries){
   const days = new Set(entries.map(e=>e.date));
@@ -11466,8 +11609,8 @@ function nbCalendarHTML(entries, planOnly){
     ? `<div class="nb-plan-auto"><button class="nb-mini" data-schedauto="1">⚡ Rozvrhnout automaticky</button>${schedActive()?'<button class="nb-mini danger" data-schedclear="1">🗑️ Smazat rozvrh</button>':''}</div>`
     : `<p class="nb-note" style="text-align:center;">Až si vytvoříš tréninkový plán, můžeš ho tady rozvrhnout na konkrétní dny v měsíci.</p>`;
   if(planOnly) sel = '<p class="nb-note" style="text-align:center; margin-top:8px;">Klepni na datum a vyber, jaký trénink na ten den chceš.</p>';
-  return `<div class="nb-cal">${head}<div class="nb-cal-dow">${dow}</div><div class="nb-cal-grid">${cells}</div>
-    <p class="nb-cal-sum"><b>${trained}</b> ${trained===1?'tréninkový den':(trained<5 && trained>1?'tréninkové dny':'tréninkových dnů')} v tomto měsíci</p></div>${planBtns}${planOnly ? '' : qhelp('nbcal')}${sel || '<p class="nb-none">Klepni na den – uvidíš, co jsi cvičil, a můžeš na něj naplánovat trénink.</p>'}`;
+  return `${planOnly ? '' : qhelp('nbcal')}<div class="nb-cal">${head}<div class="nb-cal-dow">${dow}</div><div class="nb-cal-grid">${cells}</div>
+    <p class="nb-cal-sum"><b>${trained}</b> ${trained===1?'tréninkový den':(trained<5 && trained>1?'tréninkové dny':'tréninkových dnů')} v tomto měsíci</p></div>${planBtns}${sel || '<p class="nb-none">Klepni na den – uvidíš, co jsi cvičil, a můžeš na něj naplánovat trénink.</p>'}`;
 }
 // ---------- cviky ----------
 function nbSessionsFor(entries, name){
@@ -11583,7 +11726,6 @@ function renderProgVolume(){
     <h5>🏁 Objem po tréninku</h5>
     ${rows || '<p class="nb-note">Po prvním dokončeném tréninku tu uvidíš, kolik kg jsi odzvedl.</p>'}
     ${rows ? '<p class="nb-note" style="margin-top:6px;">Změna je oproti předchozímu stejnému dni tréninku.</p>' : ''}
-    ${qhelp('progress')}
   </div>`;
 }
 function nbStatsTabHTML(entries){
@@ -12445,6 +12587,7 @@ function renderFoodDiary(){
       <div class="fd-ekcal"><b>${e.kcal}</b><small>kcal</small></div><button class="nb-del" data-fdel="${e.id}" title="Smazat">🗑️</button></div>`).join('')
     : '<p class="nb-none">Zatím nic nezapsáno. Přidej jídlo tlačítky výše.</p>';
   el.innerHTML = `
+    ${qhelp('food')}
     <div class="fd-datebar"><button id="fdPrev">‹</button><b>${foodDateLabel(foodDate)}</b><button id="fdNext" ${isToday?'disabled':''}>›</button></div>
     <p class="fd-goalline">🎯 Cíl: <b>${FOOD_GOALS[tg.goal].icon} ${FOOD_GOALS[tg.goal].name}</b> · <button class="home-link" id="fdGoalEdit">změnit v Profilu</button></p>
     <div class="fd-note">${tg.manual ? '✋ Používáš vlastní ručně nastavené cíle. <button class="home-link" id="fdAuto">Vrátit automatické podle cíle</button>' : (tg.hasWeight ? 'Cíle jsou spočítané z tvé váhy a zvoleného cíle.' : 'Orientační cíle. Zadej váhu v profilu pro přesnější čísla.')}</div>
@@ -12472,7 +12615,6 @@ function renderFoodDiary(){
     <h4 class="fd-h">Zapsáno ${isToday?'dnes':''}</h4>${list}
     <h4 class="fd-h">Posledních 7 dní (kcal)</h4>${foodWeekChart(foodDate, tg)}
     <p class="nb-note">Hodnoty z fotky tabulky a čárového kódu jsou jen tak přesné, jak je na obalu. Kalorie z receptů jsou odhad. Cíle jsou orientační, nenahrazují radu výživového poradce.</p>
-    ${qhelp('food')}
 `;
   document.getElementById('fdPrev').addEventListener('click', ()=>{ foodDate = foodShift(foodDate,-1); renderFoodDiary(); });
   document.getElementById('fdNext').addEventListener('click', ()=>{ if(foodDate!==todayKey()){ foodDate = foodShift(foodDate,1); renderFoodDiary(); } });
