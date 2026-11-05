@@ -1,5 +1,5 @@
 // Gym Gainz service worker: sit prvni, cache jako zaloha (offline)
-const C='gymgainz-web-v20';
+const C='gymgainz-web-v21';
 self.addEventListener('install',e=>{self.skipWaiting();});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim()));});
 self.addEventListener('fetch',e=>{
