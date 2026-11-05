@@ -2635,6 +2635,66 @@
   body:not(.theme-light) .wo-edit-toggle{ border-color:var(--accent-light); }
   .wo-ex-actions button, .bp-ex-fav-btn{ border-color:rgba(255,255,255,0.28); }
   .wo-ex-actions button, .bp-ex-fav-btn{ background:rgba(0,0,0,max(0.28, calc(var(--gs) * 0.9))); }
+  /* ===== HOME – Industrial Simple dashboard (V29z) ===== */
+  :root{ --gold:#d4a84b; --gold-rgb:212,168,75; --gold-light:#e8c872; }
+  #homeOverlay{padding-bottom:96px;}
+  .hd-top{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:16px 20px 10px;}
+  .hd-brand .logo{font-size:21px; letter-spacing:0.04em; margin:0;}
+  .hd-slogan{font-family:'Space Mono',monospace; font-size:10.5px; letter-spacing:0.09em; white-space:nowrap; color:var(--muted); margin:3px 0 0 20px;}
+  .hd-actions{display:flex; align-items:center; gap:8px;}
+  .hd-bell{position:relative; width:40px; height:40px; border-radius:12px; border:1px solid var(--line); background:rgba(0,0,0,calc(var(--gs) * 0.9)); color:var(--text); display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0;}
+  .hd-bell[data-n]::after{content:attr(data-n); position:absolute; top:-6px; right:-6px; min-width:18px; height:18px; border-radius:9px; background:#ef4444; color:#fff; font-size:12px; line-height:18px; text-align:center; padding:0 4px; font-family:'Oxanium',sans-serif; font-weight:700;}
+  .hd-vip{height:40px; padding:0 13px; border-radius:12px; border:1px solid rgba(var(--gold-rgb),0.6); background:rgba(var(--gold-rgb),calc(0.16 * var(--gt))); color:var(--gold-light); font-family:'Oxanium',sans-serif; font-weight:800; font-size:14.5px; letter-spacing:0.08em; cursor:pointer; display:flex; align-items:center; gap:6px; white-space:nowrap;}
+  .hd-vip.on{background:linear-gradient(135deg,#e8c872,#c8912a); color:#1a1000; border-color:transparent;}
+  .today-card{margin:6px 20px 12px; padding:18px 18px 16px; border-radius:18px; border:1px solid rgba(var(--gold-rgb),0.55); background:rgba(0,0,0,calc(var(--gs) * 0.9)); box-shadow:inset 0 1px 0 rgba(255,255,255,var(--gedge)); backdrop-filter:blur(9px); -webkit-backdrop-filter:blur(9px);}
+  .today-card.rest{border-color:rgba(var(--cut-rgb),0.55); background:rgba(0,0,0,calc(var(--gs) * 0.9)); box-shadow:inset 0 1px 0 rgba(255,255,255,var(--gedge));}
+  .today-row{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px;}
+  .today-pill{display:inline-block; padding:4px 11px; border-radius:8px; font-family:'Oxanium',sans-serif; font-weight:800; font-size:12.5px; letter-spacing:0.1em; background:rgba(var(--gold-rgb),0.16); color:var(--gold-light);}
+  .today-card.rest .today-pill{background:rgba(var(--cut-rgb),0.16); color:var(--cut);}
+  .today-row .home-streak{margin:0; font-size:12.5px;}
+  .today-title{font-family:'Oxanium',sans-serif; font-weight:800; font-size:clamp(23px, 7vw, 29px); line-height:1.1; text-transform:uppercase; letter-spacing:0.01em; margin:0 0 6px; color:#fff; overflow-wrap:anywhere;}
+  .today-sub{font-size:14.2px; color:var(--muted); margin:0 0 14px; line-height:1.4;}
+  .today-btn{padding:14px; border-radius:12px; text-transform:uppercase; letter-spacing:0.05em; background:var(--gold); color:#171002; box-shadow:0 3px 0 #8f6d22;}
+  .today-card.rest .today-btn{background:var(--cut); color:#04170c; box-shadow:0 3px 0 #0a7a3d;}
+  .prog-card{display:block; margin:0 20px 6px; padding:16px 18px 14px; border-radius:18px; border:1px solid rgba(var(--gold-rgb),0.4); background:rgba(0,0,0,calc(var(--gs) * 0.9)); box-shadow:inset 0 1px 0 rgba(255,255,255,var(--gedge)); cursor:pointer; text-align:left;}
+  .prog-card:active{transform:translateY(1px);}
+  .pc-top{display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;}
+  .pc-h{font-family:'Oxanium',sans-serif; font-weight:800; font-size:15.5px; letter-spacing:0.05em;}
+  .pc-ic{color:var(--gold); display:flex;}
+  .pc-score{display:flex; align-items:baseline; gap:10px; margin:2px 0 10px;}
+  .pc-score b{font-family:'Oxanium',sans-serif; font-weight:800; font-size:clamp(32px, 10vw, 40px); line-height:1; color:#fff;}
+  .pc-score span{font-family:'Oxanium',sans-serif; font-weight:600; font-size:13px; letter-spacing:0.08em; color:var(--muted);}
+  .prog-card .xp-track{height:7px;}
+  .prog-card .xp-fill{background:linear-gradient(90deg,#b8892c,var(--gold-light)); box-shadow:0 0 8px rgba(var(--gold-rgb),0.45);}
+  .pc-lv{display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-top:9px; font-family:'Oxanium',sans-serif; font-size:13.5px;}
+  .pc-lv b{color:var(--gold-light); font-weight:700; cursor:pointer; text-decoration:underline; text-decoration-style:dotted; text-underline-offset:3px;}
+  .pc-lv span{color:var(--muted);}
+  .pc-sub{font-size:13px; color:var(--muted); margin-top:6px;}
+  .hd-sec{font-family:'Oxanium',sans-serif; font-weight:800; font-size:14px; letter-spacing:0.1em; color:var(--muted); margin:14px 20px 8px;}
+  .home-tiles.qa{margin-bottom:12px;}
+  .home-tiles.qa .home-tile{min-height:104px; justify-content:flex-start; gap:2px; padding:15px 14px; border-color:rgba(var(--gold-rgb),0.35);}
+  .home-tiles.qa .ht-icon{color:var(--gold); margin-bottom:8px; height:26px;}
+  .home-tiles.qa .ht-icon svg{display:block;}
+  .ht-bar{height:5px; border-radius:3px; background:rgba(255,255,255,0.1); margin-top:7px; overflow:hidden;}
+  .ht-bar i{display:block; height:100%; background:linear-gradient(90deg,#b8892c,var(--gold-light)); border-radius:3px; transition:width .5s ease;}
+  .mis-card{display:block; width:calc(100% - 40px); margin:0 20px 12px; padding:14px 16px; border-radius:16px; border:1px solid var(--line); background:rgba(0,0,0,calc(var(--gs) * 0.9)); color:var(--text); text-align:left; cursor:pointer; box-shadow:inset 0 1px 0 rgba(255,255,255,var(--gedge));}
+  .mis-card:active{transform:translateY(1px);}
+  .mc-top{display:flex; align-items:center; justify-content:space-between;}
+  .mc-h{font-family:'Oxanium',sans-serif; font-weight:800; font-size:15.5px; letter-spacing:0.05em;}
+  .mc-pill{padding:3px 11px; border-radius:999px; background:rgba(255,255,255,0.1); font-family:'Oxanium',sans-serif; font-weight:700; font-size:14px;}
+  .mc-sub{font-size:13.6px; color:var(--muted); margin:6px 0 8px;}
+  .mc-link{display:flex; justify-content:space-between; color:var(--gold-light); font-family:'Oxanium',sans-serif; font-weight:800; font-size:14px; letter-spacing:0.05em;}
+  .hd-foot{display:flex; align-items:center; justify-content:space-between; gap:8px; padding:2px 20px 4px; flex-wrap:wrap;}
+  .hd-flink{position:relative; background:none; border:none; color:var(--muted); font-family:'Oxanium',sans-serif; font-size:13.8px; cursor:pointer; padding:8px 2px; display:flex; align-items:center; gap:6px;}
+  .hd-flink b{color:var(--text); font-weight:700;}
+  .hd-flink .trophy-ic{width:15px; height:15px;}
+  #tileCommunity[data-badge]::after{top:-2px; right:-12px;}
+  #restHomeBox{padding:0 20px;} #restHomeBox .rest-card{margin:0 0 12px;}
+  #restLinkBox{padding:2px 20px 0; text-align:center;}
+  #restLinkBox .rest-link{width:auto; margin:0; padding:7px 12px; border:none; background:none; box-shadow:none; color:var(--muted); font-size:calc(12.8px * var(--font-scale)); text-align:center;}
+  #restLinkBox .rest-link small{display:none;}
+  .bn-btn.on{color:var(--gold);}
+  .bn-btn.on .bn-icon{filter:drop-shadow(0 0 6px rgba(var(--gold-rgb),0.45));}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -2907,69 +2967,62 @@
 </div>
 
 <div class="page-overlay" id="homeOverlay">
-  <div class="home-head">
-    <div class="logo" style="justify-content:center; display:flex;"><span class="dot"></span>GYM GAINZ</div>
-    <div class="home-xp-wrap">
-      <div class="home-xp-top">
-        <b id="homeXpLevel">Level 1 · Beginner</b>
-        <span id="homeXpPts">0 XP</span>
-      </div>
-      <div class="xp-track"><div class="xp-fill" id="homeXpFill" style="width:0%"></div></div>
-      <div class="home-streak" id="homeStreak"></div>
+  <div class="hd-top">
+    <div class="hd-brand">
+      <div class="logo"><span class="dot"></span>GYMGAINZ</div>
+      <div class="hd-slogan">TRAIN HARD · TRACK SMART</div>
+    </div>
+    <div class="hd-actions">
+      <button class="hd-bell" id="homeBell" title="Upozornění" aria-label="Upozornění"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6.5 2 6.5H4S6 14 6 9M10 19a2 2 0 0 0 4 0"/></svg></button>
+      <button class="hd-vip" id="homeVipBtn">👑 VIP</button>
     </div>
   </div>
 
-  <button class="vip-btn" id="homeVipBtn">👑 VIP</button>
-
   <div class="today-card" id="todayCard">
-    <div class="today-label">Dnes v Gym Gainz</div>
+    <div class="today-row"><span class="today-pill" id="todayPill">DNES</span><span class="home-streak" id="homeStreak"></span></div>
     <div class="today-title" id="todayTitle">Načítám...</div>
     <div class="today-sub" id="todaySub"></div>
-    <button class="today-btn" id="todayBtn">▶ START TRÉNINKU</button>
+    <button class="today-btn" id="todayBtn">ZAHÁJIT TRÉNINK</button>
   </div>
 
   <div id="restHomeBox"></div>
 
-  <div class="home-tiles">
-    <button class="home-tile t-progress" id="tileProgress">
-      <div class="ht-icon">📈</div>
-      <div><div class="ht-title">PROGRESS</div><div class="ht-sub" id="progTileSub">Gainz Score</div></div>
-    </button>
-    <button class="home-tile t-notebook" id="tileNotebook">
-      <div class="ht-icon">📓</div>
-      <div><div class="ht-title">SEŠIT</div><div class="ht-sub" id="nbTileSub">Deník, kalendář</div></div>
-    </button>
+  <div class="prog-card" id="tileProgress" role="button" tabindex="0">
+    <div class="pc-top"><span class="pc-h">TVŮJ PROGRES</span><span class="pc-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg></span></div>
+    <div class="pc-score"><b id="progScore">0</b><span>GAINZ SCORE</span></div>
+    <div class="xp-track"><div class="xp-fill" id="homeXpFill" style="width:0%"></div></div>
+    <div class="pc-lv"><b id="homeXpLevel">Level 1 · Beginner</b><span id="homeXpPts">0 XP</span></div>
+    <div class="pc-sub" id="progTileSub">Tvoje cesta k dalšímu levelu</div>
+  </div>
+
+  <div class="hd-sec">RYCHLÝ PŘÍSTUP</div>
+  <div class="home-tiles qa">
     <button class="home-tile t-training" id="tileTraining">
-      <div class="ht-icon">🏋️</div>
+      <div class="ht-icon"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg></div>
       <div><div class="ht-title">TRÉNINK</div><div class="ht-sub" id="trainTileSub">Plán a úpravy</div></div>
     </button>
     <button class="home-tile t-kitchen" id="tileFood">
-      <div class="ht-icon">🍽️</div>
-      <div><div class="ht-title">DNES JÍDLO</div><div class="ht-sub" id="foodTileSub">Deník a makra</div></div>
+      <div class="ht-icon"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v8M4.5 3v5a2.5 2.5 0 0 0 5 0V3M7 11v10M17 21V3c-2.2 1.6-3 4-3 7 0 1.6.9 2.5 3 2.5"/></svg></div>
+      <div><div class="ht-title">JÍDLO</div><div class="ht-sub" id="foodTileSub">Deník a makra</div><div class="ht-bar"><i id="foodTileBar" style="width:0%"></i></div></div>
     </button>
   </div>
 
-  <div class="home-mini-row">
-    <button class="home-mini" id="tileMissions">
-      <div class="hm-icon">🎯</div>
-      <div class="hm-title">Denní mise</div>
-      <div class="hm-sub" id="miniMissionsSub">–</div>
-    </button>
-    <button class="home-mini" id="tileAch">
-      <div class="hm-icon"><span class="trophy-ic"></span></div>
-      <div class="hm-title">Odznaky</div>
-      <div class="hm-sub" id="miniAchSub">–</div>
-    </button>
-    <button class="home-mini" id="tileCommunity">
-      <div class="hm-icon">🌍</div>
-      <div class="hm-title">Komunita</div>
-      <div class="hm-sub">Sdílené recepty</div>
-    </button>
+  <button class="mis-card" id="tileMissions">
+    <div class="mc-top"><span class="mc-h">DNEŠNÍ MISE</span><span class="mc-pill" id="miniMissionsSub">0 / 3</span></div>
+    <div class="mc-sub" id="miniMissionsDesc">Dokonči své dnešní úkoly a získej XP.</div>
+    <div class="mc-link">ZOBRAZIT MISE <span>→</span></div>
+  </button>
+
+  <div class="hd-foot">
+    <button class="hd-flink" id="tileAch"><span class="trophy-ic"></span><span><b id="miniAchSub">0</b> odznaků získáno</span></button>
+    <button class="hd-flink" id="tileNotebook">📓 Sešit<span id="nbTileSub" hidden></span></button>
+    <button class="hd-flink" id="tileCommunity">Komunita →</button>
   </div>
+  <div id="restLinkBox"></div>
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29y · 2026-11-05</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29z · 2026-11-05</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -5867,7 +5920,7 @@ function openRanksList(){
   renderRanksList();
   document.getElementById('ranksOverlay').classList.add('open');
 }
-document.getElementById('homeXpLevel').addEventListener('click', openRanksList);
+document.getElementById('homeXpLevel').addEventListener('click', ev=>{ ev.stopPropagation(); openRanksList(); });
 document.getElementById('pLevel').addEventListener('click', openRanksList);
 document.getElementById('ranksClose').addEventListener('click', ()=>{
   document.getElementById('ranksOverlay').classList.remove('open');
@@ -6106,7 +6159,7 @@ function comebackAdvance(){
 // ----- Home karta -----
 function renderRestBox(){
   const box = document.getElementById('restHomeBox'); if(!box) return;
-  const open = `<button class="rest-link" id="restOpenBtn">🤒 Nemoc / Regenerace <small>· pauza bez ztráty progresu</small></button>`;
+  const open = `<button class="rest-link" id="restOpenBtn">🤒 Nemoc / Regenerace</button>`;
   let html = '';
   if(restActive()){
     const r = state.rest, T = REST_TYPES[r.type] || REST_TYPES.recovery;
@@ -6125,11 +6178,10 @@ function renderRestBox(){
   } else if(comebackActive()){
     const c = state.comeback, f = comebackFactor();
     html = `<div class="rest-card comeback"><div class="rest-head">🌱 <b>Postupný návrat</b>${c.factors.length>1?` · ${c.done+1}. z ${c.factors.length} lehkých tréninků`:''}</div>
-      <p class="rest-p">První trénink bude lehčí: váhy zhruba −${Math.round((1-f)*100)} %, o sérii méně a nech si aspoň 3 opakování rezervu. Plný režim přijde sám.</p></div>` + open;
-  } else {
-    html = open;
+      <p class="rest-p">První trénink bude lehčí: váhy zhruba −${Math.round((1-f)*100)} %, o sérii méně a nech si aspoň 3 opakování rezervu. Plný režim přijde sám.</p></div>`;
   }
   box.innerHTML = html;
+  const lb = document.getElementById('restLinkBox'); if(lb) lb.innerHTML = restActive() ? '' : open;
   const o = document.getElementById('restOpenBtn'); if(o) o.addEventListener('click', openRestSetup);
   const e = document.getElementById('restEndBtn'); if(e) e.addEventListener('click', ()=>{
     showConfirm({icon:'💪', title:'Ukončit pauzu?', text:'Začneš lehčím návratovým tréninkem. Historie, rekordy a série zůstanou.', okLabel:'Jsem zpět', cancelLabel:'Ještě ne', onConfirm:restEnd});
@@ -10611,6 +10663,8 @@ function commNotifRenderBadge(){
   const n = commNotifUnread();
   const bell = document.getElementById('commBell');
   if(bell){ if(n>0) bell.dataset.n = n>99?'99+':String(n); else delete bell.dataset.n; }
+  const hb = document.getElementById('homeBell');
+  if(hb){ if(n>0) hb.dataset.n = n>99?'99+':String(n); else delete hb.dataset.n; }
   const tile = document.getElementById('tileCommunity');
   if(tile){ if(n>0) tile.dataset.badge = n>99?'99+':String(n); else delete tile.dataset.badge; }
 }
@@ -10678,6 +10732,7 @@ function commNotifOpen(){
   ov.querySelectorAll('.nt-row').forEach(r=>r.addEventListener('click', ()=>{ const u=r.dataset.ntuid; if(u){ chOpenPlayer(u); } }));
 }
 document.getElementById('commBell').addEventListener('click', async ()=>{ await commNotifPoll(); commNotifOpen(); });
+document.getElementById('homeBell').addEventListener('click', async ()=>{ await commNotifPoll(); commNotifOpen(); });
 function commNotifStart(){
   commNotifRenderBadge();
   commNotifPoll();
@@ -11242,8 +11297,9 @@ function showWeeklyReport(){
 // ===== HOME / HQ DASHBOARD =====
 function renderVipBtn(){
   const b = document.getElementById('homeVipBtn'); if(!b) return;
-  if(isPremium()){ b.classList.add('on'); b.innerHTML = '👑 VIP aktivní'; }
-  else { b.classList.remove('on'); b.innerHTML = '👑 VIP <small>· odemkni všechny recepty a funkce</small>'; }
+  b.title = isPremium() ? 'VIP aktivní' : 'Odemkni všechny recepty a funkce';
+  if(isPremium()){ b.classList.add('on'); b.innerHTML = '👑 VIP'; }
+  else { b.classList.remove('on'); b.innerHTML = '👑 VIP'; }
 }
 document.getElementById('homeVipBtn').addEventListener('click', ()=>{
   if(isPremium()){ showToast('👑 VIP máš aktivní – díky za podporu!'); return; }
@@ -11252,22 +11308,25 @@ document.getElementById('homeVipBtn').addEventListener('click', ()=>{
 function renderHome(){
   renderVipBtn();
   try{ missionsSync(); }catch(e){}
-  try{ renderHomeNotebookTile(); renderHomeFoodTile(); const pt = document.getElementById('progTileSub'); if(pt) pt.textContent = 'Gainz Score ' + calcGainzScore().toLocaleString('cs-CZ'); }catch(e){}
+  try{ renderHomeNotebookTile(); renderHomeFoodTile(); const ps = document.getElementById('progScore'); if(ps) ps.textContent = calcGainzScore().toLocaleString('cs-CZ'); }catch(e){}
   syncDailyReminder();
   const lv = levelOf(state.xp);
   const rank = levelRank(lv);
   document.getElementById('homeXpLevel').textContent = `Level ${lv} · ${rank.emoji} ${rank.name}`;
   document.getElementById('homeXpPts').textContent = `${state.xp} XP`;
   document.getElementById('homeXpFill').style.width = (xpIntoLevel(state.xp) / xpNeededForLevel(lv) * 100) + '%';
+  try{ const left = Math.max(0, xpNeededForLevel(lv) - xpIntoLevel(state.xp)); const pt = document.getElementById('progTileSub'); if(pt) pt.textContent = `Do levelu ${lv+1} zbývá ${left.toLocaleString('cs-CZ')} XP`; }catch(e){}
   document.getElementById('homeStreak').textContent = state.streak ? `${restActive()?'🛡️':'🔥'} ${state.streak} ${state.streak===1?'den':(state.streak<5?'dny':'dní')} v řadě${restActive()?' · pauza':''}` : 'Začni dnes svoji sérii 🔥';
   try{ renderRestBox(); }catch(e){}
 
   // mini dlazdice - mise a achievementy
   const missionsDone = (state.missions||[]).filter(m=>m.done).length;
   const missionsTotal = (state.missions||[]).length;
-  document.getElementById('miniMissionsSub').textContent = missionsTotal ? `${missionsDone} / ${missionsTotal} splněno` : 'Zatím nic';
+  document.getElementById('miniMissionsSub').textContent = `${missionsDone} / ${missionsTotal}`;
+  const mDesc = document.getElementById('miniMissionsDesc');
+  if(mDesc) mDesc.textContent = !missionsTotal ? 'Zatím nemáš žádné mise.' : (missionsDone>=missionsTotal ? '🎉 Všechny dnešní mise máš splněné.' : 'Dokonči své dnešní úkoly a získej XP.');
   const achDone = (state.achievements||[]).length;
-  document.getElementById('miniAchSub').textContent = `${achDone} / ${ACHIEVEMENTS.length}`;
+  document.getElementById('miniAchSub').textContent = achDone;
 
   // dnesni trenink karta
   const plan = state.workoutPlan;
@@ -11293,16 +11352,16 @@ function renderHome(){
       document.getElementById('todayTitle').textContent = day.label;
       const mins = woEstMinutes(day) || 15;
       document.getElementById('todaySub').textContent = `📆 Naplánováno na dnes • ${day.exercises.length} cviků • ~${woFmtDur(mins)}`;
-      document.getElementById('todayBtn').textContent = '▶ START TRÉNINKU';
+      document.getElementById('todayBtn').textContent = 'ZAHÁJIT TRÉNINK';
       document.getElementById('todayBtn').onclick = ()=>{ woActiveDay = sIdx; openHomeSub('training'); renderWorkoutStep3(); startWorkoutSession(sIdx); };
     } else {
       const nx = schedNext();
       let when = '';
-      if(nx){ const dt = new Date(dateKeyToTime(nx.dk)); when = `Další: ${NB_DAYS[dt.getDay()]} ${dt.getDate()}. ${dt.getMonth()+1}. · ${schedDayLabel(nx.idx)}`; }
+      if(nx){ const dt = new Date(dateKeyToTime(nx.dk)); when = `Další trénink · ${NB_DAYS[dt.getDay()]} ${dt.getDate()}. ${dt.getMonth()+1}. · ${schedDayLabel(nx.idx)}`; }
       card.classList.add('rest');
       document.getElementById('todayTitle').textContent = doneToday ? '✅ DNES HOTOVO' : '😎 REST DAY';
-      document.getElementById('todaySub').textContent = (doneToday ? 'Skvělá práce. ' : 'Dnes nemáš nic naplánováno. ') + (when || 'Rozvrh dalších dnů si nastavíš v kalendáři v Sešitu.');
-      document.getElementById('todayBtn').textContent = '📆 Otevřít kalendář';
+      document.getElementById('todaySub').textContent = (doneToday ? 'Skvělá práce. ' : '') + (when || 'Rozvrh dalších dnů si nastavíš v kalendáři v Sešitu.');
+      document.getElementById('todayBtn').textContent = 'OTEVŘÍT KALENDÁŘ →';
       document.getElementById('todayBtn').onclick = ()=>{ nbTab='calendar'; openHomeSub('notebook'); };
     }
   } else if(plan && nextIdx !== -1){
@@ -11311,7 +11370,7 @@ function renderHome(){
     document.getElementById('todayTitle').textContent = day.label;
     const mins = woEstMinutes(day) || 15;
     document.getElementById('todaySub').textContent = `${day.exercises.length} cviků • ~${woFmtDur(mins)}`;
-    document.getElementById('todayBtn').textContent = '▶ START TRÉNINKU';
+    document.getElementById('todayBtn').textContent = 'ZAHÁJIT TRÉNINK';
     document.getElementById('todayBtn').onclick = ()=>{
       woActiveDay = nextIdx;
       openHomeSub('training');
@@ -11325,6 +11384,21 @@ function renderHome(){
     document.getElementById('todayBtn').textContent = plan ? '🏋️ Podívat se na trénink' : '🎯 Vytvořit plán';
     document.getElementById('todayBtn').onclick = ()=> openHomeSub('training');
   }
+  try{ homeSkinToday(plan); }catch(e){}
+}
+// pilulka + čistý nadpis karty dne (REST DAY / TRÉNINK / PAUZA…) – logika větví výše zůstává beze změny
+function homeSkinToday(plan){
+  const card = document.getElementById('todayCard'), tt = document.getElementById('todayTitle'), pill = document.getElementById('todayPill');
+  const raw = tt.textContent.replace(/^[^\p{L}\p{N}]+/u,'').trim();
+  let kind;
+  if(restActive()) kind = 'pause';
+  else if(!card.classList.contains('rest')) kind = 'train';
+  else if(/HOTOVO/i.test(raw)) kind = 'done';
+  else if(!plan) kind = 'noplan';
+  else kind = 'rest';
+  card.dataset.kind = kind;
+  pill.textContent = {pause:'PAUZA', train:'TRÉNINK DNES', done:'HOTOVO', noplan:'BEZ PLÁNU', rest:'REST DAY'}[kind];
+  tt.textContent = kind==='rest' ? 'Dnes odpočíváš.' : kind==='done' ? 'Dnes hotovo.' : raw;
 }
 
 // Otevre danou sekci a schova Home + ostatni overlaye
@@ -11410,6 +11484,7 @@ document.querySelectorAll('.bn-btn').forEach(b=>{
 document.getElementById('tileFood').addEventListener('click', ()=> openHomeSub('food'));
 document.getElementById('tileTraining').addEventListener('click', ()=> openHomeSub('training'));
 document.getElementById('tileProgress').addEventListener('click', ()=> openHomeSub('progress'));
+document.getElementById('tileProgress').addEventListener('keydown', ev=>{ if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); openHomeSub('progress'); } });
 document.getElementById('tileNotebook').addEventListener('click', ()=>{ nbTab = 'diary'; nbOpenEx = null; openHomeSub('notebook'); });
 document.getElementById('tileCommunity').addEventListener('click', ()=>{
   closeModal();
@@ -13301,7 +13376,8 @@ function renderProgFood(){
 function renderHomeFoodTile(){
   const sub = document.getElementById('foodTileSub'); if(!sub) return;
   const tot = foodDayTotals(todayKey()), tg = foodTargets();
-  sub.textContent = tot.n ? `Dnes ${Math.round(tot.kcal)} / ${tg.kcal} kcal` : 'Makra, skener a graf';
+  sub.textContent = `${Math.round(tot.kcal)} / ${tg.kcal} kcal`;
+  const bar = document.getElementById('foodTileBar'); if(bar) bar.style.width = Math.min(100, tg.kcal ? tot.kcal/tg.kcal*100 : 0) + '%';
 }
 
 document.getElementById('foodClose').addEventListener('click', goHome);
