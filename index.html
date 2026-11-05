@@ -2966,7 +2966,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29s · 2026-11-05</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29t · 2026-11-05</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -12307,7 +12307,7 @@ function foodSearchLocal(text, limit){
   const nq = homeNorm(text||'').trim();
   if(nq.length < 2) return [];
   const tokens = nq.split(/\s+/).filter(Boolean);
-  const mine = (Array.isArray(state.myFoods) ? state.myFoods : []).map(x=>({id:x.id, name:x.name, alias:'', per100:x.per100, pieceG:x.servingG||null, pieceLabel:'porce', mine:true}));
+  const mine = (Array.isArray(state.myFoods) ? state.myFoods : []).map(x=>({id:x.id, name:x.name, alias:'', per100:x.per100, pieceG:x.servingG||null, packG:x.packG||null, pieceLabel:'porce', mine:true}));
   const out = [];
   mine.concat(foodDb()).forEach(it=>{
     const nameN = homeNorm(it.name), hay = nameN+' '+homeNorm(it.alias);
@@ -12678,7 +12678,9 @@ function openFoodForm(init){
     <label class="ff-lbl" id="ffServWrap" style="display:${basis==='serving'?'block':'none'}">Jedna porce váží (g)<input type="text" inputmode="decimal" id="ffServ" value="${init.servingG||''}"></label>
     <div class="ff-grid">${FOOD_FIELDS.map(([k,l])=>inp(k,l)).join('')}</div>
     <label class="ff-lbl" id="ffPieceWrap" style="display:none"><span id="ffPieceTxt"></span><input type="text" inputmode="decimal" id="ffCount" value="1"></label>
-    <label class="ff-lbl">Kolik jsi snědl/a (g)<input type="text" inputmode="decimal" id="ffGrams" value="${init.grams||init.servingG||100}"></label>
+    <label class="ff-lbl">Celé balení váží (g / ml) – volitelné<input type="text" inputmode="decimal" id="ffPack" value="${init.packG||''}" placeholder="např. 70 nebo 500"></label>
+    <div class="fs-more" id="ffQuick" style="margin:2px 0 8px;"><button type="button" data-qf="1">📦 Celé balení</button><button type="button" data-qf="0.5">½ balení</button>${init.servingG && init.basis!=='serving' ? '<button type="button" data-qs="'+init.servingG+'">🥄 1 porce ('+init.servingG+' g)</button>' : ''}</div>
+    <label class="ff-lbl">Kolik jsi snědl/a (g / ml)<input type="text" inputmode="decimal" id="ffGrams" value="${init.grams||init.servingG||init.packG||100}"></label>
     <div id="ffPreview" class="ff-preview"></div>
     ${init.source==='library' ? '' : '<label class="ff-chk"><input type="checkbox" id="ffSave" '+(['db','off','ai'].includes(init.source)?'':'checked')+'> Uložit do Mých potravin</label>'}
     ${init.raw ? `<details class="ff-raw"><summary>Rozpoznaný text z fotky</summary><pre>${homeEsc(init.raw)}</pre></details>` : ''}
@@ -12706,6 +12708,13 @@ function openFoodForm(init){
   };
   ov.querySelectorAll('input,select').forEach(i=>{ i.addEventListener('input', refresh); i.addEventListener('change', refresh); });
   refresh();
+  const packEl = document.getElementById('ffPack');
+  ov.querySelectorAll('#ffQuick [data-qf]').forEach(bt=>bt.addEventListener('click', ()=>{
+    const pk = foodNum(packEl.value);
+    if(!(pk>0)){ showToast('⚠️ Zadej, kolik váží celé balení'); packEl.focus(); return; }
+    document.getElementById('ffGrams').value = String(Math.round(pk*parseFloat(bt.dataset.qf)*10)/10).replace('.',','); refresh();
+  }));
+  ov.querySelectorAll('#ffQuick [data-qs]').forEach(bt=>bt.addEventListener('click', ()=>{ document.getElementById('ffGrams').value = String(bt.dataset.qs).replace('.',','); refresh(); }));
   let srcNow = init.source||'manual', piece = null;
   const nameEl = document.getElementById('ffName'), gramsEl = document.getElementById('ffGrams'), cntEl = document.getElementById('ffCount');
   const fmtN = n=>String(n).replace('.',',');
@@ -12771,7 +12780,8 @@ function openFoodForm(init){
       if(!Array.isArray(state.myFoods)) state.myFoods = [];
       const clean = {}; Object.keys(p).forEach(k=>{ if(p[k]!=null) clean[k] = foodR1(p[k]); });
       const ex = state.myFoods.find(x=>homeNorm(x.name)===homeNorm(name));
-      if(ex){ ex.per100 = clean; ex.servingG = r.servingG||ex.servingG; } else state.myFoods.push({id:'M'+Date.now(), name, per100:clean, servingG:r.servingG||null});
+      const pkG = foodNum(document.getElementById('ffPack').value)||null;
+      if(ex){ ex.per100 = clean; ex.servingG = r.servingG||ex.servingG; if(pkG) ex.packG = pkG; } else state.myFoods.push({id:'M'+Date.now(), name, per100:clean, servingG:r.servingG||null, packG:pkG});
       saveState();
     }
     closeFoodPanel(); showToast('🍽️ Přidáno do deníku'); renderFoodDiary(); try{ renderProgFood(); }catch(e){}
@@ -12994,6 +13004,16 @@ async function foodDecodeBarcode(file){
   }
   return null;
 }
+// "500 ml", "70 g", "6 x 33 cl", "1,5 l" → hmotnost balení v g (ml ≈ g)
+function foodParsePack(q){
+  if(!q) return null;
+  const t = String(q).toLowerCase().replace(',','.');
+  const m = t.match(/(?:(\d+(?:\.\d+)?)\s*[x×]\s*)?(\d+(?:\.\d+)?)\s*(kg|g|l|ml|cl|dl)\b/);
+  if(!m) return null;
+  const k = {kg:1000, g:1, l:1000, ml:1, cl:10, dl:100}[m[3]];
+  const v = (m[1] ? Number(m[1]) : 1) * Number(m[2]) * k;
+  return v>0 && v<20000 ? Math.round(v*10)/10 : null;
+}
 async function foodLookupBarcode(code){
   code = String(code||'').replace(/\D/g,'');
   if(code.length<8){ showToast('⚠️ Zadej celé číslo čárového kódu (8–13 číslic)'); return; }
@@ -13007,7 +13027,7 @@ async function foodLookupBarcode(code){
     let kcal = g('energy-kcal_100g'); if(kcal==null && g('energy_100g')!=null) kcal = Math.round(g('energy_100g')/4.184);
     const name = [pr.product_name, pr.brands && String(pr.brands).split(',')[0]].filter(Boolean).join(' – ');
     openFoodForm({source:'barcode', name, per100:{kcal, p:g('proteins_100g'), c:g('carbohydrates_100g'), s:g('sugars_100g'), f:g('fat_100g'), sf:g('saturated-fat_100g'), fiber:g('fiber_100g'), salt:g('salt_100g')},
-      servingG: pr.serving_quantity ? Number(pr.serving_quantity) : null, grams: pr.serving_quantity ? Number(pr.serving_quantity) : 100,
+      servingG: pr.serving_quantity ? Number(pr.serving_quantity) : null, packG: foodParsePack(pr.quantity), grams: pr.serving_quantity ? Number(pr.serving_quantity) : (foodParsePack(pr.quantity) || 100),
       missing: [], note:'Údaje pocházejí z databáze Open Food Facts (přidávají je uživatelé). Zkontroluj je podle obalu.'});
   }catch(err){ showToast('⚠️ Nepodařilo se spojit s databází – zkontroluj internet'); }
 }
@@ -13057,7 +13077,7 @@ function foodQtyToGrams(piece, qty){
 function foodOpenItem(it, qty){
   const piece = foodPieceOf(it);
   const {count, grams} = foodQtyToGrams(piece, qty);
-  openFoodForm({source: it.mine ? 'library' : (it.off ? 'off' : (it.ai ? 'ai' : 'db')), name: it.name, per100: it.per100, servingG: it.mine ? it.pieceG : null,
+  openFoodForm({source: it.mine ? 'library' : (it.off ? 'off' : (it.ai ? 'ai' : 'db')), name: it.name, per100: it.per100, servingG: it.mine ? it.pieceG : null, packG: it.mine ? it.packG : null,
     piece, count, grams: Math.round(grams*10)/10,
     note: it.mine ? '' : (it.off ? 'Údaje z Open Food Facts (přidávají je uživatelé) – zkontroluj podle obalu.' : (it.ai ? '✨ Odhad od AI – je orientační, hlavně u hotových jídel.' : 'Orientační průměrné hodnoty na 100 g. Pro přesnost použij údaje z obalu.'))});
 }
@@ -13162,7 +13182,7 @@ function openFoodLibrary(){
     s.addEventListener('input', ()=>{ draw(s.value); const n = document.getElementById('flSearch'); n.focus(); n.setSelectionRange(n.value.length, n.value.length); });
     ov.querySelectorAll('[data-lib]').forEach(b=>b.addEventListener('click', ()=>{
       const x = lib.find(z=>z.id===b.dataset.lib); if(!x) return;
-      openFoodForm({source:'library', name:x.name, per100:x.per100, servingG:x.servingG, grams:x.servingG||100});
+      openFoodForm({source:'library', name:x.name, per100:x.per100, servingG:x.servingG, packG:x.packG, grams:x.servingG||x.packG||100});
     }));
     ov.querySelectorAll('[data-libdel]').forEach(b=>b.addEventListener('click', ()=>{
       state.myFoods = lib.filter(z=>z.id!==b.dataset.libdel); saveState(); openFoodLibrary();
