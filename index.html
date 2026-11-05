@@ -2643,7 +2643,7 @@
   .wo-ex-actions button, .bp-ex-fav-btn{ border-color:rgba(255,255,255,0.28); }
   .wo-ex-actions button, .bp-ex-fav-btn{ background:rgba(0,0,0,max(0.28, calc(var(--gs) * 0.9))); }
   /* ===== HOME – Industrial Simple dashboard (V29z) ===== */
-  :root{ --gold:var(--accent); --gold-rgb:var(--accent-rgb); --gold-light:var(--accent-light); }  /* Home se barví podle zvoleného tématu; zlatá zůstává jen u VIP */
+  body{ --gold:var(--accent); --gold-rgb:var(--accent-rgb); --gold-light:var(--accent-light); }  /* Home se barví podle zvoleného tématu; zlatá zůstává jen u VIP */
   #homeOverlay{padding-bottom:96px;}
   .hd-top{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:16px 20px 10px;}
   .hd-brand{min-width:0; flex:1 1 auto;}
@@ -2667,12 +2667,12 @@
   .prog-card:active{transform:translateY(1px);}
   .pc-top{display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;}
   .pc-h{font-family:'Oxanium',sans-serif; font-weight:800; font-size:15.5px; letter-spacing:0.05em;}
-  .pc-ic{color:var(--gold); display:flex;}
+  .pc-ic{color:var(--cut); display:flex;}
   .pc-score{display:flex; align-items:baseline; gap:10px; margin:2px 0 10px;}
   .pc-score b{font-family:'Oxanium',sans-serif; font-weight:800; font-size:clamp(32px, 10vw, 40px); line-height:1; color:#fff;}
   .pc-score span{font-family:'Oxanium',sans-serif; font-weight:600; font-size:13px; letter-spacing:0.08em; color:var(--muted);}
   .prog-card .xp-track{height:7px;}
-  .prog-card .xp-fill{background:linear-gradient(90deg,var(--accent),var(--accent-light)); box-shadow:0 0 8px rgba(var(--gold-rgb),0.45);}
+  .prog-card .xp-fill{background:linear-gradient(90deg,var(--accent),var(--cut)); box-shadow:0 0 8px rgba(var(--gold-rgb),0.45);}
   .pc-lv{display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-top:9px; font-family:'Oxanium',sans-serif; font-size:13.5px;}
   .pc-lv b{color:var(--gold-light); font-weight:700; cursor:pointer; text-decoration:underline; text-decoration-style:dotted; text-underline-offset:3px;}
   .pc-lv span{color:var(--muted);}
@@ -2682,6 +2682,11 @@
   .home-tiles.qa .home-tile{min-height:104px; justify-content:flex-start; gap:2px; padding:15px 14px; border-color:rgba(var(--gold-rgb),0.35);}
   .home-tiles.qa .ht-icon{color:var(--gold); margin-bottom:8px; height:26px;}
   .home-tiles.qa .ht-icon svg{display:block;}
+  .home-tiles.qa .home-tile.t-kitchen{border-color:rgba(var(--cut-rgb),0.45);}
+  .home-tiles.qa .t-kitchen .ht-icon{color:var(--cut);}
+  .t-kitchen .ht-bar i{background:var(--cut);}
+  .mis-card .mc-pill{background:rgba(var(--accent-rgb),0.18); color:var(--accent-light);}
+  .hd-flink .trophy-ic{opacity:0.9;}
   .ht-bar{height:5px; border-radius:3px; background:rgba(255,255,255,0.1); margin-top:7px; overflow:hidden;}
   .ht-bar i{display:block; height:100%; background:linear-gradient(90deg,var(--accent),var(--accent-light)); border-radius:3px; transition:width .5s ease;}
   .mis-card{display:block; width:calc(100% - 40px); margin:0 20px 12px; padding:14px 16px; border-radius:16px; border:1px solid var(--line); background:rgba(0,0,0,calc(var(--gs) * 0.9)); color:var(--text); text-align:left; cursor:pointer; box-shadow:inset 0 1px 0 rgba(255,255,255,var(--gedge));}
@@ -3030,7 +3035,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30e · 2026-11-05</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30f · 2026-11-05</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
