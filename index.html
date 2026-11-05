@@ -1143,6 +1143,13 @@
   .nb-day-head span{font-size:calc(13.4px * var(--font-scale)); color:var(--muted); text-align:right;}
   .nb-ex{padding:10px 14px; border-top:1px solid rgba(255,255,255,0.05);}
   .nb-day-head + .nb-ex{border-top:none;}
+  .nb-day.coll .nb-day-head{cursor:pointer; border-bottom:none; align-items:center; -webkit-tap-highlight-color:transparent;}
+  .nb-day.coll.open .nb-day-head{border-bottom:1px solid var(--line);}
+  .nb-day.coll .nb-day-body{display:none;}
+  .nb-day.coll.open .nb-day-body{display:block; animation:subFade .45s cubic-bezier(.22,.61,.36,1) backwards;}
+  .nb-day.coll .nb-chev{color:var(--muted); font-size:calc(15px * var(--font-scale)); transition:transform .3s cubic-bezier(.22,.61,.36,1);}
+  .nb-day.coll.open .nb-chev{transform:rotate(180deg);}
+  .nb-day-body > .nb-ex:first-child{border-top:none;}
   .nb-ex-top{display:flex; align-items:center; gap:6px; flex-wrap:wrap;}
   .nb-ex-top b{font-size:calc(14.6px * var(--font-scale)); flex:1 1 auto; min-width:0;}
   .nb-tag{font-size:calc(13px * var(--font-scale)); border:1px solid var(--line); border-radius:999px; padding:1px 7px; color:var(--muted);}
@@ -2639,8 +2646,8 @@
   :root{ --gold:#d4a84b; --gold-rgb:212,168,75; --gold-light:#e8c872; }
   #homeOverlay{padding-bottom:96px;}
   .hd-top{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:16px 20px 10px;}
-  .hd-brand .logo{font-size:21px; letter-spacing:0.04em; margin:0;}
-  .hd-slogan{font-family:'Space Mono',monospace; font-size:10.5px; letter-spacing:0.09em; white-space:nowrap; color:var(--muted); margin:3px 0 0 20px;}
+  .hd-brand{min-width:0; flex:1 1 auto;}
+  .hd-brand .slogan{font-size:14px; white-space:nowrap;}
   .hd-actions{display:flex; align-items:center; gap:8px;}
   .hd-bell{position:relative; width:40px; height:40px; border-radius:12px; border:1px solid var(--line); background:rgba(0,0,0,calc(var(--gs) * 0.9)); color:var(--text); display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0;}
   .hd-bell[data-n]::after{content:attr(data-n); position:absolute; top:-6px; right:-6px; min-width:18px; height:18px; border-radius:9px; background:#ef4444; color:#fff; font-size:12px; line-height:18px; text-align:center; padding:0 4px; font-family:'Oxanium',sans-serif; font-weight:700;}
@@ -2969,9 +2976,9 @@
 
 <div class="page-overlay" id="homeOverlay">
   <div class="hd-top">
-    <div class="hd-brand">
-      <div class="logo"><span class="dot"></span>GYMGAINZ</div>
-      <div class="hd-slogan">TRAIN HARD · TRACK SMART</div>
+    <div class="logo-wrap hd-brand">
+      <div class="logo"><span class="dot"></span>GYM GAINZ</div>
+      <div class="slogan slogan-shoju">Train hard · Track smart</div>
     </div>
     <div class="hd-actions">
       <button class="hd-bell" id="homeBell" title="Upozornění" aria-label="Upozornění"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6.5 2 6.5H4S6 14 6 9M10 19a2 2 0 0 0 4 0"/></svg></button>
@@ -3023,7 +3030,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30c · 2026-11-05</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30d · 2026-11-05</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -11449,7 +11456,7 @@ function openHomeSubReal(section){
   else if(section==='achievements'){ document.getElementById('achOverlay').classList.add('open'); renderAchievements(); }
   else if(section==='progress'){ document.getElementById('progressOverlay').classList.add('open'); renderProgress(); }
   else if(section==='food'){ document.getElementById('foodOverlay').classList.add('open'); foodDate = todayKey(); renderFoodDiary(); }
-  else if(section==='notebook'){ document.getElementById('notebookOverlay').classList.add('open'); nbOpenEx = null; renderNotebook(); }
+  else if(section==='notebook'){ document.getElementById('notebookOverlay').classList.add('open'); nbOpenEx = null; nbOpenDay = null; renderNotebook(); }
   else if(section==='home'){ document.getElementById('homeOverlay').classList.add('open'); renderHome(); }
 }
 function setProfTab(t){
@@ -11480,13 +11487,13 @@ function renderProgress(){
 }
 
 document.querySelectorAll('.bn-btn').forEach(b=>{
-  b.addEventListener('click', ()=>{ if(b.dataset.nav==='notebook'){ nbTab = 'diary'; nbOpenEx = null; } openHomeSub(b.dataset.nav); });
+  b.addEventListener('click', ()=>{ if(b.dataset.nav==='notebook'){ nbTab = 'diary'; nbOpenEx = null; nbOpenDay = null; } openHomeSub(b.dataset.nav); });
 });
 document.getElementById('tileFood').addEventListener('click', ()=> openHomeSub('food'));
 document.getElementById('tileTraining').addEventListener('click', ()=> openHomeSub('training'));
 document.getElementById('tileProgress').addEventListener('click', ()=> openHomeSub('progress'));
 document.getElementById('tileProgress').addEventListener('keydown', ev=>{ if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); openHomeSub('progress'); } });
-document.getElementById('tileNotebook').addEventListener('click', ()=>{ nbTab = 'diary'; nbOpenEx = null; openHomeSub('notebook'); });
+document.getElementById('tileNotebook').addEventListener('click', ()=>{ nbTab = 'diary'; nbOpenEx = null; nbOpenDay = null; openHomeSub('notebook'); });
 document.getElementById('tileCommunity').addEventListener('click', ()=>{
   closeModal();
   document.getElementById('communityOverlay').classList.add('open');
@@ -11529,6 +11536,7 @@ const NB_MONTHS = ['Leden','Únor','Březen','Duben','Květen','Červen','Červe
 const NB_TYPES = {'':{n:'Pracovní', icon:''}, w:{n:'Rozcvička', icon:'🔥'}, d:{n:'Drop set', icon:'⬇️'}, f:{n:'Do selhání', icon:'💥'}, n:{n:'Negativy', icon:'🐢'}};
 const NB_TYPE_ORDER = ['', 'w', 'd', 'f', 'n'];
 let nbTab = 'diary';      // 'diary' | 'calendar' | 'exercises' | 'stats' | 'tools'
+let nbOpenDay = null;     // rozbalený den v Deníku (vždy jen jeden)
 let nbOpenEx = null;      // rozbalený cvik v záložce Cviky
 let nbSearch = '';
 let nbCal = null;         // {y, m} zobrazený měsíc v kalendáři
@@ -11634,12 +11642,13 @@ function nbEntryHTML(e, prDay){
     <span class="nb-acts"><button class="nb-ib" data-nbedit="${homeEsc(e.id)}" title="Upravit">✏️</button><button class="nb-ib" data-nbcopy="${homeEsc(e.id)}" title="Kopírovat na dnes">📋</button><button class="nb-ib" data-nbdel="${homeEsc(e.id)}" title="Smazat">🗑️</button></span></div>
     <div class="nb-sets">${sets}</div>${note}</div>`;
 }
-function nbDayHTML(dk, list, prDay){
+function nbDayHTML(dk, list, prDay, coll){
   const vol = list.reduce((a,e)=>a+nbVolume(e.name,e.sets),0);
   const dn = nbDayNote(dk);
   const isToday = dk===todayKey();
   const bar = `<div class="nb-day-bar">${dn ? `<div class="nb-dnote">📝 ${homeEsc(dn)}</div>` : ''}
     <button class="nb-mini" data-nbdaynote="${dk}">${dn?'✏️ Poznámka dne':'📝 Poznámka dne'}</button>${!isToday ? `<button class="nb-mini" data-nbdaycopy="${dk}">📋 Opakovat den dnes</button>` : ''}</div>`;
+  if(coll) return `<div class="nb-day coll ${nbOpenDay===dk?'open':''}" data-nbday="${dk}"><div class="nb-day-head" data-nbdayhead="${dk}"><b>${nbDateLabel(dk)}</b><span class="nb-chev">▾</span></div><div class="nb-day-body">${list.map(e=>nbEntryHTML(e,prDay)).join('')}${bar}</div></div>`;
   return `<div class="nb-day"><div class="nb-day-head"><b>${nbDateLabel(dk)}</b><span>${list.length} ${list.length===1?'cvik':(list.length<5?'cviky':'cviků')}${vol?' · '+Math.round(vol)+' kg':''}</span></div>${list.map(e=>nbEntryHTML(e,prDay)).join('')}${bar}</div>`;
 }
 function nbByDate(entries){
@@ -11651,7 +11660,7 @@ function nbDiaryHTML(entries){
   const byDate = nbByDate(entries);
   const dates = Object.keys(byDate).sort((a,b)=>dateKeyToTime(b)-dateKeyToTime(a));
   const prDay = nbPRMap(entries);
-  return dates.map(dk=>nbDayHTML(dk, byDate[dk], prDay)).join('');
+  return dates.map(dk=>nbDayHTML(dk, byDate[dk], prDay, true)).join('');
 }
 // ---------- kalendář ----------
 function calRefresh(){ renderNotebook(); renderHome(); if(woEditMode && woEditSub==='cal' && document.getElementById('workoutOverlay').classList.contains('open')) renderWorkoutStep3(); }
@@ -11932,6 +11941,11 @@ function renderNotebook(){
   const showTop = nbTab==='diary' || nbTab==='calendar' || nbTab==='exercises';
   el.innerHTML = (showTop ? nbStatsHTML(entries) + addBtn : '') + tabs + body;
   el.querySelectorAll('[data-nbt]').forEach(b=>b.addEventListener('click', ()=>{ nbTab = b.dataset.nbt; renderNotebook(); }));
+  el.querySelectorAll('[data-nbdayhead]').forEach(h=>h.addEventListener('click', ()=>{
+    const dk = h.dataset.nbdayhead, was = nbOpenDay===dk;
+    nbOpenDay = was ? null : dk;
+    el.querySelectorAll('.nb-day.coll').forEach(d=>d.classList.toggle('open', d.dataset.nbday===nbOpenDay));
+  }));
   const ab = document.getElementById('nbAddBtn'); if(ab) ab.addEventListener('click', ()=>openNbEditor({}));
   el.querySelectorAll('[data-nbedit]').forEach(b=>b.addEventListener('click', ()=>{ const e = nbFindEntry(b.dataset.nbedit); if(e) openNbEditor({entry:e}); }));
   el.querySelectorAll('[data-nbcopy]').forEach(b=>b.addEventListener('click', ()=>nbCopyToToday([b.dataset.nbcopy])));
