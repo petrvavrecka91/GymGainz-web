@@ -1188,6 +1188,8 @@
   .prog-food-link{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:2px 10px; width:100%; margin-top:16px; padding:12px 14px; border:1px solid var(--line); border-radius:12px; background:rgba(0,0,0,0.3); color:var(--text); cursor:pointer; text-align:left; font-family:'Oxanium',sans-serif; font-size:14.6px;}
   .prog-food-link b{color:var(--accent);}
   .prog-food-link small{flex-basis:100%; font-size:13.4px; color:var(--muted); font-family:'Space Grotesk',sans-serif;}
+  .ai-link{display:block; margin:4px 0 10px; padding:13px 14px; border:1.5px solid var(--accent); border-radius:12px; background:rgba(var(--accent-rgb,160,80,255),0.12); color:var(--accent); font-family:'Oxanium',sans-serif; font-weight:700; font-size:16px; text-align:center; text-decoration:none;}
+  .ai-link small{display:block; margin-top:2px; font-family:'Space Mono',monospace; font-weight:400; font-size:12.5px; color:var(--muted); text-decoration:underline;}
   .fd-donut{display:flex; justify-content:center; margin:10px 0 4px;}
   .fd-legend{display:flex; justify-content:center; gap:10px; flex-wrap:wrap; font-size:calc(13.4px * var(--font-scale)); margin-bottom:2px;}
   .fd-ringkey{text-align:center; font-size:calc(13.4px * var(--font-scale)); color:var(--muted); margin:2px 0 12px;}
@@ -2966,7 +2968,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29t · 2026-11-05</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29u · 2026-11-05</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -13146,9 +13148,10 @@ function aiSetupHTML(){
   const has = !!aiKey();
   return `<h4>✨ AI asistent (Gemini)</h4>
     <p class="nb-note" style="margin:0 0 10px;">AI umí přečíst nutriční tabulku z fotky a odhadnout kalorie jídla, které není v databázi. Je zdarma – potřebuješ vlastní klíč od Googlu:</p>
-    <ol class="ai-steps"><li>Otevři <b>aistudio.google.com/apikey</b> a přihlas se Google účtem.</li><li>Klepni na <b>Create API key</b> a zkopíruj klíč.</li><li>Vlož ho sem:</li></ol>
+    <a class="ai-link" href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">🔑 Otevřít stránku s API klíčem<small>aistudio.google.com/apikey</small></a>
+    <ol class="ai-steps"><li>Klepni na odkaz výše a přihlas se Google účtem.</li><li>Klepni na <b>Create API key</b> a klíč zkopíruj.</li><li>Vrať se sem a vlož ho (nebo klepni na <b>📋 Vložit</b>):</li></ol>
     <label class="ff-lbl">API klíč<input type="password" id="aiKeyIn" autocomplete="off" placeholder="${has?'•••••••• (uložen)':'AIza…'}"></label>
-    <div class="fs-more"><button id="aiKeySave">💾 Uložit a vyzkoušet</button>${has?'<button id="aiKeyDel">🗑️ Odebrat klíč</button>':''}</div>
+    <div class="fs-more"><button id="aiKeyPaste">📋 Vložit ze schránky</button><button id="aiKeySave">💾 Uložit a vyzkoušet</button>${has?'<button id="aiKeyDel">🗑️ Odebrat klíč</button>':''}</div>
     <p class="nb-note" style="margin-top:10px;">Klíč zůstane jen v tomto zařízení (není v záloze ani v cloudu). Na bezplatném tarifu může Google odeslané fotky a texty použít ke zlepšování svých služeb – nefoť nic soukromého.</p>`;
 }
 function openAiSetup(){
@@ -13161,6 +13164,11 @@ function openAiSetup(){
     save.disabled = true; save.textContent = '⏳ Zkouším…';
     try{ await aiEstimateFood('jablko'); showToast('✅ AI funguje'); closeFoodPanel(); try{ renderAiSetting(); }catch(e){} }
     catch(e){ if(e.code==='badkey') aiSetKey(''); showToast(aiErrText(e)); save.disabled = false; save.textContent = '💾 Uložit a vyzkoušet'; }
+  });
+  const pst = ov.querySelector('#aiKeyPaste');
+  if(pst) pst.addEventListener('click', async ()=>{
+    try{ const t = (await navigator.clipboard.readText()||'').trim(); if(t){ const inp = ov.querySelector('#aiKeyIn'); inp.type = 'text'; inp.value = t; showToast('📋 Vloženo – klepni na Uložit'); } else showToast('Schránka je prázdná'); }
+    catch(e){ showToast('Vložení ze schránky nejde – podrž prst v políčku a dej Vložit'); }
   });
   if(del) del.addEventListener('click', ()=>{ aiSetKey(''); closeFoodPanel(); showToast('Klíč odebrán'); try{ renderAiSetting(); }catch(e){} });
 }
