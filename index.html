@@ -2968,7 +2968,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29u · 2026-11-05</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29v · 2026-11-05</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -13158,8 +13158,10 @@ function openAiSetup(){
   const ov = foodPanel(aiSetupHTML());
   const save = ov.querySelector('#aiKeySave'), del = ov.querySelector('#aiKeyDel');
   save.addEventListener('click', async ()=>{
-    const k = ov.querySelector('#aiKeyIn').value.trim();
-    if(k){ if(!/^[\w\-]{20,}$/.test(k)){ showToast('⚠️ Klíč vypadá divně – zkopíruj ho celý'); return; } aiSetKey(k); }
+    // vyčistit: mezery, zalomení, uvozovky, neviditelné znaky (z kopírování); formát klíče Google mění, proto jen základní kontrola
+    let k = ov.querySelector('#aiKeyIn').value.replace(/[\s\u200B-\u200D\uFEFF"'`<>]/g,'');
+    const mm = k.match(/(AIza[\w\-]{30,}|AQ\.[\w\-.]{20,})/); if(mm) k = mm[1];
+    if(k){ if(k.length<20 || /[^\x21-\x7E]/.test(k)){ showToast('⚠️ Klíč je moc krátký nebo má divné znaky – zkopíruj ho celý'); return; } aiSetKey(k); }
     if(!aiKey()){ showToast('⚠️ Vlož klíč'); return; }
     save.disabled = true; save.textContent = '⏳ Zkouším…';
     try{ await aiEstimateFood('jablko'); showToast('✅ AI funguje'); closeFoodPanel(); try{ renderAiSetting(); }catch(e){} }
