@@ -3023,7 +3023,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30a · 2026-11-05</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30b · 2026-11-05</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -11917,7 +11917,7 @@ function nbToolsBind(){
 function renderNotebook(){
   const el = document.getElementById('nbContent');
   const entries = nbEntries();
-  const TABS = [['diary','📅','Deník'],['calendar','🗓️','Kalendář'],['exercises','🏋️','Cviky'],['stats','📊','Statistiky'],['tools','🧮','Nástroje']];
+  const TABS = [['diary','📓','Deník'],['calendar','🗓️','Kalendář'],['exercises','🏋️','Cviky'],['stats','📊','Statistiky'],['tools','🧮','Nástroje']];
   const tabs = `<div class="wo-mode-tabs nb-tabs">${TABS.map(([k,i,l])=>`<button data-nbt="${k}" class="${nbTab===k?'on':''}"><span>${i}</span>${l}</button>`).join('')}</div>`;
   const addBtn = `<button class="nb-add-btn" id="nbAddBtn">✍️ Zapsat cvik ručně</button>`;
   const emptyMsg = `<div class="nb-empty">📓<p>Sešit je zatím prázdný.</p><p style="font-size:13.8px;">Každý trénink, který dokončíš v appce, se sem zapíše sám. Můžeš sem také ručně přidat trénink, který jsi dělal jinde.</p></div>`;
@@ -14509,7 +14509,7 @@ document.getElementById('obReplayBtn').addEventListener('click', ()=>{
     signal:'<path d="M4 20v-4M9 20v-8M14 20V8M19 20V4"/>'
   };
   const MAP = {
-    '⚠':'alert','🔥':'flame','🏋':'barbell','💪':'dumbbell','❤':'heart','🤍':'heart','✅':'checkc','💾':'save','🔒':'lock','🔓':'unlock',
+    '⚠':'alert','🏋':'barbell','💪':'dumbbell','❤':'heart','🤍':'heart','✅':'checkc','💾':'save','🔒':'lock','🔓':'unlock',
     '✏':'pencil','✍':'pencil','🏆':'trophy','⚖':'scale','✨':'sparkles','👑':'crown','☁':'cloud','🔎':'search','🎯':'target','⚡':'zap',
     '🍽':'utensils','🗑':'trash','🌍':'globe','🌐':'globe','📋':'clipboard','⏳':'hourglass','📷':'camera','📸':'camera','📆':'calendar','📅':'calendar','🗓':'calendar',
     '🔁':'repeat','🔄':'refresh','🔀':'shuffle','⏱':'timer','🌱':'sprout','📈':'trendup','📉':'trenddown','📊':'bars','🔔':'bell','🔕':'belloff',
@@ -14532,7 +14532,7 @@ document.getElementById('obReplayBtn').addEventListener('click', ()=>{
   const st = document.createElement('style'); st.id = 'icStyle'; st.textContent = css; document.head.appendChild(st);
   const keys = Object.keys(MAP);
   const RE = new RegExp('('+keys.join('|')+')\\uFE0F?','g');
-  const SKIP = 'script,style,textarea,input,select,option,svg,title,[contenteditable="true"],.ic,[data-noic],.av,.prof-avatar,.avatar-pick,.comm-avatar-pick,.ch-av,.pl-av';
+  const SKIP = 'script,style,textarea,input,select,option,svg,title,[contenteditable="true"],.ic,[data-noic],#achOverlay,#unlockOverlay,.av,.prof-avatar,.avatar-pick,.comm-avatar-pick,.ch-av,.pl-av';
   function conv(tn){
     const t = tn.nodeValue; if(!t || !RE.test(t)){ RE.lastIndex = 0; return; } RE.lastIndex = 0;
     const p = tn.parentNode; if(!p || (p.closest && p.closest(SKIP))) return;
