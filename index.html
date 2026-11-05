@@ -2643,7 +2643,7 @@
   .wo-ex-actions button, .bp-ex-fav-btn{ border-color:rgba(255,255,255,0.28); }
   .wo-ex-actions button, .bp-ex-fav-btn{ background:rgba(0,0,0,max(0.28, calc(var(--gs) * 0.9))); }
   /* ===== HOME – Industrial Simple dashboard (V29z) ===== */
-  :root{ --gold:#d4a84b; --gold-rgb:212,168,75; --gold-light:#e8c872; }
+  :root{ --gold:var(--accent); --gold-rgb:var(--accent-rgb); --gold-light:var(--accent-light); }  /* Home se barví podle zvoleného tématu; zlatá zůstává jen u VIP */
   #homeOverlay{padding-bottom:96px;}
   .hd-top{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:16px 20px 10px;}
   .hd-brand{min-width:0; flex:1 1 auto;}
@@ -2651,7 +2651,7 @@
   .hd-actions{display:flex; align-items:center; gap:8px;}
   .hd-bell{position:relative; width:40px; height:40px; border-radius:12px; border:1px solid var(--line); background:rgba(0,0,0,calc(var(--gs) * 0.9)); color:var(--text); display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0;}
   .hd-bell[data-n]::after{content:attr(data-n); position:absolute; top:-6px; right:-6px; min-width:18px; height:18px; border-radius:9px; background:#ef4444; color:#fff; font-size:12px; line-height:18px; text-align:center; padding:0 4px; font-family:'Oxanium',sans-serif; font-weight:700;}
-  .hd-vip{height:40px; padding:0 13px; border-radius:12px; border:1px solid rgba(var(--gold-rgb),0.6); background:rgba(var(--gold-rgb),calc(0.16 * var(--gt))); color:var(--gold-light); font-family:'Oxanium',sans-serif; font-weight:800; font-size:14.5px; letter-spacing:0.08em; cursor:pointer; display:flex; align-items:center; gap:6px; white-space:nowrap;}
+  .hd-vip{height:40px; padding:0 13px; border-radius:12px; border:1px solid rgba(212,168,75,0.65); background:rgba(212,168,75,calc(0.16 * var(--gt))); color:#e8c872; font-family:'Oxanium',sans-serif; font-weight:800; font-size:14.5px; letter-spacing:0.08em; cursor:pointer; display:flex; align-items:center; gap:6px; white-space:nowrap;}
   .hd-vip.on{background:linear-gradient(135deg,#e8c872,#c8912a); color:#1a1000; border-color:transparent;}
   .today-card{margin:6px 20px 12px; padding:18px 18px 16px; border-radius:18px; border:1px solid rgba(var(--gold-rgb),0.55); background:rgba(0,0,0,calc(var(--gs) * 0.9)); box-shadow:inset 0 1px 0 rgba(255,255,255,var(--gedge)); backdrop-filter:blur(9px); -webkit-backdrop-filter:blur(9px);}
   .today-card.rest{border-color:rgba(var(--cut-rgb),0.55); background:rgba(0,0,0,calc(var(--gs) * 0.9)); box-shadow:inset 0 1px 0 rgba(255,255,255,var(--gedge));}
@@ -2661,7 +2661,7 @@
   .today-row .home-streak{margin:0; font-size:12.5px;}
   .today-title{font-family:'Oxanium',sans-serif; font-weight:800; font-size:clamp(23px, 7vw, 29px); line-height:1.1; text-transform:uppercase; letter-spacing:0.01em; margin:0 0 6px; color:#fff; overflow-wrap:anywhere;}
   .today-sub{font-size:14.2px; color:var(--muted); margin:0 0 14px; line-height:1.4;}
-  .today-btn{padding:14px; border-radius:12px; text-transform:uppercase; letter-spacing:0.05em; background:var(--gold); color:#171002; box-shadow:0 3px 0 #8f6d22;}
+  .today-btn{padding:14px; border-radius:12px; text-transform:uppercase; letter-spacing:0.05em; background:var(--accent); color:#14041f; box-shadow:0 3px 0 var(--accent-dark);}
   .today-card.rest .today-btn{background:var(--cut); color:#04170c; box-shadow:0 3px 0 #0a7a3d;}
   .prog-card{display:block; margin:0 20px 6px; padding:16px 18px 14px; border-radius:18px; border:1px solid rgba(var(--gold-rgb),0.4); background:rgba(0,0,0,calc(var(--gs) * 0.9)); box-shadow:inset 0 1px 0 rgba(255,255,255,var(--gedge)); cursor:pointer; text-align:left;}
   .prog-card:active{transform:translateY(1px);}
@@ -2672,7 +2672,7 @@
   .pc-score b{font-family:'Oxanium',sans-serif; font-weight:800; font-size:clamp(32px, 10vw, 40px); line-height:1; color:#fff;}
   .pc-score span{font-family:'Oxanium',sans-serif; font-weight:600; font-size:13px; letter-spacing:0.08em; color:var(--muted);}
   .prog-card .xp-track{height:7px;}
-  .prog-card .xp-fill{background:linear-gradient(90deg,#b8892c,var(--gold-light)); box-shadow:0 0 8px rgba(var(--gold-rgb),0.45);}
+  .prog-card .xp-fill{background:linear-gradient(90deg,var(--accent),var(--accent-light)); box-shadow:0 0 8px rgba(var(--gold-rgb),0.45);}
   .pc-lv{display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-top:9px; font-family:'Oxanium',sans-serif; font-size:13.5px;}
   .pc-lv b{color:var(--gold-light); font-weight:700; cursor:pointer; text-decoration:underline; text-decoration-style:dotted; text-underline-offset:3px;}
   .pc-lv span{color:var(--muted);}
@@ -2683,7 +2683,7 @@
   .home-tiles.qa .ht-icon{color:var(--gold); margin-bottom:8px; height:26px;}
   .home-tiles.qa .ht-icon svg{display:block;}
   .ht-bar{height:5px; border-radius:3px; background:rgba(255,255,255,0.1); margin-top:7px; overflow:hidden;}
-  .ht-bar i{display:block; height:100%; background:linear-gradient(90deg,#b8892c,var(--gold-light)); border-radius:3px; transition:width .5s ease;}
+  .ht-bar i{display:block; height:100%; background:linear-gradient(90deg,var(--accent),var(--accent-light)); border-radius:3px; transition:width .5s ease;}
   .mis-card{display:block; width:calc(100% - 40px); margin:0 20px 12px; padding:14px 16px; border-radius:16px; border:1px solid var(--line); background:rgba(0,0,0,calc(var(--gs) * 0.9)); color:var(--text); text-align:left; cursor:pointer; box-shadow:inset 0 1px 0 rgba(255,255,255,var(--gedge));}
   .mis-card:active{transform:translateY(1px);}
   .mc-top{display:flex; align-items:center; justify-content:space-between;}
@@ -3030,7 +3030,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30d · 2026-11-05</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30e · 2026-11-05</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -14542,7 +14542,7 @@ document.getElementById('obReplayBtn').addEventListener('click', ()=>{
     css += '.ic[data-i="'+k+'"]{--m:url("data:image/svg+xml,'+encodeURIComponent(svg)+'");}';
   }
   for(const k in COL) css += ':not(button)>.ic[data-i="'+k+'"]{color:'+COL[k]+';}';
-  GOLD.forEach(k=>{ css += ':not(button)>.ic[data-i="'+k+'"]{color:var(--gold,#d4a84b);}'; });
+  GOLD.forEach(k=>{ css += ':not(button)>.ic[data-i="'+k+'"]{color:#e8c872;}'; });
   const st = document.createElement('style'); st.id = 'icStyle'; st.textContent = css; document.head.appendChild(st);
   const keys = Object.keys(MAP);
   const RE = new RegExp('('+keys.join('|')+')\\uFE0F?','g');
