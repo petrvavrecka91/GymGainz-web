@@ -267,12 +267,10 @@
   .logo .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);display:inline-block;box-shadow:0 0 12px var(--accent);}
   /* Vstupní animace hlavního loga - stejny pocit jako pri startovni splash sekvenci */
   #mainLogo.logo-intro{
-    animation:logoIntro 1.1s cubic-bezier(.2,.9,.3,1.3) both;
+    animation:logoIntro 1.4s cubic-bezier(.22,.61,.36,1) both;
   }
   @keyframes logoIntro{
-    0%{opacity:0; transform:scale(0.5) translateY(-8px); text-shadow:0 0 0 transparent;}
-    55%{opacity:1; transform:scale(1.12) translateY(0); text-shadow:0 0 34px var(--accent-glow), 0 0 60px var(--accent-glow);}
-    75%{transform:scale(0.97);}
+    0%{opacity:0; transform:scale(0.8) translateY(-8px); text-shadow:0 0 0 transparent;}
     100%{opacity:1; transform:scale(1);}
   }
   .slogan{
@@ -510,9 +508,9 @@
   .modal{
     background:var(--surface); border:1px solid var(--line); border-radius:16px;
     max-width:640px; width:100%; padding:0; margin-bottom:40px;
-    animation:pop .18s ease;
+    animation:pop .5s cubic-bezier(.22,.61,.36,1) backwards;
   }
-  @keyframes pop{from{transform:translateY(10px); opacity:0;} to{transform:translateY(0); opacity:1;}}
+  @keyframes pop{from{transform:translateY(16px); opacity:0;} to{transform:translateY(0); opacity:1;}}
   .modal-head{
     padding:24px 26px 18px; border-bottom:1px solid var(--line);
     position:relative;
@@ -523,6 +521,7 @@
     border-radius:12px; cursor:pointer; font-size:23.5px; line-height:1; font-weight:700;
     box-shadow:0 0 12px rgba(255,46,77,0.25); backdrop-filter:blur(9px); -webkit-backdrop-filter:blur(9px);}
   .close-btn:hover{color:#fff; background:var(--bulk);}
+  .modal-back{display:inline-flex; align-items:center; margin:0 0 12px; padding:9px 16px; border-radius:12px; border:1.5px solid var(--cut); background:rgba(var(--cut-rgb),0.12); color:var(--cut); font-family:'Oxanium',sans-serif; font-weight:700; font-size:14.6px; cursor:pointer;}
   .modal-title{font-size:calc(25.7px * var(--font-scale)); margin:6px 0 8px; padding-right:40px;}
   .modal-sub{
     display:flex; gap:10px; align-items:center; flex-wrap:wrap;
@@ -959,7 +958,7 @@
     background-size:cover, cover, cover; background-position:center top, center top, center top;
     clip-path:var(--bg-photo-clip-right, inset(0 0 0 100%));
   }
-  .profile-overlay.open{display:block;}
+  .profile-overlay.open{display:block; animation:pageFade .5s ease backwards;}
 
   /* PLNOSTRÁNKOVÝ OVERLAY (s fotkou z pozadí jako hlavní stránka) */
   body[data-sec]:not([data-sec="kitchen"]) > .wrap{visibility:hidden;}
@@ -985,7 +984,8 @@
     background-size:cover, cover, cover; background-position:center top, center top, center top;
     clip-path:var(--bg-photo-clip-right, inset(0 0 0 100%));
   }
-  .page-overlay.open{display:block;}
+  .page-overlay.open{display:block; animation:pageFade .5s ease backwards;}
+  @keyframes pageFade{from{opacity:0;} to{opacity:1;}}
 
   /* ===== HOME / HQ DASHBOARD ===== */
   #homeOverlay{padding-bottom:90px;}
@@ -1275,15 +1275,14 @@
   }
   .levelup-card{
     position:relative; z-index:2; text-align:center; padding:36px 28px; max-width:360px;
-    animation:levelUpPop .5s cubic-bezier(.2,1.4,.4,1) both;
+    animation:levelUpPop .9s cubic-bezier(.22,.61,.36,1) both;
   }
   @keyframes levelUpPop{
-    0%{transform:scale(0.3); opacity:0;}
-    60%{transform:scale(1.08); opacity:1;}
-    100%{transform:scale(1);}
+    0%{transform:scale(0.7); opacity:0;}
+    100%{transform:scale(1); opacity:1;}
   }
   .levelup-badge{font-size:79px; margin-bottom:6px; filter:drop-shadow(0 0 30px var(--accent-glow));}
-  .lvl-lock-img{width:min(62vw, 240px); height:auto; display:block; margin:0 auto; animation:unlockPop .7s cubic-bezier(.2,1.5,.4,1) both;}
+  .lvl-lock-img{width:min(62vw, 240px); height:auto; display:block; margin:0 auto; animation:unlockPop 1s cubic-bezier(.22,.61,.36,1) both;}
   .levelup-title{
     font-family:'Shojumaru',cursive; font-size:35.4px; color:#fff; margin-bottom:18px;
     text-shadow:0 0 30px var(--accent-glow); letter-spacing:0.03em;
@@ -1316,11 +1315,10 @@
   .unlock-img{
     width:min(78vw, 300px); height:auto; display:block; margin:0 auto 4px;
     filter:drop-shadow(0 0 28px var(--accent-glow));
-    animation:unlockPop .7s cubic-bezier(.2,1.5,.4,1) both;
+    animation:unlockPop 1s cubic-bezier(.22,.61,.36,1) both;
   }
   @keyframes unlockPop{
-    0%{transform:scale(0.3) rotate(-14deg); opacity:0;}
-    60%{transform:scale(1.08) rotate(3deg); opacity:1;}
+    0%{transform:scale(0.7) rotate(-6deg); opacity:0;}
     100%{transform:scale(1) rotate(0); opacity:1;}
   }
   .unlock-title{
@@ -1403,9 +1401,9 @@
     max-width:340px; width:100%; background:var(--surface,#0d0d12); border:2px solid var(--bulk);
     border-radius:20px; padding:28px 22px; text-align:center;
     box-shadow:0 0 40px rgba(255,46,77,0.35);
-    animation:confirmPop .18s ease;
+    animation:confirmPop .45s cubic-bezier(.22,.61,.36,1) backwards;
   }
-  @keyframes confirmPop{from{transform:scale(0.9); opacity:0;} to{transform:scale(1); opacity:1;}}
+  @keyframes confirmPop{from{transform:scale(0.96) translateY(8px); opacity:0;} to{transform:scale(1) translateY(0); opacity:1;}}
   .confirm-icon{font-size:39.5px; margin-bottom:10px;}
   .confirm-title{
     font-family:'Oxanium',sans-serif; font-weight:800; font-size:20.3px; color:#fff; margin-bottom:10px;
@@ -1438,7 +1436,7 @@
     background:rgba(20,20,28,calc(var(--gs) * 0.9)); border:1.5px solid var(--line);
     font-family:'Oxanium',sans-serif; font-weight:700; font-size:14.6px; color:var(--text);
     text-align:center; letter-spacing:0.02em;
-    transition:background .18s ease, border-color .18s ease, transform .12s ease, box-shadow .18s ease;
+    transition:background .35s ease, border-color .35s ease, transform .25s ease, box-shadow .35s ease;
   }
   .bp-tier-tab:active{transform:scale(0.96);}
   .bp-tier-tab.active{
@@ -1446,13 +1444,12 @@
     box-shadow:0 0 14px rgba(var(--accent-rgb),0.35);
   }
   /* Animace "popnuti" seznamu cviku po vyberu urovne */
-  .bp-ex-list{animation:exListPop .35s cubic-bezier(.2,.9,.3,1.4) both;}
+  .bp-ex-list{animation:exListPop .6s cubic-bezier(.22,.61,.36,1) both;}
   @keyframes exListPop{
-    0%{opacity:0; transform:scale(0.85) translateY(14px);}
-    70%{opacity:1; transform:scale(1.02) translateY(-2px);}
+    0%{opacity:0; transform:scale(0.96) translateY(14px);}
     100%{opacity:1; transform:scale(1) translateY(0);}
   }
-  .bp-ex-list .bp-ex-item{animation:exItemPop .3s ease both;}
+  .bp-ex-list .bp-ex-item{animation:exItemPop .5s cubic-bezier(.22,.61,.36,1) both;}
   @keyframes exItemPop{
     from{opacity:0; transform:translateY(8px);}
     to{opacity:1; transform:translateY(0);}
@@ -1700,7 +1697,7 @@
   .ob-dots{position:absolute; top:28px; left:0; right:60px; display:flex; justify-content:center; gap:8px;}
   .ob-dot{width:8px; height:8px; border-radius:50%; background:var(--line); transition:background .25s ease, width .25s ease;}
   .ob-dot.on{background:var(--accent); width:22px; border-radius:4px; box-shadow:0 0 8px var(--accent-glow);}
-  .ob-content{width:100%; max-width:400px; margin:auto 0; animation:obFadeIn .35s ease both;}
+  .ob-content{width:100%; max-width:400px; margin:auto 0; animation:obFadeIn .6s cubic-bezier(.22,.61,.36,1) both;}
   @keyframes obFadeIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
   .ob-back-link{
     position:absolute; top:22px; left:22px; background:none; border:none; color:var(--muted);
@@ -1886,6 +1883,16 @@
   .sess-arrows button{width:32px; height:26px; padding:0; border-radius:8px; border:1px solid var(--line); background:rgba(0,0,0,0.3); color:var(--text); font-size:12px; cursor:pointer;}
   .sess-arrows button:disabled{opacity:.25; cursor:default;}
   .wo-hub{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:12px; margin:6px 0 16px;}
+  .wo-grip, .sess-grip{color:var(--accent) !important;}
+  /* zelená nápověda ? – sbalitelná, pod čarou vpravo */
+  .qh{margin:16px 0 6px; border-top:1px solid var(--line); text-align:right;}
+  .qh-btn{margin-top:8px; width:30px; height:30px; border-radius:50%; border:2px solid #2ee66b; background:rgba(46,230,107,0.12); color:#2ee66b; font-family:'Oxanium',sans-serif; font-weight:800; font-size:17px; line-height:1; cursor:pointer; padding:0; box-shadow:0 0 10px rgba(46,230,107,0.25); transition:background .3s ease, transform .3s ease;}
+  .qh.open .qh-btn{background:#2ee66b; color:#04170c;}
+  .qh-body{display:none; text-align:left; margin-top:10px; padding:12px 14px; border:1px solid rgba(46,230,107,0.35); border-radius:14px; background:rgba(46,230,107,0.06);}
+  .qh.open .qh-body{display:block; animation:subFade .55s cubic-bezier(.22,.61,.36,1) both;}
+  .qh-body .qh-t{font-family:'Oxanium',sans-serif; font-weight:800; font-size:14px; margin-bottom:6px; color:#2ee66b;}
+  .qh-body ul{margin:0; padding-left:18px; color:var(--text); font-size:13.2px; line-height:1.5; opacity:.92;}
+  .qh-body li{margin-bottom:3px;}
   .wo-explain{margin:16px 0 8px; padding:12px 14px; border:1px dashed var(--line); border-radius:14px; background:rgba(0,0,0,0.2);}
   .wo-explain-t{font-family:'Oxanium',sans-serif; font-weight:800; font-size:14px; margin-bottom:6px;}
   .wo-explain ul{margin:0; padding-left:18px; color:var(--muted); font-size:13.2px; line-height:1.5;}
@@ -1896,12 +1903,12 @@
   .wo-ex-toggle .wex-name{flex:1 1 auto; min-width:0;}
   .wo-chev{color:var(--muted); flex:0 0 auto;}
   .wo-ex-c.open{border-color:var(--accent);}
-  .wo-ex-editbox{padding:4px 12px 14px; animation:subFade .45s cubic-bezier(.22,.61,.36,1) both;}
+  .wo-ex-editbox{padding:4px 12px 14px; animation:subFade .6s cubic-bezier(.22,.61,.36,1) both;}
   .wo-ex-c .wo-ex-actions{margin-left:0;}
-  .wo-sub-pop{animation:subFade .6s cubic-bezier(.22,.61,.36,1) both;}
+  .wo-sub-pop{animation:subFade .7s cubic-bezier(.22,.61,.36,1) backwards;}
   /* klik na dlaždici / bublinu – "pop" jako u výběru úrovně v Partiích */
   @keyframes tileSoft{0%{scale:1;} 45%{scale:.965;} 100%{scale:1;}}
-  .tile-pop{animation:tileSoft .5s ease-in-out;}
+  .tile-pop{animation:tileSoft .7s ease-in-out;}
   @keyframes subFade{from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:translateY(0);}}
 
   .wo-ex-actions .wo-more.on{border-color:var(--accent); color:var(--accent);}
@@ -2068,7 +2075,7 @@
   /* vyskakovací pauza nahoře */
   .sess-rest-pop{position:sticky; top:6px; z-index:40; margin:0 0 12px; border:2px solid #fb923c; border-radius:16px; padding:8px 12px 12px;
     background:rgba(20,14,8,.94); box-shadow:0 8px 28px rgba(0,0,0,.5), 0 0 18px rgba(251,146,60,.35);
-    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); animation:restPopIn .28s cubic-bezier(.2,1.3,.4,1);}
+    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); animation:restPopIn .5s cubic-bezier(.22,.61,.36,1) backwards;}
   html.nofx .sess-rest-pop{backdrop-filter:none; -webkit-backdrop-filter:none;}
   .sess-rest-pop, body.theme-light .sess-rest-pop{background:#15100a !important; color:#f4f1ee !important; --text:#f4f1ee; --muted:#b9b0a6; --line:rgba(255,255,255,.24); position:sticky;}
   .sess-rest-pop .sess-rest-label{color:#d4cbc0 !important; padding:0 42px; font-size:13.8px;}
@@ -2139,7 +2146,7 @@
   .sess-levelup-banner{
     background:linear-gradient(135deg, rgba(255,167,38,calc(0.18 * var(--gt))), rgba(255,46,77,calc(0.18 * var(--gt))));
     border:2px solid #ffa726; border-radius:18px; padding:22px 16px; margin-bottom:24px;
-    animation:levelUpPop .5s cubic-bezier(.2,.9,.3,1.4) both;
+    animation:levelUpPop .9s cubic-bezier(.22,.61,.36,1) both;
     box-shadow:0 0 30px rgba(255,167,38,0.35); backdrop-filter:blur(9px); -webkit-backdrop-filter:blur(9px);}
   .slu-title{
     font-family:'Oxanium',sans-serif; font-weight:800; font-size:27px; color:#ffa726;
@@ -2148,9 +2155,8 @@
   .slu-ex{font-family:'Oxanium',sans-serif; font-weight:700; font-size:17.9px; color:#fff; margin-bottom:4px;}
   .slu-sub{font-size:14px; color:var(--muted);}
   @keyframes levelUpPop{
-    0%{opacity:0; transform:scale(0.7) translateY(-10px);}
-    60%{opacity:1; transform:scale(1.08) translateY(0);}
-    100%{opacity:1; transform:scale(1);}
+    0%{opacity:0; transform:scale(0.85) translateY(-10px);}
+    100%{opacity:1; transform:scale(1) translateY(0);}
   }
   .sess-rest-label{
     font-family:'Oxanium',sans-serif; font-size:calc(15.7px * var(--font-scale)); letter-spacing:0.1em; color:var(--muted);
@@ -2959,7 +2965,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29o · 2026-11-05</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29q · 2026-11-05</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -3489,12 +3495,14 @@
         <div class="portion-note" style="margin-top:6px;">Ráno ti přijde oznámení, jaký trénink je dnes na řadě podle plánu, nebo že máš rest day.</div>
       </div>
       <div class="prof-row" id="obReplayBtn" style="cursor:pointer;"><span>🔄 Spustit úvodní nastavení znovu</span><span class="val">›</span></div>
+      <div data-qh="settings"></div>
     </div>
 
     <div class="prof-sec" data-ptab="set">
       <h5>✨ AI asistent (Gemini)</h5>
       <div class="portion-note" id="aiSetStatus"></div>
       <div class="backup-row"><button id="aiSetBtn">🔑 Nastavit AI klíč</button></div>
+      <div data-qh="ai"></div>
     </div>
 
     <div class="prof-sec" data-ptab="set">
@@ -3502,6 +3510,7 @@
       <div class="portion-note">Vynuluje celý pokrok: XP a level, objem (celkový i měsíční), tréninky, rekordy, Sešit, odznaky, mise, deník jídla, váhu v čase a streak. Zůstane nick, výška, věk, pohlaví, tréninkový plán, moje recepty a potraviny a nastavení appky.</div>
       <div class="backup-row"><button id="resetProfileBtn" style="border-color:#ef4444; color:#ef4444;">🧹 Resetovat profil do nuly</button></div>
       <div class="backup-row" id="resetUndoRow" style="display:none;"><button id="resetUndoBtn">↩️ Vrátit stav před posledním resetem / obnovením</button></div>
+      <div data-qh="reset"></div>
     </div>
 
     <div class="prof-sec" data-ptab="set">
@@ -3522,6 +3531,7 @@
         <button id="bkExport">📤 Zkopírovat kód</button>
         <button id="bkImport">📥 Vložit kód</button>
       </div>
+      <div data-qh="backup"></div>
     </div>
 
     <div class="prof-sec" data-ptab="set">
@@ -4759,6 +4769,7 @@ function openModal(r){
   const m = r.macros||{};
   let html = `
     <div class="modal-head">
+      <button class="modal-back" id="backBtn">← Zpět</button>
       <button class="close-btn" id="closeBtn">✕</button>
       <span class="badge ${r.version}">${versionLabel(r.version, true)}</span>
       ${r.custom ? '<span class="badge custom">📝 MŮJ RECEPT</span>' : ''}
@@ -4817,6 +4828,7 @@ function openModal(r){
   modalContent.innerHTML = html;
   overlay.classList.add('open');
   document.getElementById('closeBtn').addEventListener('click', closeModal);
+  document.getElementById('backBtn').addEventListener('click', closeModal);
   modalContent.querySelectorAll('.portion-btn').forEach(pb=>{
     pb.addEventListener('click', ()=>{
       modalContent.querySelectorAll('.portion-btn').forEach(b=>b.classList.toggle('on', b===pb));
@@ -6154,6 +6166,7 @@ function openRestSetup(){
       <li>Po pauze dostaneš lehčí první trénink, ne rovnou plnou zátěž.</li>
     </ul>
     <button class="paywall-cta" id="restGo" style="background:var(--accent); color:#14041f; margin:12px 0 0;">✅ Zapnout režim</button>
+    ${qhelp('rest')}
   </div>`;
   ov.classList.add('open');
   ov.querySelectorAll('[data-rt]').forEach(b=>b.addEventListener('click', ()=>{ restSel.type = b.dataset.rt; ov.querySelectorAll('[data-rt]').forEach(x=>x.classList.toggle('on', x===b)); }));
@@ -6995,6 +7008,31 @@ function woQuickPanelHTML(e){
     <div class="sc-edit-btns"><button id="wqOk" class="on">✔ Uložit</button><button id="wqCancel">Zrušit</button></div>
   </div>`;
 }
+const QH_TEXTS = {
+  train:['<b>Klepni na název cviku</b> – ukáže tip a odkaz na video.','<b>↕</b> – chyť a přetáhni cvik na jiné místo.','<b>⋯</b> – upravit série a pauzu, vyměnit cvik, oblíbené, odebrat.','<b>Upravit trénink</b> – kalendář, úprava cviků a plán.','<b>START TRÉNINK</b> – spustí zápis sérií; „Jen odškrtnout den“ označí den bez zápisu.'],
+  hub:['<b>Kalendář</b> – rozvrh na dny v měsíci a práce s dny.','<b>Úprava cviků</b> – hromadné i jednotlivé úpravy cviků.','<b>Plán</b> – změna nebo přegenerování celého plánu.','Změny se ukládají při odchodu – appka se zeptá, jestli je chceš nechat.'],
+  cal:['<b>Kalendář</b> – klepneš na datum, vybereš trénink (nebo volno) a potvrdíš. „Rozvrhnout automaticky“ naplánuje víc týdnů najednou.','<b>Název dne</b> – přejmenuj třeba na Vrch, Spodek nebo Ruce.','<b>Duplikovat den</b> – vytvoří kopii dne na konci týdne.','<b>Kopírovat / vložit cviky</b> – přenese cviky z jednoho dne do druhého.','<b>Nový den</b> – přidá prázdný den (max. 7 dnů v týdnu).','<b>Smazat den</b> – odstraní den i jeho cviky; zápisy v Sešitu zůstanou.'],
+  ex:['<b>Všechny cviky najednou</b> – nastav série, opakování nebo pauzu pro celý den (nebo všechny dny).','<b>Seznam</b> – klepni na název cviku a vyjede úprava: název, typ, série, opakování, pauza.','<b>↕</b> – chyť a přetáhni cvik na jiné místo.','<b>Vyměnit / odebrat</b> – najdeš v rozbalené úpravě cviku.'],
+  plan:['<b>Změnit plán</b> – vyber jiný hotový plán, domácí trénink nebo si ho poskládej sám.','<b>Přegenerovat cviky</b> – vygeneruje novou sadu cviků pro stejný plán (přepíše aktuální).'],
+  sess:['<b>Váha a opakování</b> – vyplň a potvrď ✅ HOTOVO; po sérii se spustí pauza.','<b>＋ Více</b> – RIR (rezerva do selhání), poznámka, typ série (rozcvička, drop, selhání) a střídání stran.','<b>＋ Přidat sérii / ⏭ Přeskočit sérii</b> – změní počet sérií u cviku.','<b>🔁 Jiný cvik / ⏩ Přeskočit cvik</b> – vyměnění nebo vynechání cviku.','<b>↕</b> – nehotové cviky můžeš přetáhnout; přetažení nad rozdělaný cvik ho nahradí.','<b>—</b> – tlačítko vpravo nahoře minimalizuje trénink, ✕ ho ukončí.'],
+  nbcal:['<b>Klepni na den</b> – vybereš trénink nebo volno a potvrdíš.','<b>Rozvrhnout automaticky</b> – naplánuje víc týdnů podle dnů, které zvolíš.','<b>Barva dne</b> – čím víc zápisů, tím výraznější; „D1/D2…“ je naplánovaný trénink.'],
+  food:['<b>Přidat jídlo</b> – z fotky tabulky, čárového kódu, vyhledání, mých potravin, receptu nebo ručně.','<b>Cíle</b> – kalorie a makra se počítají podle tvého cíle (změníš ho v Profilu); „Upravit denní cíle“ nastaví vlastní čísla.','<b>🗑️</b> – smaže záznam.','<b>‹ ›</b> – přepíná dny.'],
+  settings:['<b>Vzhled</b> – téma, vlastní pozadí a barvy.','<b>Průhlednost bublin</b> – jak moc je vidět pozadí pod kartami; „Úsporný režim“ vypne rozmazání.','<b>Hudba a zvuky</b> – hudbu na pozadí a zvukové hlášky zapneš nebo vypneš zvlášť.','<b>Připomínka</b> – denní upozornění na trénink.'],
+  ai:['<b>AI klíč</b> – vlastní klíč od Gemini; ukládá se jen v tomto zařízení.','Používá se pro odhad jídla z fotky a čtení nutriční tabulky.'],
+  reset:['<b>Reset profilu</b> – vynuluje statistiky a postup; nick, údaje o těle, plán, vlastní recepty a potraviny a nastavení zůstanou.','<b>Vrátit stav</b> – obnoví stav těsně před posledním resetem nebo obnovením zálohy.'],
+  backup:['<b>Záloha</b> – uloží data do souboru, který můžeš později načíst zpět.','Doporučuju zálohovat před větší změnou nebo přeinstalováním.'],
+  rest:['<b>Co se děje</b> – nemoc, únava nebo regenerace; trénink se na dobu pauzy pozastaví.','<b>Délka</b> – vyber počet dní nebo vlastní datum konce.','O svůj progres a sérii nepřijdeš.'],
+  progress:['<b>Objem po týdnech</b> – součet zvednutých kg po týdnech (pondělí–neděle).','<b>Objem po tréninku</b> – každý trénink s porovnáním oproti minulému stejnému dni.']
+};
+function qhelp(key){
+  const items = QH_TEXTS[key]; if(!items) return '';
+  return `<div class="qh" data-qhk="${key}"><button type="button" class="qh-btn" aria-expanded="false" title="Nápověda" aria-label="Nápověda">?</button><div class="qh-body"><div class="qh-t">❔ Co a jak se tu dá nastavit</div><ul>${items.map(x=>`<li>${x}</li>`).join('')}</ul></div></div>`;
+}
+function qhInitStatic(){ document.querySelectorAll('[data-qh]').forEach(el=>{ if(!el.dataset.done){ el.innerHTML = qhelp(el.dataset.qh); el.dataset.done = '1'; } }); }
+document.addEventListener('click', e=>{
+  const b = e.target.closest ? e.target.closest('.qh-btn') : null; if(!b) return;
+  const q = b.closest('.qh'); const on = q.classList.toggle('open'); b.setAttribute('aria-expanded', on ? 'true' : 'false');
+});
 let woMenuIdx = null, woEditSub = null, woEditOpen = null, woPopNext = false;
 // --- hlídání neuložených změn plánu ---
 let woSnap = null;
@@ -7112,7 +7150,7 @@ function renderWorkoutStep3(){
     </div>`;
   }).join('');
   const emptyMsg = day.exercises.length ? '' : '<p style="font-size:13.8px; color:var(--muted); text-align:center; padding:14px 0;">Zatím žádné cviky – přidej si vlastní ↓</p>';
-  const explainHTML = (items)=>`<div class="wo-explain"><div class="wo-explain-t">❔ Co tady můžeš nastavit</div><ul>${items.map(x=>`<li>${x}</li>`).join('')}</ul></div>`;
+  const explainHTML = (key)=>qhelp(key);
   const totalEx = plan.days.reduce((a,d)=>a+d.exercises.length, 0);
   let woBody;
   if(!woEditMode){
@@ -7131,7 +7169,8 @@ function renderWorkoutStep3(){
     ${(!plan.done[woActiveDay] && day.exercises.length) ? '<button class="sess-start-btn" id="woStartSession" style="margin-bottom:10px;">▶ START TRÉNINK</button>' : ''}
     ${plan.done[woActiveDay]
       ? '<button class="wo-finish" id="woFinish" disabled>✓ Trénink dokončen</button>'
-      : '<button class="wo-finish-link" id="woFinish">Jen odškrtnout den (bez zápisu sérií)</button>'}`;
+      : '<button class="wo-finish-link" id="woFinish">Jen odškrtnout den (bez zápisu sérií)</button>'}
+    ${qhelp('train')}`;
   } else if(!woEditSub){
     woBody = `
     <h3 class="wo-page-title">✏️ Upravit trénink</h3>
@@ -7140,7 +7179,8 @@ function renderWorkoutStep3(){
       <button class="home-tile t-notebook" data-hub="cal"><div class="ht-icon">📆</div><div><div class="ht-title">KALENDÁŘ</div><div class="ht-sub">${schedActive() ? 'Rozvrh aktivní ✓' : 'Rozvrh a práce s dny'}</div></div></button>
       <button class="home-tile t-training" data-hub="ex"><div class="ht-icon">🏋️</div><div><div class="ht-title">ÚPRAVA CVIKŮ</div><div class="ht-sub">${plan.days.length} ${plan.days.length===1?'den':(plan.days.length<5?'dny':'dní')} · ${totalEx} cviků</div></div></button>
       <button class="home-tile t-progress" data-hub="plan" style="grid-column:1 / -1;"><div class="ht-icon">🗂</div><div><div class="ht-title">PLÁN</div><div class="ht-sub">${LEVEL_LABELS[plan.level]} · ${plan.splitName}</div></div></button>
-    </div>`;
+    </div>
+    ${qhelp('hub')}`;
   } else if(woEditSub==='cal'){
     woBody = `
     <h3 class="wo-page-title">📆 Kalendář a dny</h3>
@@ -7157,14 +7197,7 @@ function renderWorkoutStep3(){
         ${plan.days.length>1 ? '<button id="woDayDel" class="danger" title="Smazat tento den">🗑 Smazat den</button>' : ''}
       </div>
     </div>
-    ${explainHTML([
-      '<b>Kalendář</b> – klepneš na datum, vybereš trénink (nebo volno) a potvrdíš. „Rozvrhnout automaticky“ naplánuje víc týdnů najednou.',
-      '<b>Název dne</b> – přejmenuj třeba na Vrch, Spodek nebo Ruce.',
-      '<b>Duplikovat den</b> – vytvoří kopii dne na konci týdne.',
-      '<b>Kopírovat / vložit cviky</b> – přenese cviky z jednoho dne do druhého.',
-      '<b>Nový den</b> – přidá prázdný den (max. 7 dnů v týdnu).',
-      '<b>Smazat den</b> – odstraní den i jeho cviky; zápisy v Sešitu zůstanou.'
-    ])}
+${explainHTML('cal')}
     <button class="sess-start-btn" id="woEditSave" style="margin:12px 0 10px;">💾 Uložit změny</button>`;
   } else if(woEditSub==='ex'){
     woBody = `
@@ -7189,12 +7222,7 @@ function renderWorkoutStep3(){
     <div class="wo-bulk-t" style="margin:14px 2px 8px;">📋 Seznam cviků · ${homeEsc(day.label)}</div>
     ${exEditHTML}
     <button class="wo-add-ex" id="woAddEx">＋ Přidat cvik</button>
-    ${explainHTML([
-      '<b>Všechny cviky najednou</b> – nastav série, opakování nebo pauzu pro celý den (nebo všechny dny).',
-      '<b>Seznam</b> – klepni na název cviku a vyjede úprava: název, typ, série, opakování, pauza.',
-      '<b>▲ ▼</b> – posun cviku v pořadí.',
-      '<b>Vyměnit / odebrat</b> – najdeš v rozbalené úpravě cviku.'
-    ])}
+${explainHTML('ex')}
     <button class="sess-start-btn" id="woEditSave" style="margin:12px 0 10px;">💾 Uložit změny</button>`;
   } else {
     woBody = `
@@ -7204,10 +7232,7 @@ function renderWorkoutStep3(){
       <button class="wo-edit-toggle" id="woBack2">🔄 Změnit plán (hotové · 🏠 doma · vlastní)</button>
       ${(plan.splitKey!=='custom' && plan.splitKey!=='blank') ? '<button class="wo-edit-toggle" id="woRegen">🔁 Přegenerovat cviky plánu</button>' : ''}
     </div>
-    ${explainHTML([
-      '<b>Změnit plán</b> – vyber jiný hotový plán, domácí trénink nebo si ho poskládej sám.',
-      '<b>Přegenerovat cviky</b> – vygeneruje novou sadu cviků pro stejný plán (přepíše aktuální).'
-    ])}`;
+${explainHTML('plan')}`;
   }
   document.getElementById('woContent').innerHTML = `<div class="${woPopNext?'wo-sub-pop':''}">${woBody}</div>`; woPopNext = false;
   if(!woSnap) woSnapTake();
@@ -8554,7 +8579,8 @@ function renderSessActive(el){
       <button id="sessSkipEx">⏩ Přeskočit cvik</button>
     </div>
     ${sessNextLine()}
-    ${logHTML}`;
+    ${logHTML}
+    ${qhelp('sess')}`;
   const sidesChip = document.getElementById('sessSidesChip');
   if(sidesChip) sidesChip.addEventListener('click', ()=>{
     e.sides = !e.sides; e._side = 'P'; delete e._sideP; session.dirty = true;
@@ -11262,8 +11288,10 @@ document.addEventListener('click', e=>{
   if(!/tile|chip|tab|pill|mini|opt|picker|bn-btn|bubble|hub|toggle|sfx|rest-chips|wo-day|nb-ib|cat-|filter|bp-/i.test(c) && !t.closest('.rest-chips, .font-size-picker, .wo-day-tabs, .bp-tier-tabs, .home-tiles, .wo-hub, .nb-tabs')) return;
   if(/sess-done|sess-start|today-btn|sess-save|confirm-btn|wo-add-ex|sess-skip|close|exit/i.test(c)) return;
   t.classList.remove('tile-pop'); void t.offsetWidth; t.classList.add('tile-pop');
-  setTimeout(()=>t.classList.remove('tile-pop'), 420);
+  setTimeout(()=>t.classList.remove('tile-pop'), 750);
 }, true);
+
+qhInitStatic();
 
 // (renderHome() se vola az na konci skriptu, aby byly inicializovane vsechny const/let)
 
@@ -11439,7 +11467,7 @@ function nbCalendarHTML(entries, planOnly){
     : `<p class="nb-note" style="text-align:center;">Až si vytvoříš tréninkový plán, můžeš ho tady rozvrhnout na konkrétní dny v měsíci.</p>`;
   if(planOnly) sel = '<p class="nb-note" style="text-align:center; margin-top:8px;">Klepni na datum a vyber, jaký trénink na ten den chceš.</p>';
   return `<div class="nb-cal">${head}<div class="nb-cal-dow">${dow}</div><div class="nb-cal-grid">${cells}</div>
-    <p class="nb-cal-sum"><b>${trained}</b> ${trained===1?'tréninkový den':(trained<5 && trained>1?'tréninkové dny':'tréninkových dnů')} v tomto měsíci</p></div>${planBtns}${sel || '<p class="nb-none">Klepni na den – uvidíš, co jsi cvičil, a můžeš na něj naplánovat trénink.</p>'}`;
+    <p class="nb-cal-sum"><b>${trained}</b> ${trained===1?'tréninkový den':(trained<5 && trained>1?'tréninkové dny':'tréninkových dnů')} v tomto měsíci</p></div>${planBtns}${planOnly ? '' : qhelp('nbcal')}${sel || '<p class="nb-none">Klepni na den – uvidíš, co jsi cvičil, a můžeš na něj naplánovat trénink.</p>'}`;
 }
 // ---------- cviky ----------
 function nbSessionsFor(entries, name){
@@ -11555,6 +11583,7 @@ function renderProgVolume(){
     <h5>🏁 Objem po tréninku</h5>
     ${rows || '<p class="nb-note">Po prvním dokončeném tréninku tu uvidíš, kolik kg jsi odzvedl.</p>'}
     ${rows ? '<p class="nb-note" style="margin-top:6px;">Změna je oproti předchozímu stejnému dni tréninku.</p>' : ''}
+    ${qhelp('progress')}
   </div>`;
 }
 function nbStatsTabHTML(entries){
@@ -12443,6 +12472,7 @@ function renderFoodDiary(){
     <h4 class="fd-h">Zapsáno ${isToday?'dnes':''}</h4>${list}
     <h4 class="fd-h">Posledních 7 dní (kcal)</h4>${foodWeekChart(foodDate, tg)}
     <p class="nb-note">Hodnoty z fotky tabulky a čárového kódu jsou jen tak přesné, jak je na obalu. Kalorie z receptů jsou odhad. Cíle jsou orientační, nenahrazují radu výživového poradce.</p>
+    ${qhelp('food')}
 `;
   document.getElementById('fdPrev').addEventListener('click', ()=>{ foodDate = foodShift(foodDate,-1); renderFoodDiary(); });
   document.getElementById('fdNext').addEventListener('click', ()=>{ if(foodDate!==todayKey()){ foodDate = foodShift(foodDate,1); renderFoodDiary(); } });
