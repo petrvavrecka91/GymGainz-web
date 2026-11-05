@@ -1877,7 +1877,32 @@
   .wo-ex.drop-after{box-shadow:0 3px 0 0 var(--accent);}
   .wo-finish-link{display:block; margin:6px auto 16px; background:none; border:none; color:var(--muted); font-family:'Oxanium',sans-serif; font-size:13px; text-decoration:underline; cursor:pointer;}
   .wo-ex-actions .wo-mv{padding:2px 6px;}
-  .wo-ex-actions .wo-more{font-size:22px; line-height:1; letter-spacing:1px; padding:0 10px;}
+  .wo-ex-actions .wo-more{display:inline-flex; align-items:center; justify-content:center; padding:0; min-width:38px;}
+  .dots3{display:inline-flex; align-items:center; justify-content:center; gap:3.5px; height:100%;}
+  .dots3 i{display:block; width:4.5px; height:4.5px; border-radius:50%; background:currentColor;}
+  .wo-ex-actions .wo-arr{font-size:13px; padding:0; min-width:34px; display:inline-flex; align-items:center; justify-content:center;}
+  .wo-ex-actions .wo-arr:disabled{opacity:.25; cursor:default;}
+  .sess-arrows{display:flex; flex-direction:column; gap:4px; flex:0 0 auto;}
+  .sess-arrows button{width:32px; height:26px; padding:0; border-radius:8px; border:1px solid var(--line); background:rgba(0,0,0,0.3); color:var(--text); font-size:12px; cursor:pointer;}
+  .sess-arrows button:disabled{opacity:.25; cursor:default;}
+  .wo-hub{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:12px; margin:6px 0 16px;}
+  .wo-explain{margin:16px 0 8px; padding:12px 14px; border:1px dashed var(--line); border-radius:14px; background:rgba(0,0,0,0.2);}
+  .wo-explain-t{font-family:'Oxanium',sans-serif; font-weight:800; font-size:14px; margin-bottom:6px;}
+  .wo-explain ul{margin:0; padding-left:18px; color:var(--muted); font-size:13.2px; line-height:1.5;}
+  .wo-explain li{margin-bottom:3px;}
+  .wo-ex-c{padding:0;}
+  .wo-ex-toprow{display:flex; align-items:center; gap:8px; padding:6px 8px 6px 4px;}
+  .wo-ex-toggle{flex:1 1 auto; min-width:0; display:flex; align-items:center; gap:8px; justify-content:space-between; text-align:left; background:none; border:none; color:var(--text); font-family:inherit; font-size:15px; padding:8px; cursor:pointer;}
+  .wo-ex-toggle .wex-name{flex:1 1 auto; min-width:0;}
+  .wo-chev{color:var(--muted); flex:0 0 auto;}
+  .wo-ex-c.open{border-color:var(--accent);}
+  .wo-ex-editbox{padding:4px 12px 14px; animation:exListPop .3s cubic-bezier(.2,.9,.3,1.4) both;}
+  .wo-ex-c .wo-ex-actions{margin-left:0;}
+  .wo-sub-pop{animation:exListPop .35s cubic-bezier(.2,.9,.3,1.4) both;}
+  /* klik na dlaždici / bublinu – "pop" jako u výběru úrovně v Partiích */
+  @keyframes tilePop{0%{scale:1;} 35%{scale:.93;} 70%{scale:1.05;} 100%{scale:1;}}
+  .tile-pop{animation:tilePop .38s cubic-bezier(.2,.9,.3,1.4);}
+
   .wo-ex-actions .wo-more.on{border-color:var(--accent); color:var(--accent);}
   .wo-ex-menu{display:grid; grid-template-columns:1fr 1fr; gap:6px; margin:4px 0 8px;}
   .wo-ex-menu button{padding:10px 8px; border-radius:10px; border:1px solid var(--line); background:rgba(0,0,0,0.28); color:var(--text); font-family:'Oxanium',sans-serif; font-size:13.5px; cursor:pointer;}
@@ -2805,6 +2830,19 @@
   </div>
 </div>
 
+<div class="confirm-overlay" id="askSave" style="z-index:520;">
+  <div class="confirm-card">
+    <div class="confirm-icon">💾</div>
+    <div class="confirm-title" id="askSaveTitle">Uložit změny?</div>
+    <div class="confirm-text" id="askSaveText"></div>
+    <div class="confirm-actions">
+      <button class="confirm-btn confirm-btn-stay" id="askSaveYes">💾 Uložit</button>
+      <button class="confirm-btn confirm-btn-end" id="askSaveNo">Zahodit změny</button>
+      <button class="confirm-btn" id="askSaveCancel" style="background:none; border:1px solid var(--line); color:var(--muted);">Zpět</button>
+    </div>
+  </div>
+</div>
+
 <div class="profile-overlay" id="paywallOverlay">
   <div class="profile-card">
     <button class="prof-close" id="paywallClose">✕</button>
@@ -2890,7 +2928,11 @@
       <div class="ht-icon">📓</div>
       <div><div class="ht-title">SEŠIT</div><div class="ht-sub" id="nbTileSub">Deník, kalendář</div></div>
     </button>
-    <button class="home-tile t-kitchen" id="tileFood" style="grid-column:1 / -1;">
+    <button class="home-tile t-training" id="tileTraining">
+      <div class="ht-icon">🏋️</div>
+      <div><div class="ht-title">TRÉNINK</div><div class="ht-sub" id="trainTileSub">Plán a úpravy</div></div>
+    </button>
+    <button class="home-tile t-kitchen" id="tileFood">
       <div class="ht-icon">🍽️</div>
       <div><div class="ht-title">DNES JÍDLO</div><div class="ht-sub" id="foodTileSub">Deník a makra</div></div>
     </button>
@@ -2916,7 +2958,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29m · 2026-11-04</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29n · 2026-11-05</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -6673,7 +6715,7 @@ function woSetDots(){
 }
 
 function renderWorkoutStep1(){
-  woStep = 1; woSetDots();
+  woStep = 1; woSetDots(); woSnap = null;
   if(!isPremium() && woMode !== 'split' && woMode !== 'home') woMode = 'split'; // vlastni plan a od nuly jsou jen pro VIP
   const vipLock = isPremium() ? '' : ' 👑';
   const modeTabs = `<div class="wo-mode-tabs">
@@ -6952,7 +6994,46 @@ function woQuickPanelHTML(e){
     <div class="sc-edit-btns"><button id="wqOk" class="on">✔ Uložit</button><button id="wqCancel">Zrušit</button></div>
   </div>`;
 }
-let woMenuIdx = null;
+let woMenuIdx = null, woEditSub = null, woEditOpen = null;
+// --- hlídání neuložených změn plánu ---
+let woSnap = null;
+function woPlanSig(){ const p = state.workoutPlan; if(!p) return ''; return JSON.stringify({d:p.days, f:p.freq, k:p.splitKey, n:p.splitName, l:p.level, g:p.goal, h:p.home, s:state.schedule||{}}); }
+function woSnapTake(){
+  const p = state.workoutPlan;
+  woSnap = p ? {sig: woPlanSig(), plan: JSON.stringify({days:p.days, freq:p.freq, splitKey:p.splitKey, splitName:p.splitName, level:p.level, goal:p.goal, home:p.home}), sched: JSON.stringify(state.schedule||{})} : null;
+}
+function woFlush(){
+  try{
+    if(!woEditMode || !state.workoutPlan) return;
+    const day = state.workoutPlan.days[woActiveDay]; if(!day) return;
+    if(document.querySelector('#woContent [data-editf], #woContent [data-editname], #woContent [data-editmode]')) woApplyEdits(day);
+    const li = document.getElementById('woDayLabel'); if(li){ const v = li.value.trim().slice(0,24); if(v) day.label = v; }
+  }catch(e){}
+}
+function woIsDirty(){
+  if(!woSnap || !state.workoutPlan) return false;
+  const ov = document.getElementById('workoutOverlay'); if(!ov || !ov.classList.contains('open')) return false;
+  woFlush();
+  return woPlanSig() !== woSnap.sig;
+}
+function woRestore(){
+  const p = state.workoutPlan; if(!p || !woSnap) return;
+  const sn = JSON.parse(woSnap.plan);
+  ['days','freq','splitKey','splitName','level','goal','home'].forEach(k=>{ if(k in sn) p[k] = sn[k]; else delete p[k]; });
+  p.done = (p.done||[]).slice(0, p.days.length); while(p.done.length < p.days.length) p.done.push(false);
+  state.schedule = JSON.parse(woSnap.sched);
+  saveState();
+  woActiveDay = Math.max(0, Math.min(woActiveDay, p.days.length-1)); woQuickIdx = null; woMenuIdx = null; woEditOpen = null;
+}
+// zeptá se na uložení; next() se zavolá po Uložit i po Zahodit, po Zpět se nestane nic
+function woGuardLeave(next){
+  if(!woIsDirty()){ next(); return; }
+  askSave({
+    title:'Uložit změny?', text:'V tréninku jsi něco změnil. Chceš změny uložit, nebo je zahodit?',
+    onSave:()=>{ saveState(); woSnapTake(); next(); },
+    onDiscard:()=>{ woRestore(); woSnapTake(); next(); }
+  });
+}
 function woSchemeStr(e){
   const mn = e.repsMin||8, mx = e.repsMax||mn, rng = mx!==mn ? mn+'–'+mx : ''+mn;
   const u = e.mode==='cardio' ? ' min' : (e.mode==='time'||e.mode==='weightTime' ? ' s' : '');
@@ -6965,29 +7046,39 @@ function renderWorkoutStep3(){
   const day = plan.days[woActiveDay];
   const tabsHTML = plan.days.map((d,i)=>`
     <button class="${i===woActiveDay?'on':''} ${plan.done[i]?'done':''}" data-di="${i}">${plan.done[i]?'✓ ':''}${d.label}</button>`).join('');
+  const nEx = day.exercises.length;
+  const arrowsHTML = (i)=>`<button class="wo-arr" data-mv="-1" data-idx="${i}" ${i===0?'disabled':''} title="Posunout nahoru" aria-label="Posunout nahoru">▲</button><button class="wo-arr" data-mv="1" data-idx="${i}" ${i===nEx-1?'disabled':''} title="Posunout dolů" aria-label="Posunout dolů">▼</button>`;
   const exHTML = day.exercises.map((e,i)=>`
     <div class="wo-ex" data-idx="${i}">
       <div class="wo-ex-top">
         <span class="wex-name" data-pos="${i+1}">${homeEsc(exDisp(e.name))}</span>
-        ${woEditMode ? `<div class="wo-ex-actions">
-          <span class="wex-muscle">${e.muscle}</span>
-          <span class="wo-grip" data-idx="${i}" title="Chyť a přesuň na jiné místo" role="button" aria-label="Přesunout cvik">⠿</span>
-          <button class="bp-ex-fav-btn ${isFavExercise(e.name)?'on':''}" data-fav="${e.name}" title="Oblíbený cvik">${isFavExercise(e.name)?'❤️':'🤍'}</button>
-          <button data-act="swap" data-idx="${i}" title="Vyměnit cvik">🔁</button>
-          <button data-act="rm" data-idx="${i}" title="Odebrat cvik">✕</button>
-        </div>` : `<div class="wo-ex-actions">
+        <div class="wo-ex-actions">
           <span class="wex-muscle">${e.muscle} · <b>${woSchemeStr(e)}</b></span>
-          <span class="wo-grip" data-idx="${i}" title="Chyť a přesuň na jiné místo" role="button" aria-label="Přesunout cvik">⠿</span>
-          <button class="wo-more ${woMenuIdx===i?'on':''}" data-more="${i}" title="Další možnosti" aria-label="Další možnosti">⋯</button>
-        </div>`}
+          ${arrowsHTML(i)}
+          <button class="wo-more ${woMenuIdx===i?'on':''}" data-more="${i}" title="Další možnosti" aria-label="Další možnosti"><span class="dots3"><i></i><i></i><i></i></span></button>
+        </div>
       </div>
-      ${(!woEditMode && woMenuIdx===i) ? `<div class="wo-ex-menu">
+      ${woMenuIdx===i ? `<div class="wo-ex-menu">
         <button data-act="qedit" data-idx="${i}">✏️ Upravit série a pauzu</button>
         <button data-act="swap" data-idx="${i}">🔁 Vyměnit cvik</button>
         <button class="bp-ex-fav-btn ${isFavExercise(e.name)?'on':''}" data-fav="${e.name}">${isFavExercise(e.name)?'❤️ Oblíbený':'🤍 Do oblíbených'}</button>
         <button data-act="rm" data-idx="${i}" class="danger">🗑 Odebrat</button>
       </div>` : ''}
-      ${woEditMode ? `
+      ${woQuickIdx===i ? woQuickPanelHTML(e) : ''}
+      <div class="wo-ex-detail" id="wed-${i}">
+        <div class="wed-tip">💡 ${MUSCLE_TIPS[e.muscleKey] || 'Prováděj cvik kontrolovaně, s plným rozsahem pohybu.'}</div>
+        <a href="${youtubeSearchUrl(exDisp(e.name))}" target="_blank" rel="noopener">▶️ Najít video na YouTube</a>
+      </div>
+    </div>`).join('');
+  // úprava cviků: seznam pod sebou, jen názvy; po rozkliknutí vyjede úprava
+  const exEditHTML = day.exercises.map((e,i)=>{
+    const open = woEditOpen===i;
+    return `<div class="wo-ex wo-ex-c ${open?'open':''}" data-idx="${i}">
+      <div class="wo-ex-toprow">
+        <button class="wo-ex-toggle" data-exopen="${i}"><span class="wex-name" data-pos="${i+1}">${homeEsc(exDisp(e.name))}</span><span class="wo-chev">${open?'▴':'▾'}</span></button>
+        <div class="wo-ex-actions">${arrowsHTML(i)}</div>
+      </div>
+      ${open ? `<div class="wo-ex-editbox">
       <div style="margin-bottom:8px;">
         <label style="display:block; font-size:13.4px; color:var(--muted); margin-bottom:4px;">✏️ Název cviku</label>
         <input type="text" class="wex-name-input" maxlength="60" value="${homeEsc(exDisp(e.name))}" data-editname="1" data-idx="${i}">
@@ -7002,7 +7093,6 @@ function renderWorkoutStep3(){
         </select>
       </div>
       <div class="wex-edit-row">
-        <label>Pořadí <input type="number" min="1" max="999" value="${i+1}" data-editpos="1" data-idx="${i}"></label>
         <label>Série <input type="number" min="1" max="10" value="${e.sets||3}" data-editf="sets" data-idx="${i}"></label>
         <label>${e.mode==='cardio'?'Min. od':(e.mode==='time'||e.mode==='weightTime'?'Čas od (s)':'Opak. od')} <input type="number" min="1" max="${(e.mode==='time'||e.mode==='weightTime')?600:(e.mode==='cardio'?180:30)}" value="${e.repsMin||8}" data-editf="repsMin" data-idx="${i}"></label>
         <label>do <input type="number" min="1" max="${(e.mode==='time'||e.mode==='weightTime')?600:(e.mode==='cardio'?180:30)}" value="${e.repsMax||8}" data-editf="repsMax" data-idx="${i}"></label>
@@ -7012,32 +7102,53 @@ function renderWorkoutStep3(){
         <select class="wex-rest-pick" data-editf="rest" data-idx="${i}">
           ${[30,45,60,90,120,150,180,240,300].map(s=>`<option value="${s}" ${((e.rest||120)===s)?'selected':''}>${s} s</option>`).join('')}
         </select>
-      </div>` : `
-      ${woQuickIdx===i ? woQuickPanelHTML(e) : ''}
-      <div class="wo-ex-detail" id="wed-${i}">
-        <div class="wed-tip">💡 ${MUSCLE_TIPS[e.muscleKey] || 'Prováděj cvik kontrolovaně, s plným rozsahem pohybu.'}</div>
-        <a href="${youtubeSearchUrl(exDisp(e.name))}" target="_blank" rel="noopener">▶️ Najít video na YouTube</a>
-      </div>`}
-    </div>`).join('');
+      </div>
+        <div class="wo-ex-menu" style="margin-top:12px;">
+          <button class="bp-ex-fav-btn ${isFavExercise(e.name)?'on':''}" data-fav="${e.name}">${isFavExercise(e.name)?'❤️ Oblíbený':'🤍 Do oblíbených'}</button>
+          <button data-act="swap" data-idx="${i}">🔁 Vyměnit cvik</button>
+          <button data-act="rm" data-idx="${i}" class="danger" style="grid-column:1 / -1;">🗑 Odebrat cvik</button>
+        </div>
+      </div>` : ''}
+    </div>`;
+  }).join('');
   const emptyMsg = day.exercises.length ? '' : '<p style="font-size:13.8px; color:var(--muted); text-align:center; padding:14px 0;">Zatím žádné cviky – přidej si vlastní ↓</p>';
-  document.getElementById('woContent').innerHTML = `
-    ${woEditMode ? `
-    <button class="wo-back" id="woEditBackTop">← Zpět na trénink (uložit změny)</button>
-    <h3 class="wo-page-title">✏️ Upravit trénink</h3>
-    <div class="wo-bulk wo-planbox">
-      <div class="wo-bulk-t">🗂 Plán a rozvrh</div>
-      <div class="wo-planbox-name"><b>${LEVEL_LABELS[plan.level]} · ${plan.splitName}</b></div>
-      <button class="wo-edit-toggle" id="woBack2">🔄 Změnit plán (hotové · 🏠 doma · vlastní)</button>
-      <button class="wo-edit-toggle" id="woSchedBtn">📆 Rozvrhnout podle dnů v měsíci${schedActive()?' ✓':''}</button>
-      ${(plan.splitKey!=='custom' && plan.splitKey!=='blank') ? '<button class="wo-edit-toggle" id="woRegen">🔁 Přegenerovat cviky plánu</button>' : ''}
-    </div>` : `
-    <button class="wo-edit-toggle" id="woEditBtn">✏️ Upravit trénink <small>(dny, plán, rozvrh, hromadné úpravy)</small></button>
+  const explainHTML = (items)=>`<div class="wo-explain"><div class="wo-explain-t">❔ Co tady můžeš nastavit</div><ul>${items.map(x=>`<li>${x}</li>`).join('')}</ul></div>`;
+  const totalEx = plan.days.reduce((a,d)=>a+d.exercises.length, 0);
+  let woBody;
+  if(!woEditMode){
+    woBody = `
+    <button class="wo-edit-toggle" id="woEditBtn">✏️ Upravit trénink <small>(kalendář, cviky, plán)</small></button>
     <div class="wo-plan-head">
       <b>${LEVEL_LABELS[plan.level]} · ${plan.splitName}</b>
     </div>
-    ${homePlanBanner(plan)}`}
+    ${homePlanBanner(plan)}
     <div class="wo-day-tabs">${tabsHTML}</div>
-    ${woEditMode ? `<div class="wo-bulk wo-daybox">
+    <div class="wo-note">📋 ${woDayNote(day)}</div>
+    ${woDurChipHTML(day)}
+    ${emptyMsg}
+    ${exHTML}
+    <button class="wo-add-ex" id="woAddEx">＋ Přidat cvik</button>
+    ${(!plan.done[woActiveDay] && day.exercises.length) ? '<button class="sess-start-btn" id="woStartSession" style="margin-bottom:10px;">▶ START TRÉNINK</button>' : ''}
+    ${plan.done[woActiveDay]
+      ? '<button class="wo-finish" id="woFinish" disabled>✓ Trénink dokončen</button>'
+      : '<button class="wo-finish-link" id="woFinish">Jen odškrtnout den (bez zápisu sérií)</button>'}`;
+  } else if(!woEditSub){
+    woBody = `
+    <button class="wo-back" id="woEditBackTop">← Zpět na trénink</button>
+    <h3 class="wo-page-title">✏️ Upravit trénink</h3>
+    <p class="nb-note" style="margin:-4px 0 12px;">Vyber, co chceš upravit.</p>
+    <div class="wo-hub">
+      <button class="home-tile t-notebook" data-hub="cal"><div class="ht-icon">📆</div><div><div class="ht-title">KALENDÁŘ</div><div class="ht-sub">${schedActive() ? 'Rozvrh aktivní ✓' : 'Rozvrh a práce s dny'}</div></div></button>
+      <button class="home-tile t-training" data-hub="ex"><div class="ht-icon">🏋️</div><div><div class="ht-title">ÚPRAVA CVIKŮ</div><div class="ht-sub">${plan.days.length} ${plan.days.length===1?'den':(plan.days.length<5?'dny':'dní')} · ${totalEx} cviků</div></div></button>
+      <button class="home-tile t-progress" data-hub="plan" style="grid-column:1 / -1;"><div class="ht-icon">🗂</div><div><div class="ht-title">PLÁN</div><div class="ht-sub">${LEVEL_LABELS[plan.level]} · ${plan.splitName}</div></div></button>
+    </div>`;
+  } else if(woEditSub==='cal'){
+    woBody = `
+    <button class="wo-back" id="woEditBackTop">← Upravit trénink</button>
+    <h3 class="wo-page-title">📆 Kalendář a dny</h3>
+    <button class="wo-edit-toggle" id="woSchedBtn">📆 Rozvrhnout podle dnů v měsíci${schedActive()?' ✓':''}</button>
+    <div class="wo-day-tabs">${tabsHTML}</div>
+    <div class="wo-bulk wo-daybox">
       <div class="wo-bulk-t">📅 Práce s dny</div>
       <div class="wo-daylabel"><label>✏️ Název dne <input type="text" id="woDayLabel" maxlength="24" value="${homeEsc(day.label)}" placeholder="např. Vrch, Spodek, Ruce"></label></div>
       <div class="wo-day-tools" style="margin:8px 0 0;">
@@ -7047,11 +7158,23 @@ function renderWorkoutStep3(){
         <button id="woDayNew" title="Přidat prázdný den (např. ruce)">＋ Nový den</button>
         ${plan.days.length>1 ? '<button id="woDayDel" class="danger" title="Smazat tento den">🗑 Smazat den</button>' : ''}
       </div>
-    </div>` : ''}
-    <div class="wo-note">📋 ${woDayNote(day)}</div>
-    ${woDurChipHTML(day)}
+    </div>
+    ${explainHTML([
+      '<b>Rozvrh na měsíc</b> – klepneš na datum a vybereš, jaký trénink (nebo volno) na ten den chceš.',
+      '<b>Název dne</b> – přejmenuj třeba na Vrch, Spodek nebo Ruce.',
+      '<b>Duplikovat den</b> – vytvoří kopii dne na konci týdne.',
+      '<b>Kopírovat / vložit cviky</b> – přenese cviky z jednoho dne do druhého.',
+      '<b>Nový den</b> – přidá prázdný den (max. 7 dnů v týdnu).',
+      '<b>Smazat den</b> – odstraní den i jeho cviky; zápisy v Sešitu zůstanou.'
+    ])}
+    <button class="sess-start-btn" id="woEditSave" style="margin:12px 0 10px;">💾 Uložit změny</button>`;
+  } else if(woEditSub==='ex'){
+    woBody = `
+    <button class="wo-back" id="woEditBackTop">← Upravit trénink</button>
+    <h3 class="wo-page-title">🏋️ Úprava cviků</h3>
+    <div class="wo-day-tabs">${tabsHTML}</div>
     ${emptyMsg}
-    ${(woEditMode && day.exercises.length) ? `
+    ${day.exercises.length ? `
     <div class="wo-bulk">
       <div class="wo-bulk-t">⚡ Upravit všechny cviky najednou</div>
       <div class="wex-edit-row">
@@ -7066,15 +7189,44 @@ function renderWorkoutStep3(){
       <div class="wo-bulk-btns"><button id="woBulkDay">Použít u všech v tomto dni</button>${plan.days.length>1?'<button id="woBulkAll">Použít ve všech dnech</button>':''}</div>
       <p class="wo-bulk-note">Prázdné pole se nemění. Kardio a časové cviky (sekundy) zůstanou s původním časem. Pod tím můžeš každý cvik ještě upravit zvlášť.</p>
     </div>` : ''}
-    ${exHTML}
-    ${woEditMode ? `<button class="wo-add-ex" id="woAddEx">＋ Přidat cvik</button>
-    <button class="sess-start-btn" id="woEditSave" style="margin:12px 0 10px;">💾 Uložit změny a zpět</button>` : `
+    <div class="wo-bulk-t" style="margin:14px 2px 8px;">📋 Seznam cviků · ${homeEsc(day.label)}</div>
+    ${exEditHTML}
     <button class="wo-add-ex" id="woAddEx">＋ Přidat cvik</button>
-    ${(!plan.done[woActiveDay] && day.exercises.length) ? '<button class="sess-start-btn" id="woStartSession" style="margin-bottom:10px;">▶ START TRÉNINK</button>' : ''}
-    ${plan.done[woActiveDay]
-      ? '<button class="wo-finish" id="woFinish" disabled>✓ Trénink dokončen</button>'
-      : '<button class="wo-finish-link" id="woFinish">Jen odškrtnout den (bez zápisu sérií)</button>'}`}`;
-  document.querySelectorAll('.wo-ex-menu button').forEach(b=>b.addEventListener('click', ()=>{ if(!b.dataset.fav) woMenuIdx = null; }));
+    ${explainHTML([
+      '<b>Všechny cviky najednou</b> – nastav série, opakování nebo pauzu pro celý den (nebo všechny dny).',
+      '<b>Seznam</b> – klepni na název cviku a vyjede úprava: název, typ, série, opakování, pauza.',
+      '<b>▲ ▼</b> – posun cviku v pořadí.',
+      '<b>Vyměnit / odebrat</b> – najdeš v rozbalené úpravě cviku.'
+    ])}
+    <button class="sess-start-btn" id="woEditSave" style="margin:12px 0 10px;">💾 Uložit změny</button>`;
+  } else {
+    woBody = `
+    <button class="wo-back" id="woEditBackTop">← Upravit trénink</button>
+    <h3 class="wo-page-title">🗂 Plán</h3>
+    <div class="wo-bulk wo-planbox">
+      <div class="wo-planbox-name"><b>${LEVEL_LABELS[plan.level]} · ${plan.splitName}</b></div>
+      <button class="wo-edit-toggle" id="woBack2">🔄 Změnit plán (hotové · 🏠 doma · vlastní)</button>
+      ${(plan.splitKey!=='custom' && plan.splitKey!=='blank') ? '<button class="wo-edit-toggle" id="woRegen">🔁 Přegenerovat cviky plánu</button>' : ''}
+    </div>
+    ${explainHTML([
+      '<b>Změnit plán</b> – vyber jiný hotový plán, domácí trénink nebo si ho poskládej sám.',
+      '<b>Přegenerovat cviky</b> – vygeneruje novou sadu cviků pro stejný plán (přepíše aktuální).'
+    ])}`;
+  }
+  document.getElementById('woContent').innerHTML = `<div class="wo-sub-pop">${woBody}</div>`;
+  if(!woSnap) woSnapTake();
+  document.querySelectorAll('.wo-ex-menu button').forEach(b=>b.addEventListener('click', ()=>{ if(!b.dataset.fav){ woMenuIdx = null; woEditOpen = null; } }));
+  document.querySelectorAll('[data-hub]').forEach(b=>b.addEventListener('click', ()=>{ woEditSub = b.dataset.hub; woEditOpen = null; woQuickIdx = null; renderWorkoutStep3(); try{ document.getElementById('workoutOverlay').scrollTo(0,0); }catch(e){} }));
+  document.querySelectorAll('[data-exopen]').forEach(b=>b.addEventListener('click', ()=>{ const i = +b.dataset.exopen; woApplyEdits(day); saveState(); woEditOpen = (woEditOpen===i) ? null : i; renderWorkoutStep3(); }));
+  document.querySelectorAll('.wo-arr').forEach(b=>b.addEventListener('click', ev=>{
+    ev.stopPropagation();
+    const i = +b.dataset.idx, j = i + (+b.dataset.mv);
+    if(j < 0 || j >= day.exercises.length) return;
+    if(woEditMode) woApplyEdits(day);
+    const t = day.exercises.splice(i,1)[0]; day.exercises.splice(j,0,t);
+    if(woMenuIdx===i) woMenuIdx = j; if(woQuickIdx===i) woQuickIdx = j; if(woEditOpen===i) woEditOpen = j;
+    saveState(); renderWorkoutStep3();
+  }));
   document.querySelectorAll('[data-more]').forEach(b=>b.addEventListener('click', ()=>{ const i = +b.dataset.more; woMenuIdx = (woMenuIdx===i) ? null : i; renderWorkoutStep3(); }));
   document.querySelectorAll('.wex-rest-pick').forEach(bubbleifySelect);
   const woBulk = (scopeAll)=>{
@@ -7183,22 +7335,27 @@ function renderWorkoutStep3(){
         okLabel:'Nahradit', cancelLabel:'Zpět', onConfirm: doPaste});
     } else doPaste();
   });
-  const woLeaveEdit = ()=>{
+  const woSaveEdit = ()=>{
     const r = woApplyEdits(day);
     woDayLabelSave();
-    saveState();
+    saveState(); woSnapTake();
     showToast(r.dup ? '⚠️ Dva cviky ve dni nemůžou mít stejný název – ten druhý zůstal původní' : (r.renamed ? '💾 Uloženo, přejmenováno: '+r.renamed : '💾 Změny uloženy'));
-    woEditMode = false;
+    woEditSub = null; woEditOpen = null;
     renderWorkoutStep3();
     try{ document.getElementById('workoutOverlay').scrollTo(0,0); }catch(e){}
+  };
+  const woBackEdit = ()=>{
+    if(woEditSub){ woFlush(); woEditSub = null; woEditOpen = null; renderWorkoutStep3(); try{ document.getElementById('workoutOverlay').scrollTo(0,0); }catch(e){} return; }
+    woGuardLeave(()=>{ woEditMode = false; renderWorkoutStep3(); try{ document.getElementById('workoutOverlay').scrollTo(0,0); }catch(e){} });
   };
   const woB2 = document.getElementById('woBack2');
   if(woB2) woB2.addEventListener('click', ()=>{ woEditMode = false; renderWorkoutStep1(); });
   const woSc = document.getElementById('woSchedBtn');
-  if(woSc) woSc.addEventListener('click', ()=>{ woApplyEdits(day); woDayLabelSave(); saveState(); woEditMode = false; nbTab = 'calendar'; nbCalSel = null; openHomeSub('notebook'); });
+  if(woSc) woSc.addEventListener('click', ()=>{ woApplyEdits(day); woDayLabelSave(); saveState(); woSnapTake(); woEditMode = false; woEditSub = null; nbTab = 'calendar'; nbCalSel = null; openHomeSub('notebook'); });
   const woEb = document.getElementById('woEditBtn');
-  if(woEb) woEb.addEventListener('click', ()=>{ woEditMode = true; woQuickIdx = null; renderWorkoutStep3(); try{ document.getElementById('workoutOverlay').scrollTo(0,0); }catch(e){} });
-  ['woEditBackTop','woEditSave'].forEach(id=>{ const b = document.getElementById(id); if(b) b.addEventListener('click', woLeaveEdit); });
+  if(woEb) woEb.addEventListener('click', ()=>{ woEditMode = true; woEditSub = null; woEditOpen = null; woQuickIdx = null; woMenuIdx = null; renderWorkoutStep3(); try{ document.getElementById('workoutOverlay').scrollTo(0,0); }catch(e){} });
+  const _eb = document.getElementById('woEditBackTop'); if(_eb) _eb.addEventListener('click', woBackEdit);
+  const _es = document.getElementById('woEditSave'); if(_es) _es.addEventListener('click', woSaveEdit);
   const startBtn = document.getElementById('woStartSession');
   if(startBtn){
     startBtn.addEventListener('click', ()=>startWorkoutSession(woActiveDay));
@@ -7217,21 +7374,22 @@ function renderWorkoutStep3(){
             ? generateCustomPlan(plan.goal, plan.freq, plan.level)
             : generateWorkoutPlan(woSplitKey, woLevel);
           saveState();
-          woActiveDay = 0;
+          woActiveDay = 0; woSnap = null; woEditSub = null;
           renderWorkoutStep3();
         }
       });
     });
   }
   document.querySelectorAll('.wo-day-tabs button').forEach(b=>{
-    b.addEventListener('click', ()=>{ woActiveDay = parseInt(b.dataset.di); woQuickIdx = null; woMenuIdx = null; renderWorkoutStep3(); });
+    b.addEventListener('click', ()=>{ woActiveDay = parseInt(b.dataset.di); woQuickIdx = null; woMenuIdx = null; woEditOpen = null; if(woEditMode) woApplyEdits(day); renderWorkoutStep3(); });
   });
   // rozklikni detail cviku (klik na řádek, ale ne na tlačítka)
   document.querySelectorAll('.wo-ex').forEach(el=>{
-    el.querySelector('.wo-ex-top').addEventListener('click', (e)=>{
+    const topEl = el.querySelector('.wo-ex-top'); if(!topEl) return;
+    topEl.addEventListener('click', (e)=>{
       if(e.target.closest('button, .wo-grip')) return;
       const idx = el.dataset.idx;
-      document.getElementById('wed-'+idx).classList.toggle('open');
+      const wd = document.getElementById('wed-'+idx); if(wd) wd.classList.toggle('open');
     });
   });
   document.querySelectorAll('.wo-ex .bp-ex-fav-btn').forEach(btn=>{
@@ -7241,56 +7399,6 @@ function renderWorkoutStep3(){
       btn.classList.toggle('on', added);
       btn.textContent = btn.closest('.wo-ex-menu') ? (added ? '❤️ Oblíbený' : '🤍 Do oblíbených') : (added ? '❤️' : '🤍');
       showToast(added ? '❤️ Přidáno do oblíbených cviků' : '💔 Odebráno z oblíbených');
-    });
-  });
-  // přesouvání cviků tažením za úchyt ⠿ (dotyk i myš)
-  document.querySelectorAll('.wo-grip').forEach(g=>{
-    g.addEventListener('pointerdown', ev=>{
-      ev.preventDefault();
-      const card = g.closest('.wo-ex'); if(!card) return;
-      if(woEditMode) woApplyEdits(day);
-      const cards = [...document.querySelectorAll('#woContent .wo-ex')];
-      const from = cards.indexOf(card); if(from < 0) return;
-      let sp = card.parentElement; while(sp && sp !== document.body){ const o = getComputedStyle(sp).overflowY; if((o==='auto'||o==='scroll') && sp.scrollHeight > sp.clientHeight) break; sp = sp.parentElement; }
-      const scroller = (sp && sp !== document.body) ? sp : null;
-      const sc0 = scroller ? scroller.scrollTop : 0;
-      const y0 = ev.clientY; let lastY = y0, to = from, raf = null;
-      try{ g.setPointerCapture(ev.pointerId); }catch(e){}
-      card.classList.add('wo-dragging');
-      const mark = ()=>{
-        const others = cards.filter(c=>c!==card);
-        to = 0; others.forEach(c=>{ const r = c.getBoundingClientRect(); if(r.top + r.height/2 < lastY) to++; });
-        cards.forEach(c=>c.classList.remove('drop-before','drop-after'));
-        if(to < others.length) others[to].classList.add('drop-before'); else if(others.length) others[others.length-1].classList.add('drop-after');
-        card.style.transform = `translateY(${lastY - y0 + (scroller ? scroller.scrollTop - sc0 : 0)}px)`;
-      };
-      const tick = ()=>{
-        raf = null;
-        if(scroller){
-          const r = scroller.getBoundingClientRect();
-          const edge = 70, v = lastY < r.top + edge ? -14 : (lastY > r.bottom - edge - 60 ? 14 : 0);
-          if(v){ scroller.scrollTop += v; mark(); raf = requestAnimationFrame(tick); }
-        } else {
-          const v = lastY < 70 ? -14 : (lastY > innerHeight - 130 ? 14 : 0);
-          if(v){ window.scrollBy(0, v); mark(); raf = requestAnimationFrame(tick); }
-        }
-      };
-      const move = e2=>{ lastY = e2.clientY; mark(); if(!raf) raf = requestAnimationFrame(tick); };
-      const end = e2=>{
-        g.removeEventListener('pointermove', move); g.removeEventListener('pointerup', end); g.removeEventListener('pointercancel', end);
-        if(raf) cancelAnimationFrame(raf);
-        cards.forEach(c=>c.classList.remove('drop-before','drop-after'));
-        card.classList.remove('wo-dragging'); card.style.transform = '';
-        if(e2.type !== 'pointercancel' && to !== from){
-          const t = day.exercises.splice(from, 1)[0];
-          day.exercises.splice(to, 0, t);
-          saveState();
-          showToast('↕ Cvik přesunut na pozici ' + (to + 1));
-          renderWorkoutStep3();
-        }
-      };
-      g.addEventListener('pointermove', move); g.addEventListener('pointerup', end); g.addEventListener('pointercancel', end);
-      mark();
     });
   });
   document.querySelectorAll('[data-act="qedit"]').forEach(b=>{
@@ -8121,7 +8229,7 @@ function renderSessList(el){
     const showBody = (st==='current' && ph!=='overview');
     return `<div class="sess-card ${st}" data-i="${i}">
       <div class="sc-head">
-        ${editable ? `<span class="sess-grip" data-i="${i}" title="Chyť a přesuň" role="button" aria-label="Přesunout cvik">⠿</span>` : ''}
+        ${editable ? `<div class="sess-arrows"><button data-smv="-1" data-i="${i}" ${(i-1 < sessMoveMin()) ? 'disabled' : ''} title="Posunout nahoru" aria-label="Posunout nahoru">▲</button><button data-smv="1" data-i="${i}" ${(i+1 >= session.exercises.length) ? 'disabled' : ''} title="Posunout dolů" aria-label="Posunout dolů">▼</button></div>` : ''}
         <span class="sc-num">${i+1}</span>
         <div class="sc-main">
           <div class="sc-name">${st==='current' ? `<a href="${youtubeSearchUrl(exDisp(e.name), state.sex)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;">${homeEsc(exDisp(e.name))} <span class="yticon">▶️</span></a>` : homeEsc(exDisp(e.name))}</div>
@@ -8213,7 +8321,7 @@ function renderSessList(el){
     else { const ov = document.getElementById('sessionOverlay'); if(ov) ov.scrollTop = 0; }
   }
 }
-function sessSaveToPlan(){
+function sessSaveToPlan(noRender){
   const day = state.workoutPlan.days[session.dayIndex];
   if(!day) return;
   day.exercises = session.exercises.map(e=>{
@@ -8225,66 +8333,43 @@ function sessSaveToPlan(){
   });
   saveState();
   session.dirty = false;
+  woSnapTake();
   showToast('💾 Změny uloženy do plánu');
-  renderSession();
+  if(!noRender) renderSession();
 }
-// přesouvání nehotových cviků tažením za ⠿ (dotyk i myš)
-function sessAttachDrag(){
-  document.querySelectorAll('#sessList .sess-grip').forEach(g=>{
-    g.addEventListener('pointerdown', ev=>{
-      ev.preventDefault();
-      const card = g.closest('.sess-card'); if(!card) return;
-      const all = [...document.querySelectorAll('#sessList .sess-card')];
-      const pend = all.filter(c=>c.classList.contains('pending'));
-      const live = sessLive();
-      const from = all.indexOf(card), minIdx = live ? session.exIdx : all.indexOf(pend[0]);
-      const slots = all.slice(minIdx);
-      let sp = card.parentElement; while(sp && sp !== document.body){ const o = getComputedStyle(sp).overflowY; if((o==='auto'||o==='scroll') && sp.scrollHeight > sp.clientHeight) break; sp = sp.parentElement; }
-      const scroller = (sp && sp !== document.body) ? sp : null;
-      const sc0 = scroller ? scroller.scrollTop : 0;
-      const y0 = ev.clientY; let lastY = y0, to = from, raf = null;
-      try{ g.setPointerCapture(ev.pointerId); }catch(e){}
-      card.classList.add('sess-dragging');
-      const popEl = document.getElementById('sessRestPop'); if(popEl) popEl.style.visibility = 'hidden';
-      const mark = ()=>{
-        const others = slots.filter(c=>c!==card);
-        let rel = 0; others.forEach(c=>{ const r = c.getBoundingClientRect(); if(r.top + r.height/2 < lastY) rel++; });
-        to = minIdx + rel;
-        all.forEach(c=>c.classList.remove('drop-before','drop-after'));
-        if(rel < others.length) others[rel].classList.add('drop-before'); else if(others.length) others[others.length-1].classList.add('drop-after');
-        card.style.transform = `translateY(${lastY - y0 + (scroller ? scroller.scrollTop - sc0 : 0)}px)`;
-      };
-      const tick = ()=>{
-        raf = null;
-        if(scroller){
-          const r = scroller.getBoundingClientRect();
-          const v = lastY < r.top + 90 ? -14 : (lastY > r.bottom - 90 ? 14 : 0);
-          if(v){ scroller.scrollTop += v; mark(); raf = requestAnimationFrame(tick); }
-        }
-      };
-      const move = e2=>{ lastY = e2.clientY; mark(); if(!raf) raf = requestAnimationFrame(tick); };
-      const end = e2=>{
-        g.removeEventListener('pointermove', move); g.removeEventListener('pointerup', end); g.removeEventListener('pointercancel', end);
-        if(raf) cancelAnimationFrame(raf);
-        all.forEach(c=>c.classList.remove('drop-before','drop-after'));
-        card.classList.remove('sess-dragging'); card.style.transform = '';
-        const popEl2 = document.getElementById('sessRestPop'); if(popEl2) popEl2.style.visibility = '';
-        if(e2.type !== 'pointercancel' && to !== from){
-          const t = session.exercises.splice(from,1)[0];
-          session.exercises.splice(to,0,t);
-          session.editIdx = null; session.dirty = true;
-          if(live && to === session.exIdx){   // přetažen nad rozdělaný cvik → rozdělaný se zavře, otevře se tenhle
-            session.setIdx = sessStartIdxFor(t); session.setType = ''; session.pendingSet = null;
-            if(session.phase==='nextprompt') session.phase = 'active';
-            showToast('🔀 Teď cvičíš: ' + exDisp(t.name));
-          } else showToast('↕ Cvik přesunut na pozici ' + (to+1));
-          renderSession();
-        }
-      };
-      g.addEventListener('pointermove', move); g.addEventListener('pointerup', end); g.addEventListener('pointercancel', end);
-      mark();
+// při odchodu z tréninku se zeptá, jestli uložit úpravy do plánu
+function sessAskSaveThen(next){
+  if(session && session.dirty){
+    askSave({
+      title:'Uložit změny do plánu?', text:'V tréninku jsi upravil cviky, série nebo pořadí. Chceš to uložit i do plánu, aby to platilo i příště?',
+      saveLabel:'💾 Uložit do plánu', discardLabel:'Jen tento trénink',
+      onSave:()=>{ sessSaveToPlan(true); next(); }, onDiscard:()=>{ next(); }
     });
-  });
+  } else next();
+}
+// nejnižší pozice, kam se dá nehotový cvik posunout (za hotové cviky; za rozdělaný jen když ho chceš přehodit)
+function sessMoveMin(){
+  if(sessLive()) return session.exIdx;
+  const i = session.exercises.findIndex((e,k)=>sessCardState(k)==='pending');
+  return i < 0 ? 0 : i;
+}
+// posun nehotových cviků šipkami ▲▼
+function sessAttachDrag(){
+  document.querySelectorAll('#sessList [data-smv]').forEach(b=>b.addEventListener('click', ev=>{
+    ev.stopPropagation();
+    const from = +b.dataset.i, to = from + (+b.dataset.smv);
+    if(to < sessMoveMin() || to >= session.exercises.length) return;
+    const live = sessLive();
+    const t = session.exercises.splice(from,1)[0];
+    session.exercises.splice(to,0,t);
+    session.editIdx = null; session.dirty = true;
+    if(live && to === session.exIdx){   // přesunut na místo rozdělaného cviku → rozdělaný se zavře, otevře se tenhle
+      session.setIdx = sessStartIdxFor(t); session.setType = ''; session.pendingSet = null;
+      if(session.phase==='nextprompt') session.phase = 'active';
+      showToast('🔀 Teď cvičíš: ' + exDisp(t.name));
+    } else showToast('↕ Cvik přesunut na pozici ' + (to+1));
+    renderSession();
+  }));
 }
 
 function renderSessOverview(el){
@@ -8780,11 +8865,10 @@ function renderSessComplete(el){
   document.querySelectorAll('.spw-recipe').forEach(el=>{
     el.addEventListener('click', ()=>{
       const r = postWorkoutRecipes[parseInt(el.dataset.ridx)];
-      document.getElementById('sessSaveBtn').click();
-      openModal(r);
+      sessAskSaveThen(()=>{ sessFinalSave(); openModal(r); });
     });
   });
-  document.getElementById('sessSaveBtn').addEventListener('click', ()=>{
+  const sessFinalSave = ()=>{
     // ulož historii posledního výkonu pro každý cvik + časovou řadu maximální váhy pro graf síly
     if(!state.exerciseProgressLog) state.exerciseProgressLog = {};
     if(!state.exerciseSetLog) state.exerciseSetLog = {};
@@ -8883,12 +8967,28 @@ function renderSessComplete(el){
     session = null;
     if(allDone) setTimeout(()=>showWeeklyReport(), 600);
     woActiveDay = state.workoutPlan.days.findIndex((d,i)=>i===woActiveDay) > -1 ? woActiveDay : 0;
-    document.getElementById('workoutOverlay').classList.add('open');
-    renderWorkoutStep3();
-  });
+    woSnap = null;
+    goHome();   // po uložení tréninku zpět na hlavní menu
+  };
+  document.getElementById('sessSaveBtn').addEventListener('click', ()=>sessAskSaveThen(sessFinalSave));
 }
 
 let genericConfirmCallback = null;
+let _askSaveCbs = null;
+function askSave({title='Uložit změny?', text='', saveLabel='💾 Uložit', discardLabel='Zahodit změny', onSave, onDiscard}){
+  document.getElementById('askSaveTitle').textContent = title;
+  document.getElementById('askSaveText').textContent = text;
+  document.getElementById('askSaveYes').textContent = saveLabel;
+  document.getElementById('askSaveNo').textContent = discardLabel;
+  _askSaveCbs = {onSave, onDiscard};
+  document.getElementById('askSave').classList.add('open');
+}
+['Yes','No','Cancel'].forEach(k=>document.getElementById('askSave'+k).addEventListener('click', ()=>{
+  document.getElementById('askSave').classList.remove('open');
+  const c = _askSaveCbs; _askSaveCbs = null;
+  if(!c) return;
+  if(k==='Yes' && c.onSave) c.onSave(); else if(k==='No' && c.onDiscard) c.onDiscard();
+}));
 function showConfirm({icon='⚠️', title, text, okLabel='Potvrdit', cancelLabel='Zpět', onConfirm}){
   document.getElementById('genericConfirmIcon').textContent = icon;
   document.getElementById('genericConfirmTitle').textContent = title;
@@ -8958,6 +9058,7 @@ function actuallyEndWorkoutSession(){
   document.getElementById('sessionOverlay').classList.remove('open');
   session = null;
   document.getElementById('workoutOverlay').classList.add('open');
+  woSnap = null;
   renderWorkoutStep3();
 }
 document.getElementById('sessClose').addEventListener('click', ()=>{
@@ -8966,11 +9067,11 @@ document.getElementById('sessClose').addEventListener('click', ()=>{
     document.getElementById('endWorkoutConfirm').classList.add('open');
     return;
   }
-  actuallyEndWorkoutSession();
+  sessAskSaveThen(actuallyEndWorkoutSession);
 });
 document.getElementById('endWorkoutOk').addEventListener('click', ()=>{
   document.getElementById('endWorkoutConfirm').classList.remove('open');
-  actuallyEndWorkoutSession();
+  sessAskSaveThen(actuallyEndWorkoutSession);
 });
 document.getElementById('endWorkoutAdd').addEventListener('click', ()=>{
   document.getElementById('endWorkoutConfirm').classList.remove('open');
@@ -9201,13 +9302,8 @@ document.getElementById('workoutToggle').addEventListener('click', ()=>{
   }
 });
 document.getElementById('foodTabRec').addEventListener('click', ()=>openHomeSub('kitchen'));
-document.getElementById('workoutClose').addEventListener('click', ()=>{
-  document.getElementById('workoutOverlay').classList.remove('open');
-});
 document.getElementById('workoutOverlay').addEventListener('click', (e)=>{
-  if(e.target === document.getElementById('workoutOverlay')){
-    document.getElementById('workoutOverlay').classList.remove('open');
-  }
+  if(e.target === document.getElementById('workoutOverlay')) goHome();
 });
 
 // ===== MAKRA DNE =====
@@ -10977,6 +11073,13 @@ function renderHome(){
 
 // Otevre danou sekci a schova Home + ostatni overlaye
 function openHomeSub(section){
+  if(section!=='training' && woIsDirty()){
+    woGuardLeave(()=>openHomeSubReal(section));
+    return;
+  }
+  openHomeSubReal(section);
+}
+function openHomeSubReal(section){
   closeModal(); // detail receptu se ma vzdy zavrit, kdyz uzivatel prejde jinam pres spodni navigaci
   // vsechny dalsi prekryvne stranky (hodnosti, detail cviku, graf PR, komunita, pravni texty...) se pri prechodu zavrou
   ['ranksOverlay','bpExOverlay','prGraphOverlay','communityOverlay','commNewPostOverlay','legalOverlay','paywallOverlay','weeklyOverlay','notebookOverlay','nbAddOverlay','foodOverlay','foodAddOverlay','restOverlay','commPlayerOverlay','commChOverlay','commChDetailOverlay'].forEach(id=>{
@@ -10991,7 +11094,7 @@ function openHomeSub(section){
   document.getElementById('progressOverlay').classList.remove('open');
   document.querySelectorAll('.bn-btn').forEach(b=>b.classList.toggle('on', b.dataset.nav===section || (b.dataset.nav==='food' && section==='kitchen') || (b.dataset.nav==='home' && (section==='notebook' || section==='progress'))));
   document.body.dataset.sec = section; // kuchyne (zakladni .wrap) je videt jen na zalozce JIDLO
-  if(section==='training'){ woEditMode = false; woQuickIdx = null;
+  if(section==='training'){ woEditMode = false; woEditSub = null; woEditOpen = null; woQuickIdx = null; woMenuIdx = null; woSnap = null;
     document.getElementById('workoutOverlay').classList.add('open');
     if(state.workoutPlan){
       woSplitKey = state.workoutPlan.splitKey;
@@ -11049,6 +11152,7 @@ document.querySelectorAll('.bn-btn').forEach(b=>{
   b.addEventListener('click', ()=> openHomeSub(b.dataset.nav));
 });
 document.getElementById('tileFood').addEventListener('click', ()=> openHomeSub('food'));
+document.getElementById('tileTraining').addEventListener('click', ()=> openHomeSub('training'));
 document.getElementById('tileProgress').addEventListener('click', ()=> openHomeSub('progress'));
 document.getElementById('tileNotebook').addEventListener('click', ()=>{ nbTab = 'diary'; nbOpenEx = null; openHomeSub('notebook'); });
 document.getElementById('tileCommunity').addEventListener('click', ()=>{
@@ -11065,6 +11169,17 @@ document.getElementById('progressClose').addEventListener('click', goHome);
 document.getElementById('bodyMapClose').addEventListener('click', goHome);
 document.getElementById('workoutClose').addEventListener('click', goHome);
 document.getElementById('profClose').addEventListener('click', goHome);
+
+// animace "pop" při klepnutí na dlaždici / bublinu (stejný pocit jako výběr úrovně v Partiích)
+document.addEventListener('click', e=>{
+  const t = e.target.closest ? e.target.closest('button, .home-tile, .home-mini, [role="button"]') : null;
+  if(!t) return;
+  const c = (typeof t.className === 'string') ? t.className : '';
+  if(!/tile|chip|tab|pill|mini|opt|picker|bn-btn|bubble|hub|toggle|sfx|rest-chips|wo-day|nb-ib|cat-|filter|bp-/i.test(c) && !t.closest('.rest-chips, .font-size-picker, .wo-day-tabs, .bp-tier-tabs, .home-tiles, .wo-hub, .nb-tabs')) return;
+  if(/sess-done|sess-start|today-btn|sess-save|confirm-btn|wo-add-ex|sess-skip|close|exit/i.test(c)) return;
+  t.classList.remove('tile-pop'); void t.offsetWidth; t.classList.add('tile-pop');
+  setTimeout(()=>t.classList.remove('tile-pop'), 420);
+}, true);
 
 // (renderHome() se vola az na konci skriptu, aby byly inicializovane vsechny const/let)
 
