@@ -1201,6 +1201,7 @@
   .fd-actions{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:16px 0 6px;}
   .fd-actions button{padding:12px 6px; border-radius:12px; border:1.5px solid var(--accent); background:rgba(var(--accent-rgb),calc(0.12 * var(--gt))); color:var(--accent); font-family:'Oxanium',sans-serif; font-weight:700; font-size:calc(14px * var(--font-scale)); cursor:pointer; backdrop-filter:blur(9px); -webkit-backdrop-filter:blur(9px);}
   .fd-h{font-family:'Oxanium',sans-serif; text-transform:uppercase; letter-spacing:0.04em; font-size:calc(14px * var(--font-scale)); color:var(--accent); margin:20px 0 8px;}
+  .fd-entry[data-fedit]{cursor:pointer;}
   .fd-entry{display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--line); border-radius:12px; background:rgba(0,0,0,calc(var(--gs) * 0.9)); margin-bottom:7px; box-shadow:inset 0 1px 0 rgba(255,255,255,var(--gedge)), inset 0 -1px 0 rgba(255,255,255,calc(var(--gedge) * 0.35));}
   .fd-ename{display:flex; gap:9px; flex:1; min-width:0; align-items:center;}
   .fd-ename b{display:block; font-size:calc(14.6px * var(--font-scale)); overflow-wrap:anywhere;}
@@ -2968,7 +2969,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29w · 2026-11-05</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V29x · 2026-11-05</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -7163,7 +7164,7 @@ const QH_TEXTS = {
   plan:['<b>Změnit plán</b> – vyber jiný hotový plán, domácí trénink nebo si ho poskládej sám.','<b>Přegenerovat cviky</b> – vygeneruje novou sadu cviků pro stejný plán (přepíše aktuální).'],
   sess:['<b>Váha a opakování</b> – vyplň a potvrď ✅ HOTOVO; po sérii se spustí pauza.','<b>＋ Více</b> – RIR (rezerva do selhání), poznámka, typ série (rozcvička, drop, selhání) a střídání stran.','<b>＋ Přidat sérii / ⏭ Přeskočit sérii</b> – změní počet sérií u cviku.','<b>🔁 Jiný cvik / ⏩ Přeskočit cvik</b> – vyměnění nebo vynechání cviku.','<b>↕</b> – nehotové cviky můžeš přetáhnout; přetažení nad rozdělaný cvik ho nahradí.','<b>—</b> – tlačítko vpravo nahoře minimalizuje trénink, ✕ ho ukončí.'],
   nbcal:['<b>Klepni na den</b> – vybereš trénink nebo volno a potvrdíš.','<b>Rozvrhnout automaticky</b> – naplánuje víc týdnů podle dnů, které zvolíš.','<b>Barva dne</b> – čím víc zápisů, tím výraznější; „D1/D2…“ je naplánovaný trénink.'],
-  food:['<b>Přidat jídlo</b> – z fotky tabulky, čárového kódu, vyhledání, mých potravin, receptu nebo ručně.','<b>Cíle</b> – kalorie a makra se počítají podle tvého cíle (změníš ho v Profilu); „Upravit denní cíle“ nastaví vlastní čísla.','<b>🗑️</b> – smaže záznam.','<b>‹ ›</b> – přepíná dny.'],
+  food:['<b>Přidat jídlo</b> – z fotky tabulky, čárového kódu, vyhledání, mých potravin, receptu nebo ručně.','<b>Cíle</b> – kalorie a makra se počítají podle tvého cíle (změníš ho v Profilu); „Upravit denní cíle“ nastaví vlastní čísla.','<b>Klepni na jídlo</b> – upravíš název, gramy (ostatní hodnoty se přepočítají) nebo čísla ručně.','<b>🗑️</b> – smaže záznam.','<b>‹ ›</b> – přepíná dny.'],
   settings:['<b>Vzhled</b> – téma, vlastní pozadí a barvy.','<b>Průhlednost bublin</b> – jak moc je vidět pozadí pod kartami; „Úsporný režim“ vypne rozmazání.','<b>Hudba a zvuky</b> – hudbu na pozadí a zvukové hlášky zapneš nebo vypneš zvlášť.','<b>Připomínka</b> – denní upozornění na trénink.','<b>AI asistent</b> – vlastní klíč od Gemini (ukládá se jen v tomto zařízení) pro odhad jídla z fotky a čtení tabulky.','<b>Reset profilu</b> – vynuluje statistiky a postup; nick, údaje o těle, plán, vlastní recepty a potraviny a nastavení zůstanou. „Vrátit stav“ obnoví stav před posledním resetem.','<b>Záloha</b> – uloží data do souboru, který můžeš později načíst zpět; zálohuj před větší změnou nebo přeinstalací.'],
   rest:['<b>Co se děje</b> – nemoc, únava nebo regenerace; trénink se na dobu pauzy pozastaví.','<b>Délka</b> – vyber počet dní nebo vlastní datum konce.','O svůj progres a sérii nepřijdeš.'],
   progress:['<b>Objem po týdnech</b> – součet zvednutých kg po týdnech (pondělí–neděle).','<b>Objem po tréninku</b> – každý trénink s porovnáním oproti minulému stejnému dni.']
@@ -12516,6 +12517,61 @@ function foodCommit(entry){
   try{ missionsSync(); }catch(e){}
   return entry;
 }
+// úprava již zapsaného jídla (název, gramy → přepočet, nebo ručně čísla)
+function foodUpdate(id, patch){
+  const e = foodLogArr().find(x=>x.id===id); if(!e) return;
+  const old = {kcal:e.kcal, p:e.p, c:e.c, f:e.f};
+  Object.assign(e, patch);
+  e.kcal = Math.round(e.kcal||0); ['p','c','f'].forEach(k=>{ e[k] = foodR1(e[k]); });
+  e.s = (e.s===null||e.s===undefined) ? null : foodR1(e.s);
+  if(e.date===todayKey()){
+    const d = dmToday();
+    d.Kal = Math.max(0, Math.round(d.Kal + e.kcal - old.kcal)); d.Prot = Math.max(0, foodR1(d.Prot + e.p - old.p)); d.Carb = Math.max(0, foodR1(d.Carb + e.c - old.c)); d.Fat = Math.max(0, foodR1(d.Fat + e.f - old.f));
+  }
+  saveState();
+  try{ renderDayMacros(); checkDailyMacroGoals(); }catch(err){}
+}
+function openFoodEdit(id){
+  const e = foodLogArr().find(x=>x.id===id); if(!e) return;
+  const fm = n=>String(foodR1(n)).replace('.',',');
+  const o = {g:e.grams||0, kcal:e.kcal, p:e.p, c:e.c, f:e.f, s:e.s};
+  const ov = foodPanel(`<h4>✏️ Upravit jídlo</h4>
+    <label class="ff-lbl">Název<input type="text" id="feName" maxlength="60" value="${homeEsc(e.name)}"></label>
+    <label class="ff-lbl">Množství (g / ml)${o.g?'':' – nezadáno'}<input type="text" inputmode="decimal" id="feG" value="${o.g?fm(o.g):''}" placeholder="např. 250"></label>
+    <p class="nb-note" style="margin:0 0 8px;">${o.g ? 'Když změníš množství, ostatní hodnoty se přepočítají. Čísla můžeš přepsat i ručně.' : 'U tohoto záznamu není uložené množství – hodnoty přepiš ručně.'}</p>
+    <div class="ff-grid">
+      <label class="ff-lbl">Kalorie (kcal)<input type="text" inputmode="decimal" id="feKcal" value="${fm(e.kcal)}"></label>
+      <label class="ff-lbl">Bílkoviny (g)<input type="text" inputmode="decimal" id="feP" value="${fm(e.p)}"></label>
+      <label class="ff-lbl">Sacharidy (g)<input type="text" inputmode="decimal" id="feC" value="${fm(e.c)}"></label>
+      <label class="ff-lbl">Tuky (g)<input type="text" inputmode="decimal" id="feF" value="${fm(e.f)}"></label>
+      ${e.s!=null ? `<label class="ff-lbl">z toho cukry (g)<input type="text" inputmode="decimal" id="feS" value="${fm(e.s)}"></label>` : ''}
+    </div>
+    <label class="ff-chk"><input type="checkbox" id="feSave"> Uložit do Mých potravin</label>
+    <button class="paywall-cta" id="feOk" style="background:var(--accent); color:#14041f; margin:12px 0 0;">💾 Uložit změny</button>`);
+  const $ = i=>ov.querySelector('#'+i);
+  $('feG').addEventListener('input', ()=>{
+    const g = foodNum($('feG').value); if(!(o.g>0) || !(g>0)) return; const k = g/o.g;
+    $('feKcal').value = String(Math.round(o.kcal*k)); $('feP').value = fm(o.p*k); $('feC').value = fm(o.c*k); $('feF').value = fm(o.f*k);
+    if($('feS') && o.s!=null) $('feS').value = fm(o.s*k);
+  });
+  $('feOk').addEventListener('click', ()=>{
+    const name = $('feName').value.replace(/[<>"&`\\]/g,'').trim(); if(!name){ showToast('⚠️ Napiš název jídla'); return; }
+    const kcal = foodNum($('feKcal').value), p = foodNum($('feP').value)||0, c = foodNum($('feC').value)||0, f = foodNum($('feF').value)||0;
+    if(kcal==null){ showToast('⚠️ Zadej kalorie'); return; }
+    const g = foodNum($('feG').value);
+    const patch = {name, kcal, p, c, f, grams: g>0 ? g : e.grams};
+    if($('feS')) patch.s = foodNum($('feS').value);
+    foodUpdate(id, patch);
+    if($('feSave').checked && g>0){
+      if(!Array.isArray(state.myFoods)) state.myFoods = [];
+      const r1 = v=>foodR1(v/g*100), per = {kcal:Math.round(kcal/g*100), p:r1(p), c:r1(c), f:r1(f)}; if(patch.s!=null) per.s = r1(patch.s);
+      const ex = state.myFoods.find(x=>homeNorm(x.name)===homeNorm(name));
+      if(ex){ ex.per100 = per; } else state.myFoods.push({id:'M'+Date.now(), name, per100:per, servingG:g, packG:null});
+      saveState();
+    }
+    closeFoodPanel(); showToast('✅ Upraveno'); renderFoodDiary(); try{ renderProgFood(); }catch(err){}
+  });
+}
 function foodDelete(id){
   const arr = foodLogArr(); const i = arr.findIndex(e=>e.id===id); if(i<0) return;
   const e = arr.splice(i,1)[0];
@@ -12594,8 +12650,8 @@ function renderFoodDiary(){
   const isToday = foodDate===todayKey();
   const entries = foodLogArr().filter(e=>e.date===foodDate);
   const list = entries.length ? entries.slice().reverse().map(e=>`
-    <div class="fd-entry"><div class="fd-ename"><span>${FOOD_SRC_ICON[e.source]||'🍽️'}</span><div><b>${homeEsc(e.name)}</b><small>${e.grams ? foodFmt(e.grams)+' g · ' : ''}B ${foodFmt(e.p)} · S ${foodFmt(e.c)}${e.s!=null?' (cukry '+foodFmt(e.s)+')':''} · T ${foodFmt(e.f)}</small></div></div>
-      <div class="fd-ekcal"><b>${e.kcal}</b><small>kcal</small></div><button class="nb-del" data-fdel="${e.id}" title="Smazat">🗑️</button></div>`).join('')
+    <div class="fd-entry" data-fedit="${e.id}"><div class="fd-ename"><span>${FOOD_SRC_ICON[e.source]||'🍽️'}</span><div><b>${homeEsc(e.name)}</b><small>${e.grams ? foodFmt(e.grams)+' g · ' : ''}B ${foodFmt(e.p)} · S ${foodFmt(e.c)}${e.s!=null?' (cukry '+foodFmt(e.s)+')':''} · T ${foodFmt(e.f)}</small></div></div>
+      <div class="fd-ekcal"><b>${e.kcal}</b><small>kcal ✏️</small></div><button class="nb-del" data-fdel="${e.id}" title="Smazat">🗑️</button></div>`).join('')
     : '<p class="nb-none">Zatím nic nezapsáno. Přidej jídlo tlačítky výše.</p>';
   el.innerHTML = `
     ${qhelp('food')}
@@ -12631,7 +12687,8 @@ function renderFoodDiary(){
   document.getElementById('fdNext').addEventListener('click', ()=>{ if(foodDate!==todayKey()){ foodDate = foodShift(foodDate,1); renderFoodDiary(); } });
   const gEd = document.getElementById('fdGoalEdit'); if(gEd) gEd.addEventListener('click', ()=>{ openHomeSub('profile'); setTimeout(()=>{ const g = document.getElementById('stGoalChips'); if(g) g.scrollIntoView({block:'center'}); }, 150); });
   const au = document.getElementById('fdAuto'); if(au) au.addEventListener('click', ()=>{ state.dmTargetsManual = false; saveState(); renderFoodDiary(); try{renderDayMacros();}catch(e){} });
-  el.querySelectorAll('[data-fdel]').forEach(b=>b.addEventListener('click', ()=>{ foodDelete(b.dataset.fdel); renderFoodDiary(); }));
+  el.querySelectorAll('[data-fdel]').forEach(b=>b.addEventListener('click', ev=>{ ev.stopPropagation(); foodDelete(b.dataset.fdel); renderFoodDiary(); }));
+  el.querySelectorAll('[data-fedit]').forEach(b=>b.addEventListener('click', ()=>openFoodEdit(b.dataset.fedit)));
   const fdTg = el.querySelector('.fd-targets'); if(fdTg) fdTg.addEventListener('toggle', ()=>{ state.fdTgOpen = fdTg.open; });
   for(const [id, key] of [['tgtKal','Kal'],['tgtProt','Prot'],['tgtCarb','Carb'],['tgtFat','Fat']]){
     const inp = document.getElementById(id); if(!inp) continue;
