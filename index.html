@@ -3040,7 +3040,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30i · 2026-11-05</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30j · 2026-11-06</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -5980,7 +5980,7 @@ function addXP(n, reason){
 
 // ===== DENNÍ MISE =====
 // (přesunuto sem: mise se vyhodnocují už při startu a potřebují cíle jídla)
-const FOOD_COLORS = {green:'#34d399', lime:'#a3e635', yellow:'#fbbf24', orange:'#f97316', red:'#ef4444', blue:'#60a5fa', track:'rgba(255,255,255,0.09)'};
+const FOOD_COLORS = {green:'#34d399', lime:'#a3e635', yellow:'#fbbf24', orange:'#f97316', dgreen:'#16a34a', red:'#ef4444', blue:'#60a5fa', track:'rgba(255,255,255,0.09)'};
 const FOOD_GOALS = {
   cutting:{name:'Hubnutí', icon:'🟢', kcalAdj:-500, prot:2.2},
   maintain:{name:'Udržování', icon:'🔵', kcalAdj:0, prot:2.0},
@@ -12598,9 +12598,9 @@ function foodDayTotals(key){
   return t;
 }
 // barva se mění po 25 % cíle: limit (kcal, sacharidy, tuky, cukry) = zelená → limetková → žlutá → oranžová → červená (přes cíl)
-function foodLimitColor(r){ return r<0.25 ? FOOD_COLORS.green : r<0.5 ? FOOD_COLORS.lime : r<0.75 ? FOOD_COLORS.yellow : r<=1 ? FOOD_COLORS.orange : FOOD_COLORS.red; }
-// bílkoviny jsou obráceně: čím blíž cíli, tím líp (červená → oranžová → žlutá → limetková → zelená)
-function foodProteinColor(r){ return r>=1 ? FOOD_COLORS.green : r>=0.75 ? FOOD_COLORS.lime : r>=0.5 ? FOOD_COLORS.yellow : r>=0.25 ? FOOD_COLORS.orange : FOOD_COLORS.red; }
+function foodLimitColor(r){ return r<0.25 ? FOOD_COLORS.orange : r<0.5 ? FOOD_COLORS.yellow : r<0.75 ? FOOD_COLORS.lime : r<=1 ? FOOD_COLORS.dgreen : FOOD_COLORS.red; }
+// stejný postup jako u ostatních (oranžová → žlutá → světle zelená → tmavě zelená), jen nad cílem zůstává tmavě zelená (víc bílkovin není chyba)
+function foodProteinColor(r){ return r<0.25 ? FOOD_COLORS.orange : r<0.5 ? FOOD_COLORS.yellow : r<0.75 ? FOOD_COLORS.lime : FOOD_COLORS.dgreen; }
 
 // --- zápis / mazání (zrcadlení do dayMacros pro dnešek) ---
 function foodCommit(entry){
@@ -12772,8 +12772,8 @@ function renderFoodDiary(){
     <p class="fd-goalline">🎯 Cíl: <b>${FOOD_GOALS[tg.goal].icon} ${FOOD_GOALS[tg.goal].name}</b> · <button class="home-link" id="fdGoalEdit">změnit v Profilu</button></p>
     <div class="fd-note">${tg.manual ? '✋ Používáš vlastní ručně nastavené cíle. <button class="home-link" id="fdAuto">Vrátit automatické podle cíle</button>' : (tg.hasWeight ? 'Cíle jsou spočítané z tvé váhy a zvoleného cíle.' : 'Orientační cíle. Zadej váhu v profilu pro přesnější čísla.')}</div>
     <div class="fd-donut">${foodDonutHTML(tot, tg, 310)}</div>
-    <div class="fd-legend"><span style="color:${FOOD_COLORS.green}">● do 25 %</span><span style="color:${FOOD_COLORS.lime}">● do 50 %</span><span style="color:${FOOD_COLORS.yellow}">● do 75 %</span><span style="color:${FOOD_COLORS.orange}">● do 100 %</span><span style="color:${FOOD_COLORS.red}">● přes cíl</span></div>
-    <p class="fd-ringkey">Kruhy zvenku: kalorie · bílkoviny · sacharidy · tuky · cukry. Barva se mění po 25 % cíle (u bílkovin obráceně – čím víc, tím líp).</p>
+    <div class="fd-legend"><span style="color:${FOOD_COLORS.orange}">● do 25 %</span><span style="color:${FOOD_COLORS.yellow}">● do 50 %</span><span style="color:${FOOD_COLORS.lime}">● do 75 %</span><span style="color:${FOOD_COLORS.dgreen}">● do 100 %</span><span style="color:${FOOD_COLORS.red}">● přes cíl</span></div>
+    <p class="fd-ringkey">Kruhy zvenku: kalorie · bílkoviny · sacharidy · tuky · cukry. Barva se mění po 25 % cíle: oranžová → žlutá → světle zelená → tmavě zelená, červená při překročení (u bílkovin zůstává zelená).</p>
     ${foodMacroRows(tot, tg)}
     <details class="fd-targets"${state.fdTgOpen?' open':''}>
       <summary>✏️ Upravit denní cíle (kcal a makra)</summary>
