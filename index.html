@@ -1259,10 +1259,12 @@
   .cmp-tbl .cmp-d{font-family:'Space Mono',monospace; white-space:nowrap; text-align:right;}
   .cmp-tbl tr.cmp-sum td{border-top:2px solid var(--accent); font-weight:700;}
   .pv-row.click{cursor:pointer; -webkit-tap-highlight-color:transparent;}
-  .pv-rowwrap.open{border-top:1px solid var(--line); margin:2px 0;}
-  .pv-rowwrap.open > .pv-row{border-top:none; color:var(--accent);}
-  .pv-cmpbox{padding:6px 2px 12px;}
-  .pv-cmpsel{width:100%; padding:9px 8px; border-radius:10px; background:rgba(0,0,0,0.35); color:inherit; border:1.5px solid var(--accent); font-size:calc(13.4px * var(--font-scale));}
+  .pv-row.sel1{background:rgba(var(--accent-rgb),0.22); box-shadow:inset 3px 0 0 var(--accent); border-radius:8px;}
+  .pv-row.sel2{background:rgba(var(--cut-rgb),0.22); box-shadow:inset 3px 0 0 var(--cut); border-radius:8px;}
+  .pv-badge{display:inline-block; min-width:18px; padding:0 5px; border-radius:9px; font-size:11px; text-align:center; color:#000; background:var(--accent);}
+  .pv-row.sel2 .pv-badge{background:var(--cut);}
+  .pv-chip{display:inline-block; padding:3px 10px; border-radius:12px; font-size:calc(12.6px * var(--font-scale)); font-weight:700; border:1.5px solid var(--accent); background:rgba(var(--accent-rgb),0.18);}
+  .pv-chip.sel2{border-color:var(--cut); background:rgba(var(--cut-rgb),0.18);}
   .rk-same{margin:0 0 14px; padding:10px 12px; border-radius:12px; border:1.5px solid var(--accent); background:rgba(var(--accent-rgb),0.12); font-size:calc(14px * var(--font-scale));}
   .nb-dvol{margin-left:auto; margin-right:10px; font-size:calc(13.4px * var(--font-scale)); color:var(--muted); font-family:'Space Mono',monospace; white-space:nowrap;}
   .prog-frame{margin-top:24px; padding:16px; border-radius:18px; border:2px solid var(--accent); background:linear-gradient(160deg, rgba(var(--accent-rgb),calc(0.10 * var(--gt))), rgba(var(--cut-rgb),calc(0.06 * var(--gt)))); box-shadow:0 0 18px rgba(var(--accent-rgb),0.22);}
@@ -3109,7 +3111,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30r · 2026-11-06</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30s · 2026-11-06</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -12166,29 +12168,38 @@ function progCmpTableHTML(dkA, dkB){
   const [dateOld, dateNew] = dateKeyToTime(dkA) <= dateKeyToTime(dkB) ? [dkA, dkB] : [dkB, dkA];
   const entries = nbEntries();
   const collect = dk=>{ const m = {}; entries.filter(e=>e.date===dk && e.sets && e.sets.length).forEach(e=>{
-    const k = exCanon(e.name); const top = nbTop(e.name, e.sets); if(!top) return;
+    const k = exCanon(e.name); const work = nbWork(e.sets).filter(x=>x.t!=='w'); if(!work.length) return;
     const mode = nbMode(e.name), prev = m[k];
-    m[k] = {name:e.name, top, vol:nbVolume(e.name, e.sets) + (prev?prev.vol:0), mode}; }); return m; };
+    const sets = (prev?prev.sets:[]).concat(work.map(x=>({w:Number(x.weight)||0, r:Number(x.reps)||0})));
+    m[k] = {name:e.name, sets, mode, vol:nbVolume(e.name, e.sets) + (prev?prev.vol:0)}; }); return m; };
   const A = collect(dateNew), B = collect(dateOld);
-  const cell = x=>{ const t=x.top, w=t.weight||0, r=t.reps||0;
-    return w>0 ? nbFmt(w)+' kg × '+r : r+(x.mode==='time'||x.mode==='weightTime'?' s':x.mode==='cardio'?' min':'×'); };
+  const unitR = x=>x.mode==='time'||x.mode==='weightTime' ? ' s' : (x.mode==='cardio' ? ' min' : '×');
+  const cell = x=>x.sets.map(t=>t.w>0 ? nbFmt(t.w)+'×'+t.r : t.r+unitR(x)).join(', ');
+  const maxW = x=>x.sets.reduce((m,t)=>Math.max(m,t.w),0);
   const keys = Object.keys(A).filter(k=>B[k]);
   if(!keys.length) return '<p class="nb-note">Tyto dva dny nemají žádný společný cvik.</p>';
   let sumN = 0, sumO = 0;
+  const fk = v=>Math.round(v).toLocaleString('cs-CZ');
   const rows = keys.map(k=>{
-    const a = A[k], b = B[k]; let d, cls;
-    if(a.vol>0 || b.vol>0){ const diff = Math.round(a.vol-b.vol); cls = dCls(diff); d = dTxt(diff,' kg',v=>Math.round(v).toLocaleString('cs-CZ')); }
-    else { const diff = Math.round(((a.top.reps||0)-(b.top.reps||0))*10)/10; cls = dCls(diff); d = dTxt(diff, a.mode==='time'||a.mode==='weightTime'?' s':a.mode==='cardio'?' min':' opak.', nbFmt); }
+    const a = A[k], b = B[k]; let d = '';
+    if(a.vol>0 || b.vol>0){
+      const dv = Math.round(a.vol-b.vol); d += `<div class="cmp-d ${dCls(dv)}">Objem ${dTxt(dv,' kg',fk)}</div>`;
+      const dw = Math.round((maxW(a)-maxW(b))*10)/10;
+      if(maxW(a)>0 || maxW(b)>0) d += `<div class="cmp-d ${dCls(dw)}">Max. váha ${dTxt(dw,' kg',nbFmt)}</div>`;
+    } else {
+      const ra = a.sets.reduce((m,t)=>Math.max(m,t.r),0), rb = b.sets.reduce((m,t)=>Math.max(m,t.r),0);
+      const dr = Math.round((ra-rb)*10)/10; d = `<div class="cmp-d ${dCls(dr)}">${dTxt(dr, a.mode==='cardio'?' min':(a.mode==='time'||a.mode==='weightTime'?' s':' opak.'), nbFmt)}</div>`;
+    }
     sumN += a.vol; sumO += b.vol;
-    return `<tr><td class="cmp-ex">${homeEsc(exDisp(a.name))}</td><td>${cell(b)}</td><td>${cell(a)}</td><td class="cmp-d ${cls}">${d}</td></tr>`;
+    return `<tr><td class="cmp-ex">${homeEsc(exDisp(a.name))}</td><td>${cell(b)}<br><small style="opacity:.65">${b.sets.length} sér.</small></td><td>${cell(a)}<br><small style="opacity:.65">${a.sets.length} sér.</small></td><td>${d}</td></tr>`;
   }).join('');
-  const ds = Math.round(sumN-sumO), fk = v=>Math.round(v).toLocaleString('cs-CZ');
+  const ds = Math.round(sumN-sumO);
   const lbl = dk=>nbDateLabel(dk).replace(/^(Dnes|Včera) · /,'').replace(/ 20\d\d$/,'');
   return `<table class="cmp-tbl"><thead><tr><th>Cvik</th><th>${homeEsc(lbl(dateOld))}</th><th>${homeEsc(lbl(dateNew))}</th><th style="text-align:right">Rozdíl</th></tr></thead><tbody>${rows}
-    <tr class="cmp-sum"><td>Celkem</td><td>${fk(sumO)} kg</td><td>${fk(sumN)} kg</td><td class="cmp-d ${dCls(ds)}">${dTxt(ds,' kg',fk)}</td></tr></tbody></table>
-    <p class="nb-note" style="margin-top:8px;">Porovnáno ${keys.length} ${keys.length===1?'společný cvik':(keys.length<5?'společné cviky':'společných cviků')}. Ve sloupcích je nejlepší série, rozdíl je objem (série × váha × opakování) novějšího dne oproti staršímu.</p>`;
+    <tr class="cmp-sum"><td>Celkem</td><td>${fk(sumO)} kg</td><td>${fk(sumN)} kg</td><td><div class="cmp-d ${dCls(ds)}">${dTxt(ds,' kg',fk)}</div></td></tr></tbody></table>
+    <p class="nb-note" style="margin-top:8px;">Porovnáno ${keys.length} ${keys.length===1?'společný cvik':(keys.length<5?'společné cviky':'společných cviků')}. Série jsou ve tvaru váha (kg) × opakování, bez rozcvičky. Objem = součet váha × opakování všech sérií, rozdíl je novější den oproti staršímu.</p>`;
 }
-let progCmpOpen = null, progCmpWith = null;
+let progCmpPick = []; // až dva vybrané dny k porovnání
 function renderProgVolume(){
   const box = document.getElementById('progVolBox'); if(!box) return;
   const entries = nbEntries();
@@ -12197,24 +12208,13 @@ function renderProgVolume(){
   const fmt = v=>Math.round(v).toLocaleString('cs-CZ')+' kg';
   const dl = prev>0 ? Math.round((cur-prev)/prev*100) : null;
   const delta = dl===null ? '' : `<span class="pv-delta ${dCls(dl)}">${dTxt(dl,' %')}</span>`;
-  const log = (state.sessionLog||[]).slice(-8).reverse();
+  const log = (state.sessionLog||[]).slice(-12).reverse();
   const rows = log.map(l=>{
     const older = (state.sessionLog||[]).slice(0, (state.sessionLog||[]).lastIndexOf(l)).reverse().find(x=>x.dayIndex===l.dayIndex);
     const d = older && older.totalVolume>0 ? Math.round((l.totalVolume-older.totalVolume)/older.totalVolume*100) : null;
     const t = dateKeyToTime(l.date), dt = t ? new Date(t) : null;
-    const open = progCmpOpen===l.date;
-    let panel = '';
-    if(open){
-      const cands = progCmpCandidates(l.date);
-      if(!cands.length) panel = '<div class="pv-cmpbox"><p class="nb-note" style="margin:0;">K tomuto dni zatím není žádný jiný den se stejným cvikem, se kterým by šlo porovnávat.</p></div>';
-      else {
-        const sel = cands.some(c=>c.date===progCmpWith) ? progCmpWith : '';
-        panel = `<div class="pv-cmpbox"><label class="nb-note" style="display:block; margin:0 0 6px;">⚖️ Porovnej s dnem (se stejnými cviky):</label>
-          <select class="pv-cmpsel" data-pvsel="${l.date}"><option value="">— vyber den —</option>${cands.map((c,i)=>`<option value="${c.date}"${c.date===sel?' selected':''}>${homeEsc(nbDateLabel(c.date).replace(/^(Dnes|Včera) · /,''))}${c.label?' · '+homeEsc(c.label):''} · ${c.shared} společn${c.shared===1?'ý':(c.shared<5?'é':'ých')} · ${Math.round(c.vol).toLocaleString('cs-CZ')} kg${i===0?' ★':''}</option>`).join('')}</select>
-          <div style="overflow-x:auto;">${sel ? progCmpTableHTML(l.date, sel) : '<p class="nb-note" style="margin-top:8px;">Vyber den a uvidíš tabulku, u kterých cviků se co změnilo. ★ = nejpodobnější den.</p>'}</div></div>`;
-      }
-    }
-    return `<div class="pv-rowwrap${open?' open':''}"><div class="pv-row click" data-pvday="${l.date}"><span class="pv-d">${dt ? dt.getDate()+'. '+(dt.getMonth()+1)+'.' : ''}</span><span class="pv-n">${homeEsc(schedDayLabel(l.dayIndex))} <small style="color:var(--accent)">${open?'▴':'▾'}</small></span><b>${fmt(l.totalVolume||0)}</b>${d!==null?`<span class="pv-delta ${dCls(d)}">${dTxt(d,' %')}</span>`:'<span></span>'}</div>${panel}</div>`;
+    const pi = progCmpPick.indexOf(l.date);
+    return `<div class="pv-row click${pi>=0?' sel'+(pi+1):''}" data-pvday="${l.date}"><span class="pv-d">${dt ? dt.getDate()+'. '+(dt.getMonth()+1)+'.' : ''}</span><span class="pv-n">${homeEsc(schedDayLabel(l.dayIndex))}${pi>=0?' <small class="pv-badge">'+(pi+1)+'</small>':''}</span><b>${fmt(l.totalVolume||0)}</b>${d!==null?`<span class="pv-delta ${dCls(d)}">${dTxt(d,' %')}</span>`:'<span></span>'}</div>`;
   }).join('');
   box.innerHTML = `<div class="prog-vol">
     <h5>⚖️ Objem po týdnech</h5>
@@ -12222,13 +12222,25 @@ function renderProgVolume(){
     <svg viewBox="0 0 320 130" class="weight-chart" style="height:150px">${nbWeekBarsSVG(wk)}</svg>
     <p class="nb-note" style="margin:2px 0 10px;">Pondělí–neděle · pod sloupcem počet tréninkových dnů.</p>
     <h5>🏁 Objem po tréninku – Klikni a porovnej</h5>
+    ${rows ? '<p class="nb-note" style="margin:0 0 6px;">Klepni na jeden trénink a pak na druhý – otevře se tabulka s porovnáním společných cviků.</p>' : ''}
     ${rows || '<p class="nb-note">Po prvním dokončeném tréninku tu uvidíš, kolik kg jsi odzvedl.</p>'}
-    ${rows ? '<p class="nb-note" style="margin-top:6px;">Procenta = změna oproti předchozímu stejnému dni plánu. Klepni na trénink a porovnej ho s jiným dnem podle stejných cviků.</p>' : ''}
+    ${rows ? '<p class="nb-note" style="margin-top:6px;">Procenta = změna oproti předchozímu stejnému dni plánu.</p>' : ''}
   </div>`;
   box.querySelectorAll('[data-pvday]').forEach(r=>r.addEventListener('click', ()=>{
-    const dk = r.dataset.pvday; progCmpOpen = progCmpOpen===dk ? null : dk; progCmpWith = null; renderProgVolume();
+    const dk = r.dataset.pvday, i = progCmpPick.indexOf(dk);
+    if(i>=0){ progCmpPick.splice(i,1); renderProgVolume(); return; }
+    if(progCmpPick.length>=2) progCmpPick = [];
+    progCmpPick.push(dk); renderProgVolume();
+    if(progCmpPick.length===2) progOpenCompare(progCmpPick[0], progCmpPick[1]);
   }));
-  box.querySelectorAll('[data-pvsel]').forEach(se=>se.addEventListener('change', ()=>{ progCmpWith = se.value || null; renderProgVolume(); }));
+}
+function progOpenCompare(dkA, dkB){
+  const [o, n] = dateKeyToTime(dkA) <= dateKeyToTime(dkB) ? [dkA, dkB] : [dkB, dkA];
+  const lab = {}; (state.sessionLog||[]).forEach(l=>{ lab[l.date] = schedDayLabel(l.dayIndex); });
+  const chip = (dk, cls)=>`<span class="pv-chip ${cls}">${homeEsc(nbDateLabel(dk).replace(/^(Dnes|Včera) · /,'').replace(/ 20\d\d$/,''))}${lab[dk]?' · '+homeEsc(lab[dk]):''}</span>`;
+  const pickCls = dk => 'sel'+(progCmpPick.indexOf(dk)+1);
+  foodPanel(`<h4>⚖️ Porovnání tréninků</h4><div style="margin:2px 0 6px;">${chip(o, pickCls(o))} <span style="opacity:.6">→</span> ${chip(n, pickCls(n))}</div>
+    <div style="overflow-x:auto;">${progCmpTableHTML(o, n)}</div>`);
 }
 const progFoldOpen = {};
 function nbFold(key, title, inner){
