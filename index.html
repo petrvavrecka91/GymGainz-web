@@ -1211,7 +1211,37 @@
   .gsb-mini .gsb-label{margin-bottom:3px; font-size:12px;}
   .gsb-mini .gsb-tier{padding:3px 10px; font-size:12.6px; margin-bottom:0;}
   .gsb-mini .gsb-percentile{font-size:12.6px; margin-top:4px;}
-  #progressOverlay .prog-vol, #progressOverlay .prog-food-link{border:2px solid var(--accent); box-shadow:0 0 14px rgba(var(--accent-rgb),0.18);}
+  #progressOverlay .prog-vol{border:2px solid var(--accent); box-shadow:0 0 14px rgba(var(--accent-rgb),0.18);}
+  .pv-tiles{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px;}
+  .pv-tile{display:flex; flex-direction:column; align-items:flex-start; text-align:left; gap:2px; padding:18px 14px; border:2px solid var(--accent); border-radius:18px; background:rgba(0,0,0,calc(var(--gs) * 0.9)); box-shadow:0 0 16px rgba(var(--accent-rgb),0.22); color:inherit; font-family:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent; min-height:132px;}
+  .pv-tile:active{transform:scale(0.98);}
+  .pv-tile .pt-ic{font-size:32px; line-height:1.1;}
+  .pv-tile .pt-t{font-family:'Oxanium',sans-serif; font-weight:800; font-size:calc(17px * var(--font-scale)); margin-top:8px; color:var(--accent);}
+  .pv-tile .pt-s{font-size:calc(13.4px * var(--font-scale)); color:var(--muted); font-family:'Space Mono',monospace; line-height:1.35;}
+  .pv-title{font-family:'Oxanium',sans-serif; font-size:calc(20px * var(--font-scale)); margin:20px 0 4px; color:var(--accent);}
+  .pv-fold{margin:10px 0; border:2px solid var(--accent); border-radius:16px; background:rgba(0,0,0,calc(var(--gs) * 0.9)); box-shadow:0 0 12px rgba(var(--accent-rgb),0.16); overflow:hidden;}
+  .pv-fold > summary{list-style:none; cursor:pointer; padding:13px 16px; font-family:'Oxanium',sans-serif; font-weight:700; font-size:calc(15.4px * var(--font-scale)); display:flex; justify-content:space-between; align-items:center; -webkit-tap-highlight-color:transparent;}
+  .pv-fold > summary::-webkit-details-marker{display:none;}
+  .pv-fold > summary::after{content:'▾'; color:var(--accent); transition:transform .2s;}
+  .pv-fold[open] > summary::after{transform:rotate(180deg);}
+  .pv-fold[open] > summary{border-bottom:1px solid var(--line);}
+  .pv-fold-b{padding:12px 14px;}
+  .pv-fold-b .nb-h:first-child{margin-top:0;}
+  .pv-cmp-row{margin:10px 0;}
+  .pv-cmp-top{display:flex; justify-content:space-between; gap:8px; font-size:calc(14px * var(--font-scale)); margin-bottom:4px;}
+  .pv-cmp-bar{height:9px; border-radius:6px; background:rgba(255,255,255,0.09); overflow:hidden;}
+  .pv-cmp-bar i{display:block; height:100%; border-radius:6px; background:var(--accent);}
+  .pv-cmp-sub{font-size:calc(12.6px * var(--font-scale)); color:var(--muted); font-family:'Space Mono',monospace; margin-top:3px;}
+  .sc-row{margin:11px 0;}
+  .sc-top{display:flex; justify-content:space-between; gap:8px; font-size:calc(14px * var(--font-scale));}
+  .sc-top b{font-family:'Oxanium',sans-serif;}
+  .sc-bar{height:8px; border-radius:6px; background:rgba(255,255,255,0.09); overflow:hidden; margin-top:4px;}
+  .sc-bar i{display:block; height:100%; border-radius:6px; background:var(--accent);}
+  .sc-sub{font-size:calc(12.6px * var(--font-scale)); color:var(--muted); font-family:'Space Mono',monospace; margin-top:2px;}
+  .sc-card{margin-top:14px; padding:14px 16px; border:2px solid var(--accent); border-radius:16px; background:rgba(0,0,0,calc(var(--gs) * 0.9)); box-shadow:0 0 12px rgba(var(--accent-rgb),0.16); font-size:calc(14px * var(--font-scale)); line-height:1.5;}
+  .sc-card h5{margin:0 0 8px; font-size:calc(15.4px * var(--font-scale)); font-family:'Oxanium',sans-serif;}
+  .sc-card p{margin:6px 0;}
+  .nb-dvol{margin-left:auto; margin-right:10px; font-size:calc(13.4px * var(--font-scale)); color:var(--muted); font-family:'Space Mono',monospace; white-space:nowrap;}
   .prog-frame{margin-top:24px; padding:16px; border-radius:18px; border:2px solid var(--accent); background:linear-gradient(160deg, rgba(var(--accent-rgb),calc(0.10 * var(--gt))), rgba(var(--cut-rgb),calc(0.06 * var(--gt)))); box-shadow:0 0 18px rgba(var(--accent-rgb),0.22);}
   .prog-frame h4{margin:0 0 10px; font-family:'Oxanium',sans-serif; font-size:15px; letter-spacing:0.08em; color:var(--accent); text-transform:uppercase;}
   .fd-top{display:flex; justify-content:space-between; font-size:calc(14px * var(--font-scale)); margin-bottom:4px;}
@@ -3051,7 +3081,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30n · 2026-11-06</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30o · 2026-11-06</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -3150,32 +3180,41 @@
       <div class="logo-wrap"><div class="logo"><span class="dot"></span>GYM GAINZ</div><div class="slogan slogan-shoju">Progress</div></div>
       <button class="hdr-btn exit-btn" id="progressClose">← Zpět</button>
     </header>
-    <div data-qh="progress" style="margin-top:24px;"></div>
-    <div id="progVolBox"></div>
-    <div id="progFoodBox"></div>
+    <div id="pvHub">
+      <div data-qh="progress" style="margin-top:24px;"></div>
+      <div class="pv-tiles" id="pvTiles"></div>
+    </div>
 
-    <button class="prog-food-link" id="progToNb" style="margin-top:12px;"><span>🏆 Rekordy (PR), síla a grafy cviků</span><small>Otevřít Sešit → Statistiky a Cviky →</small></button>
+    <div class="pv-view" id="pvVolume" style="display:none;">
+      <h3 class="pv-title">⚖️ Objem</h3>
+      <div id="progVolBox"></div>
+    </div>
 
-    <div class="prog-frame" id="wFrame">
-      <h4>⚖️ Progres váhy</h4>
-      <div id="wSectionBody" style="margin-top:6px;">
-        <h5>📊 Progres tělesné váhy</h5>
-        <svg class="weight-chart" id="weightChart" viewBox="0 0 300 100" preserveAspectRatio="none"></svg>
-        <div class="weight-add stat-grid" style="grid-template-columns:1fr auto;">
-          <input type="number" id="wLogVal" step="0.1" placeholder="Dnešní tělesná váha (kg)">
-          <button id="wLogAdd">＋ Zapsat</button>
+    <div class="pv-view" id="pvStats" style="display:none;"></div>
+
+    <div class="pv-view" id="pvWeight" style="display:none;">
+      <div class="prog-frame" id="wFrame" style="margin-top:14px;">
+        <h4>⚖️ Progres váhy</h4>
+        <div id="wSectionBody" style="margin-top:6px;">
+          <h5>📊 Progres tělesné váhy</h5>
+          <svg class="weight-chart" id="weightChart" viewBox="0 0 300 100" preserveAspectRatio="none"></svg>
+          <div class="weight-add stat-grid" style="grid-template-columns:1fr auto;">
+            <input type="number" id="wLogVal" step="0.1" placeholder="Dnešní tělesná váha (kg)">
+            <button id="wLogAdd">＋ Zapsat</button>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="gainz-score-box gsb-mini">
-      <div class="gsb-value" id="progGainzVal">0</div>
-      <div class="gsb-mid">
+    <div class="pv-view" id="pvScore" style="display:none;">
+      <div class="gainz-score-box" style="margin-top:14px;">
         <div class="gsb-label">GAINZ SCORE</div>
+        <div class="gsb-value" id="progGainzVal">0</div>
         <div class="gsb-tier" id="progGainzTier">🔴 NOVÁČEK</div>
+        <div id="progGainzCategory" style="font-family:'Space Mono',monospace; font-size:13.4px; color:var(--muted); margin-top:4px;">Kategorie: 🟢 Začátečník</div>
         <div class="gsb-percentile" id="progGainzPercentile">Pokrok v tvé kategorii: 0 %</div>
-        <div id="progGainzCategory" style="display:none"></div>
       </div>
+      <div id="progScoreInfo"></div>
     </div>
 
   </div>
@@ -7246,7 +7285,7 @@ const QH_TEXTS = {
   food:['<b>Přidat jídlo</b> – z fotky tabulky, čárového kódu, vyhledání, mých potravin, receptu nebo ručně.','<b>Cíle</b> – kalorie a makra se počítají podle tvého cíle (změníš ho v Profilu); „Upravit denní cíle“ nastaví vlastní čísla.','<b>Klepni na jídlo</b> – upravíš název, gramy (ostatní hodnoty se přepočítají) nebo čísla ručně.','<b>🗑️</b> – smaže záznam.','<b>‹ ›</b> – přepíná dny.'],
   settings:['<b>Vzhled</b> – téma, vlastní pozadí a barvy.','<b>Průhlednost bublin</b> – jak moc je vidět pozadí pod kartami; „Úsporný režim“ vypne rozmazání.','<b>Hudba a zvuky</b> – hudbu na pozadí a zvukové hlášky zapneš nebo vypneš zvlášť.','<b>Připomínka</b> – denní upozornění na trénink.','<b>AI asistent</b> – vlastní klíč od Gemini (ukládá se jen v tomto zařízení) pro odhad jídla z fotky a čtení tabulky.','<b>Reset profilu</b> – vynuluje statistiky a postup; nick, údaje o těle, plán, vlastní recepty a potraviny a nastavení zůstanou. „Vrátit stav“ obnoví stav před posledním resetem.','<b>Záloha</b> – uloží data do souboru, který můžeš později načíst zpět; zálohuj před větší změnou nebo přeinstalací.'],
   rest:['<b>Co se děje</b> – nemoc, únava nebo regenerace; trénink se na dobu pauzy pozastaví.','<b>Délka</b> – vyber počet dní nebo vlastní datum konce.','O svůj progres a sérii nepřijdeš.'],
-  progress:['<b>Objem po týdnech</b> – součet zvednutých kg po týdnech (pondělí–neděle).','<b>Objem po tréninku</b> – každý trénink s porovnáním oproti minulému stejnému dni.']
+  progress:['<b>Objem</b> – kg po týdnech, po trénincích a porovnání tréninkových dnů.','<b>Statistiky</b> – série podle svalů, pravidelnost, rekordy a síla (sekce se rozklikávají).','<b>Váha</b> – zapiš a sleduj tělesnou váhu.','<b>Skóre</b> – za co se body získávají a jak číst pokrok v kategorii.']
 };
 function qhelp(key){
   const items = QH_TEXTS[key]; if(!items) return '';
@@ -11475,7 +11514,7 @@ function openHomeSubReal(section){
   else if(section==='kitchen'){ /* zakladni .wrap je uz kuchařka - staci schovat overlaye */ }
   else if(section==='missions'){ document.getElementById('missionsOverlay').classList.add('open'); renderMissions(); }
   else if(section==='achievements'){ document.getElementById('achOverlay').classList.add('open'); renderAchievements(); }
-  else if(section==='progress'){ document.getElementById('progressOverlay').classList.add('open'); renderProgress(); }
+  else if(section==='progress'){ progView = null; document.getElementById('progressOverlay').classList.add('open'); renderProgress(); }
   else if(section==='food'){ document.getElementById('foodOverlay').classList.add('open'); foodDate = todayKey(); renderFoodDiary(); }
   else if(section==='notebook'){ document.getElementById('notebookOverlay').classList.add('open'); nbOpenEx = null; nbOpenDay = null; renderNotebook(); }
   else if(section==='home'){ document.getElementById('homeOverlay').classList.add('open'); renderHome(); }
@@ -11488,20 +11527,83 @@ function setProfTab(t){
 }
 document.querySelectorAll('#profTabs button').forEach(b=>b.addEventListener('click', ()=>setProfTab(b.dataset.pt)));
 window.goHome = ()=> openHomeSub('home');
+let progView = null; // null = přehled dlaždic | 'volume' | 'stats' | 'weight' | 'score'
+function progSetView(v){
+  progView = v; renderProgress();
+  const o = document.getElementById('progressOverlay'); if(o) o.scrollTop = 0;
+}
 function renderProgress(){
+  const views = {volume:'pvVolume', stats:'pvStats', weight:'pvWeight', score:'pvScore'};
+  document.getElementById('pvHub').style.display = progView ? 'none' : '';
+  Object.keys(views).forEach(k=>{ document.getElementById(views[k]).style.display = progView===k ? '' : 'none'; });
   const gScore = calcGainzScore();
   const lvl = userTrainingLevel();
   const gender = userGender();
   const rank = levelRank(levelOf(state.xp));
   document.getElementById('progGainzVal').textContent = gScore.toLocaleString('cs-CZ');
   document.getElementById('progGainzTier').textContent = rank.emoji + ' ' + rank.name;
-  document.getElementById('progGainzPercentile').textContent = 'Pokrok v kategorii ' + (LEVEL_LABELS[lvl]||'') + ': ' + calcGainzPercentile(gScore, lvl, gender) + ' % (odhad)';
-  renderWeightSection();
-  try{ renderProgVolume(); }catch(e){ console.error(e); }
-  renderPrList();
-  try{ renderProgFood(); }catch(e){}
+  document.getElementById('progGainzCategory').textContent = 'Kategorie: ' + (LEVEL_LABELS[lvl]||'') + (gender==='male' ? ' · 👨 Muž' : gender==='female' ? ' · 👩 Žena' : '');
+  document.getElementById('progGainzPercentile').textContent = 'Pokrok v kategorii: ' + calcGainzPercentile(gScore, lvl, gender) + ' % (odhad)';
+  if(!progView){ renderProgTiles(gScore, rank); return; }
+  if(progView==='volume'){ try{ renderProgVolume(); }catch(e){ console.error(e); } }
+  else if(progView==='stats'){ try{ renderProgStats(); }catch(e){ console.error(e); } }
+  else if(progView==='weight'){ renderWeightSection(); }
+  else if(progView==='score'){ try{ renderProgScoreInfo(gScore, lvl, gender); }catch(e){ console.error(e); } }
 }
-
+function renderProgTiles(gScore, rank){
+  const wk = nbWeekData(nbEntries(), 8);
+  const cur = wk[wk.length-1].vol;
+  const wl = (profState().weightLog||[]); const lw = wl.length ? wl[wl.length-1].w : null;
+  const todayT = dateKeyToTime(todayKey());
+  const d30 = new Set(nbEntries().filter(e=>{ const t = dateKeyToTime(e.date); return t>=todayT-29*86400000 && t<=todayT; }).map(e=>e.date)).size;
+  const tiles = [
+    ['volume','⚖️','Objem', 'Tento týden: '+nbVolShort(cur)],
+    ['stats','📊','Statistiky', d30+' '+(d30===1?'trénink':(d30>1&&d30<5?'tréninky':'tréninků'))+' za 30 dní · série, rekordy, síla'],
+    ['weight','📉','Váha', lw ? 'Poslední: '+String(lw).replace('.',',')+' kg' : 'Zatím nezapsáno'],
+    ['score','🏆','Skóre', gScore.toLocaleString('cs-CZ')+' b. · '+rank.emoji+' '+rank.name],
+  ];
+  const el = document.getElementById('pvTiles');
+  el.innerHTML = tiles.map(([k,ic,t,sub])=>`<button class="pv-tile" data-pv="${k}"><span class="pt-ic">${ic}</span><span class="pt-t">${t}</span><span class="pt-s">${homeEsc(sub)}</span></button>`).join('');
+  el.querySelectorAll('[data-pv]').forEach(b=>b.addEventListener('click', ()=>progSetView(b.dataset.pv)));
+}
+// Statistiky (dříve v Sešitu) – rozklikávací sekce
+function renderProgStats(){
+  const box = document.getElementById('pvStats'); if(!box) return;
+  const entries = nbEntries();
+  const empty = `<div class="nb-empty">📊<p>Statistiky se objeví po prvním zapsaném tréninku.</p></div>`;
+  const prFold = nbFold('pr','🏆 Rekordy (PR) a síla', nbPrSectionHTML());
+  box.innerHTML = '<h3 class="pv-title">📊 Statistiky</h3>' + (entries.length ? nbStatsTabHTML(entries) : empty) + prFold;
+  box.querySelectorAll('[data-nbstatd]').forEach(b=>b.addEventListener('click', ()=>{ nbStatDays = +b.dataset.nbstatd; renderProgStats(); }));
+  box.querySelectorAll('details[data-fold]').forEach(d=>d.addEventListener('toggle', ()=>{ progFoldOpen[d.dataset.fold] = d.open; }));
+  nbPrBind(box);
+}
+// Skóre – co a kolik bodů dává
+function renderProgScoreInfo(gScore, lvl, gender){
+  const el = document.getElementById('progScoreInfo'); if(!el) return;
+  const comps = [
+    ['🏋️','Dokončené tréninky', state.workoutsTotal||0, 50, '50 b. za každý dokončený trénink', ''],
+    ['⚖️','Zvednutý objem', state.totalVolumeAllTime||0, 0.3, '0,3 b. za každý zvednutý kg (série × váha × opakování)', ' kg'],
+    ['🏆','Překonané rekordy (PR)', state.totalPRsBroken||0, 100, '100 b. za každý nový osobní rekord', '×'],
+    ['🔥','Série dnů v řadě', state.streak||0, 20, '20 b. za každý den aktuální série', ' dní'],
+    ['✨','Zkušenosti (XP)', state.xp||0, 0.8, '0,8 b. za každé XP (to dávají tréninky, mise, jídlo…)', ' XP'],
+    ['🎯','Splněné mise', state.missionsTotal||0, 30, '30 b. za každou splněnou misi', '×'],
+    ['🍳','Uvařené recepty', state.cookedTotal||0, 15, '15 b. za každý uvařený recept', '×'],
+  ].map(c=>({ic:c[0], n:c[1], cnt:c[2], mul:c[3], how:c[4], unit:c[5], pts:Math.round(c[2]*c[3])}));
+  const maxPts = Math.max(1, ...comps.map(c=>c.pts));
+  const fmtN = v=>Math.round(v).toLocaleString('cs-CZ');
+  const rows = comps.map(c=>`<div class="sc-row"><div class="sc-top"><span>${c.ic} ${c.n}</span><b>${fmtN(c.pts)} b.</b></div><div class="sc-bar"><i style="width:${c.pts/maxPts*100}%"></i></div><div class="sc-sub">${fmtN(c.cnt)}${c.unit==='×'?'×':c.unit} · ${c.how}</div></div>`).join('');
+  const mult = gainzMultiplier(lvl, gender);
+  const pct = calcGainzPercentile(gScore, lvl, gender);
+  el.innerHTML = `<div class="sc-card"><h5>📋 Za co se skóre získává</h5>${rows}
+      <p style="margin-top:12px;"><b>Celkem: ${fmtN(gScore)} bodů</b> (součet všech řádků výše).</p>
+      <p class="nb-note">Nejvíc bodů dávají rekordy a tréninky – jeden nový PR je za 100 bodů, stejně jako zvednout 333 kg objemu. Objem a XP se sčítají postupně, proto skóre roste i v týdnech bez rekordu. Série dnů se při přerušení vynuluje, zbytek se nikdy neodebírá.</p></div>
+    <div class="sc-card"><h5>📈 Jak vzniká „Pokrok v kategorii“</h5>
+      <p>Skóre se přepočítá podle tvé úrovně plánu${gender?' a pohlaví':''}: pokročilí zvedají víc, proto stejné skóre znamená u začátečníka větší pokrok než u experta.</p>
+      <p>Tvoje kategorie: <b>${LEVEL_LABELS[lvl]||''}</b>${gender?' · '+(gender==='male'?'👨 Muž':'👩 Žena'):''} (koeficient ×${nbFmt(Math.round(mult*100)/100)}) → <b>${pct} %</b>.</p>
+      <p class="nb-note">Je to orientační odhad ze vzorce <i>100 × (1 − e<sup>−skóre / (5 000 × koeficient)</sup>)</i>, ne srovnání s ostatními hráči. Skutečné porovnání s uživateli přibude, až budou k dispozici reálná data.</p></div>
+    <div class="sc-card"><h5>🎖️ Hodnost</h5>
+      <p>Název vedle skóre (např. ${levelRank(levelOf(state.xp)).emoji} ${levelRank(levelOf(state.xp)).name}) se odvozuje z tvého levelu, tedy z XP. Hodnosti a požadované levely najdeš v Profilu.</p></div>`;
+}
 document.querySelectorAll('.bn-btn').forEach(b=>{
   b.addEventListener('click', ()=>{ if(b.dataset.nav==='notebook'){ nbTab = 'diary'; nbOpenEx = null; nbOpenDay = null; } openHomeSub(b.dataset.nav); });
 });
@@ -11518,7 +11620,7 @@ document.getElementById('tileCommunity').addEventListener('click', ()=>{
 });
 document.getElementById('tileMissions').addEventListener('click', ()=> openHomeSub('missions'));
 document.getElementById('tileAch').addEventListener('click', ()=> openHomeSub('achievements'));
-document.getElementById('progressClose').addEventListener('click', goHome);
+document.getElementById('progressClose').addEventListener('click', ()=>{ if(progView) progSetView(null); else goHome(); });
 
 // Navrat na Home z jednotlivych overlayu (misto pouheho zavreni)
 document.getElementById('bodyMapClose').addEventListener('click', goHome);
@@ -11664,7 +11766,7 @@ function nbDayHTML(dk, list, prDay, coll){
   const isToday = dk===todayKey();
   const bar = `<div class="nb-day-bar">${dn ? `<div class="nb-dnote">📝 ${homeEsc(dn)}</div>` : ''}
     <button class="nb-mini" data-nbdaynote="${dk}">${dn?'✏️ Poznámka dne':'📝 Poznámka dne'}</button>${!isToday ? `<button class="nb-mini" data-nbdaycopy="${dk}">📋 Opakovat den dnes</button>` : ''}</div>`;
-  if(coll) return `<div class="nb-day coll ${nbOpenDay===dk?'open':''}" data-nbday="${dk}"><div class="nb-day-head" data-nbdayhead="${dk}"><b>${nbDateLabel(dk)}</b><span class="nb-chev">▾</span></div><div class="nb-day-body">${list.map(e=>nbEntryHTML(e,prDay)).join('')}${bar}</div></div>`;
+  if(coll) return `<div class="nb-day coll ${nbOpenDay===dk?'open':''}" data-nbday="${dk}"><div class="nb-day-head" data-nbdayhead="${dk}"><b>${nbDateLabel(dk)}</b><span class="nb-dvol">${vol?nbVolShort(vol):''}</span><span class="nb-chev">▾</span></div><div class="nb-day-body">${list.map(e=>nbEntryHTML(e,prDay)).join('')}${bar}</div></div>`;
   return `<div class="nb-day"><div class="nb-day-head"><b>${nbDateLabel(dk)}</b><span>${list.length} ${list.length===1?'cvik':(list.length<5?'cviky':'cviků')}${vol?' · '+Math.round(vol)+' kg':''}</span></div>${list.map(e=>nbEntryHTML(e,prDay)).join('')}${bar}</div>`;
 }
 function nbByDate(entries){
@@ -11806,6 +11908,29 @@ function nbWeekChartHTML(entries){
     <p class="nb-note" style="margin-top:2px;">Objem v kg za týden (pondělí–neděle) a počet tréninkových dnů pod sloupcem.</p></div>`;
 }
 // Progress: objem po týdnech + objem po jednotlivých trénincích
+// porovnání tréninkových dnů (Push / Pull / Legs…) – průměr, poslední, rekord a trend
+function progDayCompareHTML(){
+  const log = (state.sessionLog||[]).filter(l=>l.totalVolume>0);
+  const by = {};
+  log.forEach(l=>{ (by[l.dayIndex] = by[l.dayIndex] || []).push(l); });
+  const days = Object.keys(by).map(k=>{
+    const arr = by[k].slice().sort((a,b)=>dateKeyToTime(a.date)-dateKeyToTime(b.date));
+    const vols = arr.map(x=>x.totalVolume);
+    const last = vols[vols.length-1], prev = vols.length>1 ? vols[vols.length-2] : null;
+    return {idx:+k, n:arr.length, avg:vols.reduce((a,b)=>a+b,0)/vols.length, last, prev, best:Math.max(...vols)};
+  }).sort((a,b)=>a.idx-b.idx);
+  if(!days.length) return '<h5 style="margin-top:14px;">📊 Porovnání tréninkových dnů</h5><p class="nb-note">Po prvních dokončených trénincích tu uvidíš, který den ti dává největší objem a jak se každý den vyvíjí.</p>';
+  const maxAvg = Math.max(...days.map(d=>d.avg), 1);
+  const f = v=>Math.round(v).toLocaleString('cs-CZ')+' kg';
+  const rows = days.map(d=>{
+    const dl = d.prev>0 ? Math.round((d.last-d.prev)/d.prev*100) : null;
+    const delta = dl===null ? '' : `<span class="pv-delta ${dl>=0?'up':'down'}">${dl>=0?'▲ +':'▼ '}${dl} %</span>`;
+    return `<div class="pv-cmp-row"><div class="pv-cmp-top"><span>${homeEsc(schedDayLabel(d.idx))} <small style="opacity:.6">(${d.n}×)</small></span><span><b>Ø ${f(d.avg)}</b> ${delta}</span></div>
+      <div class="pv-cmp-bar"><i style="width:${d.avg/maxAvg*100}%"></i></div>
+      <div class="pv-cmp-sub">poslední ${f(d.last)} · rekord ${f(d.best)}</div></div>`;
+  }).join('');
+  return `<h5 style="margin-top:14px;">📊 Porovnání tréninkových dnů</h5>${rows}<p class="nb-note" style="margin-top:6px;">Průměrný objem na trénink podle dne plánu; šipka = poslední trénink oproti předchozímu stejného dne.</p>`;
+}
 function renderProgVolume(){
   const box = document.getElementById('progVolBox'); if(!box) return;
   const entries = nbEntries();
@@ -11830,7 +11955,12 @@ function renderProgVolume(){
     <h5>🏁 Objem po tréninku</h5>
     ${rows || '<p class="nb-note">Po prvním dokončeném tréninku tu uvidíš, kolik kg jsi odzvedl.</p>'}
     ${rows ? '<p class="nb-note" style="margin-top:6px;">Změna je oproti předchozímu stejnému dni tréninku.</p>' : ''}
+    ${progDayCompareHTML()}
   </div>`;
+}
+const progFoldOpen = {};
+function nbFold(key, title, inner){
+  return `<details class="pv-fold" data-fold="${key}"${progFoldOpen[key]?' open':''}><summary>${title}</summary><div class="pv-fold-b">${inner}</div></details>`;
 }
 function nbStatsTabHTML(entries){
   const todayT = dateKeyToTime(todayKey());
@@ -11894,11 +12024,11 @@ function nbStatsTabHTML(entries){
   wsorted.forEach(x=>{ run = (prev!==null && x===prev+1) ? run+1 : 1; longest = Math.max(longest, run); prev = x; });
   const streak = `<div class="nb-stats"><div><b>${cur}</b><span>týdnů v řadě 🔥</span></div><div><b>${longest}</b><span>nejdelší série týdnů</span></div><div><b>${new Set(entries.map(e=>e.date)).size}</b><span>dnů celkem</span></div></div>`;
   return `<div class="wo-mode-tabs nb-period">${periodBtns}</div>${cards}
-    <h4 class="nb-h">💪 Série podle svalů</h4><div class="nb-mus">${muscleHTML}<p class="nb-note" style="margin:8px 0 0;">Doporučení pro růst svalů: zhruba 10–20 pracovních sérií na partii týdně (zelená). Rozcvička se nepočítá.</p></div>
-    <h4 class="nb-h">📈 Týdenní objem</h4>${weekChart}
-    <h4 class="nb-h">🔥 Pravidelnost</h4>${streak}
-    <h4 class="nb-h">🏅 Nejvíc odcvičené cviky</h4><div class="nb-bub">${topHTML}</div>
-    <h4 class="nb-h">🏆 Nejlepší odhad 1RM</h4><div class="nb-bub">${b1HTML}</div>`;
+    ${nbFold('muscle','💪 Série podle svalů',`<div class="nb-mus">${muscleHTML}<p class="nb-note" style="margin:8px 0 0;">Doporučení pro růst svalů: zhruba 10–20 pracovních sérií na partii týdně (zelená). Rozcvička se nepočítá.</p></div>`)}
+    ${nbFold('weekvol','📈 Týdenní objem',weekChart)}
+    ${nbFold('regular','🔥 Pravidelnost',streak)}
+    ${nbFold('topex','🏅 Nejvíc odcvičené cviky',`<div class="nb-bub">${topHTML}</div>`)}
+    ${nbFold('rm','🏆 Nejlepší odhad 1RM',`<div class="nb-bub">${b1HTML}</div>`)}`;
 }
 // ---------- nástroje: 1RM a kotouče ----------
 function nbToolsHTML(){
@@ -11942,7 +12072,7 @@ function nbToolsBind(){
 function renderNotebook(){
   const el = document.getElementById('nbContent');
   const entries = nbEntries();
-  const TABS = [['diary','📓','Deník'],['calendar','🗓️','Kalendář'],['exercises','🏋️','Cviky'],['stats','📊','Statistiky'],['tools','🧮','Nástroje']];
+  const TABS = [['diary','📓','Deník'],['calendar','🗓️','Kalendář'],['exercises','🏋️','Cviky'],['tools','🧮','Nástroje']];
   const tabs = `<div class="wo-mode-tabs nb-tabs">${TABS.map(([k,i,l])=>`<button data-nbt="${k}" class="${nbTab===k?'on':''}"><span>${i}</span>${l}</button>`).join('')}</div>`;
   const addBtn = `<button class="nb-add-btn" id="nbAddBtn">✍️ Zapsat cvik ručně</button>`;
   const emptyMsg = `<div class="nb-empty">📓<p>Sešit je zatím prázdný.</p><p style="font-size:13.8px;">Každý trénink, který dokončíš v appce, se sem zapíše sám. Můžeš sem také ručně přidat trénink, který jsi dělal jinde.</p></div>`;
@@ -13703,8 +13833,6 @@ let progSelectedExercise = null;
 function renderPrList(){
   const pc = document.getElementById('pPrCnt'); if(pc) pc.textContent = Object.keys(state.exercisePRs || {}).length;
 }
-const _progToNb = document.getElementById('progToNb');
-if(_progToNb) _progToNb.addEventListener('click', ()=>{ nbTab = 'stats'; nbOpenEx = null; openHomeSub('notebook'); });
 // PR + index síly jsou součástí Sešitu (Statistiky)
 function nbPrSectionHTML(){
   const prs = state.exercisePRs || {};
@@ -14061,6 +14189,7 @@ document.getElementById('wLogAdd').addEventListener('click', ()=>{
   saveState();
   document.getElementById('wLogVal').value = '';
   renderProfile();
+  try{ renderProgress(); }catch(e){}
   showToast('📊 Váha zapsána: ' + v + ' kg');
 });
 // Komunita tlačítko v hlavičce -> nová obrazovka (ucty + feed)
