@@ -900,6 +900,9 @@
   .addrec-form textarea{min-height:70px; resize:vertical;}
   .addrec-form input:focus, .addrec-form textarea:focus, .addrec-form select:focus{outline:none; border-color:var(--cut);}
   .addrec-grid2{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+  .addrec-calc{margin:8px 0 4px; padding:10px; border:1px dashed var(--accent); border-radius:12px;}
+  .addrec-calc-row{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .addrec-calc-row button{flex:1; min-width:180px; padding:9px 10px; border-radius:10px; border:1.5px solid var(--accent); background:rgba(var(--accent-rgb),0.14); color:var(--accent); font-weight:700; cursor:pointer;}
   .addrec-grid4{display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:6px;}
   .addrec-save{
     width:100%; margin-top:14px; border:none; border-radius:9px; padding:12px;
@@ -1232,6 +1235,13 @@
   .pv-cmp-bar{height:9px; border-radius:6px; background:rgba(255,255,255,0.09); overflow:hidden;}
   .pv-cmp-bar i{display:block; height:100%; border-radius:6px; background:var(--accent);}
   .pv-cmp-sub{font-size:calc(12.6px * var(--font-scale)); color:var(--muted); font-family:'Space Mono',monospace; margin-top:3px;}
+  .lb-me{padding:10px 12px; border-radius:12px; background:rgba(var(--accent-rgb),0.16); border:1.5px solid var(--accent); margin-bottom:10px; font-size:calc(14.6px * var(--font-scale));}
+  .lb-row{display:flex; align-items:center; gap:8px; padding:7px 4px; border-bottom:1px solid var(--line); font-size:calc(14px * var(--font-scale));}
+  .lb-row.me{background:rgba(var(--accent-rgb),0.14); border-radius:8px;}
+  .lb-pos{width:34px; text-align:center; font-family:'Space Mono',monospace; color:var(--muted);}
+  .lb-av{font-size:20px;}
+  .lb-name{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .lb-name small{color:var(--muted); margin-left:4px;}
   .sc-row{margin:11px 0;}
   .sc-top{display:flex; justify-content:space-between; gap:8px; font-size:calc(14px * var(--font-scale));}
   .sc-top b{font-family:'Oxanium',sans-serif;}
@@ -2843,10 +2853,15 @@
         <div><label>Sach. g</label><input id="arCarb" type="number" placeholder="50"></div>
         <div><label>Tuky g</label><input id="arFat" type="number" placeholder="15"></div>
       </div>
+      <div class="addrec-calc">
+        <div class="addrec-calc-row"><label style="margin:0;">Počet porcí</label><input id="arServ" type="number" min="1" step="1" value="1" style="width:70px;"><button type="button" id="arCalc">🧮 Dopočítat makra ze surovin</button></div>
+        <div id="arCalcInfo" class="nb-note"></div>
+      </div>
       <label>Suroviny (jedna na řádek, formát: Název - množství)</label>
       <textarea id="arIngs" placeholder="Kuřecí prsa - 200 g&#10;Rýže - 100 g&#10;Paprika - 1 ks"></textarea>
       <label>Postup</label>
       <textarea id="arSteps" placeholder="Popiš postup krok za krokem..."></textarea>
+      <div id="arEditBar" class="nb-note" style="display:none; margin-bottom:8px;">✏️ Upravuješ recept <b id="arEditName"></b> <button type="button" class="home-link" id="arEditCancel">Zrušit úpravu</button></div>
       <button class="addrec-save" id="arSave">💾 Uložit recept</button>
       <button class="addrec-save" id="arPublish" style="background:var(--cyan); box-shadow:0 0 16px rgba(77,232,255,0.25); margin-top:8px;">🌍 Publikovat pro všechny</button>
       <div class="portion-note" id="commStatus" style="margin-top:8px;"></div>
@@ -3081,7 +3096,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30o · 2026-11-06</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30p · 2026-11-06</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -3214,7 +3229,9 @@
         <div id="progGainzCategory" style="font-family:'Space Mono',monospace; font-size:13.4px; color:var(--muted); margin-top:4px;">Kategorie: 🟢 Začátečník</div>
         <div class="gsb-percentile" id="progGainzPercentile">Pokrok v tvé kategorii: 0 %</div>
       </div>
+      <div data-qh="score" style="margin-top:12px;"></div>
       <div id="progScoreInfo"></div>
+      <div id="progLeaderboard"></div>
     </div>
 
   </div>
@@ -4561,8 +4578,11 @@ function renderHomeEquip(){
   });
   document.querySelectorAll('[data-gh]').forEach(h=>{
     h.addEventListener('click', ()=>{
-      const key = h.dataset.gh; woHomeOpen[key] = !woHomeOpen[key];
-      h.parentElement.classList.toggle('open', !!woHomeOpen[key]);
+      const key = h.dataset.gh; const willOpen = !woHomeOpen[key];
+      Object.keys(woHomeOpen).forEach(k=>{ woHomeOpen[k] = false; });
+      document.querySelectorAll('.home-group.open').forEach(g=>g.classList.remove('open'));
+      woHomeOpen[key] = willOpen;
+      h.parentElement.classList.toggle('open', willOpen);
     });
   });
   document.getElementById('homeNone').addEventListener('click', ()=>{ p.equip = []; refresh(); });
@@ -4942,7 +4962,7 @@ function openModal(r){
       <div class="modal-actions">
         <button id="addShopBtn">🛒 Přidat do nákupu</button>
         <button id="cookedBtn">✅ Uvařil/a jsem to (+25 XP)</button>
-        ${r.custom ? '<button id="shareRecBtn">📤 Sdílet kód</button><button id="delRecBtn" class="danger">🗑️ Smazat</button>' : ''}
+        ${r.custom ? '<button id="editRecBtn">✏️ Upravit</button><button id="shareRecBtn">📤 Sdílet kód</button><button id="delRecBtn" class="danger">🗑️ Smazat</button>' : ''}
       </div>
     </div>
   `;
@@ -4979,6 +4999,7 @@ function openModal(r){
     addToShopping(items);
   });
   if(r.custom){
+    document.getElementById('editRecBtn').addEventListener('click', ()=>startEditRecipe(r));
     document.getElementById('shareRecBtn').addEventListener('click', ()=>{
       const code = shareCode(r);
       if(navigator.clipboard && navigator.clipboard.writeText){
@@ -7285,7 +7306,8 @@ const QH_TEXTS = {
   food:['<b>Přidat jídlo</b> – z fotky tabulky, čárového kódu, vyhledání, mých potravin, receptu nebo ručně.','<b>Cíle</b> – kalorie a makra se počítají podle tvého cíle (změníš ho v Profilu); „Upravit denní cíle“ nastaví vlastní čísla.','<b>Klepni na jídlo</b> – upravíš název, gramy (ostatní hodnoty se přepočítají) nebo čísla ručně.','<b>🗑️</b> – smaže záznam.','<b>‹ ›</b> – přepíná dny.'],
   settings:['<b>Vzhled</b> – téma, vlastní pozadí a barvy.','<b>Průhlednost bublin</b> – jak moc je vidět pozadí pod kartami; „Úsporný režim“ vypne rozmazání.','<b>Hudba a zvuky</b> – hudbu na pozadí a zvukové hlášky zapneš nebo vypneš zvlášť.','<b>Připomínka</b> – denní upozornění na trénink.','<b>AI asistent</b> – vlastní klíč od Gemini (ukládá se jen v tomto zařízení) pro odhad jídla z fotky a čtení tabulky.','<b>Reset profilu</b> – vynuluje statistiky a postup; nick, údaje o těle, plán, vlastní recepty a potraviny a nastavení zůstanou. „Vrátit stav“ obnoví stav před posledním resetem.','<b>Záloha</b> – uloží data do souboru, který můžeš později načíst zpět; zálohuj před větší změnou nebo přeinstalací.'],
   rest:['<b>Co se děje</b> – nemoc, únava nebo regenerace; trénink se na dobu pauzy pozastaví.','<b>Délka</b> – vyber počet dní nebo vlastní datum konce.','O svůj progres a sérii nepřijdeš.'],
-  progress:['<b>Objem</b> – kg po týdnech, po trénincích a porovnání tréninkových dnů.','<b>Statistiky</b> – série podle svalů, pravidelnost, rekordy a síla (sekce se rozklikávají).','<b>Váha</b> – zapiš a sleduj tělesnou váhu.','<b>Skóre</b> – za co se body získávají a jak číst pokrok v kategorii.']
+  progress:['<b>Objem</b> – kg po týdnech, po trénincích a porovnání tréninkových dnů.','<b>Statistiky</b> – série podle svalů, pravidelnost, rekordy a síla (sekce se rozklikávají).','<b>Váha</b> – zapiš a sleduj tělesnou váhu.','<b>Skóre</b> – za co se body získávají a jak číst pokrok v kategorii.'],
+  score:['<b>Za co se body dávají</b> – trénink 50 b. · zvednutý kg 0,3 b. · nový rekord (PR) 100 b. · den série 20 b. · XP 0,8 b. · mise 30 b. · uvařený recept 15 b.','<b>Co dává nejvíc</b> – rekordy a tréninky. Objem a XP se sčítají postupně, série dnů se při přerušení vynuluje, ostatní body se neodebírají.','<b>Pokrok v kategorii</b> – odhad podle skóre, úrovně plánu (začátečník / pokročilý / expert) a pohlaví: pokročilí zvedají víc, proto stejné skóre znamená u nich nižší %. Není to srovnání s ostatními hráči.','<b>Hodnost</b> – název vedle skóre se odvozuje z tvého levelu (XP).','<b>Žebříček</b> – top 100 uživatelů s veřejným progresem a tvoje pozice. Zobrazíš se v něm jen když to sám povolíš.']
 };
 function qhelp(key){
   const items = QH_TEXTS[key]; if(!items) return '';
@@ -7727,7 +7749,7 @@ function renderWorkoutStep3(){
     topEl.addEventListener('click', (e)=>{
       if(e.target.closest('button, .wo-grip')) return;
       const idx = el.dataset.idx;
-      const wd = document.getElementById('wed-'+idx); if(wd) wd.classList.toggle('open');
+      const wd = document.getElementById('wed-'+idx); if(wd){ const was = wd.classList.contains('open'); document.querySelectorAll('.wo-ex-detail.open').forEach(x=>x.classList.remove('open')); if(!was) wd.classList.add('open'); }
     });
   });
   document.querySelectorAll('.wo-ex .bp-ex-fav-btn').forEach(btn=>{
@@ -9556,7 +9578,7 @@ function renderBodyPartExercises(muscle){
     box.querySelectorAll('.bp-ex-item').forEach(item=>{
       item.addEventListener('click', (ev)=>{
         if(ev.target.closest('.bp-ex-alt-chip') || ev.target.closest('a') || ev.target.closest('.bp-ex-fav-btn') || ev.target.closest('.bp-add-plan')) return;
-        document.getElementById(item.dataset.id).classList.toggle('open');
+        { const t = document.getElementById(item.dataset.id); const was = t.classList.contains('open'); box.querySelectorAll('.bp-ex-detail.open').forEach(x=>x.classList.remove('open')); if(!was) t.classList.add('open'); }
       });
     });
     box.querySelectorAll('.bp-ex-fav-btn').forEach(btn=>{
@@ -9752,20 +9774,137 @@ function loadMyRecipes(){
     }
   }
 }
+// --- úprava vlastního receptu ---
+let arEditing = null; // původní recept, který se právě upravuje
+function arResetForm(){
+  for(const id of ['arTitle','arKal','arProt','arCarb','arFat','arIngs','arSteps']) document.getElementById(id).value = '';
+  document.getElementById('arServ').value = 1; document.getElementById('arCalcInfo').innerHTML = '';
+  arEditing = null; arUpdateEditUI();
+}
+function arUpdateEditUI(){
+  const bar = document.getElementById('arEditBar'); if(!bar) return;
+  bar.style.display = arEditing ? '' : 'none';
+  if(arEditing) document.getElementById('arEditName').textContent = arEditing.title;
+  document.getElementById('arSave').textContent = arEditing ? '💾 Uložit změny' : '💾 Uložit recept';
+}
+function startEditRecipe(r){
+  arEditing = r;
+  closeModal();
+  closeOtherTogglePanels('addRecPanel');
+  const pn = document.getElementById('addRecPanel'); pn.classList.add('open');
+  const set = (id,v)=>{ document.getElementById(id).value = v; };
+  set('arTitle', r.title); set('arVersion', r.version||'cutting'); set('arCategory', r.category||'savory'); set('arDiet', r.diet||'');
+  const m = r.macros||{};
+  set('arKal', m.Kal||0); set('arProt', m['Bílkoviny']||0); set('arCarb', m['Sacharidy']||0); set('arFat', m['Tuky']||0);
+  set('arIngs', (r.ingredients||[]).join('\n'));
+  set('arSteps', (r.instructions||[]).map(x=>x[1]||[]).flat().join('\n'));
+  set('arServ', 1); document.getElementById('arCalcInfo').innerHTML = '';
+  arUpdateEditUI();
+  setTimeout(()=>pn.scrollIntoView({behavior:'smooth', block:'start'}), 80);
+}
+// po uložení upraveného receptu smaž původní (pokud se změnil název nebo verze)
+function arAfterSave(rec){
+  if(arEditing && (arEditing.title!==rec.title || arEditing.version!==rec.version)){
+    const o = arEditing;
+    state.myRecipes = (state.myRecipes||[]).filter(x=>!(x.title===o.title && x.version===o.version));
+    const i = RECIPES.findIndex(x=>x.custom && x.title===o.title && x.version===o.version);
+    if(i>-1) RECIPES.splice(i,1);
+    saveState(); render();
+  }
+}
+// --- dopočet maker ze surovin ---
+function arParseIng(line){
+  const x = line.lastIndexOf(' - ');
+  const name = (x>-1 ? line.slice(0,x) : line).trim();
+  const q = x>-1 ? line.slice(x+3).trim() : '';
+  const m = q.match(/^(\d+\s*\/\s*\d+|\d+(?:[.,]\d+)?)\s*([a-zA-ZáčďéěíňóřšťúůýžÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ]*)/);
+  let qty = null, unit = '';
+  if(m){ qty = m[1].includes('/') ? (()=>{ const [a,b] = m[1].split('/').map(v=>parseFloat(v)); return a/b; })() : parseFloat(m[1].replace(',','.')); unit = (m[2]||'').toLowerCase(); }
+  return {line, name, qty, unit};
+}
+function arToGrams(ing, pieceG){
+  if(!(ing.qty>0)) return null;
+  const u = ing.unit;
+  if(u==='g'||u==='gr'||u==='ml') return ing.qty;
+  if(u==='kg'||u==='l') return ing.qty*1000;
+  if(u==='dkg') return ing.qty*10;
+  if(/^(pl|lžíce|lžic|lzic)/.test(u)) return ing.qty*15;
+  if(/^(čl|cl|lžičk|lzick)/.test(u)) return ing.qty*5;
+  if(/^hrst/.test(u)) return ing.qty*30;
+  if(/^špetk/.test(u)) return ing.qty*1;
+  return pieceG>0 ? ing.qty*pieceG : null; // ks, plátek, bez jednotky
+}
+function arCalcLocal(list){
+  const rows = [];
+  list.forEach(ing=>{
+    const it = foodSearchLocal(ing.name, 1)[0];
+    const g = it ? arToGrams(ing, it.pieceG) : null;
+    if(!it || !(g>0)){ rows.push({ing, ok:false}); return; }
+    const k = g/100, p = it.per100||{};
+    rows.push({ing, ok:true, via:it.name, g, kcal:(p.kcal||0)*k, p:(p.p||0)*k, c:(p.c||0)*k, f:(p.f||0)*k});
+  });
+  return rows;
+}
+async function arCalcAI(list){
+  const r = await aiGenerate([{text:
+    'Jsi výživový poradce. Pro každou surovinu z receptu odhadni CELKOVÉ nutriční hodnoty pro uvedené množství (ne na 100 g): kcal, bílkoviny, sacharidy, tuky v gramech. '+
+    'Suroviny ber jako syrové / neupravené, pokud není uvedeno jinak. Vrať položky ve stejném pořadí a se stejným počtem, jako je v seznamu. Suroviny:\n'+
+    list.map((i,n)=>(n+1)+'. '+i.line).join('\n')+'\nOdpověz pouze JSON.'}],
+    {type:'OBJECT', properties:{items:{type:'ARRAY', items:{type:'OBJECT', properties:{name:{type:'STRING'}, grams:AI_NUM, kcal:AI_NUM, p:AI_NUM, c:AI_NUM, f:AI_NUM}}}}});
+  const items = (r.items||[]);
+  return list.map((ing,i)=>{
+    const x = items[i]; const ok = x && typeof x.kcal==='number' && isFinite(x.kcal);
+    return ok ? {ing, ok:true, via:'odhad AI', g:x.grams||null, kcal:x.kcal, p:x.p||0, c:x.c||0, f:x.f||0} : {ing, ok:false};
+  });
+}
+async function arCalcMacros(){
+  const lines = document.getElementById('arIngs').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  const info = document.getElementById('arCalcInfo');
+  if(!lines.length){ showToast('⚠️ Nejdřív napiš suroviny'); return; }
+  const list = lines.map(arParseIng);
+  const serv = Math.max(1, parseFloat(document.getElementById('arServ').value)||1);
+  info.innerHTML = '🧮 Počítám…';
+  let rows, how = '';
+  if(aiKey()){
+    try{ rows = await arCalcAI(list); how = 'Odhad udělala AI podle surovin a množství.'; }
+    catch(e){ rows = null; if(e.code==='badkey'){ info.innerHTML = '⚠️ AI klíč nefunguje – počítám z vestavěné databáze.'; } }
+  }
+  if(!rows){ rows = arCalcLocal(list); how = how || 'Počítáno z vestavěné databáze potravin (syrové / průměrné hodnoty).'; }
+  else if(rows.some(r=>!r.ok)){
+    const loc = arCalcLocal(list); rows = rows.map((r,i)=>r.ok ? r : loc[i]);
+  }
+  const ok = rows.filter(r=>r.ok), bad = rows.filter(r=>!r.ok);
+  const sum = k=>ok.reduce((a,r)=>a+(r[k]||0),0);
+  if(!ok.length){ info.innerHTML = '⚠️ Nepodařilo se rozpoznat žádnou surovinu. Zkontroluj formát „Název - množství“ (např. Kuřecí prsa - 200 g), nebo nastav AI klíč.'; return; }
+  const tot = {kcal:sum('kcal'), p:sum('p'), c:sum('c'), f:sum('f')};
+  document.getElementById('arKal').value = Math.round(tot.kcal/serv);
+  document.getElementById('arProt').value = Math.round(tot.p/serv);
+  document.getElementById('arCarb').value = Math.round(tot.c/serv);
+  document.getElementById('arFat').value = Math.round(tot.f/serv);
+  info.innerHTML = '✅ Dopočteno na '+(serv===1?'celý recept':'1 porci (z '+serv+')')+': <b>'+Math.round(tot.kcal/serv)+' kcal</b> · B '+Math.round(tot.p/serv)+' · S '+Math.round(tot.c/serv)+' · T '+Math.round(tot.f/serv)+' g'
+    + '<details style="margin-top:6px;"><summary style="cursor:pointer;">Rozpis po surovinách</summary>'
+    + ok.map(r=>'<div>'+homeEsc(r.ing.line)+' → '+Math.round(r.kcal)+' kcal <small style="opacity:.7">('+homeEsc(r.via)+')</small></div>').join('')
+    + '</details>'
+    + (bad.length ? '<div style="margin-top:6px; color:#fbbf24;">⚠️ Nepočítáno ('+bad.length+'): '+bad.map(r=>homeEsc(r.ing.name)).join(', ')+' – doplň množství v g/ml nebo je přičti ručně.</div>' : '')
+    + '<div style="margin-top:4px; opacity:.8;">'+how+' Hodnoty jsou orientační, můžeš je ručně přepsat.</div>';
+}
+document.getElementById('arCalc').addEventListener('click', arCalcMacros);
+document.getElementById('arEditCancel').addEventListener('click', ()=>{ arResetForm(); showToast('Úprava zrušena'); });
 function buildCustomRecipe(){
   const title = document.getElementById('arTitle').value.trim().toUpperCase();
   if(!title){ showToast('⚠️ Zadej název receptu'); return null; }
   const ings = document.getElementById('arIngs').value.split('\n').map(s=>s.trim()).filter(Boolean);
   if(!ings.length){ showToast('⚠️ Zadej aspoň jednu surovinu'); return null; }
   const steps = document.getElementById('arSteps').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  const o = arEditing || {};
   return {
     custom: true,
-    author: myAuthorName(),
+    author: o.author || myAuthorName(),
     diet: document.getElementById('arDiet').value || '',
     title,
     version: document.getElementById('arVersion').value,
     category: document.getElementById('arCategory').value,
-    prep_cook: '',
+    prep_cook: o.prep_cook || '',
     macros: {
       Kal: parseInt(document.getElementById('arKal').value)||0,
       'Bílkoviny': parseInt(document.getElementById('arProt').value)||0,
@@ -9775,7 +9914,7 @@ function buildCustomRecipe(){
     ingredients: ings,
     optional_ingredients: [],
     instructions: steps.length ? [[null, steps]] : [],
-    serving: '',
+    serving: o.serving || '',
     ing_keys: ings.map(i=>{const x=i.lastIndexOf(' - ');return (x>-1?i.slice(0,x):i).trim().toLowerCase();}),
     opt_keys: [],
   };
@@ -9793,12 +9932,12 @@ function saveCustomRecipe(rec){
 document.getElementById('arSave').addEventListener('click', ()=>{
   const rec = buildCustomRecipe();
   if(!rec) return;
+  const wasEdit = !!arEditing;
   saveCustomRecipe(rec);
-  showToast('✅ Recept "' + rec.title + '" uložen!');
-  addXP(15, 'vlastní recept');
-  for(const id of ['arTitle','arKal','arProt','arCarb','arFat','arIngs','arSteps']){
-    document.getElementById(id).value = '';
-  }
+  arAfterSave(rec);
+  showToast(wasEdit ? '✅ Recept "' + rec.title + '" upraven' : '✅ Recept "' + rec.title + '" uložen!');
+  if(!wasEdit) addXP(15, 'vlastní recept');
+  arResetForm();
 });
 function shareCode(r){
   const slim = {t:r.title, v:r.version, c:r.category, m:r.macros, i:r.ingredients, s:(r.instructions[0]||[null,[]])[1], a:r.author||'', d:r.diet||''};
@@ -9970,12 +10109,9 @@ document.getElementById('arPublish').addEventListener('click', async ()=>{
   const rec = buildCustomRecipe();
   if(!rec) return;
   saveCustomRecipe(rec);
+  arAfterSave(rec);
   const ok = await publishRecipe(rec);
-  if(ok){
-    for(const id of ['arTitle','arKal','arProt','arCarb','arFat','arIngs','arSteps']){
-      document.getElementById(id).value = '';
-    }
-  }
+  if(ok) arResetForm();
 });
 document.getElementById('commStatus').textContent = communityEnabled()
   ? '🌍 Komunita je zapnutá – recepty se sdílí všem uživatelům.'
@@ -11574,35 +11710,78 @@ function renderProgStats(){
   const prFold = nbFold('pr','🏆 Rekordy (PR) a síla', nbPrSectionHTML());
   box.innerHTML = '<h3 class="pv-title">📊 Statistiky</h3>' + (entries.length ? nbStatsTabHTML(entries) : empty) + prFold;
   box.querySelectorAll('[data-nbstatd]').forEach(b=>b.addEventListener('click', ()=>{ nbStatDays = +b.dataset.nbstatd; renderProgStats(); }));
-  box.querySelectorAll('details[data-fold]').forEach(d=>d.addEventListener('toggle', ()=>{ progFoldOpen[d.dataset.fold] = d.open; }));
+  box.querySelectorAll('details[data-fold]').forEach(d=>d.addEventListener('toggle', ()=>{
+    progFoldOpen[d.dataset.fold] = d.open;
+    if(d.open) box.querySelectorAll('details[data-fold]').forEach(o=>{ if(o!==d && o.open){ o.open = false; progFoldOpen[o.dataset.fold] = false; } }); // otevřená je vždy jen jedna
+  }));
   nbPrBind(box);
 }
-// Skóre – co a kolik bodů dává
+// Skóre – rozpis bodů (vysvětlivky jsou v zeleném ?)
 function renderProgScoreInfo(gScore, lvl, gender){
   const el = document.getElementById('progScoreInfo'); if(!el) return;
   const comps = [
-    ['🏋️','Dokončené tréninky', state.workoutsTotal||0, 50, '50 b. za každý dokončený trénink', ''],
-    ['⚖️','Zvednutý objem', state.totalVolumeAllTime||0, 0.3, '0,3 b. za každý zvednutý kg (série × váha × opakování)', ' kg'],
-    ['🏆','Překonané rekordy (PR)', state.totalPRsBroken||0, 100, '100 b. za každý nový osobní rekord', '×'],
-    ['🔥','Série dnů v řadě', state.streak||0, 20, '20 b. za každý den aktuální série', ' dní'],
-    ['✨','Zkušenosti (XP)', state.xp||0, 0.8, '0,8 b. za každé XP (to dávají tréninky, mise, jídlo…)', ' XP'],
-    ['🎯','Splněné mise', state.missionsTotal||0, 30, '30 b. za každou splněnou misi', '×'],
-    ['🍳','Uvařené recepty', state.cookedTotal||0, 15, '15 b. za každý uvařený recept', '×'],
-  ].map(c=>({ic:c[0], n:c[1], cnt:c[2], mul:c[3], how:c[4], unit:c[5], pts:Math.round(c[2]*c[3])}));
+    ['🏋️','Dokončené tréninky', state.workoutsTotal||0, 50, ''],
+    ['⚖️','Zvednutý objem', state.totalVolumeAllTime||0, 0.3, ' kg'],
+    ['🏆','Překonané rekordy (PR)', state.totalPRsBroken||0, 100, '×'],
+    ['🔥','Série dnů v řadě', state.streak||0, 20, ' dní'],
+    ['✨','Zkušenosti (XP)', state.xp||0, 0.8, ' XP'],
+    ['🎯','Splněné mise', state.missionsTotal||0, 30, '×'],
+    ['🍳','Uvařené recepty', state.cookedTotal||0, 15, '×'],
+  ].map(c=>({ic:c[0], n:c[1], cnt:c[2], mul:c[3], unit:c[4], pts:Math.round(c[2]*c[3])}));
   const maxPts = Math.max(1, ...comps.map(c=>c.pts));
   const fmtN = v=>Math.round(v).toLocaleString('cs-CZ');
-  const rows = comps.map(c=>`<div class="sc-row"><div class="sc-top"><span>${c.ic} ${c.n}</span><b>${fmtN(c.pts)} b.</b></div><div class="sc-bar"><i style="width:${c.pts/maxPts*100}%"></i></div><div class="sc-sub">${fmtN(c.cnt)}${c.unit==='×'?'×':c.unit} · ${c.how}</div></div>`).join('');
-  const mult = gainzMultiplier(lvl, gender);
-  const pct = calcGainzPercentile(gScore, lvl, gender);
-  el.innerHTML = `<div class="sc-card"><h5>📋 Za co se skóre získává</h5>${rows}
-      <p style="margin-top:12px;"><b>Celkem: ${fmtN(gScore)} bodů</b> (součet všech řádků výše).</p>
-      <p class="nb-note">Nejvíc bodů dávají rekordy a tréninky – jeden nový PR je za 100 bodů, stejně jako zvednout 333 kg objemu. Objem a XP se sčítají postupně, proto skóre roste i v týdnech bez rekordu. Série dnů se při přerušení vynuluje, zbytek se nikdy neodebírá.</p></div>
-    <div class="sc-card"><h5>📈 Jak vzniká „Pokrok v kategorii“</h5>
-      <p>Skóre se přepočítá podle tvé úrovně plánu${gender?' a pohlaví':''}: pokročilí zvedají víc, proto stejné skóre znamená u začátečníka větší pokrok než u experta.</p>
-      <p>Tvoje kategorie: <b>${LEVEL_LABELS[lvl]||''}</b>${gender?' · '+(gender==='male'?'👨 Muž':'👩 Žena'):''} (koeficient ×${nbFmt(Math.round(mult*100)/100)}) → <b>${pct} %</b>.</p>
-      <p class="nb-note">Je to orientační odhad ze vzorce <i>100 × (1 − e<sup>−skóre / (5 000 × koeficient)</sup>)</i>, ne srovnání s ostatními hráči. Skutečné porovnání s uživateli přibude, až budou k dispozici reálná data.</p></div>
-    <div class="sc-card"><h5>🎖️ Hodnost</h5>
-      <p>Název vedle skóre (např. ${levelRank(levelOf(state.xp)).emoji} ${levelRank(levelOf(state.xp)).name}) se odvozuje z tvého levelu, tedy z XP. Hodnosti a požadované levely najdeš v Profilu.</p></div>`;
+  el.innerHTML = `<div class="sc-card"><h5>📋 Rozpis bodů</h5>${comps.map(c=>`<div class="sc-row"><div class="sc-top"><span>${c.ic} ${c.n}</span><b>${fmtN(c.pts)} b.</b></div><div class="sc-bar"><i style="width:${c.pts/maxPts*100}%"></i></div><div class="sc-sub">${fmtN(c.cnt)}${c.unit} × ${String(c.mul).replace('.',',')} b.</div></div>`).join('')}
+    <p style="margin-top:12px;"><b>Celkem: ${fmtN(gScore)} bodů</b></p></div>`;
+  progLoadLeaderboard();
+}
+// Žebříček: top 100 uživatelů s veřejným progresem + moje pozice (data z komunitní databáze)
+let progLbBusy = false;
+async function progLoadLeaderboard(){
+  const box = document.getElementById('progLeaderboard'); if(!box || progLbBusy) return;
+  const head = '<h5>🏅 Žebříček – top 100</h5>';
+  if(!sbClient || !commUser){
+    box.innerHTML = `<div class="sc-card">${head}<p class="nb-note">Žebříček je součástí Komunity. Přihlas se tam a zobrazí se ti top 100 uživatelů i tvoje pozice.</p><button class="nb-add-btn" id="lbToComm" style="margin-top:6px;">👥 Otevřít Komunitu</button></div>`;
+    const b = document.getElementById('lbToComm'); if(b) b.addEventListener('click', ()=>{ try{ openHomeSub('community'); }catch(e){} });
+    return;
+  }
+  progLbBusy = true;
+  box.innerHTML = `<div class="sc-card">${head}<p class="nb-note">Načítám…</p></div>`;
+  try{
+    await commSyncStats(true);
+    const myScore = calcGainzScore();
+    const vis = chVis();
+    const top = await sbClient.from('profile_stats').select('user_id,gainz_score,level,rank_name,profiles(username,avatar_emoji)').eq('visibility','public').order('gainz_score',{ascending:false}).limit(100);
+    if(top.error) throw top.error;
+    const rows = top.data||[];
+    let myPos = null, total = null;
+    if(vis==='public'){
+      const [a,b] = await Promise.all([
+        sbClient.from('profile_stats').select('user_id',{count:'exact',head:true}).eq('visibility','public').gt('gainz_score', myScore),
+        sbClient.from('profile_stats').select('user_id',{count:'exact',head:true}).eq('visibility','public')]);
+      if(!a.error && a.count!=null) myPos = a.count+1;
+      if(!b.error && b.count!=null) total = b.count;
+    }
+    const fmtN = v=>Math.round(v||0).toLocaleString('cs-CZ');
+    const medal = i=>i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)+'.';
+    const myLine = vis==='public'
+      ? `<div class="lb-me">Tvoje pozice: <b>${myPos?'#'+myPos:'–'}</b>${total?' z '+total:''} · ${fmtN(myScore)} b.</div>`
+      : `<p class="nb-note">Teď se v žebříčku nezobrazuješ. Když se přidáš, ostatní uvidí tvůj nick, level a skóre.</p><button class="nb-add-btn" id="lbJoin" style="margin:6px 0 10px;">🌍 Zobrazit se v žebříčku</button>`;
+    const list = rows.length ? rows.map((r,i)=>{
+      const pr = r.profiles||{}; const mine = r.user_id===commUser.id;
+      return `<div class="lb-row${mine?' me':''}"><span class="lb-pos">${medal(i)}</span><span class="lb-av">${homeEsc(pr.avatar_emoji||'🦍')}</span><span class="lb-name">${homeEsc(pr.username||'Hráč')}${r.level?` <small>Lv ${r.level}</small>`:''}</span><b>${fmtN(r.gainz_score)}</b></div>`;
+    }).join('') : '<p class="nb-note">Zatím tu nikdo není. Buď první!</p>';
+    const outside = (vis==='public' && myPos && myPos>100) ? `<div class="lb-row me"><span class="lb-pos">#${myPos}</span><span class="lb-av">🙋</span><span class="lb-name">Ty</span><b>${fmtN(myScore)}</b></div>` : '';
+    box.innerHTML = `<div class="sc-card">${head}${myLine}<div class="lb-list">${list}${outside}</div>
+      ${vis==='public' ? '<button class="nb-mini" id="lbLeave" style="margin-top:10px;">🙈 Skrýt se z žebříčku</button><p class="nb-note" style="margin-top:6px;">Skrytí nastaví tvůj progres na Soukromý; změnit to jde v Komunitě → Přátelé.</p>' : ''}</div>`;
+    const jb = document.getElementById('lbJoin'), lv = document.getElementById('lbLeave');
+    const setVis = async v=>{ if(!commMyStats) commMyStats = {}; commMyStats.visibility = v; await commSyncStats(true); progLbBusy = false; progLoadLeaderboard(); showToast(v==='public' ? '🌍 Jsi v žebříčku' : '🙈 Skryto'); };
+    if(jb) jb.addEventListener('click', ()=>{ progLbBusy = true; setVis('public'); });
+    if(lv) lv.addEventListener('click', ()=>{ progLbBusy = true; setVis('private'); });
+  }catch(e){
+    console.warn('Žebříček selhal', e);
+    box.innerHTML = `<div class="sc-card">${head}<p class="nb-note">⚠️ Žebříček se teď nepodařilo načíst. Zkus to později.</p></div>`;
+  }
+  progLbBusy = false;
 }
 document.querySelectorAll('.bn-btn').forEach(b=>{
   b.addEventListener('click', ()=>{ if(b.dataset.nav==='notebook'){ nbTab = 'diary'; nbOpenEx = null; nbOpenDay = null; } openHomeSub(b.dataset.nav); });
@@ -12072,7 +12251,7 @@ function nbToolsBind(){
 function renderNotebook(){
   const el = document.getElementById('nbContent');
   const entries = nbEntries();
-  const TABS = [['diary','📓','Deník'],['calendar','🗓️','Kalendář'],['exercises','🏋️','Cviky'],['tools','🧮','Nástroje']];
+  const TABS = [['diary','📓','Deník'],['calendar','🗓️','Kalendář'],['exercises','🏋️','Cviky']];
   const tabs = `<div class="wo-mode-tabs nb-tabs">${TABS.map(([k,i,l])=>`<button data-nbt="${k}" class="${nbTab===k?'on':''}"><span>${i}</span>${l}</button>`).join('')}</div>`;
   const addBtn = `<button class="nb-add-btn" id="nbAddBtn">✍️ Zapsat cvik ručně</button>`;
   const emptyMsg = `<div class="nb-empty">📓<p>Sešit je zatím prázdný.</p><p style="font-size:13.8px;">Každý trénink, který dokončíš v appce, se sem zapíše sám. Můžeš sem také ručně přidat trénink, který jsi dělal jinde.</p></div>`;
@@ -12628,6 +12807,30 @@ async function aiGenerate(parts, schema){
   if(!s) throw aiErr('empty','AI nevrátila odpověď');
   try{ return JSON.parse(s); }catch(e){ throw aiErr('parse','AI vrátila nečitelnou odpověď'); }
 }
+// hledání v Googlu přes Gemini (grounding) – vrací text s JSON + zdroje
+async function aiGenerateSearch(prompt){
+  if(!aiKey()) throw aiErr('nokey','Chybí klíč');
+  const run = model => aiFetch(AI_BASE+'models/'+model+':generateContent', {
+    method:'POST', headers:{'Content-Type':'application/json','x-goog-api-key':aiKey()},
+    body: JSON.stringify({contents:[{role:'user', parts:[{text:prompt}]}], tools:[{google_search:{}}], generationConfig:{temperature:0.1}})});
+  const models = [aiModel(), 'gemini-flash-latest', 'gemini-2.5-flash', 'gemini-flash-lite-latest'].filter((m,i,a)=>a.indexOf(m)===i);
+  let j = null, last = null;
+  for(let round=0; round<2 && !j; round++){
+    if(round) await new Promise(r=>setTimeout(r, 2500));
+    for(const m of models){
+      try{ j = await run(m); break; }
+      catch(e){ last = e; if(e.code==='badkey' || e.code==='net') throw e; }
+    }
+  }
+  if(!j) throw last || aiErr('http','Chyba AI');
+  const cand = (j.candidates||[])[0]||{};
+  const txt = ((cand.content||{}).parts||[]).map(p=>p.text||'').join('');
+  const m = txt.match(/\{[\s\S]*\}/);
+  if(!m) throw aiErr('parse','AI vrátila nečitelnou odpověď');
+  let obj; try{ obj = JSON.parse(m[0]); }catch(e){ throw aiErr('parse','AI vrátila nečitelnou odpověď'); }
+  const chunks = ((cand.groundingMetadata||{}).groundingChunks||[]).map(c=>c.web&&c.web.title).filter(Boolean);
+  return {obj, sources:[...new Set(chunks)].slice(0,3)};
+}
 const AI_NUM = {type:'NUMBER', nullable:true};
 const AI_PER100 = {type:'OBJECT', properties:{kcal:AI_NUM, p:AI_NUM, c:AI_NUM, s:AI_NUM, f:AI_NUM, sf:AI_NUM, fiber:AI_NUM, salt:AI_NUM}};
 function aiCleanPer(o){
@@ -12646,6 +12849,22 @@ async function aiEstimateFood(name){
   const per = aiCleanPer(r.per100);
   if(per.kcal==null && per.p==null && per.c==null && per.f==null) throw aiErr('nofood','Tohle AI nepoznala jako jídlo');
   return {name: String(r.name||name).slice(0,60), per100: per, pieceG: (r.pieceG>0 ? r.pieceG : null), pieceLabel: r.pieceLabel||'ks'};
+}
+// vyhledá makra v Googlu podle toho, co uživatel napsal → stejný tvar jako aiEstimateFood (+ zdroje)
+async function aiSearchFood(name){
+  try{
+    const {obj, sources} = await aiGenerateSearch(
+      'Najdi přes vyhledávání Google nutriční hodnoty NA 100 g pro potravinu nebo jídlo: "'+name+'" (preferuj české zdroje a hodnoty z obalu / výrobce, u hotových jídel průměr). '+
+      'Odpověz POUZE jedním JSON objektem bez dalšího textu v tomto tvaru: '+
+      '{"name":"krátký český název","per100":{"kcal":0,"p":0,"c":0,"s":0,"f":0,"sf":0,"fiber":0,"salt":0},"pieceG":0,"pieceLabel":"ks"} '+
+      '(p=bílkoviny, c=sacharidy, s=z toho cukry, f=tuky, sf=z toho nasycené, vše v gramech; pieceG = typická hmotnost 1 kusu/porce v gramech, pieceLabel = česká jednotka). Co nenajdeš, dej null. Pokud to není jídlo, dej kcal null.');
+    const per = aiCleanPer(obj.per100);
+    if(per.kcal==null && per.p==null && per.c==null && per.f==null) throw aiErr('nofood','Tohle AI nepoznala jako jídlo');
+    return {name:String(obj.name||name).slice(0,60), per100:per, pieceG:(obj.pieceG>0?obj.pieceG:null), pieceLabel:obj.pieceLabel||'ks', sources, searched:true};
+  }catch(e){
+    if(e.code==='badkey' || e.code==='net' || e.code==='nokey' || e.code==='nofood' || e.code==='quota') throw e;
+    const r = await aiEstimateFood(name); r.searched = false; r.sources = []; return r; // záloha: odhad bez vyhledávání
+  }
 }
 // foto jídla → {name, grams, per100, items}
 async function aiEstimatePhoto(b64, mime, hint){
@@ -13401,7 +13620,7 @@ function foodOpenItem(it, qty){
   const {count, grams} = foodQtyToGrams(piece, qty);
   openFoodForm({source: it.mine ? 'library' : (it.off ? 'off' : (it.ai ? 'ai' : 'db')), name: it.name, per100: it.per100, servingG: it.mine ? it.pieceG : null, packG: it.mine ? it.packG : null,
     piece, count, grams: Math.round(grams*10)/10,
-    note: it.mine ? '' : (it.off ? 'Údaje z Open Food Facts (přidávají je uživatelé) – zkontroluj podle obalu.' : (it.ai ? '✨ Odhad od AI – je orientační, hlavně u hotových jídel.' : 'Orientační průměrné hodnoty na 100 g. Pro přesnost použij údaje z obalu.'))});
+    note: it.mine ? '' : (it.off ? 'Údaje z Open Food Facts (přidávají je uživatelé) – zkontroluj podle obalu.' : (it.ai ? (it.aiNote || '✨ Odhad od AI – je orientační, hlavně u hotových jídel.') : 'Orientační průměrné hodnoty na 100 g. Pro přesnost použij údaje z obalu.'))});
 }
 function openFoodSearch(q0){
   const ov = foodPanel(`<h4>🔎 Hledat potravinu</h4>
@@ -13409,7 +13628,7 @@ function openFoodSearch(q0){
     <div id="fsRes"></div><div id="fsOnlineRes"></div>
     <div class="fs-more">
       <button id="fsOnline">🌐 Hledat online (Open Food Facts)</button>
-      <button id="fsAi">✨ Odhadnout pomocí AI</button>
+      <button id="fsAi">🔎 Najít makra v Googlu (AI)</button>
       <button id="fsManual">✍️ Zadat hodnoty ručně</button>
     </div>`);
   const qEl = document.getElementById('fsQ'), res = document.getElementById('fsRes');
@@ -13419,7 +13638,7 @@ function openFoodSearch(q0){
     shown = foodSearchLocal(pq.text, 10);
     res.innerHTML = pq.text.length<2 ? '<p class="nb-note">Napiš název (aspoň 2 písmena). Můžeš i s množstvím: „2 vejce“, „150 g tvaroh“.</p>'
       : (shown.length ? shown.map((it,i)=>`<div class="fd-lib"><button data-fs="${i}"><b>${it.mine?'⭐ ':''}${homeEsc(it.name)}</b><small>${foodItemLine(it)}</small></button></div>`).join('')
-        : '<p class="nb-note">V databázi nic nenalezeno. Zkus hledat online nebo odhad od AI.</p>');
+        : '<p class="nb-note">V databázi nic nenalezeno. Zkus hledat online nebo najít makra v Googlu (AI).</p>');
     res.querySelectorAll('[data-fs]').forEach(b=>b.addEventListener('click', ()=>foodOpenItem(shown[+b.dataset.fs], pq)));
   };
   qEl.addEventListener('input', draw); draw();
@@ -13442,7 +13661,7 @@ function openFoodSearch(q0){
           per100:{kcal, p:g('proteins_100g'), c:g('carbohydrates_100g'), s:g('sugars_100g'), f:g('fat_100g'), sf:g('saturated-fat_100g'), fiber:g('fiber_100g'), salt:g('salt_100g')},
           pieceG: pr.serving_quantity ? Number(pr.serving_quantity) : null, pieceLabel:'porce'});
       });
-    }catch(e){ box.innerHTML = '<p class="nb-note">⚠️ Online databáze teď neodpovídá (nebo nejsi online). Zkus to později, nebo odhad od AI.</p>'; return; }
+    }catch(e){ box.innerHTML = '<p class="nb-note">⚠️ Online databáze teď neodpovídá (nebo nejsi online). Zkus to později, nebo najít makra v Googlu (AI).</p>'; return; }
     list = list.slice(0,10);
     box.innerHTML = list.length ? '<h4 class="fd-h" style="margin-top:12px;">🌐 Z Open Food Facts</h4>' + list.map((it,i)=>`<div class="fd-lib"><button data-fo="${i}"><b>${homeEsc(it.name)}</b><small>${foodItemLine(it)}</small></button></div>`).join('')
       : '<p class="nb-note">Online nic nenalezeno.</p>';
@@ -13457,10 +13676,11 @@ async function foodAiFor(text){
   const pq = foodParseQuery(text);
   if(pq.text.length<2){ showToast('⚠️ Napiš, co jsi jedl/a'); return; }
   if(!aiKey()){ openAiSetup(); return; }
-  showToast('✨ AI odhaduje…');
+  showToast('🔎 Hledám makra v Googlu…');
   try{
-    const r = await aiEstimateFood(pq.text);
-    foodOpenItem({ai:true, name:r.name, per100:r.per100, pieceG:r.pieceG, pieceLabel:r.pieceLabel}, pq);
+    const r = await aiSearchFood(pq.text);
+    foodOpenItem({ai:true, name:r.name, per100:r.per100, pieceG:r.pieceG, pieceLabel:r.pieceLabel,
+      aiNote: r.searched ? '🔎 Hodnoty nalezeny přes Google'+(r.sources.length?' ('+r.sources.map(homeEsc).join(', ')+')':'')+' – zkontroluj podle obalu.' : '✨ Odhad od AI (vyhledávání se nepovedlo) – je orientační.'}, pq);
   }catch(e){ showToast(aiErrText(e)); }
 }
 // --- nastavení AI klíče ---
