@@ -1068,12 +1068,12 @@
   .pv-head small{display:block; color:var(--muted); font-size:12px;}
   .pv-head b{font-size:17px;}
   .pv-delta{font-size:13px; font-family:'Space Mono',monospace;}
-  .pv-delta.up{color:var(--cut);} .pv-delta.down{color:var(--bulk);}
+  .pv-delta.up,.nb-trend.up,.svb-cmp.up,.cmp-d.up,.nb-dvol.best{color:#34d399 !important;} .pv-delta.down,.nb-trend.down,.svb-cmp.down,.cmp-d.down,.nb-dvol.worst{color:#ef4444 !important;} .pv-delta.same,.nb-trend.same,.svb-cmp.same,.cmp-d.same{color:#60a5fa !important;}
   .pv-row{display:grid; grid-template-columns:48px 1fr auto 64px; gap:8px; align-items:center; padding:7px 0; border-top:1px solid var(--line); font-size:14px;}
   .pv-d{color:var(--muted); font-family:'Space Mono',monospace; font-size:12.5px;} .pv-row .pv-delta{text-align:right;}
   .sess-vol-banner{margin:12px 0; padding:14px; border-radius:14px; border:1.5px solid var(--accent); background:rgba(var(--accent-rgb),0.1); text-align:center;}
   .svb-big{font-size:26px; font-weight:800; color:var(--accent);} .svb-sub{font-size:12.5px; color:var(--muted); margin-bottom:6px;}
-  .svb-cmp{font-size:13.5px; font-family:'Space Mono',monospace; color:var(--text);} .svb-cmp.up{color:var(--cut);} .svb-cmp.down{color:var(--bulk);}
+  .svb-cmp{font-size:13.5px; font-family:'Space Mono',monospace; color:var(--text);} 
   .sp-list{display:flex; flex-direction:column; gap:8px;}
   .sp-opt{display:flex; align-items:center; gap:12px; text-align:left; padding:12px 14px; border-radius:12px; border:1.5px solid var(--line); background:rgba(0,0,0,0.25); color:var(--text); font-family:'Oxanium',sans-serif; font-size:15px; cursor:pointer;}
   .sp-opt small{display:block; color:var(--muted); font-size:12.5px; margin-top:2px;}
@@ -1167,7 +1167,7 @@
   .nb-exhead small{display:block; color:var(--muted); font-size:calc(13.4px * var(--font-scale)); margin-top:2px;}
   .nb-exright{display:flex; align-items:center; gap:8px; flex-shrink:0;}
   .nb-trend{font-size:calc(13.4px * var(--font-scale)); color:var(--muted); font-family:'Space Mono',monospace;}
-  .nb-trend.up{color:var(--cut);} .nb-trend.down{color:var(--bulk);}
+
   .nb-exrow.open .hg-arrow{transform:rotate(180deg);}
   .nb-detail{padding:0 14px 12px;}
   .nb-bub{margin:6px 0 4px;}
@@ -1251,6 +1251,15 @@
   .sc-card{margin-top:14px; padding:14px 16px; border:2px solid var(--accent); border-radius:16px; background:rgba(0,0,0,calc(var(--gs) * 0.9)); box-shadow:0 0 12px rgba(var(--accent-rgb),0.16); font-size:calc(14px * var(--font-scale)); line-height:1.5;}
   .sc-card h5{margin:0 0 8px; font-size:calc(15.4px * var(--font-scale)); font-family:'Oxanium',sans-serif;}
   .sc-card p{margin:6px 0;}
+  .nb-dvol small{font-size:0.82em; opacity:.85; margin-right:4px; text-transform:uppercase; letter-spacing:.04em;}
+  .cmp-tbl{width:100%; border-collapse:collapse; font-size:calc(13px * var(--font-scale)); margin-top:10px;}
+  .cmp-tbl th{font-family:'Oxanium',sans-serif; text-align:left; padding:6px 4px; border-bottom:2px solid var(--accent); font-size:calc(12.4px * var(--font-scale)); color:var(--muted);}
+  .cmp-tbl td{padding:7px 4px; border-bottom:1px solid var(--line); vertical-align:top;}
+  .cmp-tbl td.cmp-ex{font-weight:600; max-width:120px;}
+  .cmp-tbl .cmp-d{font-family:'Space Mono',monospace; white-space:nowrap; text-align:right;}
+  .cmp-tbl tr.cmp-sum td{border-top:2px solid var(--accent); font-weight:700;}
+  .pv-cmp-row.click{cursor:pointer;} .pv-cmp-row.click:active{opacity:.8;}
+  .rk-same{margin:0 0 14px; padding:10px 12px; border-radius:12px; border:1.5px solid var(--accent); background:rgba(var(--accent-rgb),0.12); font-size:calc(14px * var(--font-scale));}
   .nb-dvol{margin-left:auto; margin-right:10px; font-size:calc(13.4px * var(--font-scale)); color:var(--muted); font-family:'Space Mono',monospace; white-space:nowrap;}
   .prog-frame{margin-top:24px; padding:16px; border-radius:18px; border:2px solid var(--accent); background:linear-gradient(160deg, rgba(var(--accent-rgb),calc(0.10 * var(--gt))), rgba(var(--cut-rgb),calc(0.06 * var(--gt)))); box-shadow:0 0 18px rgba(var(--accent-rgb),0.22);}
   .prog-frame h4{margin:0 0 10px; font-family:'Oxanium',sans-serif; font-size:15px; letter-spacing:0.08em; color:var(--accent); text-transform:uppercase;}
@@ -3096,7 +3105,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30p · 2026-11-06</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30q · 2026-11-06</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -3271,6 +3280,7 @@
     </div>
     <div style="font-family:'Oxanium',sans-serif; font-weight:700; font-size:20.3px; color:var(--accent); margin-bottom:4px;">🏅 Hodnosti podle levelu</div>
     <div class="portion-note" id="ranksCurrentNote" style="margin-bottom:14px;"></div>
+    <div id="ranksSameBox" class="rk-same" style="display:none;"></div>
     <div id="ranksList"></div>
   </div>
 </div>
@@ -6003,8 +6013,25 @@ function renderRanksList(){
     </div>`;
   }).join('');
 }
+async function renderRanksSame(){
+  const box = document.getElementById('ranksSameBox'); if(!box) return;
+  box.style.display = '';
+  const rk = levelRank(levelOf(state.xp||0));
+  if(typeof sbClient==='undefined' || !sbClient || typeof commUser==='undefined' || !commUser){
+    box.innerHTML = '👥 Kolik lidí má stejnou hodnost jako ty (<b>'+rk.emoji+' '+rk.name+'</b>) uvidíš po přihlášení v Komunitě.'; return;
+  }
+  box.innerHTML = '👥 Zjišťuji, kolik lidí má hodnost '+rk.emoji+' '+rk.name+'…';
+  try{
+    const r = await sbClient.from('profile_stats').select('user_id',{count:'exact',head:true}).eq('visibility','public').eq('rank_name', rk.name);
+    if(r.error || r.count==null) throw r.error||0;
+    const mine = (typeof chVis==='function' && chVis()==='public');
+    const n = r.count;
+    box.innerHTML = '👥 Stejnou hodnost <b>'+rk.emoji+' '+rk.name+'</b> má '+(mine?'včetně tebe ':'')+'<b>'+n.toLocaleString('cs-CZ')+'</b> '+(n===1?'uživatel':(n>1&&n<5?'uživatelé':'uživatelů'))
+      +'<br><small style="opacity:.75;">Počítají se jen uživatelé, kteří mají progres nastavený na Veřejný'+(mine?'':' (ty teď ne)')+'.</small>';
+  }catch(e){ box.innerHTML = '👥 Počet lidí se stejnou hodností se teď nepodařilo načíst.'; }
+}
 function openRanksList(){
-  renderRanksList();
+  renderRanksList(); renderRanksSame();
   document.getElementById('ranksOverlay').classList.add('open');
 }
 document.getElementById('homeXpLevel').addEventListener('click', ev=>{ ev.stopPropagation(); openRanksList(); });
@@ -9236,7 +9263,7 @@ function renderSessComplete(el){
     const prevS = sl.slice().reverse().find(x=>x.dayIndex===session.dayIndex);
     const wkNowI = nbWeekIdx(dateKeyToTime(todayKey()));
     const wkVol = sl.filter(x=>nbWeekIdx(dateKeyToTime(x.date))===wkNowI).reduce((a,x)=>a+(x.totalVolume||0),0) + totalVolume;
-    if(prevS && prevS.totalVolume>0){ const d = Math.round((totalVolume-prevS.totalVolume)/prevS.totalVolume*100); volCmpHTML += `<div class="svb-cmp ${d>=0?'up':'down'}">${d>=0?'▲ +':'▼ '}${d} % oproti minulému stejnému dni (${Math.round(prevS.totalVolume).toLocaleString('cs-CZ')} kg)</div>`; }
+    if(prevS && prevS.totalVolume>0){ const d = Math.round((totalVolume-prevS.totalVolume)/prevS.totalVolume*100); volCmpHTML += `<div class="svb-cmp ${dCls(d)}">${dTxt(d,' %')} oproti minulému stejnému dni (${Math.round(prevS.totalVolume).toLocaleString('cs-CZ')} kg)</div>`; }
     volCmpHTML += `<div class="svb-cmp">Tento týden celkem: ${Math.round(wkVol).toLocaleString('cs-CZ')} kg</div>`;
   }catch(err){}
   el.innerHTML = `
@@ -11841,6 +11868,9 @@ let nbCalSel = null;      // vybraný den v kalendáři (dateKey)
 let nbStatDays = 30;      // období statistik
 let nbEdit = null;        // stav editoru záznamu
 function nbFmt(n){ return String(Math.round(n*100)/100).replace('.', ','); }
+// rozdíly: zlepšení = zelená ▲, zhoršení = červená ▼, beze změny = modrá „~ 0“ (ve všech tématech stejně)
+function dCls(v){ return v>0 ? 'up' : (v<0 ? 'down' : 'same'); }
+function dTxt(v, unit, fmt){ const f = fmt || (x=>x); return v>0 ? '▲ +'+f(v)+unit : (v<0 ? '▼ '+f(v)+unit : '~ 0'+(unit||'')); }
 function nbDateLabel(dk){
   const t = dateKeyToTime(dk); if(!t) return dk;
   const d = new Date(t);
@@ -11939,13 +11969,13 @@ function nbEntryHTML(e, prDay){
     <span class="nb-acts"><button class="nb-ib" data-nbedit="${homeEsc(e.id)}" title="Upravit">✏️</button><button class="nb-ib" data-nbcopy="${homeEsc(e.id)}" title="Kopírovat na dnes">📋</button><button class="nb-ib" data-nbdel="${homeEsc(e.id)}" title="Smazat">🗑️</button></span></div>
     <div class="nb-sets">${sets}</div>${note}</div>`;
 }
-function nbDayHTML(dk, list, prDay, coll){
+function nbDayHTML(dk, list, prDay, coll, volTag){
   const vol = list.reduce((a,e)=>a+nbVolume(e.name,e.sets),0);
   const dn = nbDayNote(dk);
   const isToday = dk===todayKey();
   const bar = `<div class="nb-day-bar">${dn ? `<div class="nb-dnote">📝 ${homeEsc(dn)}</div>` : ''}
     <button class="nb-mini" data-nbdaynote="${dk}">${dn?'✏️ Poznámka dne':'📝 Poznámka dne'}</button>${!isToday ? `<button class="nb-mini" data-nbdaycopy="${dk}">📋 Opakovat den dnes</button>` : ''}</div>`;
-  if(coll) return `<div class="nb-day coll ${nbOpenDay===dk?'open':''}" data-nbday="${dk}"><div class="nb-day-head" data-nbdayhead="${dk}"><b>${nbDateLabel(dk)}</b><span class="nb-dvol">${vol?nbVolShort(vol):''}</span><span class="nb-chev">▾</span></div><div class="nb-day-body">${list.map(e=>nbEntryHTML(e,prDay)).join('')}${bar}</div></div>`;
+  if(coll) return `<div class="nb-day coll ${nbOpenDay===dk?'open':''}" data-nbday="${dk}"><div class="nb-day-head" data-nbdayhead="${dk}"><b>${nbDateLabel(dk)}</b><span class="nb-dvol ${volTag||''}">${vol ? (volTag ? '<small>'+(volTag==='best'?'nejlepší':'nejhorší')+'</small>' : '')+nbVolShort(vol) : ''}</span><span class="nb-chev">▾</span></div><div class="nb-day-body">${list.map(e=>nbEntryHTML(e,prDay)).join('')}${bar}</div></div>`;
   return `<div class="nb-day"><div class="nb-day-head"><b>${nbDateLabel(dk)}</b><span>${list.length} ${list.length===1?'cvik':(list.length<5?'cviky':'cviků')}${vol?' · '+Math.round(vol)+' kg':''}</span></div>${list.map(e=>nbEntryHTML(e,prDay)).join('')}${bar}</div>`;
 }
 function nbByDate(entries){
@@ -11957,7 +11987,14 @@ function nbDiaryHTML(entries){
   const byDate = nbByDate(entries);
   const dates = Object.keys(byDate).sort((a,b)=>dateKeyToTime(b)-dateKeyToTime(a));
   const prDay = nbPRMap(entries);
-  return dates.map(dk=>nbDayHTML(dk, byDate[dk], prDay, true)).join('');
+  const vols = {}; dates.forEach(dk=>{ vols[dk] = byDate[dk].reduce((a,e)=>a+nbVolume(e.name,e.sets),0); });
+  const pos = dates.filter(dk=>vols[dk]>0);
+  let bestK = null, worstK = null;
+  if(pos.length>=2){
+    bestK = pos.reduce((b,k)=>vols[k]>vols[b]?k:b, pos[0]); worstK = pos.reduce((b,k)=>vols[k]<vols[b]?k:b, pos[0]);
+    if(vols[bestK]===vols[worstK]){ bestK = null; worstK = null; }
+  }
+  return dates.map(dk=>nbDayHTML(dk, byDate[dk], prDay, true, dk===bestK?'best':(dk===worstK?'worst':''))).join('');
 }
 // ---------- kalendář ----------
 function calRefresh(){ renderNotebook(); renderHome(); if(woEditMode && woEditSub==='cal' && document.getElementById('workoutOverlay').classList.contains('open')) renderWorkoutStep3(); }
@@ -12016,7 +12053,7 @@ function nbExercisesHTML(entries){
     const metric = t => useW ? (t.weight||0) : (t.reps||0);
     const diff = Math.round((metric(last)-metric(first))*10)/10;
     const unit = useW ? ' kg' : (nbMode(name)==='cardio' ? ' min' : (nbMode(name)==='time' ? ' s' : ' opak.'));
-    const trend = ses.length>1 ? `<span class="nb-trend ${diff>=0?'up':'down'}">${diff>=0?'▲ +':'▼ '}${nbFmt(diff)}${unit}</span>` : '<span class="nb-trend">první záznam</span>';
+    const trend = ses.length>1 ? `<span class="nb-trend ${dCls(diff)}">${dTxt(diff, unit, nbFmt)}</span>` : '<span class="nb-trend">první záznam</span>';
     const open = nbOpenEx===name;
     let detail = '';
     if(open){
@@ -12103,12 +12140,56 @@ function progDayCompareHTML(){
   const f = v=>Math.round(v).toLocaleString('cs-CZ')+' kg';
   const rows = days.map(d=>{
     const dl = d.prev>0 ? Math.round((d.last-d.prev)/d.prev*100) : null;
-    const delta = dl===null ? '' : `<span class="pv-delta ${dl>=0?'up':'down'}">${dl>=0?'▲ +':'▼ '}${dl} %</span>`;
-    return `<div class="pv-cmp-row"><div class="pv-cmp-top"><span>${homeEsc(schedDayLabel(d.idx))} <small style="opacity:.6">(${d.n}×)</small></span><span><b>Ø ${f(d.avg)}</b> ${delta}</span></div>
+    const delta = dl===null ? '' : `<span class="pv-delta ${dCls(dl)}">${dTxt(dl,' %')}</span>`;
+    return `<div class="pv-cmp-row${d.n>1?' click':''}" ${d.n>1?`data-pvcmp="${d.idx}"`:''}><div class="pv-cmp-top"><span>${homeEsc(schedDayLabel(d.idx))} <small style="opacity:.6">(${d.n}×)</small>${d.n>1?' <small style="color:var(--accent)">📋 tabulka cviků</small>':''}</span><span><b>Ø ${f(d.avg)}</b> ${delta}</span></div>
       <div class="pv-cmp-bar"><i style="width:${d.avg/maxAvg*100}%"></i></div>
       <div class="pv-cmp-sub">poslední ${f(d.last)} · rekord ${f(d.best)}</div></div>`;
   }).join('');
-  return `<h5 style="margin-top:14px;">📊 Porovnání tréninkových dnů</h5>${rows}<p class="nb-note" style="margin-top:6px;">Průměrný objem na trénink podle dne plánu; šipka = poslední trénink oproti předchozímu stejného dne.</p>`;
+  return `<h5 style="margin-top:14px;">📊 Porovnání tréninkových dnů</h5>${rows}<p class="nb-note" style="margin-top:6px;">Průměrný objem na trénink podle dne plánu; šipka = poslední trénink oproti předchozímu stejného dne. Klepni na den a uvidíš tabulku, jak se změnil každý cvik.</p>`;
+}
+// tabulka: stejný den plánu, poslední trénink vs. starší – rozdíl po cvicích
+function progCmpSessions(dayIndex){
+  const seen = new Set(), out = [];
+  (state.sessionLog||[]).filter(l=>l.dayIndex===dayIndex && l.totalVolume>0).slice().sort((a,b)=>dateKeyToTime(a.date)-dateKeyToTime(b.date)).forEach(l=>{ if(!seen.has(l.date)){ seen.add(l.date); out.push(l.date); } });
+  return out;
+}
+function progCmpTableHTML(dateNew, dateOld){
+  const entries = nbEntries();
+  const collect = dk=>{ const m = {}; entries.filter(e=>e.date===dk && e.sets && e.sets.length).forEach(e=>{
+    const k = exCanon(e.name); const top = nbTop(e.name, e.sets); const mode = nbMode(e.name);
+    if(!top) return;
+    m[k] = {name:e.name, top, vol:nbVolume(e.name, e.sets), mode, n:(m[k]?m[k].n:0)+1}; }); return m; };
+  const A = collect(dateNew), B = collect(dateOld);
+  const cell = x=>{ if(!x) return '<span style="opacity:.5">–</span>'; const t=x.top, w=t.weight||0, r=t.reps||0;
+    return w>0 ? nbFmt(w)+' kg × '+r : r+(x.mode==='time'||x.mode==='weightTime'?' s':x.mode==='cardio'?' min':'×'); };
+  const keys = [...new Set([...Object.keys(A), ...Object.keys(B)])];
+  let sumN = 0, sumO = 0;
+  const rows = keys.map(k=>{
+    const a = A[k], b = B[k];
+    let d = '', cls = 'same';
+    if(a && b){
+      if(a.vol>0 || b.vol>0){ const diff = Math.round(a.vol-b.vol); cls = dCls(diff); d = dTxt(diff,' kg',v=>Math.round(v).toLocaleString('cs-CZ')); }
+      else { const diff = Math.round(((a.top.reps||0)-(b.top.reps||0))*10)/10; cls = dCls(diff); d = dTxt(diff, a.mode==='time'||a.mode==='weightTime'?' s':a.mode==='cardio'?' min':' opak.', nbFmt); }
+    } else if(a){ d = 'nový'; cls = 'up'; } else { d = 'vynecháno'; cls = 'down'; }
+    sumN += a?a.vol:0; sumO += b?b.vol:0;
+    return `<tr><td class="cmp-ex">${homeEsc(exDisp((a||b).name))}</td><td>${cell(b)}</td><td>${cell(a)}</td><td class="cmp-d ${cls}">${d}</td></tr>`;
+  }).join('');
+  const ds = Math.round(sumN-sumO);
+  return `<table class="cmp-tbl"><thead><tr><th>Cvik</th><th>Dřív</th><th>Teď</th><th style="text-align:right">Rozdíl objemu</th></tr></thead><tbody>${rows}
+    <tr class="cmp-sum"><td>Celkem</td><td>${Math.round(sumO).toLocaleString('cs-CZ')} kg</td><td>${Math.round(sumN).toLocaleString('cs-CZ')} kg</td><td class="cmp-d ${dCls(ds)}">${dTxt(ds,' kg',v=>Math.round(v).toLocaleString('cs-CZ'))}</td></tr></tbody></table>
+    <p class="nb-note" style="margin-top:8px;">Ve sloupcích je nejlepší série cviku. Rozdíl = celkový objem cviku (série × váha × opakování) teď oproti dřív.</p>`;
+}
+function progOpenDayCompare(dayIndex, oldDate){
+  const dates = progCmpSessions(dayIndex);
+  if(dates.length<2){ showToast('Tohoto dne zatím máš jen jeden trénink'); return; }
+  const dNew = dates[dates.length-1];
+  const olds = dates.slice(0,-1).reverse();
+  const dOld = oldDate && olds.includes(oldDate) ? oldDate : olds[0];
+  const ov = foodPanel(`<h4>📋 ${homeEsc(schedDayLabel(dayIndex))} – porovnání cviků</h4>
+    <div class="nb-note" style="margin-bottom:6px;">Poslední trénink <b>${nbDateLabel(dNew).replace(/^(Dnes|Včera) · /,'')}</b> oproti:
+      <select id="pvCmpOld" style="margin-left:4px; padding:4px 6px; border-radius:8px; background:rgba(0,0,0,0.3); color:inherit; border:1px solid var(--line);">${olds.map(d=>`<option value="${d}"${d===dOld?' selected':''}>${nbDateLabel(d).replace(/^(Dnes|Včera) · /,'')}</option>`).join('')}</select></div>
+    <div style="overflow-x:auto;">${progCmpTableHTML(dNew, dOld)}</div>`);
+  document.getElementById('pvCmpOld').addEventListener('change', e=>progOpenDayCompare(dayIndex, e.target.value));
 }
 function renderProgVolume(){
   const box = document.getElementById('progVolBox'); if(!box) return;
@@ -12117,14 +12198,14 @@ function renderProgVolume(){
   const cur = wk[wk.length-1].vol, prev = wk[wk.length-2].vol;
   const fmt = v=>Math.round(v).toLocaleString('cs-CZ')+' kg';
   const dl = prev>0 ? Math.round((cur-prev)/prev*100) : null;
-  const delta = dl===null ? '' : `<span class="pv-delta ${dl>=0?'up':'down'}">${dl>=0?'▲ +':'▼ '}${dl} %</span>`;
+  const delta = dl===null ? '' : `<span class="pv-delta ${dCls(dl)}">${dTxt(dl,' %')}</span>`;
   const log = (state.sessionLog||[]).slice(-8).reverse();
   const lastByDay = {};
   const rows = log.map(l=>{
     const older = (state.sessionLog||[]).slice(0, (state.sessionLog||[]).lastIndexOf(l)).reverse().find(x=>x.dayIndex===l.dayIndex);
     const d = older && older.totalVolume>0 ? Math.round((l.totalVolume-older.totalVolume)/older.totalVolume*100) : null;
     const t = dateKeyToTime(l.date), dt = t ? new Date(t) : null;
-    return `<div class="pv-row"><span class="pv-d">${dt ? dt.getDate()+'. '+(dt.getMonth()+1)+'.' : ''}</span><span class="pv-n">${homeEsc(schedDayLabel(l.dayIndex))}</span><b>${fmt(l.totalVolume||0)}</b>${d!==null?`<span class="pv-delta ${d>=0?'up':'down'}">${d>=0?'▲ +':'▼ '}${d} %</span>`:'<span></span>'}</div>`;
+    return `<div class="pv-row"><span class="pv-d">${dt ? dt.getDate()+'. '+(dt.getMonth()+1)+'.' : ''}</span><span class="pv-n">${homeEsc(schedDayLabel(l.dayIndex))}</span><b>${fmt(l.totalVolume||0)}</b>${d!==null?`<span class="pv-delta ${dCls(d)}">${dTxt(d,' %')}</span>`:'<span></span>'}</div>`;
   }).join('');
   box.innerHTML = `<div class="prog-vol">
     <h5>⚖️ Objem po týdnech</h5>
@@ -12136,6 +12217,7 @@ function renderProgVolume(){
     ${rows ? '<p class="nb-note" style="margin-top:6px;">Změna je oproti předchozímu stejnému dni tréninku.</p>' : ''}
     ${progDayCompareHTML()}
   </div>`;
+  box.querySelectorAll('[data-pvcmp]').forEach(r=>r.addEventListener('click', ()=>progOpenDayCompare(+r.dataset.pvcmp)));
 }
 const progFoldOpen = {};
 function nbFold(key, title, inner){
