@@ -1203,6 +1203,16 @@
   .fd-legend{display:flex; justify-content:center; gap:10px; flex-wrap:wrap; font-size:calc(13.4px * var(--font-scale)); margin-bottom:2px;}
   .fd-ringkey{text-align:center; font-size:calc(13.4px * var(--font-scale)); color:var(--muted); margin:2px 0 12px;}
   .fd-row{margin-bottom:11px;}
+  .fd-bang{display:inline-block; margin-left:6px; color:#ff2d2d; font-family:'Oxanium',sans-serif; font-weight:900; font-size:calc(26px * var(--font-scale)); line-height:0.8; vertical-align:-3px; text-shadow:0 0 6px #ff2d2d, 0 0 14px #ff0000, 0 0 26px #ff0000; animation:fdBang 1.4s ease-in-out infinite;}
+  @keyframes fdBang{0%,100%{opacity:1; text-shadow:0 0 6px #ff2d2d, 0 0 14px #ff0000, 0 0 26px #ff0000;} 50%{opacity:.75; text-shadow:0 0 3px #ff2d2d, 0 0 8px #ff0000;}}
+  .gainz-score-box.gsb-mini{margin-top:20px; padding:12px 16px; border-radius:16px; text-align:left; display:flex; align-items:center; gap:14px; box-shadow:0 0 18px rgba(var(--accent-rgb),0.25);}
+  .gsb-mini .gsb-value{font-size:30px; margin:0; flex:none;}
+  .gsb-mini .gsb-mid{flex:1; min-width:0;}
+  .gsb-mini .gsb-label{margin-bottom:3px; font-size:12px;}
+  .gsb-mini .gsb-tier{padding:3px 10px; font-size:12.6px; margin-bottom:0;}
+  .gsb-mini .gsb-percentile{font-size:12.6px; margin-top:4px;}
+  .prog-frame{margin-top:24px; padding:16px; border-radius:18px; border:2px solid var(--accent); background:linear-gradient(160deg, rgba(var(--accent-rgb),calc(0.10 * var(--gt))), rgba(var(--cut-rgb),calc(0.06 * var(--gt)))); box-shadow:0 0 18px rgba(var(--accent-rgb),0.22);}
+  .prog-frame h4{margin:0 0 10px; font-family:'Oxanium',sans-serif; font-size:15px; letter-spacing:0.08em; color:var(--accent); text-transform:uppercase;}
   .fd-top{display:flex; justify-content:space-between; font-size:calc(14px * var(--font-scale)); margin-bottom:4px;}
   .fd-track{height:9px; border-radius:6px; background:rgba(255,255,255,0.09); overflow:hidden;}
   .fd-fill{height:100%; border-radius:6px; transition:width .4s;}
@@ -3040,7 +3050,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30l · 2026-11-06</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30m · 2026-11-06</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -3139,17 +3149,25 @@
       <div class="logo-wrap"><div class="logo"><span class="dot"></span>GYM GAINZ</div><div class="slogan slogan-shoju">Progress</div></div>
       <button class="hdr-btn exit-btn" id="progressClose">← Zpět</button>
     </header>
-    <div data-qh="progress" style="margin-top:24px;"></div>
+    <div class="gainz-score-box gsb-mini">
+      <div class="gsb-value" id="progGainzVal">0</div>
+      <div class="gsb-mid">
+        <div class="gsb-label">GAINZ SCORE</div>
+        <div class="gsb-tier" id="progGainzTier">🔴 NOVÁČEK</div>
+        <div class="gsb-percentile" id="progGainzPercentile">Pokrok v tvé kategorii: 0 %</div>
+        <div id="progGainzCategory" style="display:none"></div>
+      </div>
+    </div>
+
+    <div data-qh="progress" style="margin-top:12px;"></div>
     <div id="progVolBox"></div>
     <div id="progFoodBox"></div>
 
     <button class="prog-food-link" id="progToNb" style="margin-top:12px;"><span>🏆 Rekordy (PR), síla a grafy cviků</span><small>Otevřít Sešit → Statistiky a Cviky →</small></button>
 
-    <div class="prof-sec" style="border-top:none; margin-top:24px; padding-top:0;">
-      <button class="wk-continue-btn" id="wToggleBtn" style="background:rgba(var(--accent-rgb),calc(0.14 * var(--gt))); border:1.5px solid var(--accent); color:var(--accent); box-shadow:none; display:flex; align-items:center; justify-content:space-between;">
-        <span>⚖️ PROGRES VÁHY <span id="wVipTag">👑</span></span><span id="wToggleArrow">▾</span>
-      </button>
-      <div id="wSectionBody" style="display:none; margin-top:16px;">
+    <div class="prog-frame" id="wFrame">
+      <h4>⚖️ Progres váhy</h4>
+      <div id="wSectionBody" style="margin-top:6px;">
         <h5>📊 Progres tělesné váhy</h5>
         <svg class="weight-chart" id="weightChart" viewBox="0 0 300 100" preserveAspectRatio="none"></svg>
         <div class="weight-add stat-grid" style="grid-template-columns:1fr auto;">
@@ -5970,7 +5988,7 @@ function addXP(n, reason){
 
 // ===== DENNÍ MISE =====
 // (přesunuto sem: mise se vyhodnocují už při startu a potřebují cíle jídla)
-const FOOD_COLORS = {green:'#34d399', lime:'#a3e635', yellow:'#fbbf24', orange:'#f97316', dgreen:'#16a34a', red:'#ef4444', blue:'#60a5fa', track:'rgba(255,255,255,0.09)'};
+const FOOD_COLORS = {green:'#34d399', lime:'#a3e635', yellow:'#fbbf24', orange:'#f97316', dgreen:'#16a34a', red:'#ef4444', red2:'#b91c1c', red3:'#7f1d1d', blue:'#60a5fa', track:'rgba(255,255,255,0.09)'};
 const FOOD_GOALS = {
   cutting:{name:'Hubnutí', icon:'🟢', kcalAdj:-500, prot:2.2},
   maintain:{name:'Udržování', icon:'🔵', kcalAdj:0, prot:2.0},
@@ -11470,8 +11488,13 @@ function setProfTab(t){
 document.querySelectorAll('#profTabs button').forEach(b=>b.addEventListener('click', ()=>setProfTab(b.dataset.pt)));
 window.goHome = ()=> openHomeSub('home');
 function renderProgress(){
-  const wTag = document.getElementById('wVipTag'); if(wTag) wTag.style.display = isPremium() ? 'none' : 'inline';
-  if(!isPremium() && wExpanded){ wExpanded = false; renderWeightSection(); }
+  const gScore = calcGainzScore();
+  const lvl = userTrainingLevel();
+  const gender = userGender();
+  const rank = levelRank(levelOf(state.xp));
+  document.getElementById('progGainzVal').textContent = gScore.toLocaleString('cs-CZ');
+  document.getElementById('progGainzTier').textContent = rank.emoji + ' ' + rank.name;
+  document.getElementById('progGainzPercentile').textContent = 'Pokrok v kategorii ' + (LEVEL_LABELS[lvl]||'') + ': ' + calcGainzPercentile(gScore, lvl, gender) + ' % (odhad)';
   renderWeightSection();
   try{ renderProgVolume(); }catch(e){ console.error(e); }
   renderPrList();
@@ -12580,7 +12603,7 @@ function foodDayTotals(key){
   return t;
 }
 // barva se mění po 25 % cíle: limit (kcal, sacharidy, tuky, cukry) = zelená → limetková → žlutá → oranžová → červená (přes cíl)
-function foodLimitColor(r){ return r<0.25 ? FOOD_COLORS.orange : r<0.5 ? FOOD_COLORS.yellow : r<0.75 ? FOOD_COLORS.lime : r<=1 ? FOOD_COLORS.dgreen : FOOD_COLORS.red; }
+function foodLimitColor(r){ return r<0.25 ? FOOD_COLORS.orange : r<0.5 ? FOOD_COLORS.yellow : r<0.75 ? FOOD_COLORS.lime : r<=1 ? FOOD_COLORS.dgreen : r<2 ? FOOD_COLORS.red : r<3 ? FOOD_COLORS.red2 : FOOD_COLORS.red3; }
 // stejný postup jako u ostatních (oranžová → žlutá → světle zelená → tmavě zelená), jen nad cílem zůstává tmavě zelená (víc bílkovin není chyba)
 function foodProteinColor(r){ return r<0.25 ? FOOD_COLORS.orange : r<0.5 ? FOOD_COLORS.yellow : r<0.75 ? FOOD_COLORS.lime : FOOD_COLORS.dgreen; }
 
@@ -12690,7 +12713,7 @@ function foodDonutHTML(tot, tg, size){
     : `<text x="110" y="107" text-anchor="middle" fill="#f2f2f7" font-size="23" font-weight="800" font-family="Oxanium,sans-serif">+${-left}</text><text x="110" y="121" text-anchor="middle" fill="#c9c9d6" font-size="9" font-family="Space Mono,monospace">kcal navíc</text>`;
   return `<svg viewBox="0 0 220 220" width="${size}" height="${size}" role="img" aria-label="Makra dnes">
     ${foodRing(102, rk, ck, 11)}${foodRing(87, rp, foodProteinColor(rp), 10)}${foodRing(72, rc, foodLimitColor(rc), 10)}${foodRing(57, rf, foodLimitColor(rf), 10)}${foodRing(42, rs, foodLimitColor(rs), 9)}
-    ${center}</svg>`;
+    ${center}${rk>=3 ? '<text x="203" y="44" text-anchor="middle" fill="#ff2d2d" font-size="42" font-weight="900" font-family="Oxanium,sans-serif" style="filter:drop-shadow(0 0 4px #ff0000) drop-shadow(0 0 9px #ff0000)">!</text>' : ''}</svg>`;
 }
 function foodMacroRows(tot, tg){
   const rows = [
@@ -12704,9 +12727,12 @@ function foodMacroRows(tot, tg){
     const pct = tgt ? Math.min(100, val/tgt*100) : 0;
     const left = tgt - val;
     const sub = kind==='goal' ? (left>0 ? `ještě ${Math.round(left)} ${unit}` : 'cíl splněn ✓') : (left>=0 ? `zbývá ${Math.round(left)} ${unit}` : `nad limit o ${Math.round(-left)} ${unit}`);
+    const ratio = tgt ? val/tgt : 0;
+    const bang = (kind==='limit' && ratio>=3) ? '<span class="fd-bang" title="Víc než 3× cíl">!</span>' : '';
+    const times = (kind==='limit' && ratio>=2) ? ` · ${String(Math.round(ratio*10)/10).replace('.',',')}× cíl` : '';
     const unknown = (label==='z toho cukry' && !tot.sKnown && tot.n) ? ' <small style="opacity:.6">(u části jídel neznámé)</small>' : '';
-    return `<div class="fd-row"><div class="fd-top"><span>${ic} ${label}${unknown}</span><span><b>${Math.round(val)}</b> / ${Math.round(tgt)} ${unit}</span></div>
-      <div class="fd-track"><div class="fd-fill" style="width:${pct}%; background:${col};"></div></div><div class="fd-sub" style="color:${col}">${sub}</div></div>`;
+    return `<div class="fd-row"><div class="fd-top"><span>${ic} ${label}${unknown}${bang}</span><span><b>${Math.round(val)}</b> / ${Math.round(tgt)} ${unit}</span></div>
+      <div class="fd-track"><div class="fd-fill" style="width:${pct}%; background:${col};"></div></div><div class="fd-sub" style="color:${ratio>1 && kind==='limit' ? '#f05252' : col}">${sub}${times}</div></div>`;
   }).join('');
 }
 function foodWeekChart(endKey, tg, selKey){
@@ -12754,8 +12780,8 @@ function renderFoodDiary(){
     <p class="fd-goalline">🎯 Cíl: <b>${FOOD_GOALS[tg.goal].icon} ${FOOD_GOALS[tg.goal].name}</b> · <button class="home-link" id="fdGoalEdit">změnit v Profilu</button></p>
     <div class="fd-note">${tg.manual ? '✋ Používáš vlastní ručně nastavené cíle. <button class="home-link" id="fdAuto">Vrátit automatické podle cíle</button>' : (tg.hasWeight ? 'Cíle jsou spočítané z tvé váhy a zvoleného cíle.' : 'Orientační cíle. Zadej váhu v profilu pro přesnější čísla.')}</div>
     <div class="fd-donut">${foodDonutHTML(tot, tg, 310)}</div>
-    <div class="fd-legend"><span style="color:${FOOD_COLORS.orange}">● do 25 %</span><span style="color:${FOOD_COLORS.yellow}">● do 50 %</span><span style="color:${FOOD_COLORS.lime}">● do 75 %</span><span style="color:${FOOD_COLORS.dgreen}">● do 100 %</span><span style="color:${FOOD_COLORS.red}">● přes cíl</span></div>
-    <p class="fd-ringkey">Kruhy zvenku: kalorie · bílkoviny · sacharidy · tuky · cukry. Barva se mění po 25 % cíle: oranžová → žlutá → světle zelená → tmavě zelená, červená při překročení (u bílkovin zůstává zelená).</p>
+    <div class="fd-legend"><span style="color:${FOOD_COLORS.orange}">● do 25 %</span><span style="color:${FOOD_COLORS.yellow}">● do 50 %</span><span style="color:${FOOD_COLORS.lime}">● do 75 %</span><span style="color:${FOOD_COLORS.dgreen}">● do 100 %</span><span style="color:${FOOD_COLORS.red}">● přes cíl</span><span style="color:${FOOD_COLORS.red2}">● 2×</span><span style="color:${FOOD_COLORS.red3}">● 3× !</span></div>
+    <p class="fd-ringkey">Kruhy zvenku: kalorie · bílkoviny · sacharidy · tuky · cukry. Barva se mění po 25 % cíle: oranžová → žlutá → světle zelená → tmavě zelená, červená při překročení, tmavší při 2× a 3× cíle (u bílkovin zůstává zelená).</p>
     ${foodMacroRows(tot, tg)}
     <details class="fd-targets"${state.fdTgOpen?' open':''}>
       <summary>✏️ Upravit denní cíle (kcal a makra)</summary>
@@ -13542,20 +13568,7 @@ function renderVolumeChart(){
   }
   svg.innerHTML = nbWeekBarsSVG(wk);
 }
-let wExpanded = false;
-function renderWeightSection(){
-  document.getElementById('wToggleArrow').textContent = wExpanded ? '▴' : '▾';
-  document.getElementById('wSectionBody').style.display = wExpanded ? 'block' : 'none';
-  if(wExpanded){
-    renderWeightChart();
-    renderVolumeChart();
-  }
-}
-document.getElementById('wToggleBtn').addEventListener('click', ()=>{
-  if(!isPremium()){ openPaywall('progres váhy'); return; }
-  wExpanded = !wExpanded;
-  renderWeightSection();
-});
+function renderWeightSection(){ renderWeightChart(); }
 function renderWeightChart(){
   const p = profState();
   const svg = document.getElementById('weightChart');
