@@ -3040,7 +3040,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30k · 2026-11-06</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30l · 2026-11-06</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -3139,15 +3139,7 @@
       <div class="logo-wrap"><div class="logo"><span class="dot"></span>GYM GAINZ</div><div class="slogan slogan-shoju">Progress</div></div>
       <button class="hdr-btn exit-btn" id="progressClose">← Zpět</button>
     </header>
-    <div class="gainz-score-box" style="margin-top:24px;">
-      <div class="gsb-label">GAINZ SCORE</div>
-      <div class="gsb-value" id="progGainzVal">0</div>
-      <div class="gsb-tier" id="progGainzTier">🔴 NOVÁČEK</div>
-      <div id="progGainzCategory" style="font-family:'Space Mono',monospace; font-size:13.4px; color:var(--muted); margin-top:4px;">Kategorie: 🟢 Začátečník</div>
-      <div class="gsb-percentile" id="progGainzPercentile">Pokrok v tvé kategorii: 0 %</div>
-    </div>
-
-    <div data-qh="progress" style="margin-top:12px;"></div>
+    <div data-qh="progress" style="margin-top:24px;"></div>
     <div id="progVolBox"></div>
     <div id="progFoodBox"></div>
 
@@ -3164,8 +3156,6 @@
           <input type="number" id="wLogVal" step="0.1" placeholder="Dnešní tělesná váha (kg)">
           <button id="wLogAdd">＋ Zapsat</button>
         </div>
-        <h5 style="margin-top:22px;">🏋️ Odzvednutý objem po týdnech</h5>
-        <svg class="weight-chart" id="volumeChart" viewBox="0 0 300 100" preserveAspectRatio="none"></svg>
       </div>
     </div>
 
@@ -11482,16 +11472,6 @@ window.goHome = ()=> openHomeSub('home');
 function renderProgress(){
   const wTag = document.getElementById('wVipTag'); if(wTag) wTag.style.display = isPremium() ? 'none' : 'inline';
   if(!isPremium() && wExpanded){ wExpanded = false; renderWeightSection(); }
-  const gScore = calcGainzScore();
-  const lvl = userTrainingLevel();
-  const gender = userGender();
-  const xpLv = levelOf(state.xp);
-  const rank = levelRank(xpLv);
-  document.getElementById('progGainzVal').textContent = gScore.toLocaleString('cs-CZ');
-  document.getElementById('progGainzTier').textContent = rank.emoji + ' ' + rank.name;
-  const genderLabel = gender==='male' ? ' · 👨 Muž' : gender==='female' ? ' · 👩 Žena' : '';
-  document.getElementById('progGainzCategory').textContent = 'Kategorie: ' + LEVEL_LABELS[lvl] + genderLabel;
-  document.getElementById('progGainzPercentile').textContent = 'Pokrok v tvé kategorii: ' + calcGainzPercentile(gScore, lvl, gender) + ' % (orientační odhad, ne srovnání s hráči).';
   renderWeightSection();
   try{ renderProgVolume(); }catch(e){ console.error(e); }
   renderPrList();
