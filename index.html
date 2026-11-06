@@ -3034,7 +3034,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30g · 2026-11-05</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30h · 2026-11-05</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -12684,14 +12684,14 @@ function foodRing(r, pct, color, sw){
     + (p>0 ? `<circle cx="110" cy="110" r="${r}" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="round" pathLength="100" stroke-dasharray="${p.toFixed(2)} 100" transform="rotate(-90 110 110)" style="filter:drop-shadow(0 0 3px ${color})"/>` : '');
 }
 function foodDonutHTML(tot, tg, size){
-  const rk = tg.kcal ? tot.kcal/tg.kcal : 0, rp = tg.p ? tot.p/tg.p : 0, rc = tg.c ? tot.c/tg.c : 0, rf = tg.f ? tot.f/tg.f : 0;
+  const rk = tg.kcal ? tot.kcal/tg.kcal : 0, rp = tg.p ? tot.p/tg.p : 0, rc = tg.c ? tot.c/tg.c : 0, rf = tg.f ? tot.f/tg.f : 0, rs = tg.s ? (tot.s||0)/tg.s : 0;
   const left = Math.round(tg.kcal - tot.kcal);
   const ck = foodLimitColor(rk);
   const center = left>=0
-    ? `<text x="110" y="108" text-anchor="middle" fill="#f2f2f7" font-size="29" font-weight="800" font-family="Oxanium,sans-serif">${left}</text><text x="110" y="123" text-anchor="middle" fill="#c9c9d6" font-size="10.5" font-family="Space Mono,monospace">kcal zbývá</text>`
-    : `<text x="110" y="108" text-anchor="middle" fill="#f2f2f7" font-size="26" font-weight="800" font-family="Oxanium,sans-serif">+${-left}</text><text x="110" y="123" text-anchor="middle" fill="#c9c9d6" font-size="10.5" font-family="Space Mono,monospace">kcal navíc</text>`;
+    ? `<text x="110" y="107" text-anchor="middle" fill="#f2f2f7" font-size="25" font-weight="800" font-family="Oxanium,sans-serif">${left}</text><text x="110" y="121" text-anchor="middle" fill="#c9c9d6" font-size="9" font-family="Space Mono,monospace">kcal zbývá</text>`
+    : `<text x="110" y="107" text-anchor="middle" fill="#f2f2f7" font-size="23" font-weight="800" font-family="Oxanium,sans-serif">+${-left}</text><text x="110" y="121" text-anchor="middle" fill="#c9c9d6" font-size="9" font-family="Space Mono,monospace">kcal navíc</text>`;
   return `<svg viewBox="0 0 220 220" width="${size}" height="${size}" role="img" aria-label="Makra dnes">
-    ${foodRing(98, rk, ck, 13)}${foodRing(81, rp, foodProteinColor(rp), 11)}${foodRing(65, rc, foodLimitColor(rc), 11)}${foodRing(49, rf, foodLimitColor(rf), 11)}
+    ${foodRing(102, rk, ck, 11)}${foodRing(87, rp, foodProteinColor(rp), 10)}${foodRing(72, rc, foodLimitColor(rc), 10)}${foodRing(57, rf, foodLimitColor(rf), 10)}${foodRing(42, rs, foodLimitColor(rs), 9)}
     ${center}</svg>`;
 }
 function foodMacroRows(tot, tg){
@@ -12754,7 +12754,7 @@ function renderFoodDiary(){
     <div class="fd-note">${tg.manual ? '✋ Používáš vlastní ručně nastavené cíle. <button class="home-link" id="fdAuto">Vrátit automatické podle cíle</button>' : (tg.hasWeight ? 'Cíle jsou spočítané z tvé váhy a zvoleného cíle.' : 'Orientační cíle. Zadej váhu v profilu pro přesnější čísla.')}</div>
     <div class="fd-donut">${foodDonutHTML(tot, tg, 310)}</div>
     <div class="fd-legend"><span style="color:${FOOD_COLORS.green}">● v pohodě</span><span style="color:${FOOD_COLORS.yellow}">● blíží se</span><span style="color:${FOOD_COLORS.orange}">● skoro limit</span><span style="color:${FOOD_COLORS.red}">● přes limit</span></div>
-    <p class="fd-ringkey">Kruhy zvenku: kalorie · bílkoviny · sacharidy · tuky</p>
+    <p class="fd-ringkey">Kruhy zvenku: kalorie · bílkoviny · sacharidy · tuky · cukry</p>
     ${foodMacroRows(tot, tg)}
     <details class="fd-targets"${state.fdTgOpen?' open':''}>
       <summary>✏️ Upravit denní cíle (kcal a makra)</summary>
