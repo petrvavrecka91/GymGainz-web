@@ -1211,6 +1211,7 @@
   .gsb-mini .gsb-label{margin-bottom:3px; font-size:12px;}
   .gsb-mini .gsb-tier{padding:3px 10px; font-size:12.6px; margin-bottom:0;}
   .gsb-mini .gsb-percentile{font-size:12.6px; margin-top:4px;}
+  #progressOverlay .prog-vol, #progressOverlay .prog-food-link{border:2px solid var(--accent); box-shadow:0 0 14px rgba(var(--accent-rgb),0.18);}
   .prog-frame{margin-top:24px; padding:16px; border-radius:18px; border:2px solid var(--accent); background:linear-gradient(160deg, rgba(var(--accent-rgb),calc(0.10 * var(--gt))), rgba(var(--cut-rgb),calc(0.06 * var(--gt)))); box-shadow:0 0 18px rgba(var(--accent-rgb),0.22);}
   .prog-frame h4{margin:0 0 10px; font-family:'Oxanium',sans-serif; font-size:15px; letter-spacing:0.08em; color:var(--accent); text-transform:uppercase;}
   .fd-top{display:flex; justify-content:space-between; font-size:calc(14px * var(--font-scale)); margin-bottom:4px;}
@@ -3050,7 +3051,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30m · 2026-11-06</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30n · 2026-11-06</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -3149,17 +3150,7 @@
       <div class="logo-wrap"><div class="logo"><span class="dot"></span>GYM GAINZ</div><div class="slogan slogan-shoju">Progress</div></div>
       <button class="hdr-btn exit-btn" id="progressClose">← Zpět</button>
     </header>
-    <div class="gainz-score-box gsb-mini">
-      <div class="gsb-value" id="progGainzVal">0</div>
-      <div class="gsb-mid">
-        <div class="gsb-label">GAINZ SCORE</div>
-        <div class="gsb-tier" id="progGainzTier">🔴 NOVÁČEK</div>
-        <div class="gsb-percentile" id="progGainzPercentile">Pokrok v tvé kategorii: 0 %</div>
-        <div id="progGainzCategory" style="display:none"></div>
-      </div>
-    </div>
-
-    <div data-qh="progress" style="margin-top:12px;"></div>
+    <div data-qh="progress" style="margin-top:24px;"></div>
     <div id="progVolBox"></div>
     <div id="progFoodBox"></div>
 
@@ -3174,6 +3165,16 @@
           <input type="number" id="wLogVal" step="0.1" placeholder="Dnešní tělesná váha (kg)">
           <button id="wLogAdd">＋ Zapsat</button>
         </div>
+      </div>
+    </div>
+
+    <div class="gainz-score-box gsb-mini">
+      <div class="gsb-value" id="progGainzVal">0</div>
+      <div class="gsb-mid">
+        <div class="gsb-label">GAINZ SCORE</div>
+        <div class="gsb-tier" id="progGainzTier">🔴 NOVÁČEK</div>
+        <div class="gsb-percentile" id="progGainzPercentile">Pokrok v tvé kategorii: 0 %</div>
+        <div id="progGainzCategory" style="display:none"></div>
       </div>
     </div>
 
