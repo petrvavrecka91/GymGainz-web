@@ -1289,6 +1289,13 @@
   .fd-week{width:100%; height:auto;}
   .fd-lib{display:flex; align-items:center; gap:6px; margin-bottom:7px;}
   .fd-lib > button:first-child{flex:1; text-align:left; padding:10px 12px; border-radius:12px; border:1px solid var(--line); background:rgba(0,0,0,calc(var(--gs) * 0.9)); color:var(--text); cursor:pointer; font-family:inherit; box-shadow:inset 0 1px 0 rgba(255,255,255,var(--gedge)), inset 0 -1px 0 rgba(255,255,255,calc(var(--gedge) * 0.35));}
+  .fs-stat{display:flex; flex-wrap:wrap; gap:6px; margin:0 0 8px;} .fs-stat .fs-err{flex-basis:100%; margin:0; font-size:calc(12.6px * var(--font-scale));}
+  .fs-chip{padding:5px 9px; border-radius:999px; border:1px solid var(--line); background:transparent; color:var(--muted); font-family:inherit; font-size:calc(12.6px * var(--font-scale)); cursor:pointer;}
+  .fs-chip.ok{border-color:var(--green,#2ecc71); color:var(--green,#2ecc71);} .fs-chip.err{border-color:#ff5d5d; color:#ff5d5d;} .fs-chip.load{opacity:.8;}
+  .fd-lib small.fs-meta{display:flex; flex-wrap:wrap; gap:4px 10px;} .fs-var{font-style:normal; font-weight:600; color:var(--cyan); font-size:.85em;} .fs-brand{color:var(--cyan) !important;}
+  .fs-cmp.l2{color:var(--green,#2ecc71);} .fs-cmp.l1{color:var(--cyan);} .fs-cmp.l0{color:#ff9d5d;} .fs-warn{color:#ff9d5d;}
+  .fs-link{flex:0 0 auto; align-self:stretch; display:flex; align-items:center; padding:0 10px; border-radius:12px; border:1px solid var(--line); color:var(--accent); text-decoration:none; font-size:18px;}
+  .fs-attr{margin-top:6px;}
   .fd-lib b{display:block; font-size:calc(14.6px * var(--font-scale));} .fd-lib small{display:block; color:var(--muted); font-size:calc(13.4px * var(--font-scale)); margin-top:2px;}
   .ff-lbl{display:block; font-size:13.8px; color:var(--muted); margin:9px 0 4px;}
   .ff-lbl input, .ff-lbl select{display:block; width:100%; margin-top:4px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:rgba(0,0,0,calc(var(--gs) * 0.9)); color:var(--text); font-family:inherit; font-size:15.7px; box-shadow:inset 0 1px 0 rgba(255,255,255,var(--gedge)), inset 0 -1px 0 rgba(255,255,255,calc(var(--gedge) * 0.35));}
@@ -3111,7 +3118,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30s · 2026-11-06</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30t · 2026-11-07</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -12933,8 +12940,9 @@ async function aiGenerateSearch(prompt){
   const m = txt.match(/\{[\s\S]*\}/);
   if(!m) throw aiErr('parse','AI vrátila nečitelnou odpověď');
   let obj; try{ obj = JSON.parse(m[0]); }catch(e){ throw aiErr('parse','AI vrátila nečitelnou odpověď'); }
-  const chunks = ((cand.groundingMetadata||{}).groundingChunks||[]).map(c=>c.web&&c.web.title).filter(Boolean);
-  return {obj, sources:[...new Set(chunks)].slice(0,3)};
+  const rawChunks = (cand.groundingMetadata||{}).groundingChunks||[];
+  const chunks = rawChunks.map(c=>c.web&&c.web.title).filter(Boolean);
+  return {obj, sources:[...new Set(chunks)].slice(0,3), chunks:rawChunks};
 }
 const AI_NUM = {type:'NUMBER', nullable:true};
 const AI_PER100 = {type:'OBJECT', properties:{kcal:AI_NUM, p:AI_NUM, c:AI_NUM, s:AI_NUM, f:AI_NUM, sf:AI_NUM, fiber:AI_NUM, salt:AI_NUM}};
@@ -13314,7 +13322,7 @@ function openFoodForm(init){
   const basis = init.basis || '100';
   const inp = (k,l)=>`<label class="ff-lbl">${l}<input type="text" inputmode="decimal" data-ff="${k}" value="${v[k]!=null ? homeEsc(String(v[k]).replace('.',',')) : ''}" class="${init.missing && init.missing.includes(k) ? 'ff-miss' : ''}"></label>`;
   const ov = foodPanel(`
-    <h4>${init.source==='label'?'📷 Z fotky tabulky':init.source==='barcode'?'📦 Z čárového kódu':init.source==='library'?'⭐ Z mých potravin':init.source==='db'?'🔎 Z databáze potravin':init.source==='off'?'🌐 Z Open Food Facts':init.source==='ai'?'✨ Odhad od AI':'✍️ Zapsat jídlo'}</h4>
+    <h4>${init.source==='label'?'📷 Z fotky tabulky':init.source==='barcode'?'📦 Z čárového kódu':init.source==='library'?'⭐ Z mých potravin':init.source==='db'?'🔎 Z databáze potravin':init.source==='off'?'🌐 Z Open Food Facts':init.source==='nutri'?'🇨🇿 Z NutriDatabáze':init.source==='google'?'🔍 Nalezeno přes Google':init.source==='ai'?'✨ Odhad od AI':'✍️ Zapsat jídlo'}</h4>
     ${init.note ? `<div class="ff-note">${init.note}</div>` : ''}
     <label class="ff-lbl">Název jídla<input type="text" id="ffName" maxlength="60" value="${homeEsc(init.name||'')}" placeholder="např. Tvaroh polotučný"></label>
     <div id="ffSug" class="ff-sug"></div>
@@ -13328,7 +13336,7 @@ function openFoodForm(init){
     <div class="fs-more" id="ffQuick" style="margin:2px 0 8px;"><button type="button" data-qf="1">📦 Celé balení</button><button type="button" data-qf="0.5">½ balení</button>${init.servingG && init.basis!=='serving' ? '<button type="button" data-qs="'+init.servingG+'">🥄 1 porce ('+init.servingG+' g)</button>' : ''}</div>
     <label class="ff-lbl">Kolik jsi snědl/a (g / ml)<input type="text" inputmode="decimal" id="ffGrams" value="${init.grams||init.servingG||init.packG||100}"></label>
     <div id="ffPreview" class="ff-preview"></div>
-    ${init.source==='library' ? '' : '<label class="ff-chk"><input type="checkbox" id="ffSave" '+(['db','off','ai'].includes(init.source)?'':'checked')+'> Uložit do Mých potravin</label>'}
+    ${init.source==='library' ? '' : '<label class="ff-chk"><input type="checkbox" id="ffSave" '+(['db','off','ai','nutri','google'].includes(init.source)?'':'checked')+'> Uložit do Mých potravin</label>'}
     ${init.raw ? `<details class="ff-raw"><summary>Rozpoznaný text z fotky</summary><pre>${homeEsc(init.raw)}</pre></details>` : ''}
     <button class="paywall-cta" id="ffAdd" style="background:var(--accent); color:#14041f; margin:12px 0 0;">➕ Přidat do deníku</button>`);
   const read = ()=>{
@@ -13361,7 +13369,7 @@ function openFoodForm(init){
     document.getElementById('ffGrams').value = String(Math.round(pk*parseFloat(bt.dataset.qf)*10)/10).replace('.',','); refresh();
   }));
   ov.querySelectorAll('#ffQuick [data-qs]').forEach(bt=>bt.addEventListener('click', ()=>{ document.getElementById('ffGrams').value = String(bt.dataset.qs).replace('.',','); refresh(); }));
-  let srcNow = init.source||'manual', piece = null;
+  let srcNow = init.source||'manual', srcUrlNow = init.srcUrl||'', piece = null;
   const nameEl = document.getElementById('ffName'), gramsEl = document.getElementById('ffGrams'), cntEl = document.getElementById('ffCount');
   const fmtN = n=>String(n).replace('.',',');
   const setPiece = (p,count)=>{
@@ -13381,7 +13389,7 @@ function openFoodForm(init){
     if(it.name) nameEl.value = it.name;
     const pc = foodPieceOf(it), q = foodQtyToGrams(pc, qty);
     setPiece(pc, q.count); gramsEl.value = fmtN(Math.round(q.grams*10)/10);
-    srcNow = it.mine ? 'library' : (it.ai ? 'ai' : 'db');
+    srcNow = it.mine ? 'library' : (it.ai ? 'ai' : 'db'); srcUrlNow = '';
     const sv = document.getElementById('ffSave'); if(sv) sv.checked = false;
     sugEl.innerHTML = ''; refresh();
   };
@@ -13419,7 +13427,7 @@ function openFoodForm(init){
     const p = r.per100;
     if(p.kcal==null){ showToast('⚠️ Zadej aspoň kalorie nebo makra'); return; }
     const f = r.grams/100;
-    foodCommit({date: (foodDate||todayKey()), name, source: srcNow, grams: r.grams,
+    foodCommit({date: (foodDate||todayKey()), name, source: srcNow, srcUrl: srcUrlNow||undefined, grams: r.grams,
       kcal:(p.kcal||0)*f, p:(p.p||0)*f, c:(p.c||0)*f, f:(p.f||0)*f, s: p.s==null ? null : p.s*f});
     const sv = document.getElementById('ffSave');
     if(sv && sv.checked){
@@ -13665,17 +13673,13 @@ async function foodLookupBarcode(code){
   if(code.length<8){ showToast('⚠️ Zadej celé číslo čárového kódu (8–13 číslic)'); return; }
   showToast('🔎 Hledám výrobek…');
   try{
-    const r = await fetch('https://world.openfoodfacts.org/api/v2/product/'+code+'.json?fields=product_name,brands,nutriments,serving_quantity,quantity');
-    const j = await r.json();
-    if(!j || j.status!==1 || !j.product){ showToast('Výrobek není v databázi – vyfoť tabulku'); openFoodForm({source:'manual', note:'Výrobek s kódem '+code+' není v databázi. Zadej hodnoty z obalu nebo vyfoť tabulku.'}); return; }
-    const pr = j.product, n = pr.nutriments || {};
-    const g = k => (n[k]!=null && n[k]!=='') ? Number(n[k]) : null;
-    let kcal = g('energy-kcal_100g'); if(kcal==null && g('energy_100g')!=null) kcal = Math.round(g('energy_100g')/4.184);
-    const name = [pr.product_name, pr.brands && String(pr.brands).split(',')[0]].filter(Boolean).join(' – ');
-    openFoodForm({source:'barcode', name, per100:{kcal, p:g('proteins_100g'), c:g('carbohydrates_100g'), s:g('sugars_100g'), f:g('fat_100g'), sf:g('saturated-fat_100g'), fiber:g('fiber_100g'), salt:g('salt_100g')},
-      servingG: pr.serving_quantity ? Number(pr.serving_quantity) : null, packG: foodParsePack(pr.quantity), grams: pr.serving_quantity ? Number(pr.serving_quantity) : (foodParsePack(pr.quantity) || 100),
-      missing: [], note:'Údaje pocházejí z databáze Open Food Facts (přidávají je uživatelé). Zkontroluj je podle obalu.'});
-  }catch(err){ showToast('⚠️ Nepodařilo se spojit s databází – zkontroluj internet'); }
+    const list = await fsOffRawList('', code);
+    const o = list[0];
+    if(!o || !o.name){ showToast('Výrobek není v Open Food Facts – zkouším další zdroje'); openFoodSearch(code); return; }
+    const name = [o.name, o.brand].filter(Boolean).join(' – ');
+    openFoodForm({source:'barcode', name, per100:fsNormPer(o.per100), srcUrl:o.url||'', servingG:o.pieceG||null, packG:o.packG||null, grams:o.pieceG || o.packG || 100,
+      missing: [], note:'Údaje pocházejí z databáze Open Food Facts (přidávají je uživatelé). Zkontroluj je podle obalu.'+(o.url ? ' <a href="'+homeEsc(o.url)+'" target="_blank" rel="noopener">zdroj ↗</a>' : '')});
+  }catch(err){ showToast('⚠️ '+(err && err.code==='limit' ? err.message : 'Nepodařilo se spojit s databází – zkontroluj internet')); }
 }
 
 // --- foto jídla → odhad od AI ---
@@ -13705,11 +13709,11 @@ function openFoodPhotoPicker(){
   document.getElementById('fpCam').addEventListener('change', e=>go(e.target.files[0]));
   document.getElementById('fpGal').addEventListener('change', e=>go(e.target.files[0]));
 }
-// --- hledání potravin (místní databáze + Open Food Facts + AI) ---
+// --- hledání potravin: sjednocené vyhledávání z více zdrojů najednou ---
 function foodPieceOf(it){ return it && it.pieceG>0 ? {g:it.pieceG, label:it.pieceLabel||'ks'} : null; }
 function foodItemLine(it){
   const p = it.per100||{};
-  return `na 100 g: ${Math.round(p.kcal||0)} kcal · B ${foodFmt(p.p)} · S ${foodFmt(p.c)} · T ${foodFmt(p.f)}` + (it.pieceG>0 ? ` · 1 ${homeEsc(it.pieceLabel||'ks')} ≈ ${foodFmt(it.pieceG)} g` : '');
+  return `na 100 g: ${Math.round(p.kcal||0)} kcal · B ${foodFmt(p.p)} · S ${foodFmt(p.c)} · T ${foodFmt(p.f)}` + (p.fiber!=null ? ` · vl. ${foodFmt(p.fiber)}` : '') + (it.pieceG>0 ? ` · 1 ${homeEsc(it.pieceLabel||'ks')} ≈ ${foodFmt(it.pieceG)} g` : '');
 }
 function foodQtyToGrams(piece, qty){
   let count = 1, grams = piece ? piece.g : 100;
@@ -13720,59 +13724,305 @@ function foodQtyToGrams(piece, qty){
   }
   return {count, grams};
 }
+// zdroje: lib = Moje potraviny, db = vestavěný základ, nutri = NutriDatabáze (jen přes server), off = Open Food Facts, google = Google + Gemini (jen s ověřeným odkazem)
+const FS_SRC = {
+  lib:   {label:'Moje potraviny',          ico:'⭐', pri:50},
+  nutri: {label:'NutriDatabáze',           ico:'🇨🇿', pri:30},
+  db:    {label:'Základní databáze',       ico:'🔎', pri:25},
+  off:   {label:'Open Food Facts',         ico:'🌐', pri:20},
+  google:{label:'Google (ověřený zdroj)',  ico:'🔍', pri:10}
+};
+const FS_KEYS = ['kcal','p','c','s','f','sf','fiber','salt'];
+function fsNormPer(o){
+  const out = {};
+  FS_KEYS.forEach(k=>{ const v = o && o[k]; const n = (v===null||v===undefined||v==='') ? null : Number(v); out[k] = (n!=null && isFinite(n) && n>=0) ? n : null; });
+  return out;
+}
+function fsPlausible(per){   // zahodí zjevně chybné záznamy (překlep v databázi)
+  if(per.kcal==null || per.kcal>950) return false;
+  if((per.p||0)+(per.c||0)+(per.f||0) > 105) return false;
+  return true;
+}
+function fsVariant(name){
+  const n = homeNorm(name||'');
+  const map = [['syrov','syrové'],['vareny','vařené'],['varena','vařené'],['vareno','vařené'],['upecen','pečené'],['pecen','pečené'],['smazen','smažené'],['grilov','grilované'],['susen','sušené'],['sucha','suché'],['suche','suché'],['uzen','uzené'],['konzerv','konzerva']];
+  for(const [k,v] of map) if(n.includes(k)) return v;
+  return '';
+}
+function fsComplete(per){   // 0 neúplné · 1 základní (kcal+B+S+T) · 2 úplné (+cukry a vláknina)
+  const core = ['kcal','p','c','f'].filter(k=>per[k]!=null).length;
+  const n = FS_KEYS.filter(k=>per[k]!=null).length;
+  const lvl = core<4 ? 0 : ((per.fiber!=null && per.s!=null) ? 2 : 1);
+  return {n, lvl, txt:['neúplné','základní','úplné'][lvl]};
+}
+function fsMk(src, o){
+  const per = fsNormPer(o.per100);
+  const name = String(o.name||'').replace(/\s+/g,' ').trim().slice(0,80);
+  if(!name) return null;
+  if(src!=='lib' && src!=='db' && !fsPlausible(per)) return null;
+  const url = (o.url && /^https?:\/\//i.test(o.url)) ? String(o.url) : '';
+  const it = {src:[src], name, brand:String(o.brand||'').trim().slice(0,40), variant:o.variant||fsVariant(name), per100:per, url,
+    links: url ? [{src, url}] : [], ean:String(o.ean||'').replace(/\D/g,''), pieceG:o.pieceG>0 ? Number(o.pieceG) : null, pieceLabel:o.pieceLabel||'porce',
+    packG:o.packG>0 ? Number(o.packG) : null, mine:src==='lib', id:o.id||null, cmp:fsComplete(per)};
+  return it;
+}
+function fsFromLocal(list){ return list.map(x=>fsMk(x.mine?'lib':'db', {id:x.id, name:x.name, per100:x.per100, pieceG:x.pieceG, pieceLabel:x.pieceLabel, packG:x.packG})).filter(Boolean); }
+// stejné hodnoty v rámci tolerance zaokrouhlení → jde o totéž z různých zdrojů
+function fsSame(a, b){
+  const t = (x,y,abs,rel)=> (x==null || y==null) ? true : Math.abs(x-y) <= Math.max(abs, rel*Math.max(x,y));
+  return t(a.kcal,b.kcal,8,0.06) && t(a.p,b.p,1,0.1) && t(a.c,b.c,1,0.1) && t(a.f,b.f,1,0.1);
+}
+function fsKey(it){ return it.ean ? 'e:'+it.ean : 'n:'+homeNorm(it.brand+' '+it.name).replace(/[^a-z0-9]+/g,' ').trim()+'|'+homeNorm(it.variant); }
+// sloučí duplicity (název + značka + varianta + EAN). Stejné hodnoty = jedna karta s více zdroji. Rozdílné hodnoty se NEPRŮMĚRUJÍ – zůstanou jako samostatné výsledky.
+function fsMerge(items){
+  const groups = new Map();
+  items.forEach(it=>{ const k = fsKey(it); if(!groups.has(k)) groups.set(k, []); groups.get(k).push(it); });
+  const out = [];
+  groups.forEach(arr=>{
+    const clusters = [];
+    arr.forEach(it=>{
+      const c = clusters.find(z=>fsSame(z.per100, it.per100));
+      if(!c){ clusters.push(Object.assign({}, it, {src:it.src.slice(), links:it.links.slice()})); return; }
+      it.src.forEach(s=>{ if(!c.src.includes(s)) c.src.push(s); });
+      it.links.forEach(l=>{ if(!c.links.some(z=>z.src===l.src && z.url===l.url)) c.links.push(l); });
+      if(!c.url && it.url) c.url = it.url;
+      if(!c.pieceG && it.pieceG){ c.pieceG = it.pieceG; c.pieceLabel = it.pieceLabel; }
+      if(!c.packG && it.packG) c.packG = it.packG;
+      if(!c.ean && it.ean) c.ean = it.ean;
+      if(it.cmp.n > c.cmp.n){ c.per100 = it.per100; c.cmp = it.cmp; }
+    });
+    const srcs = new Set(); arr.forEach(i=>i.src.forEach(s=>srcs.add(s)));
+    if(clusters.length>1 && srcs.size>1) clusters.forEach(c=>{ c.conflict = true; });
+    clusters.forEach(c=>out.push(c));
+  });
+  return out;
+}
+function fsRank(items, text){
+  const nq = homeNorm(text||'').trim(), tokens = nq.split(/\s+/).filter(Boolean);
+  const kept = [];
+  items.forEach(it=>{
+    const hay = homeNorm([it.name, it.brand, it.variant].join(' ')), words = hay.split(/[\s,()\/\-]+/).filter(Boolean);
+    let s = 0, hit = 0;
+    tokens.forEach(t=>{
+      if(words.includes(t)){ s += 100; hit++; }
+      else if(words.some(w=>w.startsWith(t))){ s += 80; hit++; }
+      else if(t.length>=5 && words.some(w=>w.startsWith(t.slice(0,-1)))){ s += 55; hit++; }
+      else if(t.length>=4 && hay.includes(t)){ s += 40; hit++; }
+    });
+    if(tokens.length && !hit && !it.ean) return;
+    s = tokens.length ? s/tokens.length : 0;
+    if(homeNorm(it.name)===nq) s += 30;
+    s -= Math.min(hay.length, 60)*0.1;
+    it.score = s + Math.max.apply(null, it.src.map(x=>FS_SRC[x].pri))/10 + it.cmp.lvl;
+    kept.push(it);
+  });
+  return kept.sort((a,b)=>b.score-a.score);
+}
+
+// --- volání zdrojů ---
+// Klíče k externím službám jsou na serveru (Supabase Edge Function „food-search“). Bez serveru: OFF přímo z aplikace a Google přes vlastní Gemini klíč.
+let fsServerDown = false, fsOffLast = 0;
+async function fsServer(source, q, ean){
+  if(fsServerDown || !communityEnabled()) throw aiErr('noserver','Server vyhledávání není nastavený');
+  const ctl = new AbortController(), to = setTimeout(()=>ctl.abort(), 25000);
+  let r;
+  try{ r = await fetch(COMMUNITY.url+'/functions/v1/food-search', {method:'POST', signal:ctl.signal, headers:{'Content-Type':'application/json', 'apikey':COMMUNITY.key}, body:JSON.stringify({source, q, ean:ean||undefined})}); }
+  catch(e){ throw aiErr('net','server neodpovídá (nebo nejsi online)'); }
+  finally{ clearTimeout(to); }
+  if(r.status===404){ fsServerDown = true; throw aiErr('noserver','Server vyhledávání není nasazený'); }
+  let j = null; try{ j = await r.json(); }catch(e){}
+  if(!r.ok) throw aiErr((j && j.code) || (r.status===429 ? 'limit' : 'http'), (j && j.error) || ('Chyba serveru '+r.status));
+  return j || {items:[]};
+}
+const FS_CACHE_LS = 'gg_food_cache', FS_TTL = 24*3600*1000;   // cache jen pro OFF a Google (ODbL ji dovoluje); NutriDatabáze se na zařízení neukládá
+function fsCacheGet(k){ try{ const e = (JSON.parse(localStorage.getItem(FS_CACHE_LS)||'{}'))[k]; if(e && Date.now()-e.t < FS_TTL) return e.v; }catch(e){} return null; }
+function fsCacheSet(k, v){
+  try{
+    const c = JSON.parse(localStorage.getItem(FS_CACHE_LS)||'{}'); c[k] = {t:Date.now(), v};
+    const ks = Object.keys(c); if(ks.length>40) ks.sort((a,b)=>c[a].t-c[b].t).slice(0, ks.length-40).forEach(x=>delete c[x]);
+    localStorage.setItem(FS_CACHE_LS, JSON.stringify(c));
+  }catch(e){}
+}
+function fsOffRaw(pr){
+  const n = pr.nutriments || {}, g = k=>(n[k]!=null && n[k]!=='') ? Number(n[k]) : null;
+  let kcal = g('energy-kcal_100g'); if(kcal==null && g('energy_100g')!=null) kcal = Math.round(g('energy_100g')/4.184);
+  const code = String(pr.code||'').replace(/\D/g,'');
+  return {name:pr.product_name, brand:pr.brands ? String(pr.brands).split(',')[0].trim() : '', ean:code,
+    url: code ? 'https://world.openfoodfacts.org/product/'+code : '',
+    per100:{kcal, p:g('proteins_100g'), c:g('carbohydrates_100g'), s:g('sugars_100g'), f:g('fat_100g'), sf:g('saturated-fat_100g'), fiber:g('fiber_100g'), salt:g('salt_100g')},
+    pieceG: pr.serving_quantity ? Number(pr.serving_quantity) : null, pieceLabel:'porce', packG: foodParsePack(pr.quantity)};
+}
+async function fsOffDirect(q, ean){
+  const F = 'code,product_name,brands,nutriments,serving_quantity,quantity';
+  if(!ean){   // OFF povoluje ~10 hledání za minutu na uživatele
+    if(Date.now()-fsOffLast < 6000) throw aiErr('limit','Open Food Facts povoluje jen 10 hledání za minutu – počkej pár sekund');
+    fsOffLast = Date.now();
+  }
+  const ctl = new AbortController(), to = setTimeout(()=>ctl.abort(), 15000);
+  try{
+    const url = ean ? 'https://world.openfoodfacts.org/api/v2/product/'+ean+'.json?fields='+F
+      : 'https://world.openfoodfacts.org/cgi/search.pl?search_terms='+encodeURIComponent(q)+'&search_simple=1&action=process&json=1&page_size=20&cc=cz&lc=cs&fields='+F;
+    const r = await fetch(url, {signal:ctl.signal});
+    if(r.status===429 || r.status===503) throw aiErr('limit','Open Food Facts je přetížený nebo omezil počet dotazů – zkus to za chvíli');
+    if(!r.ok && !(ean && r.status===404)) throw aiErr('http','Open Food Facts vrátil chybu '+r.status);
+    const j = await r.json();
+    if(ean){ return (j && j.status===1 && j.product) ? [fsOffRaw(Object.assign({code:ean}, j.product))] : []; }
+    return (j.products||[]).map(fsOffRaw);
+  }catch(e){ if(e.code) throw e; throw aiErr('net', e.name==='AbortError' ? 'neodpověděl včas' : 'nedostupný (offline?)'); }
+  finally{ clearTimeout(to); }
+}
+async function fsOffRawList(q, ean){
+  const ck = 'off|'+(ean || homeNorm(q));
+  const c = fsCacheGet(ck); if(c) return c;
+  let raw;
+  try{ raw = (await fsServer('off', q, ean)).items || []; }
+  catch(e){ raw = await fsOffDirect(q, ean); }
+  fsCacheSet(ck, raw);
+  return raw;
+}
+function fsHost(u){ try{ return new URL(u).hostname.replace(/^www\./,'').toLowerCase(); }catch(e){ return ''; } }
+// Google: ponecháme jen výsledky, které mají odkaz na stránku, kterou Google skutečně našel (doména musí být mezi zdroji vyhledávání). Žádné odhady z hlavy.
+function fsGoogleKeep(list, chunks){
+  const hosts = [];
+  (chunks||[]).forEach(c=>{ const w = c && c.web; if(!w) return; if(w.title) hosts.push(String(w.title).replace(/^www\./,'').toLowerCase()); if(w.uri) hosts.push(fsHost(w.uri)); });
+  return (list||[]).filter(r=>{
+    if(!r || !r.name || !r.sourceUrl || !/^https:\/\//i.test(r.sourceUrl)) return false;
+    const h = fsHost(r.sourceUrl); if(!h) return false;
+    return hosts.some(x=>x && (h===x || h.endsWith('.'+x) || x.endsWith('.'+h)));
+  }).slice(0,3).map(r=>({name:r.name, brand:r.brand||'', variant:r.variant||'', ean:r.ean||'', per100:r.per100, pieceG:r.pieceG, pieceLabel:r.pieceLabel, url:r.sourceUrl}));
+}
+function fsGooglePrompt(q, ean){
+  return 'Najdi přes vyhledávání Google nutriční hodnoty NA 100 g pro: "'+q+'"'+(ean ? ' (čárový kód EAN '+ean+')' : '')+'. '+
+    'Hledej jen na stránkách výrobce, obchodů s údaji z obalu nebo v důvěryhodných nutričních databázích (ne blogy a fóra). '+
+    'Hodnoty musíš PŘEPSAT ze stránky, kterou jsi skutečně našel – nic neodhaduj ani nedopočítávej z paměti. Pokud hodnoty na konkrétní stránce nenajdeš, vrať prázdné pole. '+
+    'Odpověz POUZE jedním JSON objektem: {"results":[{"name":"…","brand":null,"variant":"syrové|vařené|pečené|… nebo null","ean":null,"per100":{"kcal":0,"p":0,"c":0,"s":0,"f":0,"sf":0,"fiber":0,"salt":0},"pieceG":null,"pieceLabel":null,"sourceUrl":"https://…"}]} '+
+    '(nejvýše 3 výsledky; p=bílkoviny, c=sacharidy, s=z toho cukry, f=tuky, sf=z toho nasycené, vše v gramech na 100 g; co chybí, dej null; sourceUrl = adresa stránky, ze které jsi hodnoty přepsal).';
+}
+async function fsGoogleDirect(q, ean){
+  const {obj, chunks} = await aiGenerateSearch(fsGooglePrompt(q, ean));
+  return fsGoogleKeep(obj && obj.results, chunks);
+}
+const fsSrc = {
+  async nutri(q, ean){
+    if(ean) return [];   // NutriDatabáze EAN neobsahuje
+    const j = await fsServer('nutri', q);
+    if(j.configured===false) throw aiErr('noconf','NutriDatabáze zatím není na serveru naplněná');
+    return (j.items||[]).map(o=>fsMk('nutri', o)).filter(Boolean);
+  },
+  async off(q, ean){ return (await fsOffRawList(q, ean)).map(o=>fsMk('off', o)).filter(Boolean); },
+  async google(q, ean){
+    const ck = 'g|'+(ean || homeNorm(q));
+    let raw = fsCacheGet(ck), err = null;
+    if(!raw){
+      try{ const j = await fsServer('google', q, ean); if(j.configured===false) err = aiErr('nokey','Google hledání není na serveru zapnuté'); else raw = j.items || []; }
+      catch(e){ err = e; }
+      if(!raw){
+        if(aiKey()) raw = await fsGoogleDirect(q, ean);
+        else throw (err && err.code!=='noserver') ? err : aiErr('nokey','Google hledání vyžaduje AI klíč nebo server');
+      }
+      fsCacheSet(ck, raw);
+    }
+    return raw.map(o=>fsMk('google', o)).filter(it=>it && it.url);   // bez odkazu na zdroj se výsledek nepoužije
+  }
+};
+function fsErrText(e){
+  const c = e && e.code;
+  return c==='net' ? (e.message||'nedostupné') : c==='quota' ? 'limit AI vyčerpán' : c==='busy' ? 'AI je přetížená' : c==='badkey' ? 'neplatný AI klíč' : (e && e.message) || 'chyba';
+}
+
 function foodOpenItem(it, qty){
   const piece = foodPieceOf(it);
   const {count, grams} = foodQtyToGrams(piece, qty);
-  openFoodForm({source: it.mine ? 'library' : (it.off ? 'off' : (it.ai ? 'ai' : 'db')), name: it.name, per100: it.per100, servingG: it.mine ? it.pieceG : null, packG: it.mine ? it.packG : null,
-    piece, count, grams: Math.round(grams*10)/10,
-    note: it.mine ? '' : (it.off ? 'Údaje z Open Food Facts (přidávají je uživatelé) – zkontroluj podle obalu.' : (it.ai ? (it.aiNote || '✨ Odhad od AI – je orientační, hlavně u hotových jídel.') : 'Orientační průměrné hodnoty na 100 g. Pro přesnost použij údaje z obalu.'))});
+  const s0 = it.mine ? 'lib' : ((it.src && it.src[0]) || (it.off ? 'off' : (it.ai ? 'ai' : 'db')));
+  const source = s0==='lib' ? 'library' : s0;
+  const full = (it.brand && !homeNorm(it.name).includes(homeNorm(it.brand))) ? it.name+' – '+it.brand : it.name;
+  const link = it.url ? ' <a href="'+homeEsc(it.url)+'" target="_blank" rel="noopener">zdroj ↗</a>' : '';
+  let note = '';
+  if(source==='nutri') note = 'Údaje z NutriDatabáze (©NutriDatabaze.cz) – průměr pro surovinu, hlídej variantu (syrové / vařené / pečené).';
+  else if(source==='off') note = 'Údaje z Open Food Facts (přidávají je uživatelé) – zkontroluj podle obalu.'+link;
+  else if(source==='google') note = '🔍 Hodnoty přepsané ze stránky nalezené přes Google'+(it.url ? ' ('+homeEsc(fsHost(it.url))+')' : '')+' – zkontroluj podle obalu.'+link;
+  else if(source==='ai') note = it.aiNote || '✨ Odhad od AI – je orientační, hlavně u hotových jídel.';
+  else if(source==='db') note = 'Orientační průměrné hodnoty na 100 g. Pro přesnost použij údaje z obalu.';
+  if(it.conflict) note += (note?'<br>':'')+'⚠️ Jiný zdroj uvádí jiné hodnoty – ověř podle obalu.';
+  openFoodForm({source, name:full.slice(0,60), per100:it.per100, servingG: it.mine ? it.pieceG : null, packG: (it.mine || it.packG) ? it.packG : null,
+    piece, count, grams: Math.round(grams*10)/10, srcUrl: it.url||'', note});
 }
+// čárový kód (8–14 číslic) se nesmí číst jako „množství + název“
+function fsParse(v){ const d = String(v||'').replace(/\s/g,''); return /^\d{8,14}$/.test(d) ? {text:d, qty:null, unit:''} : foodParseQuery(v); }
 function openFoodSearch(q0){
-  const ov = foodPanel(`<h4>🔎 Hledat potravinu</h4>
-    <input type="text" id="fsQ" class="wo-scratch-input" placeholder="např. jablko, 2 rohlíky, 150 g rýže" value="${homeEsc(q0||'')}" autocomplete="off" style="margin-bottom:10px;">
-    <div id="fsRes"></div><div id="fsOnlineRes"></div>
+  foodPanel(`<h4>🔎 Hledat potravinu</h4>
+    <input type="text" id="fsQ" class="wo-scratch-input" placeholder="např. kuřecí prsa, 150 g rýže, nebo EAN" value="${homeEsc(q0||'')}" autocomplete="off" enterkeyhint="search" style="margin-bottom:8px;">
+    <div id="fsStat" class="fs-stat"></div>
+    <div id="fsRes"></div>
     <div class="fs-more">
-      <button id="fsOnline">🌐 Hledat online (Open Food Facts)</button>
-      <button id="fsAi">🔎 Najít makra v Googlu (AI)</button>
+      <button id="fsOnline">🌍 Hledat ve všech zdrojích</button>
+      <button id="fsAi">✨ Odhad od AI (neověřený)</button>
       <button id="fsManual">✍️ Zadat hodnoty ručně</button>
     </div>`);
-  const qEl = document.getElementById('fsQ'), res = document.getElementById('fsRes');
-  let shown = [];
+  const qEl = document.getElementById('fsQ'), res = document.getElementById('fsRes'), stat = document.getElementById('fsStat');
+  let local = [], online = {}, status = {}, onQ = null, reqId = 0, shown = [], tm = null, pq = fsParse(qEl.value);
+  const ONL = ['nutri','off','google'];
   const draw = ()=>{
-    const pq = foodParseQuery(qEl.value);
-    shown = foodSearchLocal(pq.text, 10);
-    res.innerHTML = pq.text.length<2 ? '<p class="nb-note">Napiš název (aspoň 2 písmena). Můžeš i s množstvím: „2 vejce“, „150 g tvaroh“.</p>'
-      : (shown.length ? shown.map((it,i)=>`<div class="fd-lib"><button data-fs="${i}"><b>${it.mine?'⭐ ':''}${homeEsc(it.name)}</b><small>${foodItemLine(it)}</small></button></div>`).join('')
-        : '<p class="nb-note">V databázi nic nenalezeno. Zkus hledat online nebo najít makra v Googlu (AI).</p>');
+    pq = fsParse(qEl.value);
+    local = pq.text.length>=2 ? fsFromLocal(foodSearchLocal(pq.text, 12)) : [];
+    const useOnl = onQ!==null && homeNorm(pq.text)===onQ;
+    let all = local.slice();
+    if(useOnl) ONL.forEach(id=>{ if(online[id]) all = all.concat(online[id]); });
+    shown = fsRank(fsMerge(all), pq.text).slice(0, 30);
+    const busy = useOnl && ONL.some(id=>status[id] && status[id].st==='load');
+    if(pq.text.length<2){ res.innerHTML = '<p class="nb-note">Napiš název (aspoň 2 písmena) nebo čárový kód. Můžeš i s množstvím: „2 vejce“, „150 g tvaroh“. Online zdroje se prohledají po stisku Enter.</p>'; }
+    else {
+      res.innerHTML = shown.map((it,i)=>{
+        const srcTxt = it.src.map(s=>FS_SRC[s].ico+' '+FS_SRC[s].label).join(' + ');
+        const dots = '●'.repeat(it.cmp.lvl+1)+'○'.repeat(2-it.cmp.lvl);
+        const links = it.links.map(l=>`<a class="fs-link" href="${homeEsc(l.url)}" target="_blank" rel="noopener" title="Původní zdroj: ${homeEsc(FS_SRC[l.src].label)}">↗</a>`).join('');
+        return `<div class="fd-lib fs-card"><button data-fs="${i}"><b>${it.mine?'⭐ ':''}${homeEsc(it.name)}${it.variant && !homeNorm(it.name).includes(homeNorm(it.variant).slice(0,5)) ? ' <em class="fs-var">'+homeEsc(it.variant)+'</em>' : ''}</b>`
+          + (it.brand ? `<small class="fs-brand">${homeEsc(it.brand)}</small>` : '') + `<small>${foodItemLine(it)}</small>`
+          + `<small class="fs-meta"><span>${srcTxt}</span><span class="fs-cmp l${it.cmp.lvl}" title="Úplnost údajů: ${it.cmp.n} z 8 hodnot">${dots} ${it.cmp.txt}</span>${it.conflict ? '<span class="fs-warn">⚠️ jiný zdroj uvádí jiné hodnoty</span>' : ''}</small></button>${links}</div>`;
+      }).join('') || (busy ? '<p class="nb-note">⏳ Hledám…</p>' : (useOnl ? '<p class="nb-note">Nic nenalezeno v žádném zdroji. Zkus jiný název, zadej hodnoty ručně nebo použij odhad od AI.</p>' : '<p class="nb-note">V mých potravinách a základní databázi nic. Stiskni Enter a prohledají se i online zdroje.</p>'));
+      const used = new Set(); shown.forEach(it=>it.src.forEach(s=>used.add(s)));
+      const at = [];
+      if(used.has('nutri')) at.push('Data: ©NutriDatabaze.cz');
+      if(used.has('off')) at.push('Data: Open Food Facts (licence ODbL)');
+      if(at.length) res.innerHTML += '<p class="nb-note fs-attr">'+at.join(' · ')+'</p>';
+    }
     res.querySelectorAll('[data-fs]').forEach(b=>b.addEventListener('click', ()=>foodOpenItem(shown[+b.dataset.fs], pq)));
   };
-  qEl.addEventListener('input', draw); draw();
-  document.getElementById('fsManual').addEventListener('click', ()=>openFoodForm({source:'manual', name: foodParseQuery(qEl.value).text}));
-  document.getElementById('fsOnline').addEventListener('click', async ()=>{
-    const pq = foodParseQuery(qEl.value); const box = document.getElementById('fsOnlineRes');
+  const drawStat = ()=>{
+    if(onQ===null || homeNorm(pq.text)!==onQ){ stat.innerHTML = ''; return; }
+    stat.innerHTML = ONL.filter(id=>status[id]).map(id=>{
+      const s = status[id], t = s.st==='load' ? '⏳' : s.st==='ok' ? '✓ '+s.n : s.st==='off' ? 'vypnuto' : '⚠️ ↻';
+      return `<button class="fs-chip ${s.st}" data-fsr="${id}" ${s.msg ? 'title="'+homeEsc(s.msg)+'"' : ''}>${FS_SRC[id].ico} ${homeEsc(FS_SRC[id].label.replace(' (ověřený zdroj)',''))} · ${t}</button>`;
+    }).join('') + ONL.filter(id=>status[id] && (status[id].st==='err' || status[id].st==='off')).map(id=>`<p class="nb-note fs-err">${status[id].st==='err'?'⚠️':'ℹ️'} ${homeEsc(FS_SRC[id].label.replace(' (ověřený zdroj)',''))}: ${homeEsc(status[id].msg||'')}</p>`).join('');
+    stat.querySelectorAll('[data-fsr]').forEach(b=>b.addEventListener('click', ()=>{ const id = b.dataset.fsr; if(status[id] && status[id].st==='err') runSource(id, reqId); }));
+  };
+  const runSource = (id, my)=>{
+    const text = pq.text, ean = /^\d{8,14}$/.test(text.replace(/\s/g,'')) ? text.replace(/\s/g,'') : '';
+    status[id] = {st:'load'}; drawStat();
+    return Promise.resolve().then(()=>fsSrc[id](text, ean)).then(list=>{
+      if(my!==reqId) return; online[id] = list; status[id] = {st:'ok', n:list.length};
+    }).catch(e=>{
+      if(my!==reqId) return;
+      const soft = e && (e.code==='noserver' || e.code==='noconf' || e.code==='nokey');
+      status[id] = {st: soft ? 'off' : 'err', msg: fsErrText(e)};
+    }).then(()=>{ if(my===reqId){ drawStat(); draw(); } });
+  };
+  const run = ()=>{
+    pq = fsParse(qEl.value);
     if(pq.text.length<2){ showToast('⚠️ Napiš, co hledáš'); return; }
-    box.innerHTML = '<p class="nb-note">🌐 Hledám v Open Food Facts…</p>';
-    let list = [];
-    try{
-      const ctl = new AbortController(); const to = setTimeout(()=>ctl.abort(), 15000);
-      const r = await fetch('https://world.openfoodfacts.org/cgi/search.pl?search_terms='+encodeURIComponent(pq.text)+'&search_simple=1&action=process&json=1&page_size=20&cc=cz&lc=cs&fields=product_name,brands,nutriments,serving_quantity', {signal:ctl.signal});
-      clearTimeout(to);
-      const j = await r.json();
-      (j.products||[]).forEach(pr=>{
-        const n = pr.nutriments||{}, g = k=>(n[k]!=null && n[k]!=='') ? Number(n[k]) : null;
-        let kcal = g('energy-kcal_100g'); if(kcal==null && g('energy_100g')!=null) kcal = Math.round(g('energy_100g')/4.184);
-        if(kcal==null || !pr.product_name) return;
-        list.push({off:true, name:[pr.product_name, pr.brands && String(pr.brands).split(',')[0]].filter(Boolean).join(' – ').slice(0,60),
-          per100:{kcal, p:g('proteins_100g'), c:g('carbohydrates_100g'), s:g('sugars_100g'), f:g('fat_100g'), sf:g('saturated-fat_100g'), fiber:g('fiber_100g'), salt:g('salt_100g')},
-          pieceG: pr.serving_quantity ? Number(pr.serving_quantity) : null, pieceLabel:'porce'});
-      });
-    }catch(e){ box.innerHTML = '<p class="nb-note">⚠️ Online databáze teď neodpovídá (nebo nejsi online). Zkus to později, nebo najít makra v Googlu (AI).</p>'; return; }
-    list = list.slice(0,10);
-    box.innerHTML = list.length ? '<h4 class="fd-h" style="margin-top:12px;">🌐 Z Open Food Facts</h4>' + list.map((it,i)=>`<div class="fd-lib"><button data-fo="${i}"><b>${homeEsc(it.name)}</b><small>${foodItemLine(it)}</small></button></div>`).join('')
-      : '<p class="nb-note">Online nic nenalezeno.</p>';
-    box.querySelectorAll('[data-fo]').forEach(b=>b.addEventListener('click', ()=>foodOpenItem(list[+b.dataset.fo], pq)));
-  });
+    const ean = /^\d{8,14}$/.test(pq.text.replace(/\s/g,''));
+    const my = ++reqId; onQ = homeNorm(pq.text); online = {}; status = {};
+    (ean ? ['off','google'] : ONL).forEach(id=>{ status[id] = {st:'load'}; });
+    drawStat(); draw();
+    Object.keys(status).forEach(id=>runSource(id, my));   // všechny zdroje paralelně, výsledky naskakují postupně
+  };
+  qEl.addEventListener('input', ()=>{ clearTimeout(tm); tm = setTimeout(()=>{ draw(); drawStat(); }, 150); });   // jen místní zdroje, online až po odeslání
+  qEl.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); run(); } });
+  document.getElementById('fsOnline').addEventListener('click', run);
+  document.getElementById('fsManual').addEventListener('click', ()=>openFoodForm({source:'manual', name: fsParse(qEl.value).text}));
   document.getElementById('fsAi').addEventListener('click', ()=>foodAiFor(qEl.value));
+  draw();
+  if(/^\d{8,14}$/.test((q0||'').trim())) run();
 }
 function aiErrText(e){
   return e.code==='nokey' ? 'Nejdřív nastav AI klíč' : e.code==='net' ? 'Bez internetu AI nefunguje' : e.code==='busy' ? '⏳ Google má AI přetíženou – zkus to za chvilku' : e.code==='quota' ? '⏳ Limit AI je vyčerpaný, zkus to za minutu' : e.code==='badkey' ? '🔑 Klíč není platný – zkontroluj ho v nastavení' : e.code==='nofood' ? 'Tohle AI nepoznala jako jídlo' : e.code==='unread' ? 'Tabulku AI nepřečetla – vyfoť ji blíž a na světle' : ('AI: ' + (e.message||'chyba'));
