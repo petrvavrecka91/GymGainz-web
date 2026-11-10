@@ -3121,7 +3121,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30w · 2026-11-10</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30x · 2026-11-10</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -12633,7 +12633,7 @@ function renderHomeNotebookTile(){
 //       state.myFoods  [{id,name,per100:{kcal,p,c,s,f,sf,fiber,salt}, servingG}]
 // Součty dne se zrcadlí do starého state.dayMacros (mise a achievementy zůstávají funkční).
 // ============================================================
-const FOOD_SRC_ICON = {recipe:'🍳', label:'📷', barcode:'📦', manual:'✍️', library:'⭐', db:'🔎', off:'🌐', ai:'✨', nutri:'🇨🇿', google:'🔍', voice:'🎤', mv:'📋', dv:'📋', por:'📋'};
+const FOOD_SRC_ICON = {recipe:'🍳', label:'📷', barcode:'📦', manual:'✍️', library:'⭐', db:'🔎', off:'🌐', ai:'✨', nutri:'🇨🇿', google:'🔍', voice:'🎤', mv:'📋', dv:'📋', por:'📋', usda:'📋'};
 // ===== Databáze potravin (orientační hodnoty na 100 g) =====
 // řádek: název;aliasy;kcal;B;S;z toho cukry;T;gramy 1 kusu/porce;jak se to jmenuje (ks, lžíce…)
 const FOOD_DB_RAW = `Jablko;jablka jablek;52;0.3;14;10.4;0.2;180;ks
@@ -14805,7 +14805,236 @@ Vařená rýže;;96.1;;21.7;;;
 Pečené kuře (250 g);;169.3;;;;;
 Pečené filé;;103.3;;;;;
 Dušené zelí;;246.3;;27.8;;;
-Dušený špenát;;246.7;;11.1;;;`}
+Dušený špenát;;246.7;;11.1;;;`},
+  usda:{raw:`Ananas, syrový;;60;0.5;14.1;0.2;0.9;
+Ančovičky v oleji, okapané;;206;26.9;2.4;9.8;0;
+Arašídový olej;;884;0;0;100;0;
+Batáty, syrové;;79;1.6;17.3;0.4;4.4;130
+Bizoní mleté, syrové;;159;19.9;-0.1;8.9;0;
+Broskve, syrové;;42;0.9;10.1;0.3;1.5;150
+Brusinkový džus;;32;0.0;7.3;0.3;;
+Brusinky sušené, slazené;;308;0.1;82.8;1.4;4.4;
+Bulgur, suchý;;372;11.8;75.9;2.4;11.7;
+Celer řapíkatý, syrový;;17;0.5;3.3;0.2;;
+Chléb bílý;;263;9.5;50.0;2.8;2.2;30
+Chléb vícezrnný;;271;12.9;43.9;4.8;5.9;
+Chorizo, smažené;;346;19.3;2.6;28.1;0;
+Chřest zelený, syrový;;28;1.4;5.1;0.2;1.9;
+Cibule červená, syrová;;44;0.9;9.9;0.1;2.2;110
+Cibulové kroužky obalované, pečené;;288;4.5;36.3;14.4;2.4;
+Cizrna, konzervovaná (okapaná);;137;7.0;20.3;3.1;5.9;
+Cizrna, suchá;;383;21.3;60.4;6.3;;
+Cottage sýr nízkotučný;;84;11.0;4.3;2.3;;
+Cottage sýr plnotučný;;103;11.6;4.6;4.2;;
+Cukr krystal;;385;0.0;99.6;0.3;;
+Divoká rýže, suchá;;369;12.8;75.7;1.7;4.3;
+Dresink Ranch;;438;1.3;7.6;44.7;;
+Dýně, syrová;;35;0.9;7.4;0.2;2.3;
+Edamame, mražené, připravené;;121;11.9;8.9;5.2;6.2;
+Ementál;;393;27.0;1.4;31.0;0;22
+Fazole bílé, konzervované (okapané);;117;7.0;19.4;1.3;6.8;
+Fazole cannellini, suché;;345;21.6;59.8;2.2;;
+Fazole pinto, konzervované (okapané);;117;6.7;19.6;1.3;7.1;
+Fazole vigna (černooké), konzervované (okapané);;116;6.9;19.2;1.3;4.3;
+Fazole vigna (černooké), suché;;354;21.2;61.8;2.4;;
+Fazole černé, konzervované (okapané);;118;6.9;19.8;1.3;6.7;
+Fazole červené, konzervované (okapané);;127;7.6;21.2;1.3;7.2;
+Fazolky zelené, konzervované (okapané);;21;1.0;4.1;0.4;;
+Fazolky zelené, syrové;;40;2.0;7.4;0.3;3.0;
+Fazolová pasta (refried beans);;89;4.3;14.2;1.6;4.0;
+Fenykl, bulva, syrová;;27;0.9;5.5;0.1;2.0;
+Feta;;273;19.7;5.6;19.1;;
+Granátové jablko, džus;;54;0.0;13.1;0.3;0;
+Grapefruit, syrový;;42;0.8;10.7;0.1;0.7;250
+Grapefruitový džus;;39;0.6;8.3;0.5;0.2;
+Hlíva královská, syrová;;46;2.4;8.5;0.3;3.0;
+Houževnatec jedlý (shiitake), syrový;;44;2.4;8.2;0.2;4.2;
+Hovězí T-bone steak libový, grilovaný;;219;27.3;0.0;11.4;0;
+Hovězí flank steak, syrový;;164;20.1;0.0;9.4;0;
+Hovězí krk (chuck) bez kosti, syrový;;232;18.4;0.0;17.8;0;
+Hovězí kýta (kližka) libová, syrová;;122;23.4;0.0;2.5;0;
+Hovězí kýta (špička) libová, syrová;;123;23.7;0.0;2.4;0;
+Hovězí kýta (špička), syrová;;141;21.5;0.9;5.7;0;
+Hovězí mleté (10 % tuku), syrové;;185;18.2;0.0;12.8;0;
+Hovězí mleté (20 % tuku), syrové;;243;17.5;0.0;19.4;0;
+Hovězí porterhouse steak libový, syrový;;145;22.7;0.0;5.3;0;
+Hovězí rib-eye steak, syrový;;254;18.7;0.0;20.0;0;
+Hovězí roštěná (NY strip), syrová;;190;21.3;0.2;11.5;0;
+Hovězí roštěná (steak) libová, syrová;;155;22.8;0.0;6.4;0;
+Hovězí svrchní (top sirloin) steak, syrový;;140;22.0;0.2;5.7;0;
+Hovězí svíčková (steak), syrová;;143;21.1;0.2;6.5;0;
+Hovězí svíčková libová, pečená;;176;27.7;0.0;6.4;0;
+Hořčice žlutá;;61;4.2;5.3;3.4;4.3;5
+Hroznový džus;;66;0.2;15.7;0.3;;
+Hrozny, syrové;;83;0.9;19.4;0.2;;
+Hrášek zelený, konzervovaný (okapaný);;80;4.7;12.7;1.1;6.0;
+Humr (ocas), mražený;;59;13.0;0.9;0.4;0;
+Hřebenatky, mražené;;72;14.9;2.1;0.5;0;
+Italská vepřová klobása, smažená;;322;18.2;2.1;26.2;0;
+Jablečné pyré nesladěné;;52;0.3;12.3;0.2;;
+Jarní cibulka, syrová;;32;0.7;7.3;0.2;2.3;15
+Jehněčí mleté, syrové;;237;17.5;-0.3;18.6;0;
+Jogurt bílý odtučněný;;50;4.2;8.1;0.1;;
+Jogurt bílý plnotučný;;78;3.8;5.6;4.5;;
+Jáhly celozrnné;;376;10.0;74.4;4.2;2.6;
+Kalamáry (trubice), mražené;;44;8.8;0.9;0.6;0;
+Kapusta kadeřavá, vařená;;36;2.9;5.3;1.2;;
+Kapusta listová (collard), syrová;;47;3.0;7.0;0.8;3.8;
+Kapusta růžičková, syrová;;60;4.0;9.6;0.6;4.8;
+Krupice pšeničná (semolina);;358;12.5;72.9;1.7;3.5;
+Krůtí mleté (7 % tuku), syrové;;153;17.3;0.0;9.6;0;
+Krůtí šunka pečená, plátky;;110;15.4;2.7;4.2;0;
+Kukuřice cukrová, syrová;;85;2.8;14.7;1.6;2.4;
+Kukuřičný olej;;884;0;0;100;0;
+Kuřecí křídla se kůží, syrová;;168;18.4;-0.5;10.6;0;
+Kuřecí mleté, syrové;;133;17.9;0.0;7.2;0;
+Kuřecí paličky bez kůže, dušené;;156;23.9;0.0;6.0;0;
+Kuřecí paličky se kůží, syrové;;125;18.4;-0.5;5.9;0;
+Kuřecí prsa bez kůže, dušená;;166;32.1;0.0;3.2;0;
+Kuřecí prsa bez kůže, syrová;;106;22.5;0.0;1.9;0;
+Kuřecí prsa se kůží, syrová;;127;21.4;-0.4;4.8;0;
+Kuřecí stehno bez kůže a kosti, syrové;;144;18.6;0.0;7.9;0;
+Kuřecí stehno se kůží, syrové;;188;17.1;-0.2;13.4;0;
+Kuřecí šunka plátková;;100;16.4;3.1;2.5;;
+Listy červené řepy, syrové;;26;1.6;4.7;0.1;2.6;
+Lněná semínka mletá;;545;18.0;34.4;37.3;23.1;
+Losos atlantský (chovaný), syrový;;197;20.3;0.0;13.1;0;
+Losos divoký (sockeye), syrový;;130;22.3;0.0;4.9;0;
+Mahi mahi, mražená;;84;19.8;0.3;0.4;0;
+Makadamie;;712;7.8;24.1;64.9;7.6;
+Mandarinky, syrové;;62;1.0;13.4;0.5;1.3;75
+Mandle pražené, solené;;620;20.4;16.2;57.8;11.0;
+Mandlové máslo;;645;20.8;21.2;53.0;9.7;
+Mandlový nápoj nesladěný;;17;0.6;0.5;1.4;0.0;
+Meloun cukrový (cantaloupe), syrový;;34;0.8;8.2;0.2;0.8;
+Meloun medový (honeydew), syrový;;37;0.5;8.2;0.2;;
+Mečoun, mražený;;152;19.2;0.5;8.1;0;
+Mleté krůtí maso (7 % tuku), opečené;;220;27.1;0.0;11.6;0;
+Mléko nízkotučné 1 %;;43;3.4;5.2;0.9;;
+Mléko plnotučné 3,25 %;;60;3.3;4.6;3.2;;
+Mléko polotučné 2 %;;50;3.4;4.9;1.9;;
+Mortadela (bologna);;262;11.6;4.0;22.2;;
+Mouka amarantová;;384;13.2;68.8;6.2;7.2;
+Mouka ječná;;367;8.7;77.4;2.5;12.8;
+Mouka kaštanová;;385;5.3;80.5;4.6;8.7;
+Mouka kokosová;;438;16.1;58.9;15.3;34.2;
+Mouka kukuřičná (masa harina);;376;7.6;76.7;4.3;7.0;
+Mouka kukuřičná jemná;;364;6.2;80.8;1.7;4.3;
+Mouka mandlová;;622;26.2;16.2;50.2;9.3;
+Mouka maniaková;;357;0.9;87.3;0.5;4.8;
+Mouka ovesná celozrnná;;389;13.2;69.9;6.3;10.5;
+Mouka pšeničná 00;;357;11.4;74.4;1.5;2.7;
+Mouka pšeničná chlebová;;363;14.3;72.8;1.6;;
+Mouka pšeničná jemná (cukrářská);;358;8.8;77.2;1.6;;
+Mouka quinoová;;385;11.9;69.5;6.6;6.3;
+Mouka rýžová natural;;365;7.2;75.5;3.9;;
+Mouka sorgová;;370;9.2;75.5;3.4;4.7;
+Mouka špaldová celozrnná;;364;14.5;70.7;2.5;9.3;
+Mozzarella polotučná;;298;23.7;4.4;20.4;;
+Mrkev mražená;;37;0.8;7.9;0.5;3.2;
+Okurky nakládané koprové;;12;0.5;2.0;0.4;1.0;
+Olivový olej extra panenský;;884;0;0;100;0;
+Olivový olej rafinovaný;;884;0;0;100;0;
+Olivy zelené plněné paprikou;;130;1.1;5.0;12.9;4.0;
+Omáčka na těstoviny (marinara);;45;1.4;8.1;1.5;1.8;
+Outovka (maitake), syrová;;38;2.2;6.6;0.3;3.1;
+Ovesná krupice (steel cut);;381;12.5;69.8;5.8;12.0;
+Ovesné vločky celozrnné;;382;13.5;68.7;5.9;10.4;
+Ovesný nápoj nesladěný;;48;0.8;5.1;2.8;0.0;
+Pak choi, syrový;;20;1.0;3.5;0.2;1.3;
+Paprika barevná, syrová;;31;0.9;6.7;0.1;1.1;150
+Paprika zelená, syrová;;23;0.7;4.8;0.1;0.9;
+Paprička jalapeño, syrová;;24;0.6;5.1;0.1;1.7;
+Para ořechy;;664;15.0;21.6;57.4;6.0;
+Parmazán strouhaný;;412;29.9;8.4;28.8;;
+Pastinák, syrový;;87;1.3;19.3;0.5;5.3;
+Pekanové ořechy;;750;10.0;12.7;73.3;5.8;
+Penízovka sametonohá (enoki), syrová;;44;2.4;8.1;0.2;2.9;
+Pepperoni;;470;19.9;2.2;42.4;0;
+Pečené fazole s vepřovým (konzerva);;122;4.6;23.8;0.9;3.5;
+Pečené fazole vegetariánské (konzerva);;119;4.8;23.3;0.7;4.2;
+Piniové oříšky;;689;15.7;18.6;61.3;3.9;
+Platýs obrovský (halibut), mražený;;81;19.1;-0.1;0.6;0;
+Podmáslí nízkotučné;;43;3.5;4.8;1.1;;
+Pohanka celozrnná;;356;11.1;71.1;3.0;4.0;
+Provolone plátkový;;357;23.5;2.5;28.1;0;
+Párek hovězí (frankfurtský);;314;11.7;2.9;28.0;0;
+Pórek, syrový;;61;1.5;14;0.3;3.0;
+Pšenice dvouzrnka (farro), suchá;;367;12.6;72.1;3.1;7.3;
+Pšenice khorasanská (kamut), suchá;;371;14.8;71.8;2.8;10.5;
+Radicchio, syrové;;26;1.3;5.0;0.1;2.1;
+Rajčata konzervovaná;;26;1.0;4.9;0.4;1.4;
+Rajčatové pyré (passata), konzervované;;38;1.5;7.2;0.3;1.8;
+Rajčatový džus;;23;0.9;4.3;0.3;;
+Rajčatový protlak;;104;4.2;20.2;0.7;4.7;
+Rebarbora, syrová;;21;0.9;4.5;0.2;1.4;
+Ricotta plnotučná;;157;7.8;6.9;11.0;;
+Rostbíf plátkový;;116;18.5;0.6;4.5;0;
+Rukola;;31;1.6;5.4;0.3;2.3;
+Rýže bílá dlouhozrnná, syrová;;359;7.0;80.3;1.0;0.1;
+Rýže bílá nafouklá;;371;6.9;83.6;1.0;1.1;
+Rýže natural dlouhozrnná, syrová;;366;7.2;76.7;3.3;3.0;
+Rýže natural nafouklá;;377;7.8;80.3;2.8;2.7;
+Rýže černá, syrová;;370;7.6;77.2;3.4;4.2;
+Rýže červená, syrová;;370;8.6;76.2;3.4;4.2;
+Salsa;;29;1.4;6.7;0.2;1.8;
+Salám tvrdý, plátky;;417;19.9;3.9;35.8;;
+Salát listový, syrový;;20;1.0;3.7;0.1;;
+Sezamová pasta (tahini);;697;19.7;14.2;62.4;8.4;
+Slanina opečená;;500;40.9;2.1;36.5;0;8
+Slazené kondenzované mléko;;336;7.4;57.9;8.3;;
+Slunečnicová semínka pražená, solená;;612;21.0;17.1;56.1;10.3;
+Slunečnicový olej;;884;0;0;100;0;
+Smažená rýže bez masa;;174;3.8;32.5;3.2;;
+Smetanový sýr plnotučný;;343;5.8;4.6;33.5;;
+Snídaňová hovězí klobása;;328;13.3;3.4;28.7;;
+Snídaňová krůtí klobása, syrová;;169;16.7;0.9;10.4;0;
+Sumec (catfish), syrový;;129;16.5;0.0;7.3;0;
+Sušenky ovesné s rozinkami;;430;5.8;69.6;14.3;3.3;
+Světlicový olej;;884;0;0;100;0;
+Sójový nápoj nesladěný;;38;3.5;1.3;2.1;0.0;
+Sójový nápoj slazený;;41;2.8;3.0;2.0;0.0;
+Sójový olej;;884;0;0;100;0;
+Sýr Monterey Jack;;392;22.6;1.9;32.6;0;
+Sůl stolní jodidovaná;;0;0;0;0;0;6
+Tavený sýr plátkový;;350;17.0;6.6;28.5;;19
+Tilápie, syrová;;95;19.0;0.0;2.5;0;
+Tortilla kukuřičná;;215;4.3;44.2;2.3;4.5;25
+Treska jednoskvrnná (haddock), syrová;;74;16.3;0.0;0.5;0;
+Treska obecná (atlantská), syrová;;66;16.1;0.0;0.7;0;
+Treska pacifická, mražená;;61;14.2;0.5;0.2;0;
+Treska tmavá (pollock), syrová;;67;14.8;0.0;0.7;0.0;
+Tuňák ve vlastní šťávě, konzerva;;90;19.0;0.1;0.9;0;
+Tuňák žlutoploutvý, mražený;;102;24.7;-0.1;0.4;0;
+Tykev máslová (butternut), syrová;;48;1.1;10.5;0.2;2.0;
+Tykev žaludová (acorn), syrová;;49;1.2;10.5;0.2;2.6;
+Třešně sladké, syrové;;70;1.0;16.2;0.2;;
+Vejce slepičí bílek, sušený;;376;79.9;6.0;0.7;;
+Vejce slepičí bílek, syrový;;52;10.4;1.5;0.1;0;33
+Vejce slepičí celé, sušené;;575;48.1;1.9;39.8;0;
+Vejce slepičí žloutek, sušený;;654;34.2;1.1;55.5;0;
+Vejce slepičí žloutek, syrový;;315;15.9;0.8;27.0;0;17
+Vepřová kotleta (střední řez), syrová;;138;22.8;-0.6;5.5;0;
+Vepřová kotleta bez kosti, syrová;;168;21.1;0.0;9.5;0;
+Vepřové na sladkokyselo;;260;8.9;25.5;13.6;1.0;
+Vepřový bůček se kůží, syrový;;380;15.2;-0.7;35.8;0;
+Višňový džus;;50;0.1;12;0.1;0;
+Zakysaná smetana plnotučná;;196;3.1;5.6;18.0;;
+Zelí pekingské, syrové;;16;1.1;3.2;0.2;1.2;
+Zelí červené, syrové;;34;1.2;6.8;0.2;;
+Čedar;;408;23.3;2.4;34.0;0;17
+Čočka, suchá;;360;23.6;62.2;1.9;;
+Řecký jogurt bílý odtučněný;;61;10.3;3.6;0.4;;
+Řecký jogurt bílý plnotučný;;94;8.8;4.8;4.4;;
+Řecký jogurt jahodový odtučněný;;83;8.1;12.2;0.1;0.6;
+Římský salát, syrový;;19;1.1;3.6;0.2;1.8;
+Šalotka, syrová;;72;1.4;16.8;0.1;2.2;30
+Šunka plátková nízkotučná;;106;16.7;0.3;3.7;0;
+Šunka plátková, restaurační;;121;19.6;2.4;3.7;0;
+Šunka schwarzwaldská, plátky;;114;17.1;1.8;4.2;0;
+Švestkový džus;;71;0.4;17.5;0;0.8;
+Žampion portobello, syrový;;32;2.8;4.7;0.3;1.9;
+Žampiony, syrové;;31;3.0;4.0;0.3;1.8;`}
 };
 let _foodDb = null;
 function foodDb(){
@@ -15328,7 +15557,7 @@ function openFoodForm(init){
   const basis = init.basis || '100';
   const inp = (k,l)=>`<label class="ff-lbl">${l}<input type="text" inputmode="decimal" data-ff="${k}" value="${v[k]!=null ? homeEsc(String(v[k]).replace('.',',')) : ''}" class="${init.missing && init.missing.includes(k) ? 'ff-miss' : ''}"></label>`;
   const ov = foodPanel(`
-    <h4>${init.source==='label'?'📷 Z fotky tabulky':init.source==='barcode'?'📦 Z čárového kódu':init.source==='library'?'⭐ Z mých potravin':init.source==='db'?'🔎 Z databáze potravin':init.source==='off'?'🌐 Z Open Food Facts':init.source==='nutri'?'🇨🇿 Z NutriDatabáze':(init.source==='mv'||init.source==='dv'||init.source==='por')?'📋 Z tabulek potravin':init.source==='google'?'🔍 Nalezeno přes Google':init.source==='ai'?'✨ Odhad od AI':'✍️ Zapsat jídlo'}</h4>
+    <h4>${init.source==='label'?'📷 Z fotky tabulky':init.source==='barcode'?'📦 Z čárového kódu':init.source==='library'?'⭐ Z mých potravin':init.source==='db'?'🔎 Z databáze potravin':init.source==='off'?'🌐 Z Open Food Facts':init.source==='nutri'?'🇨🇿 Z NutriDatabáze':(init.source==='mv'||init.source==='dv'||init.source==='por'||init.source==='usda')?'📋 Z tabulek potravin':init.source==='google'?'🔍 Nalezeno přes Google':init.source==='ai'?'✨ Odhad od AI':'✍️ Zapsat jídlo'}</h4>
     ${init.note ? `<div class="ff-note">${init.note}</div>` : ''}
     <label class="ff-lbl">Název jídla<input type="text" id="ffName" maxlength="60" value="${homeEsc(init.name||'')}" placeholder="např. Tvaroh polotučný"></label>
     <div id="ffSug" class="ff-sug"></div>
@@ -15342,7 +15571,7 @@ function openFoodForm(init){
     <div class="fs-more" id="ffQuick" style="margin:2px 0 8px;"><button type="button" data-qf="1">📦 Celé balení</button><button type="button" data-qf="0.5">½ balení</button>${init.servingG && init.basis!=='serving' ? '<button type="button" data-qs="'+init.servingG+'">🥄 1 porce ('+init.servingG+' g)</button>' : ''}</div>
     <label class="ff-lbl">Kolik jsi snědl/a (g / ml)<input type="text" inputmode="decimal" id="ffGrams" value="${init.grams||init.servingG||init.packG||100}"></label>
     <div id="ffPreview" class="ff-preview"></div>
-    ${init.source==='library' ? '' : '<label class="ff-chk"><input type="checkbox" id="ffSave" '+(['db','off','ai','nutri','google','mv','dv','por'].includes(init.source)?'':'checked')+'> Uložit do Mých potravin</label>'}
+    ${init.source==='library' ? '' : '<label class="ff-chk"><input type="checkbox" id="ffSave" '+(['db','off','ai','nutri','google','mv','dv','por','usda'].includes(init.source)?'':'checked')+'> Uložit do Mých potravin</label>'}
     ${init.raw ? `<details class="ff-raw"><summary>Rozpoznaný text z fotky</summary><pre>${homeEsc(init.raw)}</pre></details>` : ''}
     <button class="paywall-cta" id="ffAdd" style="background:var(--accent); color:#14041f; margin:12px 0 0;">➕ Přidat do deníku</button>`);
   const read = ()=>{
@@ -15921,6 +16150,7 @@ const FS_SRC = {
   nutri: {label:'NutriDatabáze',           ico:'🇨🇿', pri:30},
   db:    {label:'Základní databáze',       ico:'🔎', pri:25},
   mv:    {label:'Tabulky potravin', ico:'📋', pri:24},
+  usda:  {label:'Tabulky potravin', ico:'📋', pri:26},
   dv:    {label:'Tabulky potravin', ico:'📋', pri:21},
   por:   {label:'Tabulky potravin', ico:'📋', pri:18},
   off:   {label:'Open Food Facts',         ico:'🌐', pri:20},
@@ -15953,7 +16183,7 @@ function fsMk(src, o){
   const per = fsNormPer(o.per100);
   const name = String(o.name||'').replace(/\s+/g,' ').trim().slice(0,80);
   if(!name) return null;
-  if(!['lib','db','mv','dv','por'].includes(src) && !fsPlausible(per)) return null;
+  if(!['lib','db','mv','dv','por','usda'].includes(src) && !fsPlausible(per)) return null;
   const url = (o.url && /^https?:\/\//i.test(o.url)) ? String(o.url) : '';
   const it = {src:[src], name, brand:String(o.brand||'').trim().slice(0,40), variant:o.variant||fsVariant(name), per100:per, url,
     links: url ? [{src, url}] : [], ean:String(o.ean||'').replace(/\D/g,''), pieceG:o.pieceG>0 ? Number(o.pieceG) : null, pieceLabel:o.pieceLabel||'porce',
@@ -16136,7 +16366,7 @@ function foodOpenItem(it, qty){
   else if(source==='google') note = '🔍 Hodnoty přepsané ze stránky nalezené přes Google'+' – zkontroluj podle obalu.';
   else if(source==='ai') note = it.aiNote || '✨ Odhad od AI – je orientační, hlavně u hotových jídel.';
   else if(source==='db') note = 'Orientační průměrné hodnoty na 100 g. Pro přesnost použij údaje z obalu.';
-  else if(source==='mv' || source==='dv' || source==='por') note = '📋 Průměrné hodnoty z tabulek potravin – od konkrétního výrobku se mohou lišit.'+(source==='por' ? ' Tabulka uvádí jen kalorie a sacharidy, bílkoviny a tuky doplň podle obalu.' : '');
+  else if(source==='mv' || source==='dv' || source==='por' || source==='usda') note = '📋 Průměrné hodnoty z tabulek potravin – od konkrétního výrobku se mohou lišit.'+(source==='por' ? ' Tabulka uvádí jen kalorie a sacharidy, bílkoviny a tuky doplň podle obalu.' : '');
   if(it.conflict) note += (note?'<br>':'')+'⚠️ Jiný zdroj uvádí jiné hodnoty – ověř podle obalu.';
   openFoodForm({source, name:full.slice(0,60), per100:it.per100, servingG: it.mine ? it.pieceG : null, packG: (it.mine || it.packG) ? it.packG : null,
     piece, count, grams: Math.round(grams*10)/10, note});
