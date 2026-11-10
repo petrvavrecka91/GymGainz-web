@@ -1294,7 +1294,6 @@
   .fs-chip.ok{border-color:var(--green,#2ecc71); color:var(--green,#2ecc71);} .fs-chip.err{border-color:#ff5d5d; color:#ff5d5d;} .fs-chip.load{opacity:.8;}
   .fd-lib small.fs-meta{display:flex; flex-wrap:wrap; gap:4px 10px;} .fs-var{font-style:normal; font-weight:600; color:var(--cyan); font-size:.85em;} .fs-brand{color:var(--cyan) !important;}
   .fs-cmp.l2{color:var(--green,#2ecc71);} .fs-cmp.l1{color:var(--cyan);} .fs-cmp.l0{color:#ff9d5d;} .fs-warn{color:#ff9d5d;}
-  .fs-link{flex:0 0 auto; align-self:stretch; display:flex; align-items:center; padding:0 10px; border-radius:12px; border:1px solid var(--line); color:var(--accent); text-decoration:none; font-size:18px;}
   .fs-attr{margin-top:6px;}
   .fv-row{padding:8px 0; border-bottom:1px solid var(--line);} .fv-top{display:flex; gap:6px;} .fv-top input{flex:1; min-width:0;}
   .fv-bot{display:flex; align-items:flex-end; gap:8px; margin-top:6px;} .fv-bot label{display:flex; flex-direction:column; font-size:calc(12.6px * var(--font-scale)); color:var(--muted); gap:2px;} .fv-bot input{width:84px;} .fv-bot b{margin-left:auto; color:var(--cyan); white-space:nowrap;}
@@ -3122,7 +3121,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30v · 2026-11-10</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30w · 2026-11-10</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -12823,1990 +12822,1990 @@ Kebab;;215;12;20;3;10;300;ks
 Sůl;sul kuchynska;0;0;0;0;0;1;špetka
 Tortilla pšeničná;tortilla tortila wrap placka;310;8.5;50;3;8;60;ks
 Sýr cheddar;cheddar cedar chedar syr;400;25;1.3;0.5;33;20;plátek`;
-// Tabulky potravin dodané k appce (name;značka;kcal;B;S;T;vláknina;gramáž kusu;strana v PDF). Hodnoty na 100 g, jen publikované průměry.
+// Tabulky potravin (název;značka;kcal;B;S;T;vláknina;gramáž kusu). Hodnoty na 100 g, průměry.
 const FOOD_TAB = {
-  mv:{label:'Kalorické tabulky (Muskulvit)', url:'https://www.muskulvit.cz/assets/backend/img/files/khp.pdf', raw:`Artyčoky;;41;2.4;2.6;0.1;10.8;;1
-Brambory rané;;72;1.7;16.6;0.2;1.3;;1
-Brambory zimní;;79;1.8;18.2;0.3;1.6;;1
-Brokolice, kedlubna;;33;4.4;2.9;0.9;2.8;;1
-Brukev;;31;2.1;5.8;0.2;2.2;;1
-Celer-bulva;;50;1.7;9.9;0.3;3.7;;1
-Celer - řapíkatý;;33;1.3;3.7;0.2;2.4;;1
-Cibule;;48;1.7;9.6;0.3;1.4;;1
-Cibule - raná;;33;2;5.8;0.2;1.3;;1
-Cuketa;;19;1.6;2.1;0.4;0.9;;1
-Čekanka salátová;;21;1.5;4;0.1;1.4;;1
-Černý kořen;;62;1.4;13.3;0.4;5.3;;1
-Červená řepa;;48;1.8;10.6;0.1;2.3;;1
-Česnek;;110;6.6;26.9;0.2;0.9;;1
-Fazolky;;38;2.3;7.1;0.3;3;;1
-Fenykl;;26;2.4;6.1;0.3;3.3;;1
-Hrášek;;76;6.5;13.3;0.5;5.2;;1
-Chřest;;21;2.2;3.5;0.2;1.8;;1
-Kapusta hlávková;;43;3.1;6.7;0.5;3.1;;1
-Kapusta kadeřavá;;33;4.3;2.1;0.9;3.3;;1
-Kapusta růžičková;;50;5.2;7.6;0.6;1.6;;1
-Kopr;;38;2.4;7.8;0.2;1.6;;1
-Křen;;105;3.9;22.4;0.5;6.2;;1
-Kukuřice cukrová;;105;3.5;18.8;2.2;0.5;;1
-Květák;;29;2.4;4.4;0.3;1.8;;1
-Lilek;;38;1.3;8.2;0.3;2.3;;1
-Mangold listy;;14;2.1;2.8;0.3;2;;1
-Meloun červený;;26;0.6;5;0.2;0.3;;1
-Meloun žlutý;;29;0.5;6.5;0.1;0.9;;1
-Mrkev;;45;1.4;9.7;0.3;3;;1
-Okurka nakládačka;;12;1;1.8;0.2;1;;1
-Okurka salátová;;17;0.7;2.6;0.2;0.9;;1
-Paprika červená;;29;1.2;5.2;0.5;1.6;;1
-Paprika zelená;;17;0.8;2.6;0.3;1.9;;1
-Patizony;;50;2.3;10.2;0.3;;;1
-Pažitka;;50;3.3;8.1;0.7;2;;1
-Pekingské zelí;;12;1.1;1;0.3;1.6;;1
-Petržel kořen;;62;2.9;12.2;0.6;1.8;;1
-Petržel nať;;57;3.7;9;1;5;;1
-Polníček;;17;1.8;1.4;0.4;1.5;;1
-Pór;;45;2.5;8.6;0.3;1.5;;1
-Rajčata;;24;1.1;4.6;0.3;1.5;;1
-Reveň;;19;1.3;3.6;0.1;1.4;;1
-Ředkev;;21;1.5;5;0.1;1.1;;1
-Ředkvičky;;19;1.1;3.7;0.1;1;;1
-Řeřicha zahradní;;14;1.6;0.4;0.6;3.3;;1
-Salát hlávkový;;19;1.5;2.7;0.3;0.9;;1
-Salát ledový;;12;0.7;1.9;0.3;1.2;;1
-Salát římský;;17;1;1.7;0.6;1.2;;1
-Sójové výhonky;;50;5.5;4.7;1;2.6;;2
-Špenát;;33;3.4;4.1;0.6;2.1;;2
-Topinambury;;79;1.9;17;0.2;3.5;;2
-Tykev velkoplodá;;40;0.8;9;0.1;2.3;;2
-Výhonky vojtěšky (alfalfa);;24;4;0.4;0.7;1.6;;2
-Zelí bílé hlávkové;;29;1.5;4.5;0.2;2.7;;2
-Zelí červené hlávkové;;31;1.6;6.1;0.3;3.1;;2
-Čočka (suché, nevařené);;343;26.9;59.2;1.2;10.6;;2
-Fazole (suché, nevařené);;333;23.5;59.8;1.6;17;;2
-Hrách (suché, nevařené);;338;23.7;61.5;1.4;16.6;;2
-Sója (suché, nevařené);;443;43.8;16.3;23;21;;2
-Bílé fazole v rajské omáčce (suché, nevařené);;88;5.3;14.4;0.8;;;2
-Celer s olejem (suché, nevařené);;90;1.1;10.4;5.1;;;2
-Červená řepa (suché, nevařené);;33;0.9;7.8;0.3;;;2
-Fazolové lusky (suché, nevařené);;24;1.1;5.3;0.9;;;2
-Hongkong salát (suché, nevařené);Bonduelle;60;1.3;7.1;3.3;;;2
-Hrášek zelený (suché, nevařené);;64;4.8;11;0.3;;;2
-Chilli česnek (suché, nevařené);Horlein;436;3.6;17;40;;;2
-Kukuřice (suché, nevařené);Bonduelle;119;3;22.9;1.5;;;2
-Makedonská směs (suché, nevařené);Bonduelle;33;1.8;6;0.3;;;2
-Mrkvový salát (suché, nevařené);;33;0.8;7.4;0.1;;;2
-Okurky (suché, nevařené);;29;1;7;0.1;0.5;;2
-Rajčatová šťáva (suché, nevařené);;19;0.8;4;0.1;0.6;;2
-Rajský protlak (suché, nevařené);;102;2.4;23.3;0.5;0.9;;2
-Sójové klíčky (suché, nevařené);Bonduelle;14;1.5;1.8;0.1;1.6;;2
-Zelí bílé kysané (suché, nevařené);;19;0.7;3.9;0.2;1.4;;2
-Zelí červené sterilované (suché, nevařené);;64;1.6;14.9;0.2;;;2
-Baby karotka (mražené);;21;0.5;4.2;0.2;;;2
-Brokolice (mražené);;24;2.9;1.2;0.8;;;2
-Lahůdková kukuřice (mražené);;107;3.9;19.8;1.2;;;2
-Špenát Bonduelle (mražené);;26;2.6;2.5;0.6;;;2
-Zeleninová směs (průměr) (mražené);;48;2.3;8.2;0.5;;;2
-Houby čerstvé (průměr);;26;2.6;3.8;0.4;6;;2
-Houby sušené (průměr);;336;37;41.1;2.7;46;;2
-Hřiby;;19;5.1;5.2;0.3;6;;2
-Žampiony;;17;3.3;4.8;0.6;2;;2
-Ananas;;43;0.4;10.1;0.2;1.3;;2
-Angrešt;;50;0.9;10.6;0.5;2.8;;2
-Avokádo;;221;1.9;0.4;23.5;6.3;;2
-Banány;;95;0.3;23;0.3;3.1;;2
-Borůvky;;67;0.8;14.7;0.7;2.2;;2
-Broskve;;52;0.8;12.5;0.2;1.4;;2
-Brusinky;;62;0.4;13.7;0.8;1.5;;2
-Citrony;;48;0.7;10.5;0.5;1.8;;2
-Datle;;126;1.5;31.3;0.1;3.6;;2
-Fíky;;45;1.3;9.5;0.3;2.3;;2
-Granátová jablka;;60;1.3;11.8;0.2;2.8;;2
-Grapefruity;;40;0.5;9.6;0.3;1.6;;2
-Hrozny;;69;0.7;18.2;0.5;1.5;;3
-Hrušky;;67;0.5;15.8;0.4;2.4;;3
-Jablka;;62;0.4;14.4;0.4;1.8;;3
-Jahody;;43;0.9;8.8;0.6;1.3;;3
-Jeřabiny;;79;1;22.6;0.3;2.9;;3
-Kdoule;;38;0.4;12.4;0.4;1.6;;3
-Kiwi;;50;1;9.1;0.5;1.1;;3
-Klementinky;;38;0.9;8.7;0.1;;;3
-Klikve;;38;0.4;9.7;0.7;1.6;;3
-Maliny;;55;1;11.6;0.8;5.2;;3
-Mandarinky;;48;0.9;10.6;0.3;1.5;;3
-Mango;;69;0.6;16;0.3;1.7;;3
-Meruňky;;57;1;13.4;0.3;1;;3
-Mirabelky;;52;0.7;12.8;0.2;1;;3
-Moruše;;36;1.3;8.1;0;1.5;;3
-Nektarinky;;36;1.2;8;0.1;2.2;;3
-Olivy černé naložené (řecké);;345;2.2;4.9;35.8;;;3
-Olivy zelené naložené;;136;1.4;1.8;14;2.4;;3
-Ostružiny;;48;1.2;12;0.8;4;;3
-Pomeranče;;48;0.9;11.7;0.3;1.8;;3
-Rakytník;;50;1.2;5;3.9;2;;3
-Renklody;;62;0.8;9.7;0.1;2.3;;3
-Rybíz bílý;;26;1.3;5.6;0.3;4;;3
-Rybíz černý;;45;1.3;16.4;0.3;5;;3
-Rybíz červený;;38;1.1;13.8;0.3;5.6;;3
-Slívy;;40;0.5;9.6;0;1.8;;3
-Švestky;;67;0.8;16.2;0.3;1.5;;3
-Třešně;;64;0.9;14.7;0.5;0.5;;3
-Višně;;50;0.8;12.6;0.4;0.7;;3
-Datle sušené;;274;2.3;78;0.2;9;;3
-Fíky sušené;;231;4;68.4;1.6;12.9;;3
-Hrozinky sušené;;229;2.3;71.2;0.5;5.4;;3
-Banány sušené;;324;4.4;75;0.8;12;;3
-Jablka sušené;;255;1.4;57;1.6;10;;3
-Meruňky sušené;;238;5;48;0.5;8.6;;3
-Švestky sušené;;243;2.8;74.6;0.7;5;;3
-Arašídy;;598;26.9;23.6;44.2;6.2;;3
-Kaštany;;214;4.9;41.1;3.3;4;;3
-Kešu;;602;16;27;46;3.2;;3
-Kokos;;364;4;11;36;7.3;;3
-Kokos strouhaný;;605;7.8;17.5;68.8;;;3
-Lískové;;683;13.8;10.9;65;3.5;;3
-Makadamia;;705;9;9.3;75;5.3;;3
-Mák;;519;18.7;23;39;20;;3
-Mandle;;617;17.5;19;52.4;6;;3
-Para;;683;15.3;7.8;68.3;5.3;;3
-Pekan;;683;10;14;71;4.7;;3
-Piniové;;676;14;4;68.6;1.9;;3
-Pistácie;;633;20.4;17.1;54.7;6.1;;3
-Slunečnicová semínka;;595;26.5;12;49;6.3;;3
-Vlašské;;671;18.4;14.6;60;2.7;;3
-Kompot (průměr);;76;0.4;20;0.1;1;;3
-Kompot bez cukru, light (průměr);;36;0.4;7;0.4;1;;4
-Džem (průměr);;238;0.5;58;0.3;0.5;;4
-Džem Andros light;;152;0.3;36;0.2;1.2;;4
-Džem Materne light;;174;0.3;41;0.2;1;;4
-Džem diet Schwartau;;183;0.4;44;0.2;1;;4
-Džem pro diabetiky Hamé;;112;0.4;26;0.4;1.5;;4
-Kandované ovoce směs;;267;3.5;68;0.2;6;;4
-Ovocná přesnídávka s meruňkami neslazená;;45;0.4;10.3;0.1;;;4
-Přesnídávka jablečná;;86;0.3;21.8;0.1;;;4
-Švestková povidla;;233;1.4;59.3;0.4;1;;4
-Mléko plnotučné;;62;3;4.6;3.3;0;;4
-Mléko polotučné;;45;3.2;4.7;1.5;0;;4
-Mléko nízkotučné;;38;3;4.4;0.5;0;;4
-Mléko odstředěné;;33;3.4;4.9;0.1;0;;4
-Mléko Tatra grand 9% tuku;;157;8;11.4;9;0;;4
-Mléko Tatra light 4% tuku;;102;6.7;9.6;4;0;;4
-Smetana ke šlehání light;Kapucín;207;2.9;3.9;20;0;;4
-Smetana ke šlehání 33% tuku;;300;2.1;3.2;32.8;0;;4
-;;117;0.8;9.9;8.3;0;;4
-Sušené mléko plnotučné;;500;26.8;39;27;0;;4
-Sušené mléko odtučněné;;362;35.5;51.5;1;0;;4
-Activia bílá;Danone;71;4.2;5.9;3.5;0;;4
-Activia bílá 0% tuku, Vitalinea bílá;;45;4.6;6.2;0.1;0;;4
-Bílý se sníženým obsahem tuku;Kapucín;67;3;4;1;0;;4
-Jihočeský jogurt bílý - sklo;Madeta;86;5.9;5.1;3.6;0;;4
-Twiggy bílý;Bohemilk;60;5.2;5.3;1;0;;4
-Activia s vlákninou;Danone;107;3.5;16;3.1;;;4
-Cremi gourmand;Yoplait;112;2.5;13.7;5.3;;;4
-Diavita-jahodový;Madeta;67;4;7.3;2.4;;;4
-Fantasia s ovocem;Danone;105;3.8;15.2;3.1;;;4
-Jogobella jahodová;Zott;98;3.5;14.9;2.7;;;4
-Jogobella light ananas;Zott;60;4.1;8.4;1.1;;;4
-Jogurt 0.1% zahradní směs s müsli;Kunín;48;4.3;6.8;0.1;;;4
-Lehký košík müsli;Yoplait;48;4.3;6.4;0.1;;;4
-Meruňky s cereáliemi;Hollandia;90;2.7;10.7;3;;;4
-Ovocela malina;Danone;100;3.4;14.8;2.8;;;4
-ProBio vanilkový;Rajo;102;3.5;16.5;2.7;;;4
-Silueta broskev, maracuja;Olma;50;4.1;8.1;0.1;;;4
-Vitalinea s kousky višní;Danone;57;4.4;10.8;0.1;;;5
-Acidofilní mléko 3% tuku;;60;3.3;4;3.5;0;;5
-Actimel;Danone;88;3;15.1;1.7;0;;5
-Actimel 0% tuku;Danone;36;2.9;5.1;0.1;0;;5
-Jemný jogurtový nápoj;Danone;88;2.9;14.3;2.1;0;;5
-Jihočeské kefírové mléko;Madeta;43;3.2;3.7;1.8;0;;5
-Vitalinea nápoj;Danone;36;3.3;5.5;0.1;0;;5
-Danette čokoládový;;145;3.3;17.5;7;0;;5
-Danissimo vanilkové;Danone;133;4.9;15.7;5.7;0;;5
-Kysaná smetana 6+4;Polabské mlékárny;171;3.2;4;16;0;;5
-Milch reis čoko;Müller;112;3.2;19;2.6;;;5
-Monte;Zott;195;2.9;15.9;13.5;0;;5
-Pudink čokoládový;Dr. Oetker;162;3.1;17.1;9;0;;5
-Tvaroh bez tuku;;69;18.8;4.4;0.8;0;;5
-Tvaroh jemný;;110;17.5;4.2;2.5;0;;5
-Tvaroh tučný;;183;12.3;3.3;13.5;0;;5
-Tvaroh tvrdý;;129;28.6;1.5;0.9;0;;5
-Tvarohovo-jogurtový dezert, Diavita višeň;Madeta;55;7;5.4;0.1;;;5
-Vitalinea čokoládový dezert;;83;3.5;15.8;0.5;0;;5
-Zakysaná smetana;;164;2.6;4.5;15;0;;5
-Zakysaná smetana light;;126;2.9;4.2;11;0;;5
-Sušené mléko ovesné;;488;5;61;25;20;;5
-Šlehačka spray dietní;Dutch lady;198;3.5;4.9;20;0;;5
-Šlehačka spray neslazená;Dutch lady;331;2.3;3.5;35;0;;5
-Ovesné mléko hotové;ASP;48;0.5;6.1;2.5;2;;5
-Sójové mléko s kalciem;Provamel;45;3.6;2.9;2.1;0;;5
-Sójové mléko hotové;ASP;48;0.2;5.9;2.6;0;;5
-Brie Reverend - 60% t.v suš.;;355;19;0;31.5;0;;6
-Camembert - 30% t. v suš.;;214;23.5;0;13.5;0;;6
-Camembert - 60% t. v suš.;;371;17.9;0;34;0;;6
-Hermelín - 45% t. v suš.;;355;20.1;1.4;21.8;0;;6
-Niva - 50% t. v suš.;;369;20.7;1.4;27;0;;6
-Olomoucké tvarůžky - 34% t.v suš.;;133;29.7;2;0.8;0;;6
-Romadur - 20% t. v suš.;;176;23.6;2.5;8.3;0;;6
-Romadur - 40% t. v suš.;;238;18;2;17;0;;6
-Roquefort - 50% t.v suš.;;376;21.5;0;30.6;0;;6
-Sedlčanský vltavín (Povltavské mlékárny) - 55% t. v suš.;;350;20;2;31;0;;6
-Stříbrňák - 30% t. v suš.;;202;25;0;11.5;0;;6
-Blaťácké zlato - 50% t. v suš.;;319;25;2.4;23;0;;6
-Čedar - 50% t. v suš.;;398;25.3;2.9;30;0;;6
-Eidam - 20% t. v suš.;;214;30;3;10;0;;6
-Eidam - 30% t. v suš.;;262;30.3;1.4;14;0;;6
-Eidam - 45% t. v suš.;;348;26;1;26.1;0;;6
-Ementál - 45% t. v suš.;;386;28.2;2.3;28.4;0;;6
-Gouda - 30% t. v suš.;;245;26;1;14;0;;6
-Gouda - 40% t. v suš.;;295;24.5;0;23;0;;6
-Madeland - 30% t. v suš.;;262;27;1;16;0;;6
-Madeland - 45% t. v suš.;;333;27;1;25;0;;6
-Moravavský bochník - 45 % t. v suš.;;340;24.8;2;28;0;;6
-Oštiepok - 50% t.v suš.;;364;21.4;3.3;29.7;0;;6
-Parmezán - 25% t. v suš.;;371;35.6;0;25.8;0;;6
-Tylžský - 20% t. v suš.;;226;28;1;12;0;;6
-Balkán - 30% t. v suš.;;233;11.8;1;20;0;;6
-Brynza - 50% t. v suš.;;305;19.9;1.6;25;0;;6
-Cottage (Madeta) - 20% t. v suš.;;109;13;4;5;0;;6
-Gervais;Danone;224;7;5;20;0;;6
-Lučina - 70% t. v suš.;;290;11;1;27;0;;6
-Lučina linie - 40% t. v suš.;;150;12.1;2.8;10;0;;6
-Lučina se salámem Herkules - 70% t. v suš.;;298;9.5;2.5;28;0;;6
-Mascarpone;;450;4.5;3.5;47;0;;6
-Mozzarela (Italat) - 45% t. v suš.;;240;14.6;1.1;20;0;;7
-Ricotta;;202;15;1;15;0;;7
-Apetito - 58% t. v suš.;;367;11;2.3;33.5;0;;7
-Apetito - 26% t. v suš.;;143;18.6;2.4;6.4;0;;7
-Buko natural - 70% t. v suš.;;281;8;2.5;27;0;;7
-Krémový sýr nízkot. v tubě Salix - 20% t. v suš.;;105;10.4;2.6;6;0;;7
-Leerdammer tavený sýr - 45% t. v suš.;;243;18.1;0;18.8;0;;7
-Maratonec - 63% t. v suš.;;317;11.1;2.6;29.5;0;;7
-Sýr krevetový v tubě (Kavli) - 38% t. v suš.;;202;14;0;16;0;;7
-Sýr nízkotučný (Kavli) - 24% t. v suš.;;136;15;0;7;0;;7
-Sýr se salámem v tubě (Kavli)- 45% t. v suš.;;219;15;0;18;0;;7
-Sýr šunkový v tubě (Kavli) - 41% t. v suš.;;207;13;0;17;0;;7
-Tartare s česnekem a bylinkami (Povlt. Mlékárny) - 48% t. v suš.;;345;9.5;1.5;25;0;;7
-Tavený sýr kapiový s česnekem (Želetava) - 40% t. v suš.;;212;14.5;2;16.5;0;;7
-Tomík pomazánkový sýr - 50% t. v suš.;;321;13.5;3.9;29;0;;7
-Veselá kráva - 50% t. v suš.;;290;10;5;26;0;;7
-Veselá kráva Kiri - 70% t. v suš.;;326;9;2;32;0;;7
-Veselá kráva štíhlá - 28% t. v suš.;;174;15;5;10.5;0;;7
-Vital tavený sýr s kořenovou zeleninou - 26% t. v suš.;;162;25;1;6;0;;7
-Želetavský nízkotučný sýr FIT - 29% t. v suš.;;138;16.5;1;7;0;;7
-Tofu narutal;Sunfood;112;15.5;6.9;2.4;;;7
-Tofu uzené;Sunfood;143;16.6;10.9;3.5;;;7
-1 vejce celé (60 g);;81;7.6;0.8;6.6;0;;7
-Vajahit (v množství 1 vejce);;38;1;6.8;0.8;0;;7
-Hovězí kližka;;152;20;0;8.1;0;;8
-Hovězí maso přední;;229;18;0;17.5;0;;8
-Hovězí maso zadní;;181;19.2;0;11.7;0;;8
-Hovězí svíčková;;148;20;0;7.4;0;;8
-Jehněčí (průměr);;271;20.4;0.1;22.6;0;;8
-Kozí (průměr);;143;19.9;0.1;7.1;0;;8
-Králičí (průměr);;162;19.7;0.3;9.2;0;;8
-Mleté maso na sekanou;;331;16.1;0;29.7;0;;8
-Skopové (průměr);;240;17.1;0;19;0;;8
-Špek;;793;2.9;0;89;0;;8
-Telecí bok;;221;25.4;0;13.2;0;;8
-Telecí hrudí;;214;18.2;0;15.6;0;;8
-Telecí kýta na řízky;;138;20.8;0;6.1;0;;8
-Uzená krkovice;;436;17.3;0;40;0;;8
-Uzený bok;;588;10.3;0;61;0;;8
-Vepřová krkovice;;286;15.4;0;25;0;;8
-Vepřová kýta na řízky;;202;18.2;0;14.2;0;;8
-Vepřové libové;;238;18.2;0;18.2;0;;8
-Vepřové prorostlé;;343;14.3;0;31.7;0;;8
-Vepřové tučné;;463;11.9;0;47;0;;9
-Bažant;;114;22.6;0.4;2.5;0;;9
-Klokan;;102;20;0;2;0;;9
-Koroptev;;110;24.4;0.3;1.2;0;;9
-Srnčí hřbet;;124;22.6;0.4;3.6;0;;9
-Srnčí kýta;;102;22.1;0.4;1.5;0;;9
-Husa (průměr);;350;14.5;0.2;32.5;0;;9
-Husí prsa;;138;15.4;0.2;8.4;0;;9
-Kachna (průměr);;383;12.4;0.2;37.2;0;;9
-Krůta (průměr);;131;21.9;0.2;4.7;0;;9
-Krůtí prsa;;107;24.1;0;1;0;;9
-Kuře (průměr);;124;21.6;0.4;4;0;;9
-Kuřecí prsa;;102;23.3;0.4;0.9;0;;9
-Slepice (průměr);;124;22.4;0.2;3.6;0;;9
-Dršťky;;93;19;0;2;0;;9
-Játra drůbeží;;136;22.9;1.2;4.5;0;;9
-Játra hovězí;;129;19;4.5;3.9;0;;9
-Játra vepřová;;131;20.6;1.5;4.8;0;;9
-Jazyk hovězí;;188;16;0.1;13.7;0;;9
-Ledvinky hovězí, vepřové;;107;15;0.5;4.5;0;;9
-Filé z tresky;;71;16.2;0.1;0.6;0;;10
-Kapr;;126;17.5;0.1;6.1;0;;10
-Kaviár;;240;26.1;0;15.5;0;;10
-Krab;;95;18.5;1.5;1.5;0;;10
-Krevety;;74;16.5;0.1;0.8;0;;10
-Makrela;;167;18.2;0.1;10.5;0;;10
-Pstruh;;119;19.7;0.1;4.6;0;;10
-Sleď;;183;17.7;0.1;12.5;0;;10
-Slávky;;52;9.8;0;1.3;0;;10
-Tuňák;;157;22.1;0.1;7.8;0;;10
-Losos ve vlastní šťávě;;131;23;0;7;0;;10
-Makrela uzená;;252;23.3;0.1;17.7;0;;10
-Sardinky v oleji;;259;21.5;1.2;17.8;0;;10
-Sardinky v tomatě;;126;12.9;4.4;6.3;0;;10
-Tresčí játra v oleji;;610;4.3;1.3;65.5;0;;10
-Tuňák v oleji;;198;21;0.1;12;0;;10
-Tuňák ve vlastní šťávě;;110;21;0;1;0;;10
-Zavináč;;181;11.7;5.7;12.3;;;10
-Anglická slanina;;426;11;0.1;42;0;;10
-Debrecínka;;269;20.7;0.1;20.8;0;;10
-Kuřecí prsní šunka;Xaverov;98;14;1.5;4;0;;10
-Moravské uzené;;286;24;0;17;0;;10
-Šunka v plechu;;190;20;0;10.7;0;;10
-Šunka dušená strojová;;160;17.6;1.4;9;0;;11
-Šunka krůtí;;100;18;0;2;0;;11
-Šunka (průměr);;214;21.4;0;12.8;0;;11
-Uzená krůtí prsa;;120;20;1;5;0;;11
-Baby párky;Promt;264;15.6;3;21.4;0;;11
-Párky drůbeží;;290;16;1;25;0;;11
-Párky (průměr);;288;14;1;25;0;;11
-Špekáčky;;324;11;2;30.3;0;;11
-Gothajský;;433;12.2;0.1;42.7;0;;11
-Kabanos;;293;12.8;1.8;26.3;0;;11
-Métský;;352;15.1;0;28.3;0;;11
-Mortadela;;338;12.4;0;32.8;0;;11
-Paprikový;;402;17.6;0.2;36.8;0;;11
-Paprikový mini;Integral;414;15;1;40;0;;11
-Poličan;;438;26.9;0.2;47;0;;11
-Šunkový;;190;16.8;0.1;13.6;0;;11
-Točený drůbeží;;261;14;1;25;0;;11
-Točený;;245;14.6;2.2;20;0;;11
-Turistický;;405;19;0;37;0;;11
-Uherský;;490;25;0;43;0;;11
-Vysočina;;460;19.3;0;42.6;0;;11
-Ďábelské tousty;;252;10.5;3.4;21.9;0;;11
-Krůtí paštika;Veselá pastýřka;381;12;9;35;0;;11
-Luncheonmeat;;307;12.8;4.8;26;0;;11
-Luncheonmeat drůbeží;;133;8.9;5.1;8.5;0;;11
-Pasta z uzeného masa;Hamé;336;11;2;32;0;;12
-Paštika játrová;;429;12;1.5;41;0;;12
-Paštika Majka;Hamé;205;6.5;0.4;19.6;0;;12
-Vepřové maso ve vl. šťávě;;310;14.1;0.1;28.1;0;;12
-Jelítka;;295;16.2;13.3;19.7;0;;12
-Jitrnice;;276;14.6;12.8;18.5;0;;12
-Tlačenka světlá;;300;13.7;0.7;27.1;0;;12
-Tlačenka tmavá;;317;15.1;0.1;28.5;0;;12
-Tlačenka drůbeží;;176;17.9;0.1;11.9;0;;12
-Bavorská sekaná;Intergal;283;10;1;40;0;;12
-Bílá klobása;;212;11.2;9.8;14.3;0;;12
-Čabajka;;521;22.7;0;47.9;0;;12
-Krůtí trvanlivá klobása;Intergal;381;15;2;35;0;;12
-Moravská klobása;;276;13.4;2;23.8;0;;12
-Pečená masová sekaná;Ravy;139;10;2;15;0;;12
-Sekaná (průměr);;264;17.4;6.2;18.8;0;;12
-Robi, Tomi;;124;10;10;1;;;12
-Sójové v hodnotách po základní přípravě;;95;13;7.5;0.5;6;;12
-Tofu karbanátky;Sunfood;202;14.2;13.8;10.1;;;12
-Pomazánky Sojalife, Racio (průměr);;179;2.5;8.5;14.9;;;12
-Amarant;;369;18;57;8;6.7;;12
-Cornflakes;;357;7.2;79.7;0.6;4;;12
-Jáhly;;364;10.2;68.2;4.3;;;12
-Mouka kukuřičná;;326;8.3;66.3;2.8;5.2;;12
-Mouka pšeničná bílá;;336;9.8;70.7;1.1;4;;12
-Mouka pšeničná celozrnná;;312;11.7;61;2;2.1;;12
-Mouka rýžová;;350;6.7;78;0.7;1.4;;12
-Mouka sójová tučná;;448;43.4;23.1;20.3;18;;12
-Mouka žitná;;319;8.3;67.8;1.3;8;;12
-Pohanka;;352;11;60;3;3.7;;12
-Polenta;;350;8.8;75;1.2;5;;12
-Pšeničná krupice;;350;8;73;2;7;;12
-Pšeničné klíčky;;312;26.6;30.6;9.2;17;;12
-Slazené snídaňové cereálie;;381;4.7;88;0.5;1.9;;13
-Solamyl;;321;0.4;80;0.1;0.2;;13
-Vločky ovesné;;352;11.7;59.8;7.1;5.5;;13
-Vločky pšeničné;;310;11.5;61;1.8;10;;13
-Vločky žitné;;352;7.3;75.2;2;10;;13
-Bageta;;274;7.9;55.4;0.7;3;;13
-Bílý rohlík, houska;;250;7.8;51.2;1.4;3;;13
-Celozrnný chléb se slunečnicovými semínky;;238;8.8;42.1;3.7;8;;13
-Graham;;198;8.4;39.7;1;1.5;;13
-Kyjevský chléb;;243;7.4;51;1.1;5.8;;13
-Pita chléb;;238;7.4;48.5;1.3;2.8;;13
-Pšeničný chléb bílý;;238;7.6;48.8;1.2;3.2;;13
-Pšeničný chléb celozrnný;;205;7.1;41.4;0.9;8.1;;13
-Strouhanka;;357;10;79;1;;;13
-Toustový chléb bílý;;260;6.9;47.7;4.4;3.7;;13
-Toustový chléb tmavý;;241;8.2;45;2.8;7.1;;13
-Veka;;283;8.4;60;1;3;;13
-Žitný chléb;;221;6.4;46.3;1;6;;13
-Chléb Kavli;;329;11;66;2;14;;13
-Karlovarský suchar dietní;;367;10;76;2.2;;;13
-Knäckebrot original;;321;9;67;1.4;14.6;;13
-Křehký chléb Active;;357;9;70;1.5;5.5;;13
-Křehký chléb Knuspi;;329;8.5;64.5;1.7;6.9;;13
-Racio chlebíčky;;381;9.5;80;2;1.2;;13
-Bábovka;;386;6;43.5;21.1;0.9;;13
-Bábovka třená;;362;5.5;49.7;16;0.9;;13
-Buchta (průměr);;393;8.5;58;15;;;13
-Croissant s čokoládou;;407;5.3;38;26.4;1.2;;13
-Jablečný závin;;202;2.5;28;9;2.1;;13
-Kobliha cukrářská;;426;6.7;51.8;21.4;1;;13
-Koláč makový;;386;7.6;54.6;15.7;;;13
-Koláč tvarohový;;355;9.9;52;12;;;13
-Loupáky s ořechovou náplní;;388;7;56;15.8;;;13
-Makovka;;302;8.5;60;3.2;;;13
-Mazanec máslový, vánočka;;364;7.4;60;10.3;;;13
-Pečivo čajové linecké;;548;7;59.2;32.1;;;13
-Piškotová roláda s džemem;;271;4.5;57.5;2.3;;;13
-Šáteček s náplní tvarohovou;;400;6;63.8;13.6;;;13
-Štola;;393;5.3;47.1;20.4;;;13
-Vanilková roláda;;412;6;55;18;1.1;;13
-Vánočka obyčejná;Delvita;300;7.4;56;5.2;;;13
-Vánočka tuková;;348;7.3;60.9;8.6;;;13
-Závin listový s jablky;;393;7;56;15.8;2.1;;13
-Bake Rolls;;448;12;62;17;;;13
-Crunchips - slané lupínky;;529;5.5;49;35;7;;13
-Grahamové tyčinky;;369;12.6;64.4;7.6;;;13
-Chipsy (průměr);;500;5.6;63;25;7;;13
-Koktejlový mix - Party stars;;440;10.3;67;14.8;;;13
-Křupky;;521;17.5;47.9;29.2;;;13
-Raciolky snack se sníženým obsahem tuku;;398;11.4;61.7;11.6;;;13
-Slané pečivo cracker (průměr);;524;8.7;56;30.6;;;13
-Slané tyčinky (průměr);;405;10;73.1;7.4;;;13
-Škvarkové placky;;533;7.8;47;35;;;13
-Vitalinea slané krekry;;402;8.5;69.8;9.7;;;14
-Zlaté tyčinky sezamové;;421;10.7;72;10.7;;;14
-Big Eskymo;Algida;248;2.9;22.4;16.8;0;;14
-Calippo;Algida;86;0;21.2;0;0;;14
-Ledňáček kakaový;Algida;88;0.7;8.5;6.1;0;;14
-Magnum triple;Algida;245;4;31;18.3;0;;14
-Nanukový dort Terno kakaový;Nanuk;109.6;2;8.3;6.7;0;615;14
-Nogger karamel;Algida;205;1.4;17.2;14.5;0;;14
-Ovocná zmrzlina (průměr);;141;1.5;29;1.8;0;;14
-Pierot vaječný likér;Nanuk;148;2.8;10.4;8.2;0;;14
-Polárk. sníh;Prima;162;4;20;7.4;0;350;14
-Smetanová zmrzlina (průměr);;250;1.6;13.6;21.5;0;;14
-Tricky;Algida;53;0;21.7;0.1;0;;14
-Tvaroháček;Algida;114;1.1;13.4;6.4;0;;14
-Tvarohová tyčinka;Algida;107;2.1;9.6;6.7;0;;14
-Twister;Algida;71;0.4;14.9;1.1;0;;14
-Máslo;;717;1;0.6;80.5;0;;14
-Máslo se smetanovým zákysem;;662;1;1;75;0;;14
-Pomazánkové máslo;;324;3.8;6.2;31;0;;14
-Sádlo vepřové škvařené;;893;0.2;0;99.5;0;;14
-Škvarky;;736;15.5;0;75;0;;14
-Alfa;;624;0.2;0.3;70;0;;14
-Ceresoft;;826;0;2;92;0;;14
-Creme Bonjour s okurkou;;252;5;4.2;24.3;0;;14
-Creme Bonjur s paprikou;;257;5.1;4.1;25;0;;14
-Finea garden;;533;1;1;80;0;;14
-Finea light;;488;1;1;55;0;;14
-Flora;;619;0.1;0.3;70;0;;14
-Flora light;;352;0.1;0.3;40;0;;15
-Flora pro activ;;321;0.1;3.2;35;0;;15
-Hera;;655;0.1;0.3;74;0;;15
-Oleje (všechny druhy);;881;0;0;100;0;;15
-Perla;;352;0;0;40;0;;15
-Perla tip;;221;0;0.1;25;0;;15
-Planta - tuk na smažení;;900;0;0;100;0;;15
-Pokrmový tuk na smažení;;874;0;0.2;83.3;0;;15
-Rama;;619;0.1;0.3;70;0;;15
-Rama cullinesse;;655;0;0;74;0;;15
-Rama Harmonie;;433;0.5;0.9;48;0;;15
-Švédské máslo Bremedium;;536;0.5;10;60;0;;15
-Creme Bonjour kostka;;621;0.7;0.9;70;0;;15
-Zlatá Haná;;679;0.1;0.2;85;0;;15
-Jogo Majo;;326;1.1;13.4;30.3;0;;15
-Majolka;;786;1.5;0;80;0;;15
-Majonéza Boneco;;736;0.8;1.3;82.3;0;;15
-Majonéza Boneco light;;479;0.6;5.1;51.9;0;;15
-Majonéza light;Hellmans;457;0.7;3;50.7;0;;15
-Sojanéza;Kalma;276;2.5;14;23;0;;15
-Tatarská omáčka;;510;0.8;6.9;54.3;0;;15
-Tatarská omáčka Sojalife;Racia;264;1.3;4.9;26.7;0;;15
-Krupicová kaše;;176;5;19;8;;;15
-Bramborové šišky plněné mákem;;224;5.7;39.9;4.8;;;16
-Kynuté knedlíky s borůvkami;;271;6.5;51.7;3.2;;;16
-Mexická pizza;Guseppe;207;10.4;33.2;3.8;;;16
-Plněné papriky v rajské omáčce;;114;4.2;11.3;5.8;;;16
-Smažené kuřecí Gordon Bleu;;188;11.4;16.9;9;;;16
-Šišky plněné uzeným masem a špenátem;;195;6.1;36.1;2.6;;;16
-Tvarohové knedlíky s meruňkovou náplní;;293;8.7;39.3;9.3;;;16
-Zelenina se žampiony a rýží;Zgoda;93;3;19.6;0.5;;;16
-Zeleninové prsty zmrazené;Nowaco;114;3.9;24;0.5;;;16
-Bramborová kaše;;71;1.8;12;1.3;1.4;;16
-Bramborové hranolky smažené;;290;4.2;32.5;14.5;3.5;;16
-Bramborové knedlíky;;171;4.5;37;0.5;;;16
-Bramborové krokety smažené;;264;2.4;23;18;1.3;;16
-Bramborový salát s majonézou;;121;4;15;5;;;16
-Brambory vařené;;69;2;14.8;0.1;2.1;;16
-Houskové knedlíky;;245;7.1;51;1.1;;;16
-Rýže vařená bílá;;124;2.4;27.6;0.3;0.2;;17
-Rýže vařená natural;;129;2.7;27.3;0.8;1.3;;17
-Špagety bezvaječné vařené;;131;5;23.9;1.1;1.5;;17
-Těstoviny vaječné vařené;;143;4.9;28;1.1;1.4;;17
-Topinka na tuku;;429;5;47;20;1.5;;17
-Vařené luštěniny;;105;8.6;16;0.6;;;17
-Pizza se sýrem a salámem;;273.7;9.5;28;13.9;1.7;300;17
-Bramborová kaše s cibulkou a krotony;;431;5.6;69.5;14.7;;;18
-Bramborová kaše se šunkou;;338;11.7;66.1;2.5;;;18
-Instantní nudlová polévka Lucky - kuřecí;;467;9.9;54.7;21.6;;;18
-Instantní ovesná kaše Expres;;357;7.7;52;12.2;;;18
-Kari rýže;;338;7;70;3.4;;;18
-Big Mac;;455;24.2;39.1;22.5;;;18
-Fish Mac;;350;15.5;28.5;19.6;;;18
-Hamburger;;231;13.6;24.8;8.4;;;18
-Cheesburger;;262;16;24.2;11.5;;;18
-Hranolky malé;;169;2;21;8;;;18
-Hranolky střední;;252;3;32;12;;;18
-Hranolky velké;;338;4;43;16;;;18
-Chicken McNuggets 4 ks;;190;12;11;11;;;18
-Chicken McNuggets 6 ks;;286;18;16;16;;;18
-McChicken sendvič;;402;17;39;19;;;18
-Jablečná taštička;;219;2.2;25.8;12;;;18
-Zmrzlina kornout;;143;4.4;21.9;4.1;;;18
-Zahradní salát;;48;1.7;8.9;0.5;;;18
-Pizza se šunkou;;136;5;12;7;;;18
-Pizza žampionová;;133;2;20;5;;;18
-Fazolový;;86;2;11.1;4.2;;;18
-Mrkvový;;36;1.1;6.1;1.2;;;18
-Okurkový s rajčaty;;31;1;4.3;1.2;;;18
-Z kyselého zelí;;64;1.3;9.2;2.7;;;18
-Aspikové misky;;136;7.2;4.2;9.7;;;19
-Ruské vejce;;324;8.7;7.8;29;;;19
-Šunkový závitek v aspiku;;195;13.4;4.5;13.5;;;19
-Šunka s křenem;;357;25.4;1.4;26.3;;;19
-Tlačenka s cibulí;;314;18.2;8.6;24.2;;;19
-Vajíčková tlačenka;;229;6.2;2.2;22.1;;;19
-Uzenáč;;117;15.8;0.2;5.9;;;19
-Bujon;;329;4;36;17;0;;19
-Dijonnaise;Hellmans;495;1.4;9.1;51;;;19
-Dressing italský;Hellmans;519;1.7;9;53;;;19
-Droždí;;98;10.6;13;0.4;;;19
-Horčice plnotučná;;124;4.2;13;6.1;;;19
-Hotová jíška;Knorr;569;7;46;40;;;19
-Kečup;;102;1.3;23.8;0.1;;;19
-Koření (průměr);;381;6;75;7;0;;19
-Křen jablečný;Horlein;83;1.1;13.1;2.9;;;19
-Ocet;;41;0;3.5;0;0;;19
-Sójová omáčka;;138;19.9;4.5;4.5;0;;19
-Sůl;;0;0;0;0;0;;19
-Worcester;;76;1.4;17;0.3;0;;19
-Želatina;;343;85.6;0;0.1;0;;19
-Citron Pressé -čistá přírodní citronová šťáva;Maja;6;0;1.4;0;0;;19
-Linie;;202;15.6;22.3;5.2;10.2;;19
-Redita koktejly (průměr);;124;11.8;16.5;1.2;3;;19
-Polévky (průměr);;114;9.3;16.8;1;3;;19
-Sirup ovocný průměr;;274;0;68;0;0;;19
-Sirup ovocný;;14;0;3.5;0;0;;19
-Ananasová šťáva s vlákninou;Relax;43;0;10.6;0;;;19
-Broskev s vitamínem C;Relax;29;0.8;7;0;;;19
-Cappy džus;;48;0;11.8;0;;;19
-Černý rybíz s jablky;Relax;26;0;6.5;0;;;19
-Džus z černého rybízu;;57;0.4;12.5;0;;;19
-Džus z hroznového vína;;69;0.2;17;0;;;19
-Grapefruitový džus;;48;0.5;10.1;0;;;19
-Jablečný džus;;48;0;11.8;0;;;19
-Mrkvový džus;;21;0.6;4.8;0;;;19
-Multivitamin 100%;Pfanner;55;0.3;11.7;0;;;19
-Multivatamin nektar;;48;0.5;11;0;;;19
-Pomerančový džus;;45;0.7;9;0;;;20
-Rajčatová šťáva;Relax;21;0.3;5;0;;;20
-Třešňový nápoj - 12.5 % ovoce;Toma;38;0.1;9.2;0;;;20
-Zeleninová šťáva;;17;0;3;0;;;20
-Coca-cola;;43;0;10.6;0;0;;20
-Fanta exotická;;52;0;13;0;0;;20
-Fanta pomeranč, citron;;43;0;10.6;0;0;;20
-Kofola;;33;0;8.2;0;0;;20
-Ledový čaj s citronem;;31;0.1;7;0.1;0;;20
-Mirinda průměr;;52;0;13;0;0;;20
-Pepsi-cola;;48;0;11.8;0;0;;20
-Sprite;;43;0;10.6;0;0;;20
-Tonic;;38;0;9.4;0;0;;20
-Hanácká kyselka Poděbradka ochucená, Mattoni;;14;0;3.5;0;0;;20
-Dobrá voda, Toma svěží, minerálky bez příchutí;;0;0;0;0;0;;20
-Erektus;;38;0;9.4;0;0;;20
-Isosprint;;38;0;9.4;0;0;;20
-Red Bull, Semtex forte;;45;0;11.2;0;0;;20
-Bikava sušená s cukrem;;429;13.7;66;12.8;0;;20
-Capuccino (průměr);;443;9;70;14;0;;20
-Cereální nápoj Breakfast drink;;410;4.3;69.5;12.7;;;20
-Čaje granulované slazené;;357;0;88.2;0;0;;20
-Nesquick, Granko;;360;4.4;80;2;0;;20
-Tang (průměr);;357;0.1;75;0;0;;20
-Čaj, káva bez mléka a cukru;;0;0;0;0;0;;20
-Bílá káva bez cukru;;26;3.2;5.7;1.8;0;;20
-Bílá káva s 1 kostkou cukru;;38;3.2;10.2;1.8;0;;20
-Coca-cola light;;0;0;0;0;0;;20
-Sirupy light bez cukru;;0;0;0;0;0;;20
-Poděbradka light;;0;0;0;0;0;;20
-Ice tea instatní;;0;0;0;0;0;;21
-Ideal light instatní;;4;0;0;0;0;;21
-Multi Vitamin Catus instantní;;0;0;0;0;0;;21
-Pivo světlé 10;;31;0.5;3;0;0;;21
-Pivo světlé 12;;33;0.5;3;0;0;;21
-Pivo světlé 11;;52;0.5;10.8;0;0;;21
-Pivo Dia;;31;0.3;1.3;0;0;;21
-Pivo nealkoholické;;19;0.4;5.4;0;0;;21
-Víno bílé suché;;52;0.1;0.5;0;0;;21
-Víno bílé sladké;;76;0.1;6;0;0;;21
-Víno portské;;160;0;12;0;0;;21
-gin, fernet Becherovka, griotka;;286;0;32;0;0;;21
-Vaječný koňak;;33;4.4;28;0;0;;21
-Cukr bílý, hnědý;;383;0;95;0;0;;21
-Cukr hroznový, Glukopur;;386;0;97.1;1.4;0;;21
-Fruktóza;;400;0;99;0;0;;21
-Med;;324;0.3;81.8;0;0;;21
-Aspartam, neotam;;381;0;97;0;0;;21
-Irbis snowflake;;405;0;98.9;0;0;;21
-Bílá;;552;5.7;54.9;33.6;3;;21
-Dietní;;476;6.4;43;30.5;3;;21
-Geisha;;548;9;49;35;3;;21
-Hořká (průměr);;507;5.6;55.7;29.4;14;;21
-Jogurtová;;531;6.4;55.1;31.7;3;;21
-Mléčná (průměr);;548;11;52;37;3;;21
-Oříšková;;550;7.4;49.7;36.1;3;;21
-Studentská pečeť;;483;6.8;55.5;28;;;21
-Deli (průměr);;405;3.1;73.5;14.9;;;21
-Ledové kaštany;;569;5.4;47.6;39.8;;;21
-Margot;;471;9.3;58.2;24.1;;;21
-Milena;;552;3.8;55.2;35.5;;;21
-Snikers, Mars, Twix;;476;4.6;64.3;24.2;;;21
-BeBe (průměr);;457;7.9;75.8;13.3;;;21
-BeBe dobré ráno;;426;7.2;59.6;17.5;;;21
-Delissa (průměr);;526;9.9;56;29.4;;;22
-Dezert zlaté piškoty;;431;4.1;73.3;13.6;;;22
-Disco;;452;5;64.8;18.8;;;22
-Fidorka (průměr);;490;4.3;65.9;24.5;;;22
-Horalky (průměr);;519;7.5;55;30.3;;;22
-Kolonáda - trojhránky;;579;5.7;63.6;33.8;;;22
-Lotus celozrnné;;476;5;71;19;;;22
-Mini Tatranky;;543;7.9;58.2;31.1;;;22
-Miňonky (průměr);;526;8.5;57.8;28.1;;;22
-Polomáčené sušenky;;460;6.7;66.2;21;;;22
-Sandwich;Orion;495;6.3;62.9;24.5;;;22
-Tataranky (průměr);;519;7.1;59.1;28.5;;;22
-Vitalinea (průměr);;402;4.7;82.9;5.8;;;22
-Zlaté oplatky;;540;6;68.1;27.3;;;22
-Bona vita (průměr);;436;6;67;16;4;;22
-Bonavita meruňka;;348;4.9;60.3;9.5;4;;22
-Fly-linie oříšková;;319;6.3;57.8;9;4;;22
-Fly ořech-karamel;;414;11.6;47.8;19.6;4;;22
-Twiggy meruňková;;348;4.9;60.3;9.5;4;;22
-Twiggy s mandlemi;;436;9.5;49.2;21.9;4;;22
-Bonpari;;348;0;92.5;0;0;;22
-Bonpari - bez cukru;;231;0;57;0;0;;22
-Halls Centers, Vita C Halls;;376;0;93;0;0;;22
-Hašlerky;;345;0;96.4;0;0;;22
-Hašlerky - bez cukru;;238;0;59;0;0;;22
-Lentilky;;445;3.6;75.9;14.7;0;;22
-Žele Jojo - medvídci, delfínci, žížaly;;312;6.7;70.5;0;0;;22
-Amarela - višně, likér, čokoláda;;426;4.2;59.6;22;;;22
-Čokoládové bonbony (Orient dezert, Maryša, Milena);;524;7.4;51.3;33.9;;;22
-Fernet stock;;445;4.1;62.9;22.1;;;22
-Ferrero Roche;;588;7;49;41;;;22
-Rafaello;;595;10.3;36;46.3;;;22
-Bisquit perníkový Knuspi;;429;10.9;62.7;16.9;8;;22
-Granko;;381;4.7;85;3.5;;;22
-Hotové linecké těsto;;379;5.4;40.4;22;;;22
-Hotové listové těsto;;433;4.5;28;33;;;22
-Kakaový prášek;;357;24;46.6;12;;;22
-Mandle v čokoládě;;543;8.9;43.5;37.8;;;22
-Marcipánová hmota;;526;8.8;64;26.2;;;22
-Nutela;;531;6.5;57;31;;;22
-Perníčky Ruměnky;;362;5.1;85;0.6;;;22
-Perník v čokoládě (průměr);;369;5;70;10;;;22
-Piškoty;;350;9.2;74.2;1.5;;;22
-Turecký med;;376;0.1;91.8;0;;;22
-Žvýkačky bez cukru;;219;0;55;0;0;;22
-Žvýkačky s cukrem;;319;0;78;0;0;;22
-Hořické trubičky celozrnné;;533;12;40;37;;;22
-Hořické trubičky dia;;600;8.8;23;52;;;22
-Kokosové trubičky bez cukru;;536;12;40;37;;;22
-Lázeňské bez přidaného cukru;;524;4.2;62.8;28.6;;;22
-Oplatkové trojhr. bez tuku;;360;8;67.5;6;;;22
-Oplatkové trojhr. štíhlá linie;;390;3;90;2.5;;;23
-Oplatky Via kakaové;;452;6.5;65.2;21;;;23
-Ananasový řez s máslovým krémem;;273.8;2.5;37.5;12.5;;80;23
-Cukrářská kobliha;;358;6;46;16;;50;23
-Dort s krém. polevou;;400;6;36;24;;50;23
-Indiánek;;417.5;5;35;27.5;;40;23
-Karamelový větrník;;312.5;3.8;32.5;17.5;;80;23
-Kávová rolka s krémem;;358;4;34;22;;50;23
-Kokoska plněná;;433.3;3.3;46.7;25;;60;23
-Kokosová roláda s máslovým krémem;;358;4;42;18;;50;23
-Koláč cukrářský tvarohový;;322.5;10;42.5;12.5;;40;23
-Koňaková špička;;400;4;42.5;22.5;;40;23
-Košíček linecký s ovocem a máslovým krémem;;241.7;1.7;35;10;;60;23
-Kremrole;;300;4;32;18;;50;23
-Laskonka;;177.5;2.5;25;7.5;;40;23
-Ořechový dort s vanilkovým krémem;;376;6;28;26;;50;23
-Ovocný piškotový řez;;197.1;1.4;42.9;1.4;;70;23
-Ovocný řez máslový;;320;4;40;16;;50;23
-Pařížský dort;;322.5;7.5;32.5;17.5;;40;23
-Punčová kostka;;352;1.4;84;0.8;;50;23
-Štafetka;;366;6;40;20;;50;23
-Žloutkový věneček s krémem;;275;2.5;35;12.5;;40;23`},
-  dv:{label:'Energetické tabulky (Diviš 2003)', url:'https://is.muni.cz/el/fsps/podzim2012/bp1022/tabulky_potraviny_Divis_2003.pdf', raw:`Ananas;;52.9;0.49;12.7;0.19;;;1
-Anglická slanina;;402.5;10.54;0.08;40.01;;;1
-Angrešt;;42;1;9.8;0.4;;;1
-Arašídy;;600.9;16.9;23.6;44.2;;;1
-Avokádo;;226.4;1.9;5.24;23.5;;;1
-Bábovka třená;;362.4;5.5;49.7;16;;;1
-Bageta;;309;8.97;60.3;2.9;;;1
-Banán;;92;1.03;23.43;0.48;;;1
-Banán - sušený nebo prášek;;346;3.89;88.28;1.81;;;1
-Banány v čokoládě;;409.1;2;80.4;11.6;;;1
-Biokys;;78;5.4;7.5;3.5;;;1
-Biskupský chlebíček;;424;5.96;46.93;23.64;;;1
-Bonboniera - kaštany;;570.6;5.5;47.2;40.5;;;1
-Bonboniéra - směs (průměr);;508.4;5.3;54.4;30.3;;;1
-Bonboniera - višně v čokoládě;;428.2;4.2;54.2;30.5;;;1
-Bonboniera Ferrero Roche;;590.7;7;49;41;;;1
-Bonboniera Rafaello;;598.1;10.3;36;46.3;;;1
-Bonboniera Tatiana;;529.7;6.1;53.5;36.1;;;1
-Bonboniera Toffo originál;;374.4;0.4;86.8;7.1;;;1
-Bonbóny - arašídy v cukru;;439.2;11.2;59.6;19.8;;;1
-Bonbóny - Bari mandle;;378;1.7;87.6;6.3;;;1
-Bonbóny - drops;;331.3;0;80;0;;;1
-Bonbóny Bon Pari;;355.3;0;93.4;0;;;1
-Bonbóny Festival ovocné;;339.7;0;95.2;0;;;1
-Bonbóny Halls;;378;0;93;0;;;1
-Bonbóny Hašlerky;;346.9;0;96.2;0;;;1
-Bonbóny Italská směs;;420.6;4.4;68.6;16;;;1
-Bonbóny Ledovky;;393.5;1.5;85.6;8.6;;;1
-Bonbóny Lékorky;;369.6;1.8;91.6;2.9;;;1
-Bonbóny Lentilky;;446.2;3.6;75.9;14.7;;;1
-Bonbóny Lipo;;370.8;0;94;0;;;1
-Bonbóny Medvídci;;352.9;7.4;70;0;;;1
-Bonbóny Mentolky;;343.3;0;96.6;0;;;1
-Bonbóny Milánská směs;;435.4;7.3;65.6;19.1;;;1
-Bonbóny Pralinky rumové;;370.6;1.9;74.3;8.8;;;1
-Bonbóny Sisinky;;376.8;0.6;84.5;6.4;;;1
-Bramborový škrob;;317.3;0.44;83.35;0.11;;;1
-Brambory pečené;;56.7;1.2;13.15;0.06;;;1
-Brambory syrové se slupkou;;79;2.06;17.98;0.1;;;1
-Brambory vařené bez slupky;;67.08;1.33;15.61;0.08;;;1
-Brambory vařené ve slupce;;67.9;1.46;15.7;0.08;;;1
-Brambory (leden až březen);;78.2;2.5;17.2;0.2;;;1
-Brambory (říjen až prosinec);;83.2;2.4;18.6;0.3;;;1
-Brambory (k jaru);;55;2;12.2;0.2;;;1
-Brambory nové;;82.1;1.9;18.7;0.2;;;1
-Brokolice;;29;3;5.7;0.4;;;1
-Broskev;;43;0.7;11.1;0.09;;;1
-Brukev;;33;2.1;6.2;0.2;;;1
-Brusinky;;61;1.3;12.4;1.4;;;1
-Buchty s mákem;;406;8.8;54.4;16.4;;;1
-Buchty s povidly;;415;7;67.2;12.5;;;1
-Buchty s tvarohem;;372;11.3;52.9;12.3;;;1
-Bujón v kostce (průměr);;287.1;20;12;15;;;1
-Býčí žlázy (koule);;88.6;17.2;0;2.2;;;1
-Candát;;42;9.15;0.17;0.41;;;1
-Cappucino - prášek;;433;3.5;83;9;;;1
-Cejn;;108.4;17.64;0.1;4.16;;;1
-Celer - nať;;42.7;0.98;9.1;0.18;;;2
-Celer bulvový;;44.3;1.27;7.34;0.25;;;2
-Cibule;;38;1.16;8.63;0.16;;;2
-Cibule - smažená;;310.8;1.13;6.06;32;;;2
-Cikánská omáčka - Hamé;;76.8;0.6;19;0;;;2
-Cikánská pečeně;;292;21.18;0.1;24.6;;;2
-Citron;;30.4;0.62;9.21;0.45;;;2
-Citrónová šťáva;;78.2;0.6;21;0.6;;;2
-Coca-cola;;39;0;10.5;0;;;2
-Corn flakes - kukuřičné;;363;7.15;83.65;0.6;;;2
-Cuketa;;21;1.8;3.4;0.4;;;2
-Cuketa vařená;;24;2;4;0.4;;;2
-Cukr;;383.3;0;99.5;0;;;2
-Cukr hroznový - Glukopur;;383.5;0;96.1;1.4;;;2
-Cukr třtinový;;390;0;98.97;0;;;2
-Černý kořen (Bonduelle);;88;4.2;17.5;0.3;;;2
-Červená řepa syrová;;41.9;1.6;9.6;0.1;;;2
-Červená řepa ve sladkokyselém nálevu;;35.2;1;6.7;0.6;;;2
-Čočka jedlá;;346;25.4;55.75;1.13;;;2
-Čočka vařená;;90;7.8;17.17;0.4;;;2
-Čokao Vitana;;395;16.3;70.8;5.2;;;2
-Čokoláda hořká;;542;4.38;58.56;32.32;;;2
-Čokoláda Kofila;;471;4.6;55.8;28.7;;;2
-Čokoláda Margot s rozinkami;;406.7;6.9;73.1;13;;;2
-Čokoláda Milena;;544.3;4.5;55.6;33.9;;;2
-Čokoláda mléčná DIA;;522.5;9.49;45.44;40.54;;;2
-Čokoláda mléčná jogurtová;;543.8;6.4;55.1;31.7;;;2
-Čokoláda mléčná oříšková;;560;7.33;47.4;37.7;;;2
-Čokoláda mléčná s burskými oříšky;;526.3;10.2;49.7;33;;;2
-Čokoláda mléčná s lískovými oříšky;;543.8;7.2;51.5;35.6;;;2
-Čokoláda mléčná s mandlemi;;539.9;6.8;52;35.8;;;2
-Čokoláda Studentská pečeť hořká;;486.6;6.8;55.5;28;;;2
-Čokoláda Studentská pečeť mléčná;;487.3;6.9;55.4;27.7;;;2
-Dalamánek;;268;7.52;56;1.08;;;2
-Dalamánek tmavý;;268.4;6.4;57.4;0.9;;;2
-Debrecínská pečeně;;273.41;20.91;0.1;21.05;;;2
-Destiláty 38% - průměr;;210.3;0;0;0;;;2
-Destiláty 40% - průměr;;274.9;0;0;0;;;2
-Divočák - kýta;;112.5;17.45;0.19;4.7;;;2
-Dort ovocný;;442.6;5;42;25.6;;;2
-Dort s máslovou náplní - průměr;;382.8;5.9;40;25;;;2
-Dort Sachr;;389.7;7.8;48.2;19.5;;;2
-Dresing Helmans0,3;;560;0.3;7;53;;;2
-Droždí;;102.2;10.6;13;0.4;;;2
-Droždí pivovarské sušené;;346.97;45.93;34.03;2.45;;;2
-Drůbeží játrový nářez;;325.7;12.29;2.71;29.5;;;2
-Drůbeží krokety;;179;6.98;19.89;7.71;;;2
-Drůbeží roláda;;166;19.49;1.75;8.66;;;2
-Dýně - semínka;;452.2;18.1;13.2;34;;;2
-Džem borůvkový;;199;0.25;51.1;0.28;;;2
-Džem broskvový;;251;0.3;65.9;0.1;;;2
-Džem brusinkový;;252;0.3;66.3;0.2;;;2
-Džem jahodový;;222;0.53;57.43;0.3;;;2
-Džem meruňkový;;247;0.4;65.7;0.1;;;2
-Džem švestkový;;251;0.3;66.4;0.1;;;2
-Džem třešňový;;211;0.55;55.35;0.25;;;2
-Džem višňový;;251;0.45;66.5;0.1;;;2
-Džus broskvový;;43;0.22;10.4;0.04;;;2
-Džus grapefruitový;;33;0.04;8.9;0.01;;;2
-Džus jablečný;;39;0.08;9.6;0.08;;;2
-Džus mandarinkový;;43;0.5;10.1;0.2;;;2
-Džus meruňkový;;43;0.31;10.4;0.04;;;3
-Džus pomerančový;;50;0.65;11;0.19;;;3
-Fazole v tomatě - konzerva;;74.6;5;14;0;;;3
-Fazole vařené;;95;7.8;21.4;0.5;;;3
-Fazolky čerstvé;;34.4;2.03;6.32;0.26;;;3
-Fazolky ve slaném nálevu sterilované;;14.5;1.29;4.11;0.17;;;3
-Feferony;;17.9;0.8;3.7;0.1;;;3
-Feferony nakládané;;56;0.8;6.7;3;;;3
-Filé smažené;;226.8;17.3;9.1;13;;;3
-Filé z tresky;;75.9;17.69;0.1;0.43;;;3
-Fruktózový sirup;;335;0;81.7;0;;;3
-Garnát;;87.1;18.6;0;1.4;;;3
-Gin (45%);;249.3;0;0;0;;;3
-Granátové jablko;;52.1;1.3;11.8;0.2;;;3
-Grapefruit;;22.5;0.37;6.86;0.18;;;3
-Guláš vepřový;;161.4;3.19;5.6;13.96;;;3
-Halibut atlantický;;119.7;18.06;0.1;5.75;;;3
-Halibut uzený;;187;16.2;0.1;13.5;;;3
-Hlíva ústřičná;;40.7;2.66;4.63;0.83;;;3
-Horalky;;533;10.1;55;30;;;3
-Hořčice;;126.6;4.48;13.94;6.58;;;3
-Hořické trubičky;;416.7;8.4;73.8;10.5;;;3
-Hořické trubičky DIA;;602.9;8.8;23;52;;;3
-Houby čerstvé - průměr;;26.1;2.6;3.8;0.4;;;3
-Houby sušené - průměr;;292.6;23.4;41.4;2.7;;;3
-Houska obyčejná;;286.4;8.4;60.1;1;;;3
-Hrách čerstvý;;74.8;6.36;12.93;0.44;;;3
-Hrách loupaný (suchý);;353.1;22.9;62.1;1.4;;;3
-Hrách vařený;;78.9;6.7;10.6;0.34;;;3
-Hrachová moučka;;329.2;25.7;57.2;1.8;;;3
-Hrášek ve slaném nálevu sterilovaný;;51;4.24;9.3;0.3;;;3
-Hrozinky;;279;2.65;71.32;0.64;;;3
-Hroznové víno;;72.1;0.67;16.93;0.43;;;3
-Hrušky;;59;0.39;15.11;0.4;;;3
-Hřib čerstvý;;35.9;5.39;4.2;0.4;;;3
-Hřib sušený;;322;37;38.4;3;;;3
-Humr;;95.4;15.9;0;1.9;;;3
-Husa domácí pečená, grilovaná (pouze maso);;238;28.97;0;12.67;;;3
-Husa domácí syrová (pouze maso);;161;22.75;0;7.13;;;3
-Chipsy;;574.2;5.5;47;39;;;3
-Chléb arabský;;217.7;6.1;45.9;0.8;;;3
-Chléb bramborový;;251;7.86;51.49;10.9;;;3
-Chléb celozrnný pšeničný;;248;8.55;46.93;2.02;;;3
-Chléb celozrnný pšeničný + žitný;;241;7.55;48.3;1.2;;;3
-Chléb celozrnný pšeničný graham;;283;9.08;55.9;2.69;;;3
-Chléb celozrnný žitný;;238.9;7.33;48.7;1.1;;;3
-Chléb klíčkový VITBE;;262;9.65;47.5;3.15;;;3
-Chléb KNAECKEBROT;;370;12.8;65.08;2.65;;;3
-Chléb konzumní;;249;8.01;50.16;1.27;;;3
-Chléb kukuřičný;;226;5.8;45.7;1.7;;;3
-Chléb pšeničný (bílý);;238.3;8.26;50.77;1.63;;;3
-Chléb Racio pšeničný;;315.3;12.73;66.36;1.82;;;3
-Chléb Racio pšenišný s kmínem;;306.7;12.73;66.36;1.82;;;3
-Chléb Racio rýžový;;330.6;8.18;70.91;1.82;;;3
-Chléb Racio rýžový se sójou;;345.7;10;65.45;3.64;;;3
-Chléb samožitný;;246.6;7.3;50.6;1.1;;;3
-Chléb slunečnicový;;239.2;8.3;46.6;4.6;;;3
-Chléb toustový světlý;;283;7.8;54.8;3.2;;;3
-Chléb toustový tmavý;;282.8;8.4;53.3;3.6;;;3
-Chléb výběrový;;252.7;7.52;51.91;1.09;;;3
-Chléb výražkový;;256.8;4.7;56.3;0.8;;;3
-Chřest;;23;2.28;4.53;0.2;;;3
-Chřest sterilizovaný;;15.1;1.5;2.4;0.1;;;3
-Jablka sušená (křížaly);;272.5;1.4;69.8;1.9;;;4
-Jablko;;50.2;0.4;12.95;0.41;;;4
-Jablko čerstvé bez slupky a jader;;57;0.15;14.84;0.31;;;4
-Jáhly - loupané proso;;360.7;10.63;71.15;3.9;;;4
-Jahody zahradní;;31.35;0.87;8.73;0.63;;;4
-Játra hovězí;;129.8;19.19;4.53;3.96;;;4
-Játra husí;;225.2;21.23;0.5;11.95;;;4
-Játra kachní syrová (domácí kachna);;136;18.74;3.53;4.64;;;4
-Játra krůtí syrová;;137;20.02;4.13;3.97;;;4
-Játra krůtí vařená;;169;23.97;3.43;5.96;;;4
-Játra kuřecí syrová;;125;17.97;3.42;3.86;;;4
-Játra kuřecí vařená;;157;24.36;0.88;5.45;;;4
-Játra telecí;;134.4;19.04;3.83;4.67;;;4
-Játra tresčí v oleji;;613;4.2;1.3;64.44;;;4
-Játra vepřová;;131.2;20.68;1.49;4.79;;;4
-Játra vepřová dušená;;193.2;16.16;7.65;11.08;;;4
-Játrová paštika;;311.8;19.11;1.1;25.65;;;4
-Játrová paštika lahůdková;;393;15.17;1.2;28.66;;;4
-Játrovka;;424.7;17.24;1.35;38.92;;;4
-Játrový nářez drůbeží;;325.7;12.29;2.71;29.5;;;4
-Játrový sýr;;359;13.86;1.25;31.25;;;4
-Jazyk hovězí;;187.3;16.05;0.1;13.74;;;4
-Jazyk hovězí uzený;;291;19.1;0.1;23.9;;;4
-Ječné kroupy;;359.5;9.85;73.25;1.83;;;4
-Jelítka domácí žemlová;;415.5;19.68;14.1;31.04;;;4
-Jeseter ruský;;120.3;11.1;0.06;7.37;;;4
-Jeseter v rajčatové omáčce;;175.3;14.31;3.12;11.7;;;4
-Jeseter ve vlastní šťávě;;166;15.96;0.6;10.89;;;4
-Jitrnice domácí;;278;15.1;13.2;19.12;;;4
-Jogurt Actimel (Danone);;88.8;3;15.1;1.7;;;4
-Jogurt bílý (3,5% tuku);;95;5.48;8.07;3.64;;;4
-Jogurt bílý lehký (Kunín);;35.9;4.6;3.2;0.1;;;4
-Jogurt BIO s vlákninou (Danone);;107.2;3.5;16.2;3.1;;;4
-Jogurt Danone výběr;;108.1;3.2;16;3.5;;;4
-Jogurt Fantasia s ovocem;;104.1;3.8;15.2;3.1;;;4
-Jogurt Jogobella (Zott);;98.8;3.5;14.9;2.7;;;4
-Jogurt Monte (Zott);;195.9;2.9;15.9;13.5;;;4
-Jogurt odtučněný (Kunín);;34.5;3.8;4.4;0.1;;;4
-Jogurt Ovocella (Danone);;99.3;3.4;14.8;2.8;;;4
-Jogurt ovocný (3,5% tuku);;115;6;15;3.5;;;4
-Jogurt ovocný jihočeský;;141.1;12.5;8.5;2.7;;;4
-Jogurt Vitalinea ananas (Danone);;51.2;4.1;7.4;0.1;;;4
-Jogurt Vitalinea bílé pohlazení (Danone);;45;4.6;6.2;0.1;;;4
-Jogurt Vitalinea musli (Danone);;56.5;4.3;8.6;0.4;;;4
-Jogurtový nápoj Vitalinea;;36.1;3.3;5.5;0.1;;;4
-Jovokoktejl;;90;3.8;12;3;;;4
-Jovomix;;115.6;5.5;15.6;3.5;;;4
-Kabanos;;295;13.53;1.9;27.85;;;4
-Kabanos drůbeží;;300.5;15.6;2.4;25.37;;;4
-Kadeřávek;;49.8;4.2;6;0.3;;;4
-Kakao - Granko;;376.8;4.7;85.1;3.5;;;4
-Kakao - prášek;;446;18.93;43.53;21.34;;;4
-Kandované ovoce;;264.5;0.3;69.5;0.3;;;4
-Kapary;;293;26;47.2;4.28;;;4
-Kapr;;113.5;17.13;0.1;5.96;;;4
-Kapr syrový;;127;17.83;0;5.6;;;4
-Kapusta hlávková;;39.5;2.53;5.45;0.43;;;4
-Kapusta růžičková;;50.44;4.32;6.28;0.45;;;4
-Karbanátky;;202.15;10.73;18.43;9.3;;;4
-Kari;;237.1;9.5;26.1;10.8;;;4
-Kaše banánová - Sunarka;;406.7;14.9;68.2;10;;;4
-Kaše jogurt, ovoce - Milupka;;439.7;14.3;63.8;13.8;;;4
-Kaše krupicová;;176.1;5.2;19.7;8.7;;;4
-Kaše müsli s jablky - Sunarka;;413.4;13.6;69.1;8.7;;;4
-Kaše ovesná - Sunarka;;425.6;14.5;67.1;10.6;;;5
-Kaše rýžová - Sunarka;;396.7;7.7;86.1;1.7;;;5
-Kaše rýžová Nestle;;418.7;15.5;69.1;9;;;5
-Kaše rýžová s kukuřicí - Sunarka;;443.8;16.7;61.1;14.4;;;5
-Kaštany jedlé pečené;;216;3.2;52.9;2.2;;;5
-Kečup;;110;1.75;24.75;0.45;;;5
-Kedlubna;;29;1.92;5.36;0.18;;;5
-Kefír;;52.2;3.3;1.7;3.6;;;5
-Kiwi;;57;1;13.85;0.63;;;5
-Klíčky pšeničné;;391.5;26.58;44.68;10.95;;;5
-Klikve;;38;0.4;9.7;0.7;;;5
-Klobása - Klaso;;218;24;14;8;;;5
-Klobása - průměr;;310.8;17.4;1.9;26.7;;;5
-Klobása bílá;;200;11.08;7.2;14.02;;;5
-Klobása čabajská;;523.4;22.9;0.3;48.4;;;5
-Klobása dunajská;;452.2;21.6;0.1;40.61;;;5
-Klobása vinná;;317.1;17.3;4.6;25.45;;;5
-Knackebrot;;382.8;11;78;1.8;;;5
-Knedlík kynutý (houskový);;241.9;7.15;48.97;2.61;;;5
-Knedlíky ovocné z bramborového těsta;;153.7;3.56;29.4;3.51;;;5
-Koblihy;;386.4;6.5;53.5;17;;;5
-Kokos mletý (strouhaný);;693.3;7.68;17.25;67.9;;;5
-Koláč křehký s jablky;;205.7;2.6;32.42;8.06;;;5
-Koláč máslový s makovou náplní;;393;7.6;54.6;15.7;;;5
-Koláč máslový s tvarohovou náplní;;337;10.21;50.79;9.82;;;5
-Kompot ananasový;;81;0.37;21.13;0.13;;;5
-Kompot borůvkový;;83;0.43;19.4;0.35;;;5
-Kompot broskvový;;75;0.46;19.97;0.1;;;5
-Kompot brusinkový;;168;0.32;38.9;0.48;;;5
-Kompot hroznový;;79;0.39;19;0.15;;;5
-Kompot hruškový;;78;0.21;20.29;0.14;;;5
-Kompot jablečný;;85;0.2;21.15;0.15;;;5
-Kompot jahodový;;78;0.57;21.06;0.17;;;5
-Kompot mandarinkový;;67;0.39;16.61;0.13;;;5
-Kompot meruňkový;;80;0.47;24.1;0.1;;;5
-Kompot švestkový;;76.2;0.43;20.69;0.1;;;5
-Kompot třešňový;;67.7;0.46;18;0.17;;;5
-Kompot višňový;;69.9;0.57;20.01;0.23;;;5
-Koňak (40%);;221.3;0;2;0;;;5
-Kopr čerstvý;;39;2.4;7.8;0.2;;;5
-Kopr sušený;;328;13;70.5;1;;;5
-Korpus piškotový vaječný;;397;11;71.25;9.58;;;5
-Králík divoký - dušené maso;;173;28.07;0;3.5;;;5
-Králík divoký - syrové maso;;114;21.79;0;2.32;;;5
-Králík domácí - grilované maso;;197;29.06;0;8.05;;;5
-Králík domácí - syrové maso;;136;20.05;0;5.55;;;5
-Králík domácí - vařené, dušené maso;;206;30.38;0;8.41;;;5
-Kroupy ječné;;357.9;9.9;75.3;1.8;;;5
-Kroupy, krupky;;362.7;8.2;78.8;1;;;5
-Krupice pohanková;;349.5;9.6;73.6;1.6;;;5
-Krupice pšeničná;;369.8;10.3;78;1.2;;;5
-Krůta uzená;;141;18.36;1.66;6.21;;;5
-Krůtí drůbky syrové;;129;19.36;2.09;4.2;;;5
-Krůtí maso bílé grilované;;157;29.9;0;3.22;;;5
-Krůtí maso bílé grilované (mladá slepička);;161;29.89;0;3.74;;;5
-Krůtí maso bílé grilované (mladý kohout);;154;29.88;0;2.2;;;5
-Krůtí maso bílé syrové;;115;23.56;0;1.56;;;5
-Krůtí maso bílé syrové (mladá slepička);;116;23.64;0;1.66;;;5
-Krůtí maso bílé syrové (mladý kohout);;114;23.43;0;1.57;;;5
-Krůtí maso grilované;;170;29.32;0;4.97;;;5
-Krůtí maso syrové;;119;21.77;0;2.86;;;5
-Krůtí maso tmavé grilované;;187;28.57;0;7.22;;;5
-Krůtí maso tmavé syrové;;125;20.07;0;4.38;;;6
-Krůtí prsíčka syrová;;110;22.5;0;1.58;;;6
-Krůtí srdce syrové;;143;18.05;0.65;6.99;;;6
-Krůtí srdce vařené;;177;26.76;2.05;6.1;;;6
-Krůtí tmavé maso grilované (mladá slepička);;192;28.42;0;7.79;;;6
-Krůtí tmavé maso grilované (mladý kohout);;175;29.25;0;5.51;;;6
-Krůtí tmavé maso syrové (mladá slepička);;130;20.07;0;4.88;;;6
-Krůtí tmavé maso syrové (mladý kohout);;122;21.76;0;3.18;;;6
-Křen Krenex;;192.3;1.5;18.1;13.1;;;6
-Křen syrový;;105.3;3.9;22.4;0.5;;;6
-Kukuřice cukrová;;104.8;3.73;19.77;2.34;;;6
-Kukuřice sterilizovaná;;244.7;8.9;44.7;3;;;6
-Kukuřice syrová;;23;2.9;2;0.4;;;6
-Kukuřičné vločky;;378.3;8.07;81.95;0.97;;;6
-Kuře dušené (pouze maso);;177;27.29;0;6.71;;;6
-Kuře grilované (pouze maso);;190;28.93;0;7.41;;;6
-Kuře pečené;;142.6;13.13;1.67;9.3;;;6
-Kuře smažené (pouze maso);;219;30.57;1.69;9.12;;;6
-Kuře syrové (pouze maso);;119;21.39;0;3.08;;;6
-Kuřecí drůbky syrové;;124;17.88;1.8;4.47;;;6
-Kuřecí drůbky vařené;;157;25.85;0.95;4.77;;;6
-Kuřecí křídlo syrové (pouze maso);;126;21.97;0;3.54;;;6
-Kuřecí maso bílé syrové;;114;23.2;0;1.65;;;6
-Kuřecí maso tmavé grilované;;205;27.37;0;9.73;;;6
-Kuřecí maso tmavé syrové;;125;20.08;0;4.31;;;6
-Kuřecí prsíčka syrová (pouze maso);;110;23.09;0;1.24;;;6
-Kuřecí prsíčka vařená, dušená (pouze maso);;151;28.98;0;3.03;;;6
-Kuřecí půlky bez kůže;;171.4;17.99;0.1;11.01;;;6
-Kuřecí půlky s kůží;;188.9;17.57;0.1;13.14;;;6
-Kuřecí srdce syrové;;153;15.55;0.71;9.33;;;6
-Kuřecí srdce vařené;;185;26.41;0.1;7.92;;;6
-Kuřecí stehno syrové (pouze maso);;119;20.59;0;3.42;;;6
-Kuřecí stehno vařené, dušené (pouze maso);;169;27.5;0;5.71;;;6
-Květák;;25;1.98;5.2;0.21;;;6
-Květák sterilizovaný;;16;1.3;2.9;0.1;;;6
-Květák vařený;;25;2;3.77;0.28;;;6
-Kypřící prášek do pečiva;;79.9;0.2;19.9;0;;;6
-Kýta skopová;;166.5;13.43;0.16;12.09;;;6
-Langusta;;84;17.2;1.3;1.1;;;6
-Lečo s moravskou klobásou - konzerva;;162.9;6.4;8.5;11.5;;;6
-Ledvina hovězí;;117.1;15.61;0.52;6.46;;;6
-Ledvina telecí;;129.8;16.07;0.72;6.29;;;6
-Ledvina vepřová;;104;15.31;0.55;4.5;;;6
-Ledvina vepřová dušená;;204;28.56;0;9.12;;;6
-Ledvina vepřová grilovaná;;210;28.57;0;9.79;;;6
-Ledvina vepřová syrová;;198;19.74;0;12.58;;;6
-Ledviny - průměr;;114.1;15.46;0.54;5.48;;;6
-Liči;;71;0.9;16;0.5;;;6
-Likér 18% - průměr;;195.2;0;24;0;;;6
-Likér 24% - průměr;;254.5;0;29.4;0;;;6
-Likér 30% - průměr;;307.7;0;35.1;0;;;6
-Likér vaječný;;285.2;0;20;0;;;6
-Lilek;;27.8;1.14;4.45;0.23;;;6
-Limetka;;40;0.4;10.6;0;;;6
-Lín;;78.2;17.5;0.1;0.4;;;6
-Lněná semínka;;485.4;22;13;40;;;6
-Losos obecný;;212.4;20.29;0.1;11.29;;;6
-Losos uzený;;170.9;22.07;0.1;9.13;;;6
-Losos v oleji;;378.7;22.2;0;32.7;;;6
-Losos ve vlastní šťávě;;127.2;20.76;0.51;4.68;;;6
-Lososová drť;;503.73;8.36;0.16;51.47;;;6
-Loupák s ořechovou náplní;;389.7;7;56;15.8;;;6
-Loupák sladký;;389.7;7.3;55.5;15.7;;;6
-Loupák slaný;;388.5;7.3;52.3;16.6;;;6
-Luncheon meat;;307;12.96;4.83;26.59;;;7
-Luncheon meat drůbeží;;156;14.28;7.14;9.82;;;7
-Luncheon meat kuřecí;;236.5;12;6.9;17.8;;;7
-Maďarský perkelt - konzerva;;114.6;7;3.2;8.2;;;7
-Maizena;;317.2;0.9;80.4;0.1;;;7
-Majolka;;764.1;2.04;1.11;83.55;;;7
-Majonéza - průměr;;648.1;1.7;2.7;71.2;;;7
-Majonéza light;;459.3;0.7;3;50.7;;;7
-Mák;;541.9;19.85;22.45;46.67;;;7
-Makovec;;332.2;7.35;50;11.3;;;7
-Makrela obecná;;104.8;11.37;0.06;6.57;;;7
-Makrela pečenáč;;220.1;16;3.5;14;;;7
-Makrela syrová (Atlantický oceán);;205;18.59;0;13.89;;;7
-Makrela syrová (Španělsko);;139;19.28;0;6.29;;;7
-Makrela syrová (Tichý oceán);;158;20.07;0;7.89;;;7
-Makrela v aspiku;;123;13.3;1.5;6.9;;;7
-Makrela v rajčatové omáčce;;135;14.25;3;7.35;;;7
-Makrela ve vlastní šťávě;;199;15.2;0.1;14.9;;;7
-Malcao - nápoj;;50.5;2.6;8.93;0.4;;;7
-Mandarinka;;43.5;0.76;9.39;0.3;;;7
-Mandle;;635.7;20.95;14.4;54.67;;;7
-Mandle v čokoládě;;520.6;12.19;42.7;38.08;;;7
-Mango;;62;0.6;16.45;0.45;;;7
-Maracuja;;39;0.6;9;0;;;7
-Marmeláda - směs;;217.7;0.4;51.7;0.2;;;7
-Marmeláda borůvková;;241;0.28;63.35;0.25;;;7
-Marmeláda jahodová;;240;0.49;63.5;0.27;;;7
-Marmeláda malinová;;229.9;0.4;60.3;0.3;;;7
-Marmeláda meruňková;;246;0.42;63.8;0.1;;;7
-Marmeláda rybízová;;230.6;0.4;59.7;0.2;;;7
-Marmeláda višňová;;243;0.56;63.87;0.22;;;7
-Máslo čerstvé;;734;0.7;0.52;82.58;;;7
-Máslo nízkokalorické;;512;2.7;1.7;53.5;;;7
-Máslo pomazánkové;;355;3.8;6.2;35;;;7
-Máslo rostlinné Alfa;;531.1;0;0;60;;;7
-Máslo rostlinné Diana;;354.1;0;0;40;;;7
-Máslo rostlinné Flora;;629.2;0.1;0.3;70;;;7
-Máslo rostlinné Flora light;;354.1;0;0;40;;;7
-Máslo rostlinné Linco light;;354.1;0;0;40;;;7
-Máslo rostlinné Perla;;354.1;0;0;40;;;7
-Máslo rostlinné Perla Tip;;221.3;0;0;25;;;7
-Máslo rostlinné Rama máslová;;669.9;0.1;0.3;75;;;7
-Máslo výběrové;;745.3;0.68;0.45;82.9;;;7
-Máslo Zlatá Haná;;681.8;0;0;77;;;7
-Maso - bažant;;74.07;14.76;0.26;1.6;;;7
-Maso - bažantí hruď;;90.38;18.6;0.19;1.95;;;7
-Maso - bažantí stehno;;88.69;17.76;0.22;1.89;;;7
-Maso - cikánská pečeně;;278.5;19.2;0.1;22.1;;;7
-Maso - debrecínská pečeně;;257.4;19.7;0.1;19.8;;;7
-Maso - holub;;56.5;12.4;0.3;0;;;7
-Maso - jelen;;112.2;20.6;0;3.3;;;7
-Maso - kachna divoká;;122.2;22.7;0.5;3.1;;;7
-Maso - koroptev;;117.2;23;0.5;1.1;;;7
-Maso drůbeží - drůbky;;124.6;22.5;0;3.2;;;7
-Maso hovězí - držky;;80.6;15.5;0;1.7;;;7
-Maso hovězí - jazyk;;220.3;16.4;0.4;16.6;;;7
-Maso hovězí - jazyk uzený;;296.2;19.1;0;23.9;;;7
-Maso hovězí - kližka;;107.7;13.6;0;5.9;;;7
-Maso hovězí - konzerva;;159.8;16.6;0.1;10.3;;;7
-Maso hovězí - krk;;133;20.9;0;5.3;;;7
-Maso hovězí - kýta;;128;20.6;0;4.5;;;8
-Maso hovězí - ledvinky;;139.2;15;0.9;8.1;;;8
-Maso hovězí - mozek;;121.3;10.4;0.8;8.5;;;8
-Maso hovězí - plec;;122.2;13.5;0;7.5;;;8
-Maso hovězí - plec dušená;;167.9;24.55;0.1;7.7;;;8
-Maso hovězí - plec pečená;;216.5;31.4;0.1;10.5;;;8
-Maso hovězí - plíce;;97.1;17.1;0.6;3.1;;;8
-Maso hovězí - přední;;165.3;12.5;0;13;;;8
-Maso hovězí - roštěnka;;240.7;28.8;0.1;13.9;;;8
-Maso hovězí - svíčková;;148.8;20.63;0.29;7.6;;;8
-Maso hovězí - svíčková pečeně;;262.3;25.86;0.1;17.61;;;8
-Maso hovězí - tučné;;320.8;16.3;0;28;;;8
-Maso hovězí - ve vlastní šťávě;;165;18.94;0.1;11.76;;;8
-Maso hovězí - zadní;;147.6;15;0;9.8;;;8
-Maso hovězí - žebra;;184.7;19.3;0;14.8;;;8
-Maso hovězí dušené;;271.7;14.97;6.58;20.81;;;8
-Maso hovězí libové;;132.56;20.71;0.5;5.95;;;8
-Maso hovězí pečené;;170.3;19.99;0.24;9.93;;;8
-Maso hovězí přední vařené;;150.8;26.28;0.19;4.99;;;8
-Maso hovězí vařené;;161.9;23.39;0.35;7.42;;;8
-Maso hovězí zadní dušené;;108;11.72;0.2;6.7;;;8
-Maso hovězí zadní pečené;;119.1;13.35;0.1;7.25;;;8
-Maso hovězí zadní vařené;;150;32.46;0.2;2.14;;;8
-Maso husí;;278.7;10.71;0.15;25.15;;;8
-Maso husí - prsa pečená;;278.2;26.53;0.09;19.08;;;8
-Maso husí - stehno pečené;;279.6;20.35;0.09;21.98;;;8
-Maso husí pečené;;410.7;17.18;0.09;41.24;;;8
-Maso jehněčí - průměr;;199.4;10.92;0.06;12.09;;;8
-Maso kachna domácí - syrové maso;;132;18.28;0;5.95;;;8
-Maso kachna domácí grilovaná (pouze maso);;201;23.48;0;11.2;;;8
-Maso kachní pečené;;413.1;15.33;0.09;39.06;;;8
-Maso kachní prsa pečená;;268.3;20.82;0.08;20.52;;;8
-Maso kachní prsíčka syrová (divoká kachna);;123;19.85;0;4.25;;;8
-Maso koňské - průměr;;115;21.23;0.65;6.89;;;8
-Maso kozí;;97.1;13;0.1;4.9;;;8
-Maso králičí - průměr;;123.5;14.9;0.2;6.94;;;8
-Maso krkovička uzená;;391.5;15.66;0.09;36.54;;;8
-Maso krkovička uzená vařená;;573.3;4.71;0.09;57.85;;;8
-Maso krůtí;;98.8;15.58;0.2;5.52;;;8
-Maso krůtí - prsa syrová bez kůže;;86.9;20.88;0.21;0.28;;;8
-Maso kuřecí - prsa bez kůže dušená;;119.1;29;0;3;;;8
-Maso kuřecí - prsa syrová;;87.6;20.04;0.32;0.8;;;8
-Maso kuřecí - stehno - syrové maso bez kůže;;120.1;20.1;0;3.8;;;8
-Maso kuřecí - stehno - syrové maso s kůží;;187.1;18.1;0;12.1;;;8
-Maso kuřecí - stehno grilované (pouze maso);;172;28.29;0;5.66;;;8
-Maso kuřecí bez kůže syrové;;119.1;21.4;0;3.1;;;8
-Maso kuřecí s kůží syrové;;215.3;18.6;0;15;;;8
-Maso kuřecí tmavé vařené, dušené;;192;25.97;0;8.98;;;8
-Maso mleté (hovězí + vepřové);;262.7;10.4;0.2;24;;;8
-Maso skopové výsekové;;193.2;10.17;0.19;14.2;;;8
-Maso srnčí - stehno;;83.6;17.64;0.28;1.17;;;8
-Maso telecí - hruď;;168.3;14.34;0.1;12.28;;;8
-Maso telecí - hruď dušená;;131.4;9.72;0.1;10.24;;;8
-Maso telecí - plec;;112.2;13.89;0.14;5.92;;;8
-Maso telecí - stehno;;107.1;19.77;0.34;5.75;;;8
-Maso telecí - svíčková;;150.5;19.38;0.3;7.98;;;8
-Maso uzené moravské;;350.5;25.5;0;26.7;;;8
-Maso vepřové - bok pečený;;607.9;13.01;0.09;61.74;;;8
-Maso vepřové - koleno;;302.7;17.42;0.1;25.85;;;8
-Maso vepřové - krkovička;;245;13.07;0.17;21.22;;;8
-Maso vepřové - krkovička dušená;;265;15.3;0.09;22.61;;;8
-Maso vepřové - krkovička pečená;;350.6;17.94;0.09;30.94;;;8
-Maso vepřové - plec pečená;;144.6;17.7;0.08;8.16;;;8
-Maso vepřové libové;;238.1;17.75;0.071;17.72;;;8
-Maso vepřové pečené;;543.5;17.61;1.53;51.88;;;8
-Maso vepřové tučné;;475;11.28;0.26;45.05;;;9
-Maso vepřové ve vlastní šťávě;;310;14.68;0.1;29.16;;;9
-Maso vepřové výsekové;;299;12.25;0.17;26.71;;;9
-Matesy v oleji;;256.4;17.6;0;22.6;;;9
-Mečoun;;117.2;19.4;0;4.4;;;9
-Med včelí;;324.4;0.27;81.7;0.04;;;9
-Melasa;;274.8;4.12;60.8;1;;;9
-Meloun (vodní);;32;0.62;7.18;0.43;;;9
-Meloun cukrový;;23.4;0.47;5.15;0.07;;;9
-Meloun vodní;;14.29;0.37;3.47;0.1;;;9
-Meruňka;;48;1.4;11.2;0.39;;;9
-Meruňky;;48.6;0.85;11.96;0.24;;;9
-Meruňky sušené;;265;4.6;67.19;0.53;;;9
-Mirabelky;;53.1;0.7;12.8;0.2;;;9
-Mléčná rýže caramel (Müller);;119.6;3.4;19.7;2.4;;;9
-Mléčná rýže čokoládová (Danone);;127.7;2.9;22.9;2.6;;;9
-Mléčná rýže jablko (Müller);;116;3.5;19.5;2.4;;;9
-Mléčná rýže jahoda (Danone);;127.8;2.9;22.9;2.6;;;9
-Mléčná rýže jahoda (Müller);;117;3.4;20;2.3;;;9
-Mléčná rýže light jablko (Müller);;69.4;3.5;11.9;0.9;;;9
-Mléčná rýže light jahoda (Müller);;70.8;3.5;12.2;0.9;;;9
-Mléčná rýže light malina (Müller);;69.6;3.9;11.9;0.9;;;9
-Mléčná rýže malina (Müller);;117;3.4;20;2.3;;;9
-Mléčná rýže skořice (Müller);;117;3.5;20;2.4;;;9
-Mléčná rýže vanilka (Danone);;120.3;3.3;20.6;2.6;;;9
-Mléko – 2% tuku;;50;3.33;4.8;1.92;;;9
-Mléko acidofilní;;59;3.4;4.3;3.55;;;9
-Mléko kefírové;;47;3.52;3.97;2.09;;;9
-Mléko kobylí;;47.1;2.2;6.2;1.5;;;9
-Mléko kozí;;75.3;3.76;5.24;4.59;;;9
-Mléko mateřské;;67;1.2;7.1;3.7;;;9
-Mléko nízkotučné - 0,5% tuku;;35.9;3.2;4.6;0.5;;;9
-Mléko odtučněné;;33;3.38;4.88;0.06;;;9
-Mléko odtučněné sušené;;349;35.12;51.98;0.77;;;9
-Mléko ovčí;;97.7;6.08;5;7.45;;;9
-Mléko plnotučné;;61.7;3.1;4.75;3.4;;;9
-Mléko plnotučné sušené;;494;26.58;37.73;26.84;;;9
-Mléko polotučné;;50;3.27;4.68;1.97;;;9
-Mléko polotučné sušené;;430;31.15;45.6;13.35;;;9
-Mléko sójové;;44;2.9;3.9;1.9;;;9
-Mléko trvanlivé plnotučné;;59;3.08;4.8;3.18;;;9
-Mléko zahuštěné neslazené;;143;7.2;10.33;8.14;;;9
-Mléko zahuštěné neslazené TATRA;;162.4;8.4;12;9.1;;;9
-Mléko zahuštěné slazené;;333;8.83;54.78;9.15;;;9
-Moruše;;36.4;1.3;8.1;0;;;9
-Mořský rak;;65.1;15;0;0.5;;;9
-Mošt jablečný;;45;0.13;10.7;0.21;;;9
-Mouka bezlepková;;357.7;6;77.6;4;;;9
-Mouka bramborová;;324.7;5.4;76.35;0.29;;;9
-Mouka celozrnná graham;;348.6;15.5;66.3;2.2;;;9
-Mouka chlebová;;349.5;15.3;67.5;1.9;;;9
-Mouka ječná;;311.2;9.98;75.6;1.68;;;9
-Mouka pohanková;;353.3;8.24;75.31;1.74;;;9
-Mouka pšeničná celozrnná;;354.1;11.55;71.03;2.09;;;9
-Mouka pšeničná hladká;;358.9;11.29;73.06;1.53;;;9
-Mouka pšeničná hrubá;;357.9;9.81;75.03;1.21;;;9
-Mouka pšeničná instantní;;380.3;10.4;79.89;1.29;;;9
-Mouka pšeničná polohrubá;;342.6;8.8;73.5;1;;;9
-Mouka rýžová;;359.2;7.3;79.15;0.68;;;9
-Mouka sójová odtučněná;;331.9;49.06;33.64;0.8;;;9
-Mouka sójová plnotučná;;440.5;44.56;23.75;20.83;;;9
-Mouka sójová polotučná;;264.4;42.5;37.2;6.5;;;9
-Mouka triticale;;353.2;11.4;72.6;1.1;;;9
-Mouka žitná bílá;;353.3;7.06;77;1.11;;;9
-Mouka žitná T 1300;;353.6;7.6;76.9;1.2;;;10
-Mouka žitná T 1700;;344.5;14.9;69.7;1.8;;;10
-Mouka žitná T 930;;355.5;6.5;78.5;1.1;;;10
-Mrkev;;43;1;10;0;;;10
-Mrkev čerstvá;;42.5;1.02;7.34;0;;;10
-Mrkev sterilizovaná;;27;0.6;6;0.1;;;10
-Müsli ochucené - průměr;;369.4;9.9;64.5;9.1;;;10
-Nektarinky;;36.4;1.2;8;0.1;;;10
-Nesquick - čokoládový nápoj (prášek);;362.2;4.2;79;2.7;;;10
-Nudle rýžové suché;;364;3.44;83.24;0.56;;;10
-Nudle rýžové vařené;;191.8;1.6;43.82;0.35;;;10
-Nudle s tvarohem;;152.9;6.46;22.29;4.26;;;10
-Nudle vaječné suché;;381;14.02;71.1;4.21;;;10
-Nudle vaječné vařené;;133;4.75;24.84;1.47;;;10
-Nugeta oříšková;;507.9;5.8;60.4;28.7;;;10
-Ocet;;41.1;0;3.5;0;;;10
-Ocet vinný;;22.5;0.2;5.9;0;;;10
-Okoun;;88;19;0.1;0.8;;;10
-Okurka;;13;0.69;2.76;0.13;;;10
-Okurka čerstvá;;14.4;1.04;2.28;0.15;;;10
-Okurka salátová;;16;0.7;2.6;0.2;;;10
-Okurkový salát;;26;0.99;5.22;0.14;;;10
-Okurky DIA sterilizované;;10;0.4;2.1;0;;;10
-Okurky rychlokvašené;;11;0.7;1.9;0.2;;;10
-Okurky sterilizované;;22;0.62;6;0.1;;;10
-Olej jedlý HELIOL;;898;0.1;0.1;99.7;;;10
-Olej jedlý MAJA;;885;0.05;0.05;99.6;;;10
-Olej jedlý VEGETOL;;897;0.1;0.1;99.6;;;10
-Olej jedlý VITOL;;896.9;0.08;0.1;99.6;;;10
-Olej kokosový;;895.7;0;0;99;;;10
-Olej olivový;;880;0.1;0.2;99.5;;;10
-Olej palmový;;897.9;0.1;0.001;99.7;;;10
-Olej řepkový;;898.6;0;0;99.6;;;10
-Olej slunečnicový;;882.5;0;0;99.8;;;10
-Olej sójový;;885;0.1;0.1;99.65;;;10
-Olej z vlašských ořechů;;898;0.1;0.1;99.7;;;10
-Olivy;;101;0.8;0;11;;;10
-Omáčka sójová;;55;7.5;6.52;0.08;;;10
-Omáčka tatarská;;478;1.66;0.53;52.13;;;10
-Ořechy burské pražené;;603.3;26.5;19;46.6;;;10
-Ořechy kešu;;580.6;15.8;25.97;46.3;;;10
-Ořechy kokosové čerstvé;;366;4;11;36;;;10
-Ořechy lískové;;664.5;17.61;10.35;63.23;;;10
-Ořechy lískové pražené;;702.4;15.46;11.8;65.8;;;10
-Ořechy para;;630.4;15.14;7.73;67.77;;;10
-Ořechy piniové;;679.4;14;4;68.6;;;10
-Ořechy pistáciové;;635.9;20.4;17.1;54.7;;;10
-Ořechy vlašské;;664.5;18.46;14.59;60.41;;;10
-Ostružiny;;47.8;1.2;12;0.8;;;10
-Ovoce sušené - směs;;274.4;2.3;68.1;0.4;;;10
-Papaja;;14.1;0.5;0.9;0.1;;;10
-Paprika;;25.8;1.09;4.59;0.46;;;10
-Paprika čili pálivá;;40;2;9.46;0.2;;;10
-Paprika sladká;;27;0.89;6.43;0.18;;;10
-Paprika sterilizovaná ve sladkokyselém nálevu;;56;0.8;6.7;3;;;10
-Párky - špekáčky;;290.4;9.8;1.8;27.1;;;10
-Párky debrecínské;;249;15.2;2.2;23.98;;;10
-Párky drůbeží lahůdkové;;249;13.91;1.51;19.15;;;10
-Párky frankfurtské;;318.8;11.29;2.47;29.29;;;10
-Párky hanácké;;327.8;15.2;1.51;28.98;;;10
-Párky jemné;;303;12.92;1.09;26.8;;;10
-Párky krůtí;;226;14.28;1.49;17.7;;;10
-Párky lahůdkové - loupací;;288;13.16;1.2;24.52;;;10
-Párky obyčejné (liberky);;220.3;14.1;2.1;16.7;;;11
-Párky pražské;;216.3;13.8;2.1;15.4;;;11
-Párky vídeňské;;242.3;13.15;0;21.08;;;11
-Pastinák;;54.1;1.6;14.9;0.4;;;11
-Paštika Čertovská směs na topinky;;223.2;10;6;19;;;11
-Paštika drůbeží;;285.1;19.05;1.11;22.71;;;11
-Paštika drůbeží jemná;;325;14.21;0.83;30.56;;;11
-Paštika játrová lahůdková;;393;15.17;1.2;28.66;;;11
-Paštika Junák;;200;9;1;18;;;11
-Paštika z husích jater;;459.3;11.4;4.67;43.84;;;11
-Paštika z kuřecích jater;;201;13.45;6.55;13.1;;;11
-Paštika z lososa;;221;10;5;20;;;11
-Paštika z uzeného masa;;377.8;11;2;32;;;11
-Patizon;;50;2.3;10.2;0.3;;;11
-Pažitka;;51.2;3.3;8.1;0.7;;;11
-Pečivo čajové slané;;554.8;8;47;38;;;11
-Pepř;;309.1;8.8;68;6.5;;;11
-Perník na strouhání;;270.3;6.4;65;0.8;;;11
-Perník plněný v čokoládě;;416.3;5.9;76.6;10.2;;;11
-Perník s cukrovou polevou;;350.5;5.4;81.7;0.7;;;11
-Perník švestkový;;392.8;6.91;59.84;13.88;;;11
-Petržel - kořen;;63.1;2.9;12.2;0.6;;;11
-Petržel - nať;;58.1;3.7;9;1;;;11
-Petržel - nať sušená;;351.9;20.7;61.2;5.6;;;11
-Pistácie;;646;20.35;17.11;54.63;;;11
-Pistácie pražené;;651.6;14.93;27.55;52.82;;;11
-Piškoty dětské kulaté;;397.5;10.42;75.8;5.15;;;11
-Pivo světlé 10% 3,9% obj.;;33;0.29;3.7;0.22;;;11
-Pivo světlé 10% 5% obj. DIA;;40;0.3;2.5;0.22;;;11
-Pivo světlé 12% 4,5% obj.;;44;0.48;4.24;0.32;;;11
-Pivo tmavé 10% 3,7% obj.;;33;0.32;3.93;0.23;;;11
-Pivo tmavé 12% 4% obj.;;45;0.43;4.8;0.25;;;11
-Pivo tmavé 13% 4,4% obj.;;52.1;0.5;6;0.25;;;11
-Pizza - prášek;;330.1;6.9;73.2;1.7;;;11
-Platýz velký;;86.1;17.1;0;1.9;;;11
-Plec skopová;;252;10.21;0.08;22.91;;;11
-Plíce vepřové;;99.3;14.28;0.2;3.31;;;11
-Podmáslí;;36;3.45;4.38;0.65;;;11
-Pohanka;;353.6;11;60;3;;;11
-Pohankové krupky;;329.2;7.5;72.6;1.5;;;11
-Poleva cukrářská čokoládová;;595.7;6.4;51.7;39.3;;;11
-Polévka hovězí - Vitana;;470.1;13.9;29.9;32.7;;;11
-Polévka instantní hrášková (Vitana);;422.7;15;56;11;;;11
-Polévka instantní nudlová (BRAVO - bal. 60g.);;450;10.8;63.1;17.3;;;11
-Polévka instantní nudlová hovězí (Clever - bal. 60g);;450;10.8;63.1;17.3;;;11
-Polévka instantní zelná (Vitana);;400;14;51;5;;;11
-Polévka žampionová (Knorr);;346.2;10;50.67;12.7;;;11
-Pomazánka bůčková;;377.8;11.42;0.1;36.87;;;11
-Pomeranč;;47;0.94;11.75;0.12;;;11
-Pórek;;41.9;2.25;7.74;0.3;;;11
-Potočnice;;22.5;0.3;0.4;1;;;11
-Povidla švestková;;229;1.4;59.13;0.4;;;11
-Pribináček;;243.3;7.4;16.8;17;;;11
-Proso loupané - jáhly;;360.7;10.63;71.15;3.9;;;11
-Protlak jahodový;;35;0.76;6.38;0.5;;;11
-Protlak rajčatový sterilizovaný;;106;2.45;23.71;0.5;;;11
-Přesnídávka broskvová;;68.7;0.47;17.63;0.32;;;11
-Přesnídávka DIA jablečná;;52.9;0.26;13.95;0.37;;;11
-Přesnídávka DIA jahodová;;49;0.37;13.47;0.37;;;11
-Přesnídávka DIA meruňková;;52.4;0.37;13.47;0.26;;;11
-Přesnídávka hrušková;;50.7;0.42;13.42;0.42;;;11
-Přesnídávka jablečná;;71;0.32;18.37;0.42;;;11
-Přesnídávka meruňková;;76.3;0.32;18.21;0.21;;;11
-Pudink kakaový sušený;;418.3;12.19;70.21;10.26;;;12
-Pudinkový prášek - kakaový;;352.7;2.02;82.73;1.99;;;12
-Rajčatová šťáva;;20;0.82;3.98;0.13;;;12
-Rajče;;22.5;0.98;4.13;0.25;;;12
-Rajče červené;;21;0.82;4.65;0.35;;;12
-Rajče oranžové;;16;1.16;3.18;0.19;;;12
-Rajče zelené;;24;1.2;5.09;0.2;;;12
-Rajče žluté;;15;0.98;2.98;0.26;;;12
-Rak;;65.1;15;0;0.5;;;12
-Rakytník;;50.2;1.2;5;3.9;;;12
-Reveň;;20.1;1.3;3.6;0.1;;;12
-Rohlík bílý;;308;9.78;57.47;3.68;;;12
-Rohlík celozrnný;;286;9;54.7;2.9;;;12
-Rohlík grahamový;;297;9.79;58.55;4.82;;;12
-Rohlík mléčný bílý slaný;;331;9.23;61.8;4.61;;;12
-Rohlík tmavý;;261.5;10.15;54.3;3.3;;;12
-Rohlík tukový;;302.4;8.3;59.9;2.9;;;12
-Rohlík vodový;;286.4;8.4;60.1;1;;;12
-Rozinky;;268.2;2.3;71.2;0.5;;;12
-Rum bílý (37,5%);;207.2;0;0;0;;;12
-Rum hnědý (40%);;221.3;0;0;0;;;12
-Ryba - candát;;81.1;18.4;0.1;0.3;;;12
-Ryba - halibut;;72;15.5;0;1.1;;;12
-Ryba - hejk;;91.1;17.2;0;2.5;;;12
-Ryba - herink;;236.1;8.2;0;17;;;12
-Ryba - kapr;;106;16;0;4.2;;;12
-Ryba - losos;;203.3;25.3;0.2;15.2;;;12
-Ryba - losos uzený;;315.3;28.5;0;19.4;;;12
-Ryba - makrela;;180;18.8;0.1;11.6;;;12
-Ryba - makrela uzená;;233.2;21.4;0.1;16.3;;;12
-Ryba - mečoun;;117.2;19.4;0;4.4;;;12
-Ryba - pečenáč;;115.1;11.1;0;7.9;;;12
-Ryba - platýz velký;;86.1;17.1;0;1.9;;;12
-Ryba - pstruh;;98.1;18.5;0.1;3;;;12
-Ryba - sleď;;209.1;18.5;0.1;14;;;12
-Ryba - sumec;;163.1;15.3;0;11.3;;;12
-Ryba - štika;;86.1;18.8;0.1;0.7;;;12
-Ryba - treska - file;;74.2;16.5;0.1;0.4;;;12
-Ryba - tuňák;;226.3;21.5;0;15.5;;;12
-Ryba - úhoř;;298.3;18.6;0.1;24.5;;;12
-Ryba - zavináč;;175.4;11.3;5.5;11.9;;;12
-Rybí konzerva Kambala v rajčatové omáčce;;134.2;13.7;4.8;6.3;;;12
-Rybí konzerva losos v oleji;;378.7;22;0;32.7;;;12
-Rybí konzerva makrela v rajčatové omáčce;;134.7;13.7;4.8;6.3;;;12
-Rybí konzerva sardinky v rajčatové omáčce;;122.5;12.5;4.3;6.1;;;12
-Rybí konzerva šproty v oleji;;365.1;17.4;0;32.4;;;12
-Rybí konzerva tresčí játra;;594.5;4.2;1.3;63.5;;;12
-Rybí konzerva v rajčatové omáčce;;147;14.53;2.78;8.61;;;12
-Rybičky v oleji a ve vlastní šťávě;;194.4;14.93;1.93;14.08;;;12
-Rybíz černý;;63;1.4;15.38;0.41;;;12
-Rybíz červený (nebo bílý);;56;1.4;13.8;0.2;;;12
-Ryngle;;64.1;0.8;16.5;0.2;;;12
-Rýže bílá dlouhozrná syrová;;365;7.13;79.95;0.66;;;12
-Rýže bílá dlouhozrná vařená;;130;2.69;28.17;0.28;;;12
-Rýže bílá krátkozrná syrová;;358;6.5;79.15;0.52;;;12
-Rýže bílá krátkozrná vařená;;130;2.36;28.73;0.19;;;12
-Rýže divoká syrová;;357;14.73;74.9;1.08;;;12
-Rýže divoká vařená;;101;3.99;21.3;0.34;;;12
-Rýže dušená;;183.2;4.43;38.49;0.19;;;12
-Rýže hnědá dlouhozrná syrová;;370;7.94;77.23;2.92;;;12
-Rýže hnědá dlouhozrná vařená;;111;2.58;22.95;0.9;;;12
-Rýže loupaná suchá;;349.6;8.77;76.49;0.44;;;13
-Rýže neloupaná (Natural);;323;7.1;76.8;1.9;;;13
-Rýžový nákyp;;142.8;3.43;25.11;3.4;;;13
-Ředkev;;27.9;1.49;6.88;0.12;;;13
-Ředkvička;;17.5;1.14;3.91;0.14;;;13
-Řepa červená;;48.1;1.8;10.6;0.1;;;13
-Řízek vepřový smažený;;504.5;19.5;23.5;36.4;;;13
-Sádlo husí;;757;1.1;0.1;83.7;;;13
-Sádlo škvařené - průměr;;736.8;0.3;0;81;;;13
-Salám berlínský;;415.2;16;1.6;38.3;;;13
-Salám boloňský;;288.5;12.89;1.82;25.5;;;13
-Salám brněnský;;295;13.45;0.1;26.57;;;13
-Salám český;;337.3;12.5;2.1;23.5;;;13
-Salám drůbeží;;162;18.3;1.27;8.89;;;13
-Salám drůbeží točený;;287;14.34;1.07;25.1;;;13
-Salám gothajský;;434;10.81;0.1;37.98;;;13
-Salám jemný;;263;11.83;0.1;23.98;;;13
-Salám jemný z kuřecího masa;;185;20.16;1.55;17.59;;;13
-Salám Junior;;272;13.2;0;24.3;;;13
-Salám kabanos;;205.3;14.8;2.1;14.8;;;13
-Salám koňský;;127.7;14.7;3.4;6.1;;;13
-Salám krůtí měkký;;196;17.19;0.72;12.76;;;13
-Salám lovecký;;451;27.45;0.2;35.36;;;13
-Salám měkký;;247.9;14.31;2.37;20.11;;;13
-Salám metský;;358.6;17.6;0.1;31.1;;;13
-Salám paprikový;;376.6;16.4;0.2;34.2;;;13
-Salám pařížský;;310;10.68;0.2;30.12;;;13
-Salám Poličan;;440.2;26.89;0.2;36.88;;;13
-Salám pražský;;258.4;12.8;2.1;21;;;13
-Salám šunkový;;203.5;17.97;0.1;14.58;;;13
-Salám točený;;230.1;14.5;2.1;18.6;;;13
-Salám turistický trvanlivý;;407;19.44;0.1;36.69;;;13
-Salám uherský;;463.1;23.3;0;41;;;13
-Salám Vysočina;;434;18.1;0;40;;;13
-Salát bramborový;;87.6;2.6;15.6;1.9;;;13
-Salát bramborový s majonézou;;211.2;1.9;12;17.5;;;13
-Salát čočkový;;161.7;6.4;17.2;7.9;;;13
-Salát Hanácký;;148.8;1.4;13.5;10.2;;;13
-Salát hlávkový;;16.8;1.33;2.51;0.28;;;13
-Salát krabí;;220.3;12;1.2;18.6;;;13
-Salát ledový;;12.7;0.7;1.9;0.3;;;13
-Salát okurkový;;26;0.99;5.22;0.14;;;13
-Salát pochoutkový;;339.5;8.1;2.3;33.4;;;13
-Salát polníček;;16.3;1.8;1.4;0.3;;;13
-Salát rybí s majonézou;;285.4;21.3;0;22.2;;;13
-Salát slanečkový;;130.1;7.7;11.2;6.1;;;13
-Salát sojový s majonézou;;276.6;10.3;7.5;22.8;;;13
-Salát sýrový Holandský;;131.6;22.5;0.9;7.5;;;13
-Salát vajíčkový;;198.3;5.1;5.5;17.6;;;13
-Salát vlašský;;153.5;4.82;11.74;10.38;;;13
-Sardelová pasta;;241;6.54;0.06;23.88;;;13
-Sardinka obecná;;130;19.71;0.1;11.01;;;13
-Sardinky ruské;;161;17.49;4.5;4.91;;;13
-Sardinky v oleji;;252;22.58;1.23;18.71;;;13
-Sekaná domácí;;266.6;17.53;6.25;18.98;;;13
-Sekaná drůbeží domácí;;311.2;10.89;9.7;25.36;;;13
-Semínka lněná;;485.4;22;13;40;;;13
-Semínka slunečnicová;;582.5;27;15;49;;;13
-Sepie;;68.2;13.3;0;0.8;;;13
-Sezamová semínka;;616;21.97;14.9;53.23;;;13
-Sherry suché;;81.6;0.2;0.2;0;;;13
-Slanina anglická;;402.46;10.54;0.08;40.01;;;13
-Slanina vepřová;;773.56;3.5;0.1;84.37;;;13
-Sleď baltický marinovaný;;146.7;15.78;0.18;9.54;;;13
-Sleď v rajčatové omáčce;;180;16.2;0.5;12.5;;;14
-Sleď - uzenáč;;211;22.2;0;12.9;;;14
-Sleď - zavináč;;217.5;19.8;0;14.8;;;14
-Slepice syrová (Guinejská) - pouze maso;;110;20.64;0;2.47;;;14
-Slezina;;111.2;16.9;1;4;;;14
-Slivovice 40%;;221.3;0;0;0;;;14
-Slunečnice - semena;;605;22.47;18.63;49;;;14
-Smetana 33% - (šlehačka);;325;2.16;3.31;33.7;;;14
-Smetana 6% tuku (do kávy);;86;3.5;4.5;6;;;14
-Smetana konzumní (12% tuku);;137;3.1;4.2;12;;;14
-Smetana pochoutková (16% tuku);;171;2.91;4;16;;;14
-Smetana šlehačka light;;200.7;2.5;8;17.8;;;14
-Smetana zakysaná 11%;;127;2.9;4.2;11;;;14
-Smetana zakysaná 15%;;164.3;2.5;4.5;15;;;14
-Sójové boby;;406.7;34;30.8;18.3;;;14
-Sójové boby vařené;;139;11;10.8;5.7;;;14
-Sójové klíčky;;12.9;1.5;1.7;0.1;;;14
-Sójové maso neochucené;;282.1;45;20;2;;;14
-Sójové mléko;;44;2.9;3.9;1.9;;;14
-Solamyl;;322.5;0.4;80;0.4;;;14
-Srdce hovězí;;122.8;16.87;0.48;6.32;;;14
-Srdce vepřové;;112;16.4;0.4;4.6;;;14
-Strouhanka;;373.4;11;78.1;1.4;;;14
-Suchar dietní;;373.5;10.99;72;3.87;;;14
-Sumec;;163.1;15.3;0;11.3;;;14
-Sušenky Albert;;381.6;5.9;80.9;8.4;;;14
-Sušenky Amarant;;446.2;7.1;61.6;18.1;;;14
-Sušenky Amarant kakaové;;465.1;7.8;71.2;16.5;;;14
-Sušenky Amarant vanilkové;;474.4;7.4;71.1;17.8;;;14
-Sušenky BeBe (Opavia);;409.1;6.5;77.5;11.6;;;14
-Sušenky Bravo - průměr;;522.7;5.6;54.6;33.8;;;14
-Sušenky Dalila;;532.3;7.6;52.5;33.6;;;14
-Sušenky Delissa - průměr;;540;8.2;55.9;31.6;;;14
-Sušenky Derby kakaové;;448.6;6.3;63.5;23.1;;;14
-Sušenky DIA kokosové;;464.1;7.6;58.6;22.6;;;14
-Sušenky DIA Párty;;454.5;9.6;56;27.1;;;14
-Sušenky Disco - průměr;;440.2;5.5;70.5;19.8;;;14
-Sušenky Dukla - kakaové řezy;;496.4;5.3;58.4;31.8;;;14
-Sušenky Falco desert ořech;;440.2;5;60;20;;;14
-Sušenky Fidela;;503.6;8.4;56.9;28.2;;;14
-Sušenky Fidorky;;491.9;2.6;64.6;24;;;14
-Sušenky Florenta;;504.8;8.5;56.7;29.6;;;14
-Sušenky Floriana;;436.6;6.2;72.4;17.5;;;14
-Sušenky Horalky - průměr;;513.2;8.9;54.5;31.6;;;14
-Sušenky kakaové věnečky;;459.3;6.9;59.6;25.5;;;14
-Sušenky KOKA kokosové;;439;6.4;61.5;23.9;;;14
-Sušenky Kolonáda - oříško-čokoládové;;504.8;7.7;57;29.9;;;14
-Sušenky Kolonáda - trojhránky kakaové;;516.7;4.9;58.1;31.8;;;14
-Sušenky Lázeňské oplatky;;403.6;5.3;72.3;11.1;;;14
-Sušenky Lucie kakaové;;451;6.7;62.8;25.4;;;14
-Sušenky Lucie Via Dia;;501.2;8.8;47.2;35.4;;;14
-Sušenky máslové - CLUB;;458.4;8.11;70.4;16.2;;;14
-Sušenky máslové (CLUB);;458.4;8.11;70.4;16.2;;;14
-Sušenky Miňonky kakaové;;515.6;8.1;53.4;31.3;;;14
-Sušenky polomáčené;;464.1;6.7;66.2;21.6;;;14
-Sušenky s kakaovou náplní - Romanca;;458.4;5.15;65.11;23.56;;;14
-Sušenky slané;;554.3;8;47;38;;;14
-Sušenky věnečky arašídové;;478.7;9;65.5;21.2;;;14
-Sušenky Zlaté - lískový ořech;;496.4;5.7;58.6;28.6;;;14
-Sušnky Zlaté - vanilkové;;492.8;6.6;59.4;27;;;14
-Sýr Balkánský;;233.5;11.3;1;20.4;;;14
-Sýr Brynza (40% t. v s.);;295.3;20.5;2.5;22.6;;;14
-Sýr Brynza (50% t. v s.);;297.8;19.1;1.6;23.8;;;14
-Sýr Camembert (30% t. v s.);;216.3;22.8;0;12.8;;;15
-Sýr Camembert (45% t. v s.);;285.2;21;0;21.8;;;15
-Sýr cottage (1% tuku);;72.4;12.39;2.72;1.02;;;15
-Sýr cottage (2% tuku);;89.7;13.74;3.63;1.93;;;15
-Sýr čedar;;403;24.9;1.28;33.14;;;15
-Sýr čedar - tavený;;284;16.69;3.09;22.81;;;15
-Sýr dezertní 20%;;182;24.3;2.2;8;;;15
-Sýr dezertní 40%;;236;18.3;2.1;17.2;;;15
-Sýr eidam 20% t. v s.;;215.3;30;3;10;;;15
-Sýr eidam cihla - výběr 60%;;403;18.8;1;36;;;15
-Sýr eidam cihla 30%;;263;30.3;1.4;15.15;;;15
-Sýr eidam cihla 40%;;320;28.5;1;22.4;;;15
-Sýr eidam cihla 45%;;343;26;1;26.1;;;15
-Sýr eidam salámový 40%;;314;28;1;22;;;15
-Sýr eidam uzený 45%;;343;26;1;26.1;;;15
-Sýr ementál (Primátor);;387;28.02;2.31;29.34;;;15
-Sýr ementál 45% t. v s.;;387.3;28.9;0;30;;;15
-Sýr Geramont;;363.6;16.5;2;31.5;;;15
-Sýr Gervais;;232;6.3;4.8;21;;;15
-Sýr Gouda;;356.3;24.94;2.22;27.44;;;15
-Sýr Gouda 30%;;258;28.6;1.95;15.15;;;15
-Sýr Gouda 45%;;343;26;1;26.1;;;15
-Sýr Hermelín (Camember, Encián);;298;20.76;1.57;22.84;;;15
-Sýr játrový;;359;13.86;1.25;31.25;;;15
-Sýr jihočeský 40%;;258;22;1.8;18;;;15
-Sýr kapiový 50% t. v s.;;170.3;9;2;14;;;15
-Sýr kozí čerstvý;;79;4.7;1.5;6.1;;;15
-Sýr krémový;;193;12.4;1.8;15.63;;;15
-Sýr krkonošský pivní;;305;18.4;1.6;25;;;15
-Sýr lahůdkový tavený 70%;;351;8;1;35;;;15
-Sýr Laktík;;183.2;14.1;2.3;12.7;;;15
-Sýr Moravský blok 50%;;393;25.2;2.3;31.5;;;15
-Sýr Moravský bochník 45%;;342;24.8;2;26.1;;;15
-Sýr Mortadela;;277;14.62;0.056;23.13;;;15
-Sýr mozzarella;;281.4;19.24;2.22;21.6;;;15
-Sýr Niva (Rokfór);;381.2;21.29;1.47;32.26;;;15
-Sýr Niva 50% - tavený;;269;15.2;1.4;22.5;;;15
-Sýr Olomoucké tvarůžky;;134;30.3;2;0.8;;;15
-Sýr Oštiepok;;366;21.62;3.3;30.06;;;15
-Sýr ovčí tvrdý;;400.4;27.05;0.5;32.26;;;15
-Sýr ovčí ve slaném nálevu;;325.3;20.18;1.31;26.6;;;15
-Sýr Parmezán;;391;34.87;0.068;26.33;;;15
-Sýr plátkový balený;;286.1;18;4;22;;;15
-Sýr plátkový light;;184.9;22;4;9;;;15
-Sýr plátkový se šunkou;;346.9;13;7;30;;;15
-Sýr Primátor 45% t. v s.;;368.7;26.5;2.2;28;;;15
-Sýr Přimda - jemný přírodní;;325;21.6;1.2;26;;;15
-Sýr Romadur 20%;;176;23.6;2.5;8;;;15
-Sýr Romadur 40%;;237;18.1;2.4;17.2;;;15
-Sýr smetanový 65%;;286;12.1;0.103;26;;;15
-Sýr smetanový KIRI;;336.8;9;2;33;;;15
-Sýr smetanový tavený 45%;;231;15.9;1.2;18.39;;;15
-Sýr sójový TOFU;;79;7.8;2.2;4.2;;;15
-Sýr Šumavský blok 45%;;336;25.2;1;26.1;;;15
-Sýr tavený 30%-40% t. v s. - průměr;;187.1;19.6;0.8;11.4;;;15
-Sýr tavený 40%-50% t. v s. - průměr;;231.3;15.9;1.2;18;;;15
-Sýr tavený 50%-60% t. v s. - průměr;;284.4;12.1;1;26;;;15
-Sýr tavený 60%-70% t. v s. - průměr;;371.3;12.1;1;35;;;15
-Sýr tavený FIT;;131.3;17;0;7;;;15
-Sýr tavený lipno s lososem - light (30% t. v s.);;186.6;20;1;9.9;;;15
-Sýr tavený smetanový;;336.8;9;2;33;;;15
-Sýr tavený šunkový;;300.2;17.4;0.9;25.9;;;15
-Sýr Tylžský;;302;27.7;1.54;26.22;;;15
-Šáteček s makovou náplní;;377.9;8.49;55.33;13.67;;;16
-Šáteček s marmeládou;;346.2;5.62;64.29;7.31;;;16
-Škeble;;54.1;10.5;0;1.3;;;16
-Škrob kukuřičný;;359.3;0.31;87.27;0.09;;;16
-Škrob rýžový;;349.7;0.62;85.07;0.1;;;16
-Škvarky vepřové;;742.1;15.5;0;75;;;16
-Šlehačka pařížská;;352.21;2.75;12.24;32.55;;;16
-Šnek;;73;16;0;1;;;16
-Špagety celozrnné suché;;348;14.63;75.03;1.4;;;16
-Špagety celozrnné vařené;;124;5.32;26.54;0.54;;;16
-Špagety suché;;371;12.77;74.68;1.58;;;16
-Špagety vařené;;141;4.77;28.34;0.67;;;16
-Špagety, makarony;;354;12.5;75;1.2;;;16
-Špagety, makarony - vařené;;126;4.2;26;0.5;;;16
-Špagety, makarony celozrnné;;330.6;11;75.4;1.5;;;16
-Špenát;;32.8;3.2;4.1;0.6;;;16
-Špenátový protlak;;32.3;2;6.1;0.1;;;16
-Šproty v oleji;;375;15.07;0.5;31.59;;;16
-Štika mořská syrová;;88;19.25;0;0.69;;;16
-Štika obecná;;49.8;11.23;0.06;0.51;;;16
-Štika v rajčatové omáčce;;105.1;13.82;3.6;3.9;;;16
-Šunka drůbeží;;117;22.91;0.25;3.13;;;16
-Šunka drůbeží PIKNIK;;110.7;25.1;0.2;1.05;;;16
-Šunka dušená;;156.5;17.64;1.39;9.1;;;16
-Šunka kuřecí;;167;17.6;0;10.5;;;16
-Šunka kuřecí (Velkopavlovická);;119;21.35;0.2;3.64;;;16
-Šunka kuřecí prsní;;98.1;14;1.5;4;;;16
-Šunka s vyšším obsahem tuku;;240.5;16.49;1.07;18.92;;;16
-Šunka uzená;;259.01;16.36;0.1;21.47;;;16
-Šunka vepřová;;179.7;16.14;0.78;12.47;;;16
-Šunkový salám;;203.5;17.97;0.1;14.58;;;16
-Švestky;;53.97;0.71;14.65;0.25;;;16
-Švestky sušené;;230.4;2.5;60.4;0.7;;;16
-Taliáni;;371.9;20.9;0.1;32;;;16
-Tatranky;;541;8.95;54.8;31.4;;;16
-Tequila (38%);;210.3;0;0;0;;;16
-Termix - průměr;;203.3;11.5;15.7;11.3;;;16
-Termix banánový;;221.4;11.08;17.15;12.16;;;16
-Těsto listové;;423;5.73;36.07;28.71;;;16
-Těstoviny amarantové;;332.8;11.4;74.3;0.9;;;16
-Těstoviny bezlepkové kukuřičné;;394.7;7.5;84;2;;;16
-Těstoviny čtyřvaječné;;367;11.13;72.58;2.84;;;16
-Těstoviny diabetické;;359;30.4;55.3;1.36;;;16
-Těstoviny grahamové;;393.5;13.26;68.05;3.72;;;16
-Těstoviny konzumní;;364;10.9;73.3;10.9;;;16
-Těstoviny nevaječné;;357.8;9.82;75.2;1.21;;;16
-Těstoviny pětivaječné;;370;11.6;71.6;3.34;;;16
-Těstoviny sedmivaječné;;374;12.3;70.2;4.13;;;16
-Těstoviny vařené (průměr);;131.3;3.55;23.74;2.52;;;16
-Tlačenka drůbeží;;177;18.49;0.13;11.94;;;16
-Tlačenka masová světlá;;301;14.15;0.7;27.87;;;16
-Tlačenka tmavá lidová;;317;14.88;0.1;28.03;;;16
-Tofu;;54.5;11;1.5;3;;;16
-Treska - filé;;75.9;17.69;0.1;0.43;;;16
-Treska mražená;;46.2;11.22;0.07;0.4;;;16
-Treska syrová;;87;18.91;0;0.72;;;16
-Treska uzená;;116;25.2;0;0.94;;;16
-Třešně;;59.7;0.92;14.38;0.51;;;16
-Tuk Ceresoft;;830.9;0;2;92.2;;;16
-Tuk Dukát jedlý;;748.5;0.48;0.15;81.06;;;16
-Tuk Hera jedlý;;754;0.2;0.32;80.13;;;16
-Tuk Juno jedlý;;761;0.15;0.15;80.46;;;16
-Tuk Perla jedlý;;825;0.08;0.13;84;;;17
-Tuk Perla pro teplou kuchyni;;614.8;0.1;0.3;69;;;17
-Tuk Planta;;904.3;0;0;100;;;17
-Tuk Stella;;716.8;0.05;0.3;80;;;17
-Tuk Visa;;704.8;3;4;78.3;;;17
-Tuk ztužený (100%);;863.6;0;0;97.7;;;17
-Tuňák konzervovaný v oleji;;186;26.52;0;8.08;;;17
-Tuňák konzervovaný ve vodě;;128;23.62;0;2.96;;;17
-Tuňák light konzervovaný v oleji;;198;29.13;0;8.21;;;17
-Tuňák light konzervovaný ve vodě;;116;25.51;0;0.82;;;17
-Tuňák obecný;;232;23.85;0.1;8.36;;;17
-Tuňák v oleji a vlastní šťávě;;184;19.9;0.1;11.6;;;17
-Tuřín;;34;1.12;7.35;0.19;;;17
-Tvaroh jemný;;109.1;17.5;4.2;2.5;;;17
-Tvaroh konzumní;;131.1;17.59;3.88;4.53;;;17
-Tvaroh měkký nízkotučný;;96;18.75;4.4;0.35;;;17
-Tvaroh ovocný (PM);;92.1;10;12;0.3;;;17
-Tvaroh ovocný Prince;;137.6;5.9;17.1;5;;;17
-Tvaroh speciál;;175.6;13.7;3.2;12;;;17
-Tvaroh tučný;;184;12.31;3.3;13.53;;;17
-Tvaroh Vitalinea Danone;;74.9;13.5;3.8;0.3;;;17
-Tvaroh Vitalinea ovocný;;59.3;6.5;10;0.1;;;17
-Tvarohová rozhuda;;66.3;10.7;3.8;0.8;;;17
-Tyčinka BeSlim průměr;;399;10;59;15;;;17
-Tyčinka Café crip cappucino;;412.9;11.3;68.7;11.7;;;17
-Tyčinka DELI s oříšky;;452.1;4.4;68.4;20.7;;;17
-Tyčinka FIT GO - průměr;;416;3.48;71.74;12.17;;;17
-Tyčinka Flint - kokos, likér;;459.3;7;70;18;;;17
-Tyčinka FLY MISS - ořech, karamel;;415.1;11.6;47.8;19.6;;;17
-Tyčinka Granko;;544.3;6.2;54.2;33.2;;;17
-Tyčinka müsli - průměr;;409.1;6.8;62.8;18.4;;;17
-Tyčinka Müsli Pro Diet;;400.2;9.4;54.7;16;;;17
-Tyčinka Twiggy - průměr;;438.8;9.5;49.2;21.9;;;17
-Tyčinka Twix;;481.6;5.6;63.2;24.5;;;17
-Tykev - semena;;432.8;18.13;13.17;34.04;;;17
-Tykev špagetová;;26.6;0.6;8.3;0.1;;;17
-Úhoř říční;;178.1;9.92;0.07;15.35;;;17
-Úhoř uzený;;321.2;18.74;0.87;26.98;;;17
-Ústřice;;66;9;4.8;1.2;;;17
-Uzenáč;;117.7;15.8;0.2;5.9;;;17
-Vaječná hmota sušená;;587;46.53;2.19;44.13;;;17
-Vaječné věnečky obalované;;485;8.49;64.87;20.67;;;17
-Vaječný bílek slepičí;;49;11.28;0.81;0.3;;;17
-Vaječný bílek slepičí sušený;;353;81.95;5.6;1.4;;;17
-Vaječný žloutek pasterizovaný mražený;;313;14.9;0;27.6;;;17
-Vaječný žloutek slepičí;;359;16.3;0.69;32.09;;;17
-Vaječný žloutek sušený;;666;31.7;2.1;59.3;;;17
-Vánočka máslová;;368;7.2;60.8;10.1;;;17
-Vánočka tuková;;349.3;7.3;60.9;8.6;;;17
-Vejce husí celé (čerstvé, syrové);;185;13.87;1.35;13.27;;;17
-Vejce kachní celé (čerstvé, syrové);;185;12.81;1.45;13.77;;;17
-Vejce krůtí celé;;171;13.68;1.15;11.88;;;17
-Vejce slepičí;;160;12.28;0.66;11.72;;;17
-Vejce slepičí - bílek syrový;;50;10.52;1.03;0;;;17
-Vejce slepičí - sušený bílek;;382;81.1;7.8;0;;;17
-Vejce slepičí (sušené celé);;587.6;46;3;42;;;17
-Vejce slepičí (sušený bílek);;384;84.1;6.2;0;;;17
-Vejce slepičí (sušený žloutek);;679.4;30.5;1.3;60;;;17
-Vejce slepičí syrové (celé);;149;12.49;1.22;10.02;;;17
-Vejce slepičí syrové (pouze bílek);;48.1;11;0;0;;;17
-Vejce slepičí syrové (pouze žloutek);;358;16.76;1.78;30.87;;;17
-Vejce slepičí vařené (celé);;155;12.58;1.12;10.61;;;17
-Veka;;289;8.4;60.1;1;;;18
-Veka tuková;;293;8.94;53.89;4.04;;;18
-Vepřová játra dušená;;193.2;16.16;7.65;11.08;;;18
-Vepřová kýta - libové maso;;136;20.48;0;5.41;;;18
-Víno - sherry polosuché;;117;0.1;3.7;0;;;18
-Víno - sherry sladké;;135.9;0.3;6.9;0;;;18
-Víno - sherry suché;;115.1;0.2;1.4;0;;;18
-Víno - Vermut sladký;;151;0;15.9;0;;;18
-Víno - Vermut suchý;;117.9;0.1;5.5;0;;;18
-Víno bílé;;77;0.1;0.1;7.5;;;18
-Víno bílé přírodní;;54.1;0.1;0.1;0;;;18
-Víno bílé přírodní sladké;;94.3;0.2;5.9;0;;;18
-Víno červené;;77;0.25;2.8;0.76;;;18
-Víno ovocné - průměr;;110;0;20;0.3;;;18
-Víno šumivé (sekt);;103;0.19;7.9;0.91;;;18
-Víno šumivé sladké 11%;;107.2;0;11;0;;;18
-Víno šumivé suché 11%;;75.1;0;3.5;0;;;18
-Višně;;54.8;1;12.17;0.62;;;18
-Višně v čokoládě;;342;3.2;56.9;13.1;;;18
-Vločky ovesné;;351.9;13;57;7;;;18
-Vodnice;;23.4;0.9;4.7;0.3;;;18
-Vývar z drůbežího masa;;6;0.35;0.34;0.37;;;18
-Vývar z masa - průměr;;3.3;0.23;0.15;0.2;;;18
-Whisky irská 45%;;249.3;0;0;0;;;18
-Whisky skotská 43%;;231.1;0;0;0;;;18
-Worchester;;72.4;1.3;15.8;0.3;;;18
-Zákusek - indián;;428.5;3;71;14;;;18
-Zákusek - kokoska;;502.9;6.12;62.25;25.4;;;18
-Zákusek - košíčky linecké s ovocem;;263.2;2.67;38.83;11.7;;;18
-Zákusek - kremrole;;311;4.2;45;22;;;18
-Zákusek - laskonka;;294.2;1.67;35.33;16;;;18
-Zákusek - roláda s krémem;;394.7;6.4;53.9;17.4;;;18
-Zákusek - řezy punčové;;358.1;5.3;48.7;15.7;;;18
-Zákusek - řezy žloutkové;;334.7;3.57;38.86;18.9;;;18
-Zákusek - šáteček s tvarohovou náplní;;397.8;5.83;63.17;13.5;;;18
-Zákusek - špička;;421;8.83;62.33;15;;;18
-Zákusek - věnečky vaječné;;276.6;4;33.8;13.4;;;18
-Závin jablečný;;476.3;4;55.1;28.2;;;18
-Závin ořechový;;397.8;5.4;62.5;14.2;;;18
-Závin s makovou náplní;;393.2;8.7;55.6;14.5;;;18
-Zavináče;;178.9;11.55;5.67;12.17;;;18
-Zeleninová směs - Mochovská;;63.4;4.2;11.2;0.1;;;18
-Zeleninová směs do polévky;;32.3;2;6.1;0.1;;;18
-Zeleninová směs jarní mražená;;49.2;3.58;9.61;0.33;;;18
-Zeleninová směs lahůdková;;52.4;2.8;10.3;0.3;;;18
-Zeleninová směs pod svíčkovou;;66.3;1.7;11.3;0.3;;;18
-Zeleninová směs s kukuřicí;;80.1;3.9;15.7;0.5;;;18
-Zeleninová směs se žampiony;;58.4;2.2;11.5;0.4;;;18
-Zelí - sterilizované;;17.09;0.75;4.02;0.2;;;18
-Zelí bílé;;25;1.46;5.4;0.26;;;18
-Zelí bílé sterilizované;;21.8;1.23;6.07;0.17;;;18
-Zelí červené;;27;1.39;6.12;0.26;;;18
-Zelí čínské (pak-choi);;13;1.5;2.18;0.2;;;18
-Zelí čínské (pe-tsai);;16;1.2;3.22;0.2;;;18
-Zelí kysané;;14.8;1;4;0;;;18
-Zmrzlina polárkový dort - průměr;;197.4;3.6;20.5;8.9;;;18
-Žampion polní;;29.23;4.73;3.44;0.3;;;18
-Žampiony čerstvé;;35.6;3.2;4.6;0.6;;;18
-Žampiony sterilizované;;29.4;2.25;3;0.5;;;18
-Žemle tmavá;;323;9.18;61.7;3.87;;;18
-Žemle tuková;;304;8.3;59.9;2.9;;;18`},
-  por:{label:'Tabulka porcí (kcal a sacharidy)', url:'', raw:`Pivo 10° světlé;;31;;2.1;;;;0
-Dia pivo;;33;;2;;;;0
-Pepsi cola;;47;;11.6;;;;0
-Dia Pepsi cola;;0.3;;0;;;;0
-Fanta pomerančová limonáda sladká;;41;;10;;;;0
-40% destilát;;274;;;;;;0
-Bílé víno;;53;;0.1;;;;0
-Džus sladký jablkový;;41;;10.2;;;;0
-100% džus pomerančový;;40;;10;;;;0
-Sirup sladký (do 200 ml vody);;260;;65;;;;0
-Šunka;;145;;;;;;0
-Šunkový salám;;177;;0.1;;;;0
-Drůbeží párky;;156;;;;;;0
-Turistický salám;;384;;;;;;0
-Tlačenka vepřová;;272;;0.6;;;;0
-Tlačenka drůbeží;;165;;0.1;;;;0
-Špekáčky;;290;;;;;;0
-Uherský salám;;462;;;;;;0
-Šunkový závitek v rosolu;;132;;2.7;;;;0
-Šunkový chlebíček;;261.4;;20;;;;0
-Mléko egalizované (mléko s nižším obsahem tuku);;48;;4.6;;;;0
-Mléko nízkotučné;;36;;4.3;;;;0
-Tavený sýr 30% t. v s.;;179;;0.9;;;;0
-Tavený sýr 70% t. v s.;;344;;1;;;;0
-Eidam 30%;;248;;1.3;;;;0
-Hermelín 45% t. v s.;;249;;0.9;;;100;0
-Lučina (menší) 60% t. v s.;;285.7;;1;;;63;0
-Tvaroh Danisimo (Danone);;148;;18.8;;;150;0
-Bílý jogurt 4 % tuku;;87.3;;6.7;;;150;0
-Bílý jogurt Vitalinea 1 % tuku;;44;;6.2;;;150;0
-Ovocný jogurt Vitalinea;;48;;7.8;;;150;0
-Ovocný jogurt Jogobela (Zott);;98;;14.9;;;150;0
-Kefír;;46;;3.7;;;;0
-Šlehačka 33% tuku;;302;;3;;;;0
-Tvaroh měkký;;92;;4.3;;;;0
-Tvaroh na strouhání;;125;;1.5;;;;0
-Zakysaná smetana;;204;;4.6;;;;0
-Vejce;;122;;0.6;;;50;0
-Máslo;;680;;;;;;0
-Perla;;360;;;;;;0
-Rama;;680;;;;;;0
-Flora;;630;;;;;;0
-Diana;;360;;;;;;0
-Olej slunečnicový;;660;;;;;;0
-Cukr 1 lžička;;390;;99;;;;0
-Med 2 lžička;;323.3;;80.3;;;;0
-Čokoláda mléčná;;548;;57;;;;0
-Čokoláda dia mléčná;;505;;48.9;;;;0
-Oplatky Florenta;;503;;56.5;;;;0
-Dia oplatky Via kakao;;452;;62.6;;;;0
-Müsli tyčka Fly jogurtová;;392;;58.8;;;;0
-Müsli tyčka Senza ořechová;;392;;61.6;;;;0
-Ořechový dort s krémem;;274.4;;34.3;;;133;0
-Pařížský dort;;286.4;;29.3;;;110;0
-Větrník;;332.5;;38;;;80;0
-Ovocný dort;;418.2;;23.8;;;110;0
-Žloutkový věneček;;391.1;;26.7;;;45;0
-Chleba (1,5 kg veka);;225.7;;46.1;;;70;0
-Toustový chléb tmavý;;280;;53.5;;;20;0
-Dalamánek;;255;;55.8;;;40;0
-Graham chléb;;250;;52;;;30;0
-Knaeckebrot;;355.6;;72.2;;;9;0
-Křehký chléb Knuspi sýrový;;325;;65;;;8;0
-Rohlík;;285;;54.2;;;40;0
-Pletýnka;;292;;58.1;;;125;0
-Bílé veky;;275;;58;;;20;0
-Suchar;;400;;79.6;;;25;0
-Piškoty;;370;;72;;;;0
-Vánočky;;344;;59.2;;;50;0
-Ovesných vloček;;350;;60;;;;0
-Corn flakes;;370;;84.3;;;;0
-Mouky;;340;;70;;;;0
-Vařené rýže;;96;;21.4;;;;0
-Vařených kolínek – malá;;108;;21.4;;;;0
-Houskový knedlík;;237.5;;50;;;40;0
-Brambor. knedlík;;157.5;;27.5;;;40;0
-Vařená čočka (30 g syrové);;89;;16.5;;;;0
-Vařený hrách (30 g syrového);;89;;17.1;;;;0
-Vařené fazole (30 g syrových);;92;;16.7;;;;0
-Bramborové kaše;;100;;18;;;;0
-Brambory;;83;;18.6;;;;0
-Bramborový salát;;133.5;;14.7;;;;0
-Hranolky;;341;;25;;;;0
-Chipsy;;533;;49.3;;;;0
-Slané tyčky;;551;;46.1;;;;0
-Jablko;;49;;11.7;;;;0
-Broskve;;52;;12.3;;;;0
-Jahody;;39;;7.9;;;;0
-Meruňky;;50;;11.7;;;;0
-Švestky;;60;;14.3;;;;0
-Víno hrozny;;61;;16;;;;0
-Banány;;59;;15.4;;;;0
-Grep;;25;;6;;;;0
-Pomeranče;;37;;8.5;;;;0
-Dia kompot švestky;;44;;10.2;;;;0
-Dia kompot meruňky;;39;;9.2;;;;0
-Sladký kompot směs;;81;;21.2;;;;0
-Dia ovocná přesnídávka;;47.8;;11;;;;0
-Rozinky;;230;;55.8;;;;0
-Celer kořen;;30;;6.1;;;;0
-Fazolky zelené;;33;;6;;;;0
-Kapusta hlávková;;28;;4.4;;;;0
-Kedlubny;;19;;3.4;;;;0
-Květák;;18;;2.7;;;;0
-Mrkev;;34;;7.4;;;;0
-Okurka salátová;;13;;2.1;;;;0
-Paprika;;22;;3.9;;;;0
-Pórek;;32;;6;;;;0
-Rajčata;;20;;3.7;;;;0
-Ředkvičky;;13;;2.4;;;;0
-Zelí hlávkové;;21;;4;;;;0
-Hrášek sterilovaný;;61;;10.6;;;;0
-Kečup;;102;;12;;;;0
-Sterilované okurky;;20;;4.5;;;;0
-Kysané zelí;;18;;3.6;;;;0
-Červená řepa sterilovaná;;32;;7.5;;;;0
-Mražený špenát;;23;;3.1;;;;0
-Zelenina mražená směs;;32;;6.1;;;;0
-Polévka hovězí s těstovinou;;18.9;;3.1;;;;0
-Polévka čočková;;66.1;;7;;;;0
-Polévka bramborová;;48.2;;6.1;;;;0
-Polévka pórková;;42.4;;3;;;;0
-Polévka gulášová instantní 16 g;;24.5;;4.5;;;;0
-Polévka hovězí instantní 11 g;;17.1;;3.3;;;;0
-Polévka slepičí instantní 17 g;;28.6;;4.1;;;;0
-Polévka pórková instantní;;15.2;;2.4;;;;0
-Hovězí guláš;;140.4;;2.4;;;;0
-Hovězí přírodní;;159.2;;2.8;;;;0
-Svíčková na smetaně;;185.9;;3.8;;;;0
-Biftek s oblohou;;212.7;;;;;;0
-Smažený řízek vepřový;;500;;12.5;;;;0
-Sekaná pečeně;;402.5;;12.5;;;;0
-Vepřová pečeně (120 g);;209.5;;3;;;;0
-Smažené filé;;359.3;;10;;;;0
-Bramborová kaše;;100;;18;;;;0
-Bramborový knedlík;;157.5;;27.5;;;;0
-Bramborové hranolky;;341.3;;24.7;;;;0
-Vařené těstoviny;;107.8;;21.7;;;;0
-Vařená rýže;;96.1;;21.7;;;;0
-Pečené kuře (250 g);;169.3;;;;;;0
-Pečené filé;;103.3;;;;;;0
-Dušené zelí;;246.3;;27.8;;;;0
-Dušený špenát;;246.7;;11.1;;;;0`}
+  mv:{raw:`Artyčoky;;41;2.4;2.6;0.1;10.8;
+Brambory rané;;72;1.7;16.6;0.2;1.3;
+Brambory zimní;;79;1.8;18.2;0.3;1.6;
+Brokolice, kedlubna;;33;4.4;2.9;0.9;2.8;
+Brukev;;31;2.1;5.8;0.2;2.2;
+Celer-bulva;;50;1.7;9.9;0.3;3.7;
+Celer - řapíkatý;;33;1.3;3.7;0.2;2.4;
+Cibule;;48;1.7;9.6;0.3;1.4;
+Cibule - raná;;33;2;5.8;0.2;1.3;
+Cuketa;;19;1.6;2.1;0.4;0.9;
+Čekanka salátová;;21;1.5;4;0.1;1.4;
+Černý kořen;;62;1.4;13.3;0.4;5.3;
+Červená řepa;;48;1.8;10.6;0.1;2.3;
+Česnek;;110;6.6;26.9;0.2;0.9;
+Fazolky;;38;2.3;7.1;0.3;3;
+Fenykl;;26;2.4;6.1;0.3;3.3;
+Hrášek;;76;6.5;13.3;0.5;5.2;
+Chřest;;21;2.2;3.5;0.2;1.8;
+Kapusta hlávková;;43;3.1;6.7;0.5;3.1;
+Kapusta kadeřavá;;33;4.3;2.1;0.9;3.3;
+Kapusta růžičková;;50;5.2;7.6;0.6;1.6;
+Kopr;;38;2.4;7.8;0.2;1.6;
+Křen;;105;3.9;22.4;0.5;6.2;
+Kukuřice cukrová;;105;3.5;18.8;2.2;0.5;
+Květák;;29;2.4;4.4;0.3;1.8;
+Lilek;;38;1.3;8.2;0.3;2.3;
+Mangold listy;;14;2.1;2.8;0.3;2;
+Meloun červený;;26;0.6;5;0.2;0.3;
+Meloun žlutý;;29;0.5;6.5;0.1;0.9;
+Mrkev;;45;1.4;9.7;0.3;3;
+Okurka nakládačka;;12;1;1.8;0.2;1;
+Okurka salátová;;17;0.7;2.6;0.2;0.9;
+Paprika červená;;29;1.2;5.2;0.5;1.6;
+Paprika zelená;;17;0.8;2.6;0.3;1.9;
+Patizony;;50;2.3;10.2;0.3;;
+Pažitka;;50;3.3;8.1;0.7;2;
+Pekingské zelí;;12;1.1;1;0.3;1.6;
+Petržel kořen;;62;2.9;12.2;0.6;1.8;
+Petržel nať;;57;3.7;9;1;5;
+Polníček;;17;1.8;1.4;0.4;1.5;
+Pór;;45;2.5;8.6;0.3;1.5;
+Rajčata;;24;1.1;4.6;0.3;1.5;
+Reveň;;19;1.3;3.6;0.1;1.4;
+Ředkev;;21;1.5;5;0.1;1.1;
+Ředkvičky;;19;1.1;3.7;0.1;1;
+Řeřicha zahradní;;14;1.6;0.4;0.6;3.3;
+Salát hlávkový;;19;1.5;2.7;0.3;0.9;
+Salát ledový;;12;0.7;1.9;0.3;1.2;
+Salát římský;;17;1;1.7;0.6;1.2;
+Sójové výhonky;;50;5.5;4.7;1;2.6;
+Špenát;;33;3.4;4.1;0.6;2.1;
+Topinambury;;79;1.9;17;0.2;3.5;
+Tykev velkoplodá;;40;0.8;9;0.1;2.3;
+Výhonky vojtěšky (alfalfa);;24;4;0.4;0.7;1.6;
+Zelí bílé hlávkové;;29;1.5;4.5;0.2;2.7;
+Zelí červené hlávkové;;31;1.6;6.1;0.3;3.1;
+Čočka (suché, nevařené);;343;26.9;59.2;1.2;10.6;
+Fazole (suché, nevařené);;333;23.5;59.8;1.6;17;
+Hrách (suché, nevařené);;338;23.7;61.5;1.4;16.6;
+Sója (suché, nevařené);;443;43.8;16.3;23;21;
+Bílé fazole v rajské omáčce (suché, nevařené);;88;5.3;14.4;0.8;;
+Celer s olejem (suché, nevařené);;90;1.1;10.4;5.1;;
+Červená řepa (suché, nevařené);;33;0.9;7.8;0.3;;
+Fazolové lusky (suché, nevařené);;24;1.1;5.3;0.9;;
+Hongkong salát (suché, nevařené);Bonduelle;60;1.3;7.1;3.3;;
+Hrášek zelený (suché, nevařené);;64;4.8;11;0.3;;
+Chilli česnek (suché, nevařené);Horlein;436;3.6;17;40;;
+Kukuřice (suché, nevařené);Bonduelle;119;3;22.9;1.5;;
+Makedonská směs (suché, nevařené);Bonduelle;33;1.8;6;0.3;;
+Mrkvový salát (suché, nevařené);;33;0.8;7.4;0.1;;
+Okurky (suché, nevařené);;29;1;7;0.1;0.5;
+Rajčatová šťáva (suché, nevařené);;19;0.8;4;0.1;0.6;
+Rajský protlak (suché, nevařené);;102;2.4;23.3;0.5;0.9;
+Sójové klíčky (suché, nevařené);Bonduelle;14;1.5;1.8;0.1;1.6;
+Zelí bílé kysané (suché, nevařené);;19;0.7;3.9;0.2;1.4;
+Zelí červené sterilované (suché, nevařené);;64;1.6;14.9;0.2;;
+Baby karotka (mražené);;21;0.5;4.2;0.2;;
+Brokolice (mražené);;24;2.9;1.2;0.8;;
+Lahůdková kukuřice (mražené);;107;3.9;19.8;1.2;;
+Špenát Bonduelle (mražené);;26;2.6;2.5;0.6;;
+Zeleninová směs (průměr) (mražené);;48;2.3;8.2;0.5;;
+Houby čerstvé (průměr);;26;2.6;3.8;0.4;6;
+Houby sušené (průměr);;336;37;41.1;2.7;46;
+Hřiby;;19;5.1;5.2;0.3;6;
+Žampiony;;17;3.3;4.8;0.6;2;
+Ananas;;43;0.4;10.1;0.2;1.3;
+Angrešt;;50;0.9;10.6;0.5;2.8;
+Avokádo;;221;1.9;0.4;23.5;6.3;
+Banány;;95;0.3;23;0.3;3.1;
+Borůvky;;67;0.8;14.7;0.7;2.2;
+Broskve;;52;0.8;12.5;0.2;1.4;
+Brusinky;;62;0.4;13.7;0.8;1.5;
+Citrony;;48;0.7;10.5;0.5;1.8;
+Datle;;126;1.5;31.3;0.1;3.6;
+Fíky;;45;1.3;9.5;0.3;2.3;
+Granátová jablka;;60;1.3;11.8;0.2;2.8;
+Grapefruity;;40;0.5;9.6;0.3;1.6;
+Hrozny;;69;0.7;18.2;0.5;1.5;
+Hrušky;;67;0.5;15.8;0.4;2.4;
+Jablka;;62;0.4;14.4;0.4;1.8;
+Jahody;;43;0.9;8.8;0.6;1.3;
+Jeřabiny;;79;1;22.6;0.3;2.9;
+Kdoule;;38;0.4;12.4;0.4;1.6;
+Kiwi;;50;1;9.1;0.5;1.1;
+Klementinky;;38;0.9;8.7;0.1;;
+Klikve;;38;0.4;9.7;0.7;1.6;
+Maliny;;55;1;11.6;0.8;5.2;
+Mandarinky;;48;0.9;10.6;0.3;1.5;
+Mango;;69;0.6;16;0.3;1.7;
+Meruňky;;57;1;13.4;0.3;1;
+Mirabelky;;52;0.7;12.8;0.2;1;
+Moruše;;36;1.3;8.1;0;1.5;
+Nektarinky;;36;1.2;8;0.1;2.2;
+Olivy černé naložené (řecké);;345;2.2;4.9;35.8;;
+Olivy zelené naložené;;136;1.4;1.8;14;2.4;
+Ostružiny;;48;1.2;12;0.8;4;
+Pomeranče;;48;0.9;11.7;0.3;1.8;
+Rakytník;;50;1.2;5;3.9;2;
+Renklody;;62;0.8;9.7;0.1;2.3;
+Rybíz bílý;;26;1.3;5.6;0.3;4;
+Rybíz černý;;45;1.3;16.4;0.3;5;
+Rybíz červený;;38;1.1;13.8;0.3;5.6;
+Slívy;;40;0.5;9.6;0;1.8;
+Švestky;;67;0.8;16.2;0.3;1.5;
+Třešně;;64;0.9;14.7;0.5;0.5;
+Višně;;50;0.8;12.6;0.4;0.7;
+Datle sušené;;274;2.3;78;0.2;9;
+Fíky sušené;;231;4;68.4;1.6;12.9;
+Hrozinky sušené;;229;2.3;71.2;0.5;5.4;
+Banány sušené;;324;4.4;75;0.8;12;
+Jablka sušené;;255;1.4;57;1.6;10;
+Meruňky sušené;;238;5;48;0.5;8.6;
+Švestky sušené;;243;2.8;74.6;0.7;5;
+Arašídy;;598;26.9;23.6;44.2;6.2;
+Kaštany;;214;4.9;41.1;3.3;4;
+Kešu;;602;16;27;46;3.2;
+Kokos;;364;4;11;36;7.3;
+Kokos strouhaný;;605;7.8;17.5;68.8;;
+Lískové;;683;13.8;10.9;65;3.5;
+Makadamia;;705;9;9.3;75;5.3;
+Mák;;519;18.7;23;39;20;
+Mandle;;617;17.5;19;52.4;6;
+Para;;683;15.3;7.8;68.3;5.3;
+Pekan;;683;10;14;71;4.7;
+Piniové;;676;14;4;68.6;1.9;
+Pistácie;;633;20.4;17.1;54.7;6.1;
+Slunečnicová semínka;;595;26.5;12;49;6.3;
+Vlašské;;671;18.4;14.6;60;2.7;
+Kompot (průměr);;76;0.4;20;0.1;1;
+Kompot bez cukru, light (průměr);;36;0.4;7;0.4;1;
+Džem (průměr);;238;0.5;58;0.3;0.5;
+Džem Andros light;;152;0.3;36;0.2;1.2;
+Džem Materne light;;174;0.3;41;0.2;1;
+Džem diet Schwartau;;183;0.4;44;0.2;1;
+Džem pro diabetiky Hamé;;112;0.4;26;0.4;1.5;
+Kandované ovoce směs;;267;3.5;68;0.2;6;
+Ovocná přesnídávka s meruňkami neslazená;;45;0.4;10.3;0.1;;
+Přesnídávka jablečná;;86;0.3;21.8;0.1;;
+Švestková povidla;;233;1.4;59.3;0.4;1;
+Mléko plnotučné;;62;3;4.6;3.3;0;
+Mléko polotučné;;45;3.2;4.7;1.5;0;
+Mléko nízkotučné;;38;3;4.4;0.5;0;
+Mléko odstředěné;;33;3.4;4.9;0.1;0;
+Mléko Tatra grand 9% tuku;;157;8;11.4;9;0;
+Mléko Tatra light 4% tuku;;102;6.7;9.6;4;0;
+Smetana ke šlehání light;Kapucín;207;2.9;3.9;20;0;
+Smetana ke šlehání 33% tuku;;300;2.1;3.2;32.8;0;
+;;117;0.8;9.9;8.3;0;
+Sušené mléko plnotučné;;500;26.8;39;27;0;
+Sušené mléko odtučněné;;362;35.5;51.5;1;0;
+Activia bílá;Danone;71;4.2;5.9;3.5;0;
+Activia bílá 0% tuku, Vitalinea bílá;;45;4.6;6.2;0.1;0;
+Bílý se sníženým obsahem tuku;Kapucín;67;3;4;1;0;
+Jihočeský jogurt bílý - sklo;Madeta;86;5.9;5.1;3.6;0;
+Twiggy bílý;Bohemilk;60;5.2;5.3;1;0;
+Activia s vlákninou;Danone;107;3.5;16;3.1;;
+Cremi gourmand;Yoplait;112;2.5;13.7;5.3;;
+Diavita-jahodový;Madeta;67;4;7.3;2.4;;
+Fantasia s ovocem;Danone;105;3.8;15.2;3.1;;
+Jogobella jahodová;Zott;98;3.5;14.9;2.7;;
+Jogobella light ananas;Zott;60;4.1;8.4;1.1;;
+Jogurt 0.1% zahradní směs s müsli;Kunín;48;4.3;6.8;0.1;;
+Lehký košík müsli;Yoplait;48;4.3;6.4;0.1;;
+Meruňky s cereáliemi;Hollandia;90;2.7;10.7;3;;
+Ovocela malina;Danone;100;3.4;14.8;2.8;;
+ProBio vanilkový;Rajo;102;3.5;16.5;2.7;;
+Silueta broskev, maracuja;Olma;50;4.1;8.1;0.1;;
+Vitalinea s kousky višní;Danone;57;4.4;10.8;0.1;;
+Acidofilní mléko 3% tuku;;60;3.3;4;3.5;0;
+Actimel;Danone;88;3;15.1;1.7;0;
+Actimel 0% tuku;Danone;36;2.9;5.1;0.1;0;
+Jemný jogurtový nápoj;Danone;88;2.9;14.3;2.1;0;
+Jihočeské kefírové mléko;Madeta;43;3.2;3.7;1.8;0;
+Vitalinea nápoj;Danone;36;3.3;5.5;0.1;0;
+Danette čokoládový;;145;3.3;17.5;7;0;
+Danissimo vanilkové;Danone;133;4.9;15.7;5.7;0;
+Kysaná smetana 6+4;Polabské mlékárny;171;3.2;4;16;0;
+Milch reis čoko;Müller;112;3.2;19;2.6;;
+Monte;Zott;195;2.9;15.9;13.5;0;
+Pudink čokoládový;Dr. Oetker;162;3.1;17.1;9;0;
+Tvaroh bez tuku;;69;18.8;4.4;0.8;0;
+Tvaroh jemný;;110;17.5;4.2;2.5;0;
+Tvaroh tučný;;183;12.3;3.3;13.5;0;
+Tvaroh tvrdý;;129;28.6;1.5;0.9;0;
+Tvarohovo-jogurtový dezert, Diavita višeň;Madeta;55;7;5.4;0.1;;
+Vitalinea čokoládový dezert;;83;3.5;15.8;0.5;0;
+Zakysaná smetana;;164;2.6;4.5;15;0;
+Zakysaná smetana light;;126;2.9;4.2;11;0;
+Sušené mléko ovesné;;488;5;61;25;20;
+Šlehačka spray dietní;Dutch lady;198;3.5;4.9;20;0;
+Šlehačka spray neslazená;Dutch lady;331;2.3;3.5;35;0;
+Ovesné mléko hotové;ASP;48;0.5;6.1;2.5;2;
+Sójové mléko s kalciem;Provamel;45;3.6;2.9;2.1;0;
+Sójové mléko hotové;ASP;48;0.2;5.9;2.6;0;
+Brie Reverend - 60% t.v suš.;;355;19;0;31.5;0;
+Camembert - 30% t. v suš.;;214;23.5;0;13.5;0;
+Camembert - 60% t. v suš.;;371;17.9;0;34;0;
+Hermelín - 45% t. v suš.;;355;20.1;1.4;21.8;0;
+Niva - 50% t. v suš.;;369;20.7;1.4;27;0;
+Olomoucké tvarůžky - 34% t.v suš.;;133;29.7;2;0.8;0;
+Romadur - 20% t. v suš.;;176;23.6;2.5;8.3;0;
+Romadur - 40% t. v suš.;;238;18;2;17;0;
+Roquefort - 50% t.v suš.;;376;21.5;0;30.6;0;
+Sedlčanský vltavín (Povltavské mlékárny) - 55% t. v suš.;;350;20;2;31;0;
+Stříbrňák - 30% t. v suš.;;202;25;0;11.5;0;
+Blaťácké zlato - 50% t. v suš.;;319;25;2.4;23;0;
+Čedar - 50% t. v suš.;;398;25.3;2.9;30;0;
+Eidam - 20% t. v suš.;;214;30;3;10;0;
+Eidam - 30% t. v suš.;;262;30.3;1.4;14;0;
+Eidam - 45% t. v suš.;;348;26;1;26.1;0;
+Ementál - 45% t. v suš.;;386;28.2;2.3;28.4;0;
+Gouda - 30% t. v suš.;;245;26;1;14;0;
+Gouda - 40% t. v suš.;;295;24.5;0;23;0;
+Madeland - 30% t. v suš.;;262;27;1;16;0;
+Madeland - 45% t. v suš.;;333;27;1;25;0;
+Moravavský bochník - 45 % t. v suš.;;340;24.8;2;28;0;
+Oštiepok - 50% t.v suš.;;364;21.4;3.3;29.7;0;
+Parmezán - 25% t. v suš.;;371;35.6;0;25.8;0;
+Tylžský - 20% t. v suš.;;226;28;1;12;0;
+Balkán - 30% t. v suš.;;233;11.8;1;20;0;
+Brynza - 50% t. v suš.;;305;19.9;1.6;25;0;
+Cottage (Madeta) - 20% t. v suš.;;109;13;4;5;0;
+Gervais;Danone;224;7;5;20;0;
+Lučina - 70% t. v suš.;;290;11;1;27;0;
+Lučina linie - 40% t. v suš.;;150;12.1;2.8;10;0;
+Lučina se salámem Herkules - 70% t. v suš.;;298;9.5;2.5;28;0;
+Mascarpone;;450;4.5;3.5;47;0;
+Mozzarela (Italat) - 45% t. v suš.;;240;14.6;1.1;20;0;
+Ricotta;;202;15;1;15;0;
+Apetito - 58% t. v suš.;;367;11;2.3;33.5;0;
+Apetito - 26% t. v suš.;;143;18.6;2.4;6.4;0;
+Buko natural - 70% t. v suš.;;281;8;2.5;27;0;
+Krémový sýr nízkot. v tubě Salix - 20% t. v suš.;;105;10.4;2.6;6;0;
+Leerdammer tavený sýr - 45% t. v suš.;;243;18.1;0;18.8;0;
+Maratonec - 63% t. v suš.;;317;11.1;2.6;29.5;0;
+Sýr krevetový v tubě (Kavli) - 38% t. v suš.;;202;14;0;16;0;
+Sýr nízkotučný (Kavli) - 24% t. v suš.;;136;15;0;7;0;
+Sýr se salámem v tubě (Kavli)- 45% t. v suš.;;219;15;0;18;0;
+Sýr šunkový v tubě (Kavli) - 41% t. v suš.;;207;13;0;17;0;
+Tartare s česnekem a bylinkami (Povlt. Mlékárny) - 48% t. v suš.;;345;9.5;1.5;25;0;
+Tavený sýr kapiový s česnekem (Želetava) - 40% t. v suš.;;212;14.5;2;16.5;0;
+Tomík pomazánkový sýr - 50% t. v suš.;;321;13.5;3.9;29;0;
+Veselá kráva - 50% t. v suš.;;290;10;5;26;0;
+Veselá kráva Kiri - 70% t. v suš.;;326;9;2;32;0;
+Veselá kráva štíhlá - 28% t. v suš.;;174;15;5;10.5;0;
+Vital tavený sýr s kořenovou zeleninou - 26% t. v suš.;;162;25;1;6;0;
+Želetavský nízkotučný sýr FIT - 29% t. v suš.;;138;16.5;1;7;0;
+Tofu narutal;Sunfood;112;15.5;6.9;2.4;;
+Tofu uzené;Sunfood;143;16.6;10.9;3.5;;
+1 vejce celé (60 g);;81;7.6;0.8;6.6;0;
+Vajahit (v množství 1 vejce);;38;1;6.8;0.8;0;
+Hovězí kližka;;152;20;0;8.1;0;
+Hovězí maso přední;;229;18;0;17.5;0;
+Hovězí maso zadní;;181;19.2;0;11.7;0;
+Hovězí svíčková;;148;20;0;7.4;0;
+Jehněčí (průměr);;271;20.4;0.1;22.6;0;
+Kozí (průměr);;143;19.9;0.1;7.1;0;
+Králičí (průměr);;162;19.7;0.3;9.2;0;
+Mleté maso na sekanou;;331;16.1;0;29.7;0;
+Skopové (průměr);;240;17.1;0;19;0;
+Špek;;793;2.9;0;89;0;
+Telecí bok;;221;25.4;0;13.2;0;
+Telecí hrudí;;214;18.2;0;15.6;0;
+Telecí kýta na řízky;;138;20.8;0;6.1;0;
+Uzená krkovice;;436;17.3;0;40;0;
+Uzený bok;;588;10.3;0;61;0;
+Vepřová krkovice;;286;15.4;0;25;0;
+Vepřová kýta na řízky;;202;18.2;0;14.2;0;
+Vepřové libové;;238;18.2;0;18.2;0;
+Vepřové prorostlé;;343;14.3;0;31.7;0;
+Vepřové tučné;;463;11.9;0;47;0;
+Bažant;;114;22.6;0.4;2.5;0;
+Klokan;;102;20;0;2;0;
+Koroptev;;110;24.4;0.3;1.2;0;
+Srnčí hřbet;;124;22.6;0.4;3.6;0;
+Srnčí kýta;;102;22.1;0.4;1.5;0;
+Husa (průměr);;350;14.5;0.2;32.5;0;
+Husí prsa;;138;15.4;0.2;8.4;0;
+Kachna (průměr);;383;12.4;0.2;37.2;0;
+Krůta (průměr);;131;21.9;0.2;4.7;0;
+Krůtí prsa;;107;24.1;0;1;0;
+Kuře (průměr);;124;21.6;0.4;4;0;
+Kuřecí prsa;;102;23.3;0.4;0.9;0;
+Slepice (průměr);;124;22.4;0.2;3.6;0;
+Dršťky;;93;19;0;2;0;
+Játra drůbeží;;136;22.9;1.2;4.5;0;
+Játra hovězí;;129;19;4.5;3.9;0;
+Játra vepřová;;131;20.6;1.5;4.8;0;
+Jazyk hovězí;;188;16;0.1;13.7;0;
+Ledvinky hovězí, vepřové;;107;15;0.5;4.5;0;
+Filé z tresky;;71;16.2;0.1;0.6;0;
+Kapr;;126;17.5;0.1;6.1;0;
+Kaviár;;240;26.1;0;15.5;0;
+Krab;;95;18.5;1.5;1.5;0;
+Krevety;;74;16.5;0.1;0.8;0;
+Makrela;;167;18.2;0.1;10.5;0;
+Pstruh;;119;19.7;0.1;4.6;0;
+Sleď;;183;17.7;0.1;12.5;0;
+Slávky;;52;9.8;0;1.3;0;
+Tuňák;;157;22.1;0.1;7.8;0;
+Losos ve vlastní šťávě;;131;23;0;7;0;
+Makrela uzená;;252;23.3;0.1;17.7;0;
+Sardinky v oleji;;259;21.5;1.2;17.8;0;
+Sardinky v tomatě;;126;12.9;4.4;6.3;0;
+Tresčí játra v oleji;;610;4.3;1.3;65.5;0;
+Tuňák v oleji;;198;21;0.1;12;0;
+Tuňák ve vlastní šťávě;;110;21;0;1;0;
+Zavináč;;181;11.7;5.7;12.3;;
+Anglická slanina;;426;11;0.1;42;0;
+Debrecínka;;269;20.7;0.1;20.8;0;
+Kuřecí prsní šunka;Xaverov;98;14;1.5;4;0;
+Moravské uzené;;286;24;0;17;0;
+Šunka v plechu;;190;20;0;10.7;0;
+Šunka dušená strojová;;160;17.6;1.4;9;0;
+Šunka krůtí;;100;18;0;2;0;
+Šunka (průměr);;214;21.4;0;12.8;0;
+Uzená krůtí prsa;;120;20;1;5;0;
+Baby párky;Promt;264;15.6;3;21.4;0;
+Párky drůbeží;;290;16;1;25;0;
+Párky (průměr);;288;14;1;25;0;
+Špekáčky;;324;11;2;30.3;0;
+Gothajský;;433;12.2;0.1;42.7;0;
+Kabanos;;293;12.8;1.8;26.3;0;
+Métský;;352;15.1;0;28.3;0;
+Mortadela;;338;12.4;0;32.8;0;
+Paprikový;;402;17.6;0.2;36.8;0;
+Paprikový mini;Integral;414;15;1;40;0;
+Poličan;;438;26.9;0.2;47;0;
+Šunkový;;190;16.8;0.1;13.6;0;
+Točený drůbeží;;261;14;1;25;0;
+Točený;;245;14.6;2.2;20;0;
+Turistický;;405;19;0;37;0;
+Uherský;;490;25;0;43;0;
+Vysočina;;460;19.3;0;42.6;0;
+Ďábelské tousty;;252;10.5;3.4;21.9;0;
+Krůtí paštika;Veselá pastýřka;381;12;9;35;0;
+Luncheonmeat;;307;12.8;4.8;26;0;
+Luncheonmeat drůbeží;;133;8.9;5.1;8.5;0;
+Pasta z uzeného masa;Hamé;336;11;2;32;0;
+Paštika játrová;;429;12;1.5;41;0;
+Paštika Majka;Hamé;205;6.5;0.4;19.6;0;
+Vepřové maso ve vl. šťávě;;310;14.1;0.1;28.1;0;
+Jelítka;;295;16.2;13.3;19.7;0;
+Jitrnice;;276;14.6;12.8;18.5;0;
+Tlačenka světlá;;300;13.7;0.7;27.1;0;
+Tlačenka tmavá;;317;15.1;0.1;28.5;0;
+Tlačenka drůbeží;;176;17.9;0.1;11.9;0;
+Bavorská sekaná;Intergal;283;10;1;40;0;
+Bílá klobása;;212;11.2;9.8;14.3;0;
+Čabajka;;521;22.7;0;47.9;0;
+Krůtí trvanlivá klobása;Intergal;381;15;2;35;0;
+Moravská klobása;;276;13.4;2;23.8;0;
+Pečená masová sekaná;Ravy;139;10;2;15;0;
+Sekaná (průměr);;264;17.4;6.2;18.8;0;
+Robi, Tomi;;124;10;10;1;;
+Sójové v hodnotách po základní přípravě;;95;13;7.5;0.5;6;
+Tofu karbanátky;Sunfood;202;14.2;13.8;10.1;;
+Pomazánky Sojalife, Racio (průměr);;179;2.5;8.5;14.9;;
+Amarant;;369;18;57;8;6.7;
+Cornflakes;;357;7.2;79.7;0.6;4;
+Jáhly;;364;10.2;68.2;4.3;;
+Mouka kukuřičná;;326;8.3;66.3;2.8;5.2;
+Mouka pšeničná bílá;;336;9.8;70.7;1.1;4;
+Mouka pšeničná celozrnná;;312;11.7;61;2;2.1;
+Mouka rýžová;;350;6.7;78;0.7;1.4;
+Mouka sójová tučná;;448;43.4;23.1;20.3;18;
+Mouka žitná;;319;8.3;67.8;1.3;8;
+Pohanka;;352;11;60;3;3.7;
+Polenta;;350;8.8;75;1.2;5;
+Pšeničná krupice;;350;8;73;2;7;
+Pšeničné klíčky;;312;26.6;30.6;9.2;17;
+Slazené snídaňové cereálie;;381;4.7;88;0.5;1.9;
+Solamyl;;321;0.4;80;0.1;0.2;
+Vločky ovesné;;352;11.7;59.8;7.1;5.5;
+Vločky pšeničné;;310;11.5;61;1.8;10;
+Vločky žitné;;352;7.3;75.2;2;10;
+Bageta;;274;7.9;55.4;0.7;3;
+Bílý rohlík, houska;;250;7.8;51.2;1.4;3;
+Celozrnný chléb se slunečnicovými semínky;;238;8.8;42.1;3.7;8;
+Graham;;198;8.4;39.7;1;1.5;
+Kyjevský chléb;;243;7.4;51;1.1;5.8;
+Pita chléb;;238;7.4;48.5;1.3;2.8;
+Pšeničný chléb bílý;;238;7.6;48.8;1.2;3.2;
+Pšeničný chléb celozrnný;;205;7.1;41.4;0.9;8.1;
+Strouhanka;;357;10;79;1;;
+Toustový chléb bílý;;260;6.9;47.7;4.4;3.7;
+Toustový chléb tmavý;;241;8.2;45;2.8;7.1;
+Veka;;283;8.4;60;1;3;
+Žitný chléb;;221;6.4;46.3;1;6;
+Chléb Kavli;;329;11;66;2;14;
+Karlovarský suchar dietní;;367;10;76;2.2;;
+Knäckebrot original;;321;9;67;1.4;14.6;
+Křehký chléb Active;;357;9;70;1.5;5.5;
+Křehký chléb Knuspi;;329;8.5;64.5;1.7;6.9;
+Racio chlebíčky;;381;9.5;80;2;1.2;
+Bábovka;;386;6;43.5;21.1;0.9;
+Bábovka třená;;362;5.5;49.7;16;0.9;
+Buchta (průměr);;393;8.5;58;15;;
+Croissant s čokoládou;;407;5.3;38;26.4;1.2;
+Jablečný závin;;202;2.5;28;9;2.1;
+Kobliha cukrářská;;426;6.7;51.8;21.4;1;
+Koláč makový;;386;7.6;54.6;15.7;;
+Koláč tvarohový;;355;9.9;52;12;;
+Loupáky s ořechovou náplní;;388;7;56;15.8;;
+Makovka;;302;8.5;60;3.2;;
+Mazanec máslový, vánočka;;364;7.4;60;10.3;;
+Pečivo čajové linecké;;548;7;59.2;32.1;;
+Piškotová roláda s džemem;;271;4.5;57.5;2.3;;
+Šáteček s náplní tvarohovou;;400;6;63.8;13.6;;
+Štola;;393;5.3;47.1;20.4;;
+Vanilková roláda;;412;6;55;18;1.1;
+Vánočka obyčejná;Delvita;300;7.4;56;5.2;;
+Vánočka tuková;;348;7.3;60.9;8.6;;
+Závin listový s jablky;;393;7;56;15.8;2.1;
+Bake Rolls;;448;12;62;17;;
+Crunchips - slané lupínky;;529;5.5;49;35;7;
+Grahamové tyčinky;;369;12.6;64.4;7.6;;
+Chipsy (průměr);;500;5.6;63;25;7;
+Koktejlový mix - Party stars;;440;10.3;67;14.8;;
+Křupky;;521;17.5;47.9;29.2;;
+Raciolky snack se sníženým obsahem tuku;;398;11.4;61.7;11.6;;
+Slané pečivo cracker (průměr);;524;8.7;56;30.6;;
+Slané tyčinky (průměr);;405;10;73.1;7.4;;
+Škvarkové placky;;533;7.8;47;35;;
+Vitalinea slané krekry;;402;8.5;69.8;9.7;;
+Zlaté tyčinky sezamové;;421;10.7;72;10.7;;
+Big Eskymo;Algida;248;2.9;22.4;16.8;0;
+Calippo;Algida;86;0;21.2;0;0;
+Ledňáček kakaový;Algida;88;0.7;8.5;6.1;0;
+Magnum triple;Algida;245;4;31;18.3;0;
+Nanukový dort Terno kakaový;Nanuk;109.6;2;8.3;6.7;0;615
+Nogger karamel;Algida;205;1.4;17.2;14.5;0;
+Ovocná zmrzlina (průměr);;141;1.5;29;1.8;0;
+Pierot vaječný likér;Nanuk;148;2.8;10.4;8.2;0;
+Polárk. sníh;Prima;162;4;20;7.4;0;350
+Smetanová zmrzlina (průměr);;250;1.6;13.6;21.5;0;
+Tricky;Algida;53;0;21.7;0.1;0;
+Tvaroháček;Algida;114;1.1;13.4;6.4;0;
+Tvarohová tyčinka;Algida;107;2.1;9.6;6.7;0;
+Twister;Algida;71;0.4;14.9;1.1;0;
+Máslo;;717;1;0.6;80.5;0;
+Máslo se smetanovým zákysem;;662;1;1;75;0;
+Pomazánkové máslo;;324;3.8;6.2;31;0;
+Sádlo vepřové škvařené;;893;0.2;0;99.5;0;
+Škvarky;;736;15.5;0;75;0;
+Alfa;;624;0.2;0.3;70;0;
+Ceresoft;;826;0;2;92;0;
+Creme Bonjour s okurkou;;252;5;4.2;24.3;0;
+Creme Bonjur s paprikou;;257;5.1;4.1;25;0;
+Finea garden;;533;1;1;80;0;
+Finea light;;488;1;1;55;0;
+Flora;;619;0.1;0.3;70;0;
+Flora light;;352;0.1;0.3;40;0;
+Flora pro activ;;321;0.1;3.2;35;0;
+Hera;;655;0.1;0.3;74;0;
+Oleje (všechny druhy);;881;0;0;100;0;
+Perla;;352;0;0;40;0;
+Perla tip;;221;0;0.1;25;0;
+Planta - tuk na smažení;;900;0;0;100;0;
+Pokrmový tuk na smažení;;874;0;0.2;83.3;0;
+Rama;;619;0.1;0.3;70;0;
+Rama cullinesse;;655;0;0;74;0;
+Rama Harmonie;;433;0.5;0.9;48;0;
+Švédské máslo Bremedium;;536;0.5;10;60;0;
+Creme Bonjour kostka;;621;0.7;0.9;70;0;
+Zlatá Haná;;679;0.1;0.2;85;0;
+Jogo Majo;;326;1.1;13.4;30.3;0;
+Majolka;;786;1.5;0;80;0;
+Majonéza Boneco;;736;0.8;1.3;82.3;0;
+Majonéza Boneco light;;479;0.6;5.1;51.9;0;
+Majonéza light;Hellmans;457;0.7;3;50.7;0;
+Sojanéza;Kalma;276;2.5;14;23;0;
+Tatarská omáčka;;510;0.8;6.9;54.3;0;
+Tatarská omáčka Sojalife;Racia;264;1.3;4.9;26.7;0;
+Krupicová kaše;;176;5;19;8;;
+Bramborové šišky plněné mákem;;224;5.7;39.9;4.8;;
+Kynuté knedlíky s borůvkami;;271;6.5;51.7;3.2;;
+Mexická pizza;Guseppe;207;10.4;33.2;3.8;;
+Plněné papriky v rajské omáčce;;114;4.2;11.3;5.8;;
+Smažené kuřecí Gordon Bleu;;188;11.4;16.9;9;;
+Šišky plněné uzeným masem a špenátem;;195;6.1;36.1;2.6;;
+Tvarohové knedlíky s meruňkovou náplní;;293;8.7;39.3;9.3;;
+Zelenina se žampiony a rýží;Zgoda;93;3;19.6;0.5;;
+Zeleninové prsty zmrazené;Nowaco;114;3.9;24;0.5;;
+Bramborová kaše;;71;1.8;12;1.3;1.4;
+Bramborové hranolky smažené;;290;4.2;32.5;14.5;3.5;
+Bramborové knedlíky;;171;4.5;37;0.5;;
+Bramborové krokety smažené;;264;2.4;23;18;1.3;
+Bramborový salát s majonézou;;121;4;15;5;;
+Brambory vařené;;69;2;14.8;0.1;2.1;
+Houskové knedlíky;;245;7.1;51;1.1;;
+Rýže vařená bílá;;124;2.4;27.6;0.3;0.2;
+Rýže vařená natural;;129;2.7;27.3;0.8;1.3;
+Špagety bezvaječné vařené;;131;5;23.9;1.1;1.5;
+Těstoviny vaječné vařené;;143;4.9;28;1.1;1.4;
+Topinka na tuku;;429;5;47;20;1.5;
+Vařené luštěniny;;105;8.6;16;0.6;;
+Pizza se sýrem a salámem;;273.7;9.5;28;13.9;1.7;300
+Bramborová kaše s cibulkou a krotony;;431;5.6;69.5;14.7;;
+Bramborová kaše se šunkou;;338;11.7;66.1;2.5;;
+Instantní nudlová polévka Lucky - kuřecí;;467;9.9;54.7;21.6;;
+Instantní ovesná kaše Expres;;357;7.7;52;12.2;;
+Kari rýže;;338;7;70;3.4;;
+Big Mac;;455;24.2;39.1;22.5;;
+Fish Mac;;350;15.5;28.5;19.6;;
+Hamburger;;231;13.6;24.8;8.4;;
+Cheesburger;;262;16;24.2;11.5;;
+Hranolky malé;;169;2;21;8;;
+Hranolky střední;;252;3;32;12;;
+Hranolky velké;;338;4;43;16;;
+Chicken McNuggets 4 ks;;190;12;11;11;;
+Chicken McNuggets 6 ks;;286;18;16;16;;
+McChicken sendvič;;402;17;39;19;;
+Jablečná taštička;;219;2.2;25.8;12;;
+Zmrzlina kornout;;143;4.4;21.9;4.1;;
+Zahradní salát;;48;1.7;8.9;0.5;;
+Pizza se šunkou;;136;5;12;7;;
+Pizza žampionová;;133;2;20;5;;
+Fazolový;;86;2;11.1;4.2;;
+Mrkvový;;36;1.1;6.1;1.2;;
+Okurkový s rajčaty;;31;1;4.3;1.2;;
+Z kyselého zelí;;64;1.3;9.2;2.7;;
+Aspikové misky;;136;7.2;4.2;9.7;;
+Ruské vejce;;324;8.7;7.8;29;;
+Šunkový závitek v aspiku;;195;13.4;4.5;13.5;;
+Šunka s křenem;;357;25.4;1.4;26.3;;
+Tlačenka s cibulí;;314;18.2;8.6;24.2;;
+Vajíčková tlačenka;;229;6.2;2.2;22.1;;
+Uzenáč;;117;15.8;0.2;5.9;;
+Bujon;;329;4;36;17;0;
+Dijonnaise;Hellmans;495;1.4;9.1;51;;
+Dressing italský;Hellmans;519;1.7;9;53;;
+Droždí;;98;10.6;13;0.4;;
+Horčice plnotučná;;124;4.2;13;6.1;;
+Hotová jíška;Knorr;569;7;46;40;;
+Kečup;;102;1.3;23.8;0.1;;
+Koření (průměr);;381;6;75;7;0;
+Křen jablečný;Horlein;83;1.1;13.1;2.9;;
+Ocet;;41;0;3.5;0;0;
+Sójová omáčka;;138;19.9;4.5;4.5;0;
+Sůl;;0;0;0;0;0;
+Worcester;;76;1.4;17;0.3;0;
+Želatina;;343;85.6;0;0.1;0;
+Citron Pressé -čistá přírodní citronová šťáva;Maja;6;0;1.4;0;0;
+Linie;;202;15.6;22.3;5.2;10.2;
+Redita koktejly (průměr);;124;11.8;16.5;1.2;3;
+Polévky (průměr);;114;9.3;16.8;1;3;
+Sirup ovocný průměr;;274;0;68;0;0;
+Sirup ovocný;;14;0;3.5;0;0;
+Ananasová šťáva s vlákninou;Relax;43;0;10.6;0;;
+Broskev s vitamínem C;Relax;29;0.8;7;0;;
+Cappy džus;;48;0;11.8;0;;
+Černý rybíz s jablky;Relax;26;0;6.5;0;;
+Džus z černého rybízu;;57;0.4;12.5;0;;
+Džus z hroznového vína;;69;0.2;17;0;;
+Grapefruitový džus;;48;0.5;10.1;0;;
+Jablečný džus;;48;0;11.8;0;;
+Mrkvový džus;;21;0.6;4.8;0;;
+Multivitamin 100%;Pfanner;55;0.3;11.7;0;;
+Multivatamin nektar;;48;0.5;11;0;;
+Pomerančový džus;;45;0.7;9;0;;
+Rajčatová šťáva;Relax;21;0.3;5;0;;
+Třešňový nápoj - 12.5 % ovoce;Toma;38;0.1;9.2;0;;
+Zeleninová šťáva;;17;0;3;0;;
+Coca-cola;;43;0;10.6;0;0;
+Fanta exotická;;52;0;13;0;0;
+Fanta pomeranč, citron;;43;0;10.6;0;0;
+Kofola;;33;0;8.2;0;0;
+Ledový čaj s citronem;;31;0.1;7;0.1;0;
+Mirinda průměr;;52;0;13;0;0;
+Pepsi-cola;;48;0;11.8;0;0;
+Sprite;;43;0;10.6;0;0;
+Tonic;;38;0;9.4;0;0;
+Hanácká kyselka Poděbradka ochucená, Mattoni;;14;0;3.5;0;0;
+Dobrá voda, Toma svěží, minerálky bez příchutí;;0;0;0;0;0;
+Erektus;;38;0;9.4;0;0;
+Isosprint;;38;0;9.4;0;0;
+Red Bull, Semtex forte;;45;0;11.2;0;0;
+Bikava sušená s cukrem;;429;13.7;66;12.8;0;
+Capuccino (průměr);;443;9;70;14;0;
+Cereální nápoj Breakfast drink;;410;4.3;69.5;12.7;;
+Čaje granulované slazené;;357;0;88.2;0;0;
+Nesquick, Granko;;360;4.4;80;2;0;
+Tang (průměr);;357;0.1;75;0;0;
+Čaj, káva bez mléka a cukru;;0;0;0;0;0;
+Bílá káva bez cukru;;26;3.2;5.7;1.8;0;
+Bílá káva s 1 kostkou cukru;;38;3.2;10.2;1.8;0;
+Coca-cola light;;0;0;0;0;0;
+Sirupy light bez cukru;;0;0;0;0;0;
+Poděbradka light;;0;0;0;0;0;
+Ice tea instatní;;0;0;0;0;0;
+Ideal light instatní;;4;0;0;0;0;
+Multi Vitamin Catus instantní;;0;0;0;0;0;
+Pivo světlé 10;;31;0.5;3;0;0;
+Pivo světlé 12;;33;0.5;3;0;0;
+Pivo světlé 11;;52;0.5;10.8;0;0;
+Pivo Dia;;31;0.3;1.3;0;0;
+Pivo nealkoholické;;19;0.4;5.4;0;0;
+Víno bílé suché;;52;0.1;0.5;0;0;
+Víno bílé sladké;;76;0.1;6;0;0;
+Víno portské;;160;0;12;0;0;
+gin, fernet Becherovka, griotka;;286;0;32;0;0;
+Vaječný koňak;;33;4.4;28;0;0;
+Cukr bílý, hnědý;;383;0;95;0;0;
+Cukr hroznový, Glukopur;;386;0;97.1;1.4;0;
+Fruktóza;;400;0;99;0;0;
+Med;;324;0.3;81.8;0;0;
+Aspartam, neotam;;381;0;97;0;0;
+Irbis snowflake;;405;0;98.9;0;0;
+Bílá;;552;5.7;54.9;33.6;3;
+Dietní;;476;6.4;43;30.5;3;
+Geisha;;548;9;49;35;3;
+Hořká (průměr);;507;5.6;55.7;29.4;14;
+Jogurtová;;531;6.4;55.1;31.7;3;
+Mléčná (průměr);;548;11;52;37;3;
+Oříšková;;550;7.4;49.7;36.1;3;
+Studentská pečeť;;483;6.8;55.5;28;;
+Deli (průměr);;405;3.1;73.5;14.9;;
+Ledové kaštany;;569;5.4;47.6;39.8;;
+Margot;;471;9.3;58.2;24.1;;
+Milena;;552;3.8;55.2;35.5;;
+Snikers, Mars, Twix;;476;4.6;64.3;24.2;;
+BeBe (průměr);;457;7.9;75.8;13.3;;
+BeBe dobré ráno;;426;7.2;59.6;17.5;;
+Delissa (průměr);;526;9.9;56;29.4;;
+Dezert zlaté piškoty;;431;4.1;73.3;13.6;;
+Disco;;452;5;64.8;18.8;;
+Fidorka (průměr);;490;4.3;65.9;24.5;;
+Horalky (průměr);;519;7.5;55;30.3;;
+Kolonáda - trojhránky;;579;5.7;63.6;33.8;;
+Lotus celozrnné;;476;5;71;19;;
+Mini Tatranky;;543;7.9;58.2;31.1;;
+Miňonky (průměr);;526;8.5;57.8;28.1;;
+Polomáčené sušenky;;460;6.7;66.2;21;;
+Sandwich;Orion;495;6.3;62.9;24.5;;
+Tataranky (průměr);;519;7.1;59.1;28.5;;
+Vitalinea (průměr);;402;4.7;82.9;5.8;;
+Zlaté oplatky;;540;6;68.1;27.3;;
+Bona vita (průměr);;436;6;67;16;4;
+Bonavita meruňka;;348;4.9;60.3;9.5;4;
+Fly-linie oříšková;;319;6.3;57.8;9;4;
+Fly ořech-karamel;;414;11.6;47.8;19.6;4;
+Twiggy meruňková;;348;4.9;60.3;9.5;4;
+Twiggy s mandlemi;;436;9.5;49.2;21.9;4;
+Bonpari;;348;0;92.5;0;0;
+Bonpari - bez cukru;;231;0;57;0;0;
+Halls Centers, Vita C Halls;;376;0;93;0;0;
+Hašlerky;;345;0;96.4;0;0;
+Hašlerky - bez cukru;;238;0;59;0;0;
+Lentilky;;445;3.6;75.9;14.7;0;
+Žele Jojo - medvídci, delfínci, žížaly;;312;6.7;70.5;0;0;
+Amarela - višně, likér, čokoláda;;426;4.2;59.6;22;;
+Čokoládové bonbony (Orient dezert, Maryša, Milena);;524;7.4;51.3;33.9;;
+Fernet stock;;445;4.1;62.9;22.1;;
+Ferrero Roche;;588;7;49;41;;
+Rafaello;;595;10.3;36;46.3;;
+Bisquit perníkový Knuspi;;429;10.9;62.7;16.9;8;
+Granko;;381;4.7;85;3.5;;
+Hotové linecké těsto;;379;5.4;40.4;22;;
+Hotové listové těsto;;433;4.5;28;33;;
+Kakaový prášek;;357;24;46.6;12;;
+Mandle v čokoládě;;543;8.9;43.5;37.8;;
+Marcipánová hmota;;526;8.8;64;26.2;;
+Nutela;;531;6.5;57;31;;
+Perníčky Ruměnky;;362;5.1;85;0.6;;
+Perník v čokoládě (průměr);;369;5;70;10;;
+Piškoty;;350;9.2;74.2;1.5;;
+Turecký med;;376;0.1;91.8;0;;
+Žvýkačky bez cukru;;219;0;55;0;0;
+Žvýkačky s cukrem;;319;0;78;0;0;
+Hořické trubičky celozrnné;;533;12;40;37;;
+Hořické trubičky dia;;600;8.8;23;52;;
+Kokosové trubičky bez cukru;;536;12;40;37;;
+Lázeňské bez přidaného cukru;;524;4.2;62.8;28.6;;
+Oplatkové trojhr. bez tuku;;360;8;67.5;6;;
+Oplatkové trojhr. štíhlá linie;;390;3;90;2.5;;
+Oplatky Via kakaové;;452;6.5;65.2;21;;
+Ananasový řez s máslovým krémem;;273.8;2.5;37.5;12.5;;80
+Cukrářská kobliha;;358;6;46;16;;50
+Dort s krém. polevou;;400;6;36;24;;50
+Indiánek;;417.5;5;35;27.5;;40
+Karamelový větrník;;312.5;3.8;32.5;17.5;;80
+Kávová rolka s krémem;;358;4;34;22;;50
+Kokoska plněná;;433.3;3.3;46.7;25;;60
+Kokosová roláda s máslovým krémem;;358;4;42;18;;50
+Koláč cukrářský tvarohový;;322.5;10;42.5;12.5;;40
+Koňaková špička;;400;4;42.5;22.5;;40
+Košíček linecký s ovocem a máslovým krémem;;241.7;1.7;35;10;;60
+Kremrole;;300;4;32;18;;50
+Laskonka;;177.5;2.5;25;7.5;;40
+Ořechový dort s vanilkovým krémem;;376;6;28;26;;50
+Ovocný piškotový řez;;197.1;1.4;42.9;1.4;;70
+Ovocný řez máslový;;320;4;40;16;;50
+Pařížský dort;;322.5;7.5;32.5;17.5;;40
+Punčová kostka;;352;1.4;84;0.8;;50
+Štafetka;;366;6;40;20;;50
+Žloutkový věneček s krémem;;275;2.5;35;12.5;;40`},
+  dv:{raw:`Ananas;;52.9;0.49;12.7;0.19;;
+Anglická slanina;;402.5;10.54;0.08;40.01;;
+Angrešt;;42;1;9.8;0.4;;
+Arašídy;;600.9;16.9;23.6;44.2;;
+Avokádo;;226.4;1.9;5.24;23.5;;
+Bábovka třená;;362.4;5.5;49.7;16;;
+Bageta;;309;8.97;60.3;2.9;;
+Banán;;92;1.03;23.43;0.48;;
+Banán - sušený nebo prášek;;346;3.89;88.28;1.81;;
+Banány v čokoládě;;409.1;2;80.4;11.6;;
+Biokys;;78;5.4;7.5;3.5;;
+Biskupský chlebíček;;424;5.96;46.93;23.64;;
+Bonboniera - kaštany;;570.6;5.5;47.2;40.5;;
+Bonboniéra - směs (průměr);;508.4;5.3;54.4;30.3;;
+Bonboniera - višně v čokoládě;;428.2;4.2;54.2;30.5;;
+Bonboniera Ferrero Roche;;590.7;7;49;41;;
+Bonboniera Rafaello;;598.1;10.3;36;46.3;;
+Bonboniera Tatiana;;529.7;6.1;53.5;36.1;;
+Bonboniera Toffo originál;;374.4;0.4;86.8;7.1;;
+Bonbóny - arašídy v cukru;;439.2;11.2;59.6;19.8;;
+Bonbóny - Bari mandle;;378;1.7;87.6;6.3;;
+Bonbóny - drops;;331.3;0;80;0;;
+Bonbóny Bon Pari;;355.3;0;93.4;0;;
+Bonbóny Festival ovocné;;339.7;0;95.2;0;;
+Bonbóny Halls;;378;0;93;0;;
+Bonbóny Hašlerky;;346.9;0;96.2;0;;
+Bonbóny Italská směs;;420.6;4.4;68.6;16;;
+Bonbóny Ledovky;;393.5;1.5;85.6;8.6;;
+Bonbóny Lékorky;;369.6;1.8;91.6;2.9;;
+Bonbóny Lentilky;;446.2;3.6;75.9;14.7;;
+Bonbóny Lipo;;370.8;0;94;0;;
+Bonbóny Medvídci;;352.9;7.4;70;0;;
+Bonbóny Mentolky;;343.3;0;96.6;0;;
+Bonbóny Milánská směs;;435.4;7.3;65.6;19.1;;
+Bonbóny Pralinky rumové;;370.6;1.9;74.3;8.8;;
+Bonbóny Sisinky;;376.8;0.6;84.5;6.4;;
+Bramborový škrob;;317.3;0.44;83.35;0.11;;
+Brambory pečené;;56.7;1.2;13.15;0.06;;
+Brambory syrové se slupkou;;79;2.06;17.98;0.1;;
+Brambory vařené bez slupky;;67.08;1.33;15.61;0.08;;
+Brambory vařené ve slupce;;67.9;1.46;15.7;0.08;;
+Brambory (leden až březen);;78.2;2.5;17.2;0.2;;
+Brambory (říjen až prosinec);;83.2;2.4;18.6;0.3;;
+Brambory (k jaru);;55;2;12.2;0.2;;
+Brambory nové;;82.1;1.9;18.7;0.2;;
+Brokolice;;29;3;5.7;0.4;;
+Broskev;;43;0.7;11.1;0.09;;
+Brukev;;33;2.1;6.2;0.2;;
+Brusinky;;61;1.3;12.4;1.4;;
+Buchty s mákem;;406;8.8;54.4;16.4;;
+Buchty s povidly;;415;7;67.2;12.5;;
+Buchty s tvarohem;;372;11.3;52.9;12.3;;
+Bujón v kostce (průměr);;287.1;20;12;15;;
+Býčí žlázy (koule);;88.6;17.2;0;2.2;;
+Candát;;42;9.15;0.17;0.41;;
+Cappucino - prášek;;433;3.5;83;9;;
+Cejn;;108.4;17.64;0.1;4.16;;
+Celer - nať;;42.7;0.98;9.1;0.18;;
+Celer bulvový;;44.3;1.27;7.34;0.25;;
+Cibule;;38;1.16;8.63;0.16;;
+Cibule - smažená;;310.8;1.13;6.06;32;;
+Cikánská omáčka - Hamé;;76.8;0.6;19;0;;
+Cikánská pečeně;;292;21.18;0.1;24.6;;
+Citron;;30.4;0.62;9.21;0.45;;
+Citrónová šťáva;;78.2;0.6;21;0.6;;
+Coca-cola;;39;0;10.5;0;;
+Corn flakes - kukuřičné;;363;7.15;83.65;0.6;;
+Cuketa;;21;1.8;3.4;0.4;;
+Cuketa vařená;;24;2;4;0.4;;
+Cukr;;383.3;0;99.5;0;;
+Cukr hroznový - Glukopur;;383.5;0;96.1;1.4;;
+Cukr třtinový;;390;0;98.97;0;;
+Černý kořen (Bonduelle);;88;4.2;17.5;0.3;;
+Červená řepa syrová;;41.9;1.6;9.6;0.1;;
+Červená řepa ve sladkokyselém nálevu;;35.2;1;6.7;0.6;;
+Čočka jedlá;;346;25.4;55.75;1.13;;
+Čočka vařená;;90;7.8;17.17;0.4;;
+Čokao Vitana;;395;16.3;70.8;5.2;;
+Čokoláda hořká;;542;4.38;58.56;32.32;;
+Čokoláda Kofila;;471;4.6;55.8;28.7;;
+Čokoláda Margot s rozinkami;;406.7;6.9;73.1;13;;
+Čokoláda Milena;;544.3;4.5;55.6;33.9;;
+Čokoláda mléčná DIA;;522.5;9.49;45.44;40.54;;
+Čokoláda mléčná jogurtová;;543.8;6.4;55.1;31.7;;
+Čokoláda mléčná oříšková;;560;7.33;47.4;37.7;;
+Čokoláda mléčná s burskými oříšky;;526.3;10.2;49.7;33;;
+Čokoláda mléčná s lískovými oříšky;;543.8;7.2;51.5;35.6;;
+Čokoláda mléčná s mandlemi;;539.9;6.8;52;35.8;;
+Čokoláda Studentská pečeť hořká;;486.6;6.8;55.5;28;;
+Čokoláda Studentská pečeť mléčná;;487.3;6.9;55.4;27.7;;
+Dalamánek;;268;7.52;56;1.08;;
+Dalamánek tmavý;;268.4;6.4;57.4;0.9;;
+Debrecínská pečeně;;273.41;20.91;0.1;21.05;;
+Destiláty 38% - průměr;;210.3;0;0;0;;
+Destiláty 40% - průměr;;274.9;0;0;0;;
+Divočák - kýta;;112.5;17.45;0.19;4.7;;
+Dort ovocný;;442.6;5;42;25.6;;
+Dort s máslovou náplní - průměr;;382.8;5.9;40;25;;
+Dort Sachr;;389.7;7.8;48.2;19.5;;
+Dresing Helmans0,3;;560;0.3;7;53;;
+Droždí;;102.2;10.6;13;0.4;;
+Droždí pivovarské sušené;;346.97;45.93;34.03;2.45;;
+Drůbeží játrový nářez;;325.7;12.29;2.71;29.5;;
+Drůbeží krokety;;179;6.98;19.89;7.71;;
+Drůbeží roláda;;166;19.49;1.75;8.66;;
+Dýně - semínka;;452.2;18.1;13.2;34;;
+Džem borůvkový;;199;0.25;51.1;0.28;;
+Džem broskvový;;251;0.3;65.9;0.1;;
+Džem brusinkový;;252;0.3;66.3;0.2;;
+Džem jahodový;;222;0.53;57.43;0.3;;
+Džem meruňkový;;247;0.4;65.7;0.1;;
+Džem švestkový;;251;0.3;66.4;0.1;;
+Džem třešňový;;211;0.55;55.35;0.25;;
+Džem višňový;;251;0.45;66.5;0.1;;
+Džus broskvový;;43;0.22;10.4;0.04;;
+Džus grapefruitový;;33;0.04;8.9;0.01;;
+Džus jablečný;;39;0.08;9.6;0.08;;
+Džus mandarinkový;;43;0.5;10.1;0.2;;
+Džus meruňkový;;43;0.31;10.4;0.04;;
+Džus pomerančový;;50;0.65;11;0.19;;
+Fazole v tomatě - konzerva;;74.6;5;14;0;;
+Fazole vařené;;95;7.8;21.4;0.5;;
+Fazolky čerstvé;;34.4;2.03;6.32;0.26;;
+Fazolky ve slaném nálevu sterilované;;14.5;1.29;4.11;0.17;;
+Feferony;;17.9;0.8;3.7;0.1;;
+Feferony nakládané;;56;0.8;6.7;3;;
+Filé smažené;;226.8;17.3;9.1;13;;
+Filé z tresky;;75.9;17.69;0.1;0.43;;
+Fruktózový sirup;;335;0;81.7;0;;
+Garnát;;87.1;18.6;0;1.4;;
+Gin (45%);;249.3;0;0;0;;
+Granátové jablko;;52.1;1.3;11.8;0.2;;
+Grapefruit;;22.5;0.37;6.86;0.18;;
+Guláš vepřový;;161.4;3.19;5.6;13.96;;
+Halibut atlantický;;119.7;18.06;0.1;5.75;;
+Halibut uzený;;187;16.2;0.1;13.5;;
+Hlíva ústřičná;;40.7;2.66;4.63;0.83;;
+Horalky;;533;10.1;55;30;;
+Hořčice;;126.6;4.48;13.94;6.58;;
+Hořické trubičky;;416.7;8.4;73.8;10.5;;
+Hořické trubičky DIA;;602.9;8.8;23;52;;
+Houby čerstvé - průměr;;26.1;2.6;3.8;0.4;;
+Houby sušené - průměr;;292.6;23.4;41.4;2.7;;
+Houska obyčejná;;286.4;8.4;60.1;1;;
+Hrách čerstvý;;74.8;6.36;12.93;0.44;;
+Hrách loupaný (suchý);;353.1;22.9;62.1;1.4;;
+Hrách vařený;;78.9;6.7;10.6;0.34;;
+Hrachová moučka;;329.2;25.7;57.2;1.8;;
+Hrášek ve slaném nálevu sterilovaný;;51;4.24;9.3;0.3;;
+Hrozinky;;279;2.65;71.32;0.64;;
+Hroznové víno;;72.1;0.67;16.93;0.43;;
+Hrušky;;59;0.39;15.11;0.4;;
+Hřib čerstvý;;35.9;5.39;4.2;0.4;;
+Hřib sušený;;322;37;38.4;3;;
+Humr;;95.4;15.9;0;1.9;;
+Husa domácí pečená, grilovaná (pouze maso);;238;28.97;0;12.67;;
+Husa domácí syrová (pouze maso);;161;22.75;0;7.13;;
+Chipsy;;574.2;5.5;47;39;;
+Chléb arabský;;217.7;6.1;45.9;0.8;;
+Chléb bramborový;;251;7.86;51.49;10.9;;
+Chléb celozrnný pšeničný;;248;8.55;46.93;2.02;;
+Chléb celozrnný pšeničný + žitný;;241;7.55;48.3;1.2;;
+Chléb celozrnný pšeničný graham;;283;9.08;55.9;2.69;;
+Chléb celozrnný žitný;;238.9;7.33;48.7;1.1;;
+Chléb klíčkový VITBE;;262;9.65;47.5;3.15;;
+Chléb KNAECKEBROT;;370;12.8;65.08;2.65;;
+Chléb konzumní;;249;8.01;50.16;1.27;;
+Chléb kukuřičný;;226;5.8;45.7;1.7;;
+Chléb pšeničný (bílý);;238.3;8.26;50.77;1.63;;
+Chléb Racio pšeničný;;315.3;12.73;66.36;1.82;;
+Chléb Racio pšenišný s kmínem;;306.7;12.73;66.36;1.82;;
+Chléb Racio rýžový;;330.6;8.18;70.91;1.82;;
+Chléb Racio rýžový se sójou;;345.7;10;65.45;3.64;;
+Chléb samožitný;;246.6;7.3;50.6;1.1;;
+Chléb slunečnicový;;239.2;8.3;46.6;4.6;;
+Chléb toustový světlý;;283;7.8;54.8;3.2;;
+Chléb toustový tmavý;;282.8;8.4;53.3;3.6;;
+Chléb výběrový;;252.7;7.52;51.91;1.09;;
+Chléb výražkový;;256.8;4.7;56.3;0.8;;
+Chřest;;23;2.28;4.53;0.2;;
+Chřest sterilizovaný;;15.1;1.5;2.4;0.1;;
+Jablka sušená (křížaly);;272.5;1.4;69.8;1.9;;
+Jablko;;50.2;0.4;12.95;0.41;;
+Jablko čerstvé bez slupky a jader;;57;0.15;14.84;0.31;;
+Jáhly - loupané proso;;360.7;10.63;71.15;3.9;;
+Jahody zahradní;;31.35;0.87;8.73;0.63;;
+Játra hovězí;;129.8;19.19;4.53;3.96;;
+Játra husí;;225.2;21.23;0.5;11.95;;
+Játra kachní syrová (domácí kachna);;136;18.74;3.53;4.64;;
+Játra krůtí syrová;;137;20.02;4.13;3.97;;
+Játra krůtí vařená;;169;23.97;3.43;5.96;;
+Játra kuřecí syrová;;125;17.97;3.42;3.86;;
+Játra kuřecí vařená;;157;24.36;0.88;5.45;;
+Játra telecí;;134.4;19.04;3.83;4.67;;
+Játra tresčí v oleji;;613;4.2;1.3;64.44;;
+Játra vepřová;;131.2;20.68;1.49;4.79;;
+Játra vepřová dušená;;193.2;16.16;7.65;11.08;;
+Játrová paštika;;311.8;19.11;1.1;25.65;;
+Játrová paštika lahůdková;;393;15.17;1.2;28.66;;
+Játrovka;;424.7;17.24;1.35;38.92;;
+Játrový nářez drůbeží;;325.7;12.29;2.71;29.5;;
+Játrový sýr;;359;13.86;1.25;31.25;;
+Jazyk hovězí;;187.3;16.05;0.1;13.74;;
+Jazyk hovězí uzený;;291;19.1;0.1;23.9;;
+Ječné kroupy;;359.5;9.85;73.25;1.83;;
+Jelítka domácí žemlová;;415.5;19.68;14.1;31.04;;
+Jeseter ruský;;120.3;11.1;0.06;7.37;;
+Jeseter v rajčatové omáčce;;175.3;14.31;3.12;11.7;;
+Jeseter ve vlastní šťávě;;166;15.96;0.6;10.89;;
+Jitrnice domácí;;278;15.1;13.2;19.12;;
+Jogurt Actimel (Danone);;88.8;3;15.1;1.7;;
+Jogurt bílý (3,5% tuku);;95;5.48;8.07;3.64;;
+Jogurt bílý lehký (Kunín);;35.9;4.6;3.2;0.1;;
+Jogurt BIO s vlákninou (Danone);;107.2;3.5;16.2;3.1;;
+Jogurt Danone výběr;;108.1;3.2;16;3.5;;
+Jogurt Fantasia s ovocem;;104.1;3.8;15.2;3.1;;
+Jogurt Jogobella (Zott);;98.8;3.5;14.9;2.7;;
+Jogurt Monte (Zott);;195.9;2.9;15.9;13.5;;
+Jogurt odtučněný (Kunín);;34.5;3.8;4.4;0.1;;
+Jogurt Ovocella (Danone);;99.3;3.4;14.8;2.8;;
+Jogurt ovocný (3,5% tuku);;115;6;15;3.5;;
+Jogurt ovocný jihočeský;;141.1;12.5;8.5;2.7;;
+Jogurt Vitalinea ananas (Danone);;51.2;4.1;7.4;0.1;;
+Jogurt Vitalinea bílé pohlazení (Danone);;45;4.6;6.2;0.1;;
+Jogurt Vitalinea musli (Danone);;56.5;4.3;8.6;0.4;;
+Jogurtový nápoj Vitalinea;;36.1;3.3;5.5;0.1;;
+Jovokoktejl;;90;3.8;12;3;;
+Jovomix;;115.6;5.5;15.6;3.5;;
+Kabanos;;295;13.53;1.9;27.85;;
+Kabanos drůbeží;;300.5;15.6;2.4;25.37;;
+Kadeřávek;;49.8;4.2;6;0.3;;
+Kakao - Granko;;376.8;4.7;85.1;3.5;;
+Kakao - prášek;;446;18.93;43.53;21.34;;
+Kandované ovoce;;264.5;0.3;69.5;0.3;;
+Kapary;;293;26;47.2;4.28;;
+Kapr;;113.5;17.13;0.1;5.96;;
+Kapr syrový;;127;17.83;0;5.6;;
+Kapusta hlávková;;39.5;2.53;5.45;0.43;;
+Kapusta růžičková;;50.44;4.32;6.28;0.45;;
+Karbanátky;;202.15;10.73;18.43;9.3;;
+Kari;;237.1;9.5;26.1;10.8;;
+Kaše banánová - Sunarka;;406.7;14.9;68.2;10;;
+Kaše jogurt, ovoce - Milupka;;439.7;14.3;63.8;13.8;;
+Kaše krupicová;;176.1;5.2;19.7;8.7;;
+Kaše müsli s jablky - Sunarka;;413.4;13.6;69.1;8.7;;
+Kaše ovesná - Sunarka;;425.6;14.5;67.1;10.6;;
+Kaše rýžová - Sunarka;;396.7;7.7;86.1;1.7;;
+Kaše rýžová Nestle;;418.7;15.5;69.1;9;;
+Kaše rýžová s kukuřicí - Sunarka;;443.8;16.7;61.1;14.4;;
+Kaštany jedlé pečené;;216;3.2;52.9;2.2;;
+Kečup;;110;1.75;24.75;0.45;;
+Kedlubna;;29;1.92;5.36;0.18;;
+Kefír;;52.2;3.3;1.7;3.6;;
+Kiwi;;57;1;13.85;0.63;;
+Klíčky pšeničné;;391.5;26.58;44.68;10.95;;
+Klikve;;38;0.4;9.7;0.7;;
+Klobása - Klaso;;218;24;14;8;;
+Klobása - průměr;;310.8;17.4;1.9;26.7;;
+Klobása bílá;;200;11.08;7.2;14.02;;
+Klobása čabajská;;523.4;22.9;0.3;48.4;;
+Klobása dunajská;;452.2;21.6;0.1;40.61;;
+Klobása vinná;;317.1;17.3;4.6;25.45;;
+Knackebrot;;382.8;11;78;1.8;;
+Knedlík kynutý (houskový);;241.9;7.15;48.97;2.61;;
+Knedlíky ovocné z bramborového těsta;;153.7;3.56;29.4;3.51;;
+Koblihy;;386.4;6.5;53.5;17;;
+Kokos mletý (strouhaný);;693.3;7.68;17.25;67.9;;
+Koláč křehký s jablky;;205.7;2.6;32.42;8.06;;
+Koláč máslový s makovou náplní;;393;7.6;54.6;15.7;;
+Koláč máslový s tvarohovou náplní;;337;10.21;50.79;9.82;;
+Kompot ananasový;;81;0.37;21.13;0.13;;
+Kompot borůvkový;;83;0.43;19.4;0.35;;
+Kompot broskvový;;75;0.46;19.97;0.1;;
+Kompot brusinkový;;168;0.32;38.9;0.48;;
+Kompot hroznový;;79;0.39;19;0.15;;
+Kompot hruškový;;78;0.21;20.29;0.14;;
+Kompot jablečný;;85;0.2;21.15;0.15;;
+Kompot jahodový;;78;0.57;21.06;0.17;;
+Kompot mandarinkový;;67;0.39;16.61;0.13;;
+Kompot meruňkový;;80;0.47;24.1;0.1;;
+Kompot švestkový;;76.2;0.43;20.69;0.1;;
+Kompot třešňový;;67.7;0.46;18;0.17;;
+Kompot višňový;;69.9;0.57;20.01;0.23;;
+Koňak (40%);;221.3;0;2;0;;
+Kopr čerstvý;;39;2.4;7.8;0.2;;
+Kopr sušený;;328;13;70.5;1;;
+Korpus piškotový vaječný;;397;11;71.25;9.58;;
+Králík divoký - dušené maso;;173;28.07;0;3.5;;
+Králík divoký - syrové maso;;114;21.79;0;2.32;;
+Králík domácí - grilované maso;;197;29.06;0;8.05;;
+Králík domácí - syrové maso;;136;20.05;0;5.55;;
+Králík domácí - vařené, dušené maso;;206;30.38;0;8.41;;
+Kroupy ječné;;357.9;9.9;75.3;1.8;;
+Kroupy, krupky;;362.7;8.2;78.8;1;;
+Krupice pohanková;;349.5;9.6;73.6;1.6;;
+Krupice pšeničná;;369.8;10.3;78;1.2;;
+Krůta uzená;;141;18.36;1.66;6.21;;
+Krůtí drůbky syrové;;129;19.36;2.09;4.2;;
+Krůtí maso bílé grilované;;157;29.9;0;3.22;;
+Krůtí maso bílé grilované (mladá slepička);;161;29.89;0;3.74;;
+Krůtí maso bílé grilované (mladý kohout);;154;29.88;0;2.2;;
+Krůtí maso bílé syrové;;115;23.56;0;1.56;;
+Krůtí maso bílé syrové (mladá slepička);;116;23.64;0;1.66;;
+Krůtí maso bílé syrové (mladý kohout);;114;23.43;0;1.57;;
+Krůtí maso grilované;;170;29.32;0;4.97;;
+Krůtí maso syrové;;119;21.77;0;2.86;;
+Krůtí maso tmavé grilované;;187;28.57;0;7.22;;
+Krůtí maso tmavé syrové;;125;20.07;0;4.38;;
+Krůtí prsíčka syrová;;110;22.5;0;1.58;;
+Krůtí srdce syrové;;143;18.05;0.65;6.99;;
+Krůtí srdce vařené;;177;26.76;2.05;6.1;;
+Krůtí tmavé maso grilované (mladá slepička);;192;28.42;0;7.79;;
+Krůtí tmavé maso grilované (mladý kohout);;175;29.25;0;5.51;;
+Krůtí tmavé maso syrové (mladá slepička);;130;20.07;0;4.88;;
+Krůtí tmavé maso syrové (mladý kohout);;122;21.76;0;3.18;;
+Křen Krenex;;192.3;1.5;18.1;13.1;;
+Křen syrový;;105.3;3.9;22.4;0.5;;
+Kukuřice cukrová;;104.8;3.73;19.77;2.34;;
+Kukuřice sterilizovaná;;244.7;8.9;44.7;3;;
+Kukuřice syrová;;23;2.9;2;0.4;;
+Kukuřičné vločky;;378.3;8.07;81.95;0.97;;
+Kuře dušené (pouze maso);;177;27.29;0;6.71;;
+Kuře grilované (pouze maso);;190;28.93;0;7.41;;
+Kuře pečené;;142.6;13.13;1.67;9.3;;
+Kuře smažené (pouze maso);;219;30.57;1.69;9.12;;
+Kuře syrové (pouze maso);;119;21.39;0;3.08;;
+Kuřecí drůbky syrové;;124;17.88;1.8;4.47;;
+Kuřecí drůbky vařené;;157;25.85;0.95;4.77;;
+Kuřecí křídlo syrové (pouze maso);;126;21.97;0;3.54;;
+Kuřecí maso bílé syrové;;114;23.2;0;1.65;;
+Kuřecí maso tmavé grilované;;205;27.37;0;9.73;;
+Kuřecí maso tmavé syrové;;125;20.08;0;4.31;;
+Kuřecí prsíčka syrová (pouze maso);;110;23.09;0;1.24;;
+Kuřecí prsíčka vařená, dušená (pouze maso);;151;28.98;0;3.03;;
+Kuřecí půlky bez kůže;;171.4;17.99;0.1;11.01;;
+Kuřecí půlky s kůží;;188.9;17.57;0.1;13.14;;
+Kuřecí srdce syrové;;153;15.55;0.71;9.33;;
+Kuřecí srdce vařené;;185;26.41;0.1;7.92;;
+Kuřecí stehno syrové (pouze maso);;119;20.59;0;3.42;;
+Kuřecí stehno vařené, dušené (pouze maso);;169;27.5;0;5.71;;
+Květák;;25;1.98;5.2;0.21;;
+Květák sterilizovaný;;16;1.3;2.9;0.1;;
+Květák vařený;;25;2;3.77;0.28;;
+Kypřící prášek do pečiva;;79.9;0.2;19.9;0;;
+Kýta skopová;;166.5;13.43;0.16;12.09;;
+Langusta;;84;17.2;1.3;1.1;;
+Lečo s moravskou klobásou - konzerva;;162.9;6.4;8.5;11.5;;
+Ledvina hovězí;;117.1;15.61;0.52;6.46;;
+Ledvina telecí;;129.8;16.07;0.72;6.29;;
+Ledvina vepřová;;104;15.31;0.55;4.5;;
+Ledvina vepřová dušená;;204;28.56;0;9.12;;
+Ledvina vepřová grilovaná;;210;28.57;0;9.79;;
+Ledvina vepřová syrová;;198;19.74;0;12.58;;
+Ledviny - průměr;;114.1;15.46;0.54;5.48;;
+Liči;;71;0.9;16;0.5;;
+Likér 18% - průměr;;195.2;0;24;0;;
+Likér 24% - průměr;;254.5;0;29.4;0;;
+Likér 30% - průměr;;307.7;0;35.1;0;;
+Likér vaječný;;285.2;0;20;0;;
+Lilek;;27.8;1.14;4.45;0.23;;
+Limetka;;40;0.4;10.6;0;;
+Lín;;78.2;17.5;0.1;0.4;;
+Lněná semínka;;485.4;22;13;40;;
+Losos obecný;;212.4;20.29;0.1;11.29;;
+Losos uzený;;170.9;22.07;0.1;9.13;;
+Losos v oleji;;378.7;22.2;0;32.7;;
+Losos ve vlastní šťávě;;127.2;20.76;0.51;4.68;;
+Lososová drť;;503.73;8.36;0.16;51.47;;
+Loupák s ořechovou náplní;;389.7;7;56;15.8;;
+Loupák sladký;;389.7;7.3;55.5;15.7;;
+Loupák slaný;;388.5;7.3;52.3;16.6;;
+Luncheon meat;;307;12.96;4.83;26.59;;
+Luncheon meat drůbeží;;156;14.28;7.14;9.82;;
+Luncheon meat kuřecí;;236.5;12;6.9;17.8;;
+Maďarský perkelt - konzerva;;114.6;7;3.2;8.2;;
+Maizena;;317.2;0.9;80.4;0.1;;
+Majolka;;764.1;2.04;1.11;83.55;;
+Majonéza - průměr;;648.1;1.7;2.7;71.2;;
+Majonéza light;;459.3;0.7;3;50.7;;
+Mák;;541.9;19.85;22.45;46.67;;
+Makovec;;332.2;7.35;50;11.3;;
+Makrela obecná;;104.8;11.37;0.06;6.57;;
+Makrela pečenáč;;220.1;16;3.5;14;;
+Makrela syrová (Atlantický oceán);;205;18.59;0;13.89;;
+Makrela syrová (Španělsko);;139;19.28;0;6.29;;
+Makrela syrová (Tichý oceán);;158;20.07;0;7.89;;
+Makrela v aspiku;;123;13.3;1.5;6.9;;
+Makrela v rajčatové omáčce;;135;14.25;3;7.35;;
+Makrela ve vlastní šťávě;;199;15.2;0.1;14.9;;
+Malcao - nápoj;;50.5;2.6;8.93;0.4;;
+Mandarinka;;43.5;0.76;9.39;0.3;;
+Mandle;;635.7;20.95;14.4;54.67;;
+Mandle v čokoládě;;520.6;12.19;42.7;38.08;;
+Mango;;62;0.6;16.45;0.45;;
+Maracuja;;39;0.6;9;0;;
+Marmeláda - směs;;217.7;0.4;51.7;0.2;;
+Marmeláda borůvková;;241;0.28;63.35;0.25;;
+Marmeláda jahodová;;240;0.49;63.5;0.27;;
+Marmeláda malinová;;229.9;0.4;60.3;0.3;;
+Marmeláda meruňková;;246;0.42;63.8;0.1;;
+Marmeláda rybízová;;230.6;0.4;59.7;0.2;;
+Marmeláda višňová;;243;0.56;63.87;0.22;;
+Máslo čerstvé;;734;0.7;0.52;82.58;;
+Máslo nízkokalorické;;512;2.7;1.7;53.5;;
+Máslo pomazánkové;;355;3.8;6.2;35;;
+Máslo rostlinné Alfa;;531.1;0;0;60;;
+Máslo rostlinné Diana;;354.1;0;0;40;;
+Máslo rostlinné Flora;;629.2;0.1;0.3;70;;
+Máslo rostlinné Flora light;;354.1;0;0;40;;
+Máslo rostlinné Linco light;;354.1;0;0;40;;
+Máslo rostlinné Perla;;354.1;0;0;40;;
+Máslo rostlinné Perla Tip;;221.3;0;0;25;;
+Máslo rostlinné Rama máslová;;669.9;0.1;0.3;75;;
+Máslo výběrové;;745.3;0.68;0.45;82.9;;
+Máslo Zlatá Haná;;681.8;0;0;77;;
+Maso - bažant;;74.07;14.76;0.26;1.6;;
+Maso - bažantí hruď;;90.38;18.6;0.19;1.95;;
+Maso - bažantí stehno;;88.69;17.76;0.22;1.89;;
+Maso - cikánská pečeně;;278.5;19.2;0.1;22.1;;
+Maso - debrecínská pečeně;;257.4;19.7;0.1;19.8;;
+Maso - holub;;56.5;12.4;0.3;0;;
+Maso - jelen;;112.2;20.6;0;3.3;;
+Maso - kachna divoká;;122.2;22.7;0.5;3.1;;
+Maso - koroptev;;117.2;23;0.5;1.1;;
+Maso drůbeží - drůbky;;124.6;22.5;0;3.2;;
+Maso hovězí - držky;;80.6;15.5;0;1.7;;
+Maso hovězí - jazyk;;220.3;16.4;0.4;16.6;;
+Maso hovězí - jazyk uzený;;296.2;19.1;0;23.9;;
+Maso hovězí - kližka;;107.7;13.6;0;5.9;;
+Maso hovězí - konzerva;;159.8;16.6;0.1;10.3;;
+Maso hovězí - krk;;133;20.9;0;5.3;;
+Maso hovězí - kýta;;128;20.6;0;4.5;;
+Maso hovězí - ledvinky;;139.2;15;0.9;8.1;;
+Maso hovězí - mozek;;121.3;10.4;0.8;8.5;;
+Maso hovězí - plec;;122.2;13.5;0;7.5;;
+Maso hovězí - plec dušená;;167.9;24.55;0.1;7.7;;
+Maso hovězí - plec pečená;;216.5;31.4;0.1;10.5;;
+Maso hovězí - plíce;;97.1;17.1;0.6;3.1;;
+Maso hovězí - přední;;165.3;12.5;0;13;;
+Maso hovězí - roštěnka;;240.7;28.8;0.1;13.9;;
+Maso hovězí - svíčková;;148.8;20.63;0.29;7.6;;
+Maso hovězí - svíčková pečeně;;262.3;25.86;0.1;17.61;;
+Maso hovězí - tučné;;320.8;16.3;0;28;;
+Maso hovězí - ve vlastní šťávě;;165;18.94;0.1;11.76;;
+Maso hovězí - zadní;;147.6;15;0;9.8;;
+Maso hovězí - žebra;;184.7;19.3;0;14.8;;
+Maso hovězí dušené;;271.7;14.97;6.58;20.81;;
+Maso hovězí libové;;132.56;20.71;0.5;5.95;;
+Maso hovězí pečené;;170.3;19.99;0.24;9.93;;
+Maso hovězí přední vařené;;150.8;26.28;0.19;4.99;;
+Maso hovězí vařené;;161.9;23.39;0.35;7.42;;
+Maso hovězí zadní dušené;;108;11.72;0.2;6.7;;
+Maso hovězí zadní pečené;;119.1;13.35;0.1;7.25;;
+Maso hovězí zadní vařené;;150;32.46;0.2;2.14;;
+Maso husí;;278.7;10.71;0.15;25.15;;
+Maso husí - prsa pečená;;278.2;26.53;0.09;19.08;;
+Maso husí - stehno pečené;;279.6;20.35;0.09;21.98;;
+Maso husí pečené;;410.7;17.18;0.09;41.24;;
+Maso jehněčí - průměr;;199.4;10.92;0.06;12.09;;
+Maso kachna domácí - syrové maso;;132;18.28;0;5.95;;
+Maso kachna domácí grilovaná (pouze maso);;201;23.48;0;11.2;;
+Maso kachní pečené;;413.1;15.33;0.09;39.06;;
+Maso kachní prsa pečená;;268.3;20.82;0.08;20.52;;
+Maso kachní prsíčka syrová (divoká kachna);;123;19.85;0;4.25;;
+Maso koňské - průměr;;115;21.23;0.65;6.89;;
+Maso kozí;;97.1;13;0.1;4.9;;
+Maso králičí - průměr;;123.5;14.9;0.2;6.94;;
+Maso krkovička uzená;;391.5;15.66;0.09;36.54;;
+Maso krkovička uzená vařená;;573.3;4.71;0.09;57.85;;
+Maso krůtí;;98.8;15.58;0.2;5.52;;
+Maso krůtí - prsa syrová bez kůže;;86.9;20.88;0.21;0.28;;
+Maso kuřecí - prsa bez kůže dušená;;119.1;29;0;3;;
+Maso kuřecí - prsa syrová;;87.6;20.04;0.32;0.8;;
+Maso kuřecí - stehno - syrové maso bez kůže;;120.1;20.1;0;3.8;;
+Maso kuřecí - stehno - syrové maso s kůží;;187.1;18.1;0;12.1;;
+Maso kuřecí - stehno grilované (pouze maso);;172;28.29;0;5.66;;
+Maso kuřecí bez kůže syrové;;119.1;21.4;0;3.1;;
+Maso kuřecí s kůží syrové;;215.3;18.6;0;15;;
+Maso kuřecí tmavé vařené, dušené;;192;25.97;0;8.98;;
+Maso mleté (hovězí + vepřové);;262.7;10.4;0.2;24;;
+Maso skopové výsekové;;193.2;10.17;0.19;14.2;;
+Maso srnčí - stehno;;83.6;17.64;0.28;1.17;;
+Maso telecí - hruď;;168.3;14.34;0.1;12.28;;
+Maso telecí - hruď dušená;;131.4;9.72;0.1;10.24;;
+Maso telecí - plec;;112.2;13.89;0.14;5.92;;
+Maso telecí - stehno;;107.1;19.77;0.34;5.75;;
+Maso telecí - svíčková;;150.5;19.38;0.3;7.98;;
+Maso uzené moravské;;350.5;25.5;0;26.7;;
+Maso vepřové - bok pečený;;607.9;13.01;0.09;61.74;;
+Maso vepřové - koleno;;302.7;17.42;0.1;25.85;;
+Maso vepřové - krkovička;;245;13.07;0.17;21.22;;
+Maso vepřové - krkovička dušená;;265;15.3;0.09;22.61;;
+Maso vepřové - krkovička pečená;;350.6;17.94;0.09;30.94;;
+Maso vepřové - plec pečená;;144.6;17.7;0.08;8.16;;
+Maso vepřové libové;;238.1;17.75;0.071;17.72;;
+Maso vepřové pečené;;543.5;17.61;1.53;51.88;;
+Maso vepřové tučné;;475;11.28;0.26;45.05;;
+Maso vepřové ve vlastní šťávě;;310;14.68;0.1;29.16;;
+Maso vepřové výsekové;;299;12.25;0.17;26.71;;
+Matesy v oleji;;256.4;17.6;0;22.6;;
+Mečoun;;117.2;19.4;0;4.4;;
+Med včelí;;324.4;0.27;81.7;0.04;;
+Melasa;;274.8;4.12;60.8;1;;
+Meloun (vodní);;32;0.62;7.18;0.43;;
+Meloun cukrový;;23.4;0.47;5.15;0.07;;
+Meloun vodní;;14.29;0.37;3.47;0.1;;
+Meruňka;;48;1.4;11.2;0.39;;
+Meruňky;;48.6;0.85;11.96;0.24;;
+Meruňky sušené;;265;4.6;67.19;0.53;;
+Mirabelky;;53.1;0.7;12.8;0.2;;
+Mléčná rýže caramel (Müller);;119.6;3.4;19.7;2.4;;
+Mléčná rýže čokoládová (Danone);;127.7;2.9;22.9;2.6;;
+Mléčná rýže jablko (Müller);;116;3.5;19.5;2.4;;
+Mléčná rýže jahoda (Danone);;127.8;2.9;22.9;2.6;;
+Mléčná rýže jahoda (Müller);;117;3.4;20;2.3;;
+Mléčná rýže light jablko (Müller);;69.4;3.5;11.9;0.9;;
+Mléčná rýže light jahoda (Müller);;70.8;3.5;12.2;0.9;;
+Mléčná rýže light malina (Müller);;69.6;3.9;11.9;0.9;;
+Mléčná rýže malina (Müller);;117;3.4;20;2.3;;
+Mléčná rýže skořice (Müller);;117;3.5;20;2.4;;
+Mléčná rýže vanilka (Danone);;120.3;3.3;20.6;2.6;;
+Mléko – 2% tuku;;50;3.33;4.8;1.92;;
+Mléko acidofilní;;59;3.4;4.3;3.55;;
+Mléko kefírové;;47;3.52;3.97;2.09;;
+Mléko kobylí;;47.1;2.2;6.2;1.5;;
+Mléko kozí;;75.3;3.76;5.24;4.59;;
+Mléko mateřské;;67;1.2;7.1;3.7;;
+Mléko nízkotučné - 0,5% tuku;;35.9;3.2;4.6;0.5;;
+Mléko odtučněné;;33;3.38;4.88;0.06;;
+Mléko odtučněné sušené;;349;35.12;51.98;0.77;;
+Mléko ovčí;;97.7;6.08;5;7.45;;
+Mléko plnotučné;;61.7;3.1;4.75;3.4;;
+Mléko plnotučné sušené;;494;26.58;37.73;26.84;;
+Mléko polotučné;;50;3.27;4.68;1.97;;
+Mléko polotučné sušené;;430;31.15;45.6;13.35;;
+Mléko sójové;;44;2.9;3.9;1.9;;
+Mléko trvanlivé plnotučné;;59;3.08;4.8;3.18;;
+Mléko zahuštěné neslazené;;143;7.2;10.33;8.14;;
+Mléko zahuštěné neslazené TATRA;;162.4;8.4;12;9.1;;
+Mléko zahuštěné slazené;;333;8.83;54.78;9.15;;
+Moruše;;36.4;1.3;8.1;0;;
+Mořský rak;;65.1;15;0;0.5;;
+Mošt jablečný;;45;0.13;10.7;0.21;;
+Mouka bezlepková;;357.7;6;77.6;4;;
+Mouka bramborová;;324.7;5.4;76.35;0.29;;
+Mouka celozrnná graham;;348.6;15.5;66.3;2.2;;
+Mouka chlebová;;349.5;15.3;67.5;1.9;;
+Mouka ječná;;311.2;9.98;75.6;1.68;;
+Mouka pohanková;;353.3;8.24;75.31;1.74;;
+Mouka pšeničná celozrnná;;354.1;11.55;71.03;2.09;;
+Mouka pšeničná hladká;;358.9;11.29;73.06;1.53;;
+Mouka pšeničná hrubá;;357.9;9.81;75.03;1.21;;
+Mouka pšeničná instantní;;380.3;10.4;79.89;1.29;;
+Mouka pšeničná polohrubá;;342.6;8.8;73.5;1;;
+Mouka rýžová;;359.2;7.3;79.15;0.68;;
+Mouka sójová odtučněná;;331.9;49.06;33.64;0.8;;
+Mouka sójová plnotučná;;440.5;44.56;23.75;20.83;;
+Mouka sójová polotučná;;264.4;42.5;37.2;6.5;;
+Mouka triticale;;353.2;11.4;72.6;1.1;;
+Mouka žitná bílá;;353.3;7.06;77;1.11;;
+Mouka žitná T 1300;;353.6;7.6;76.9;1.2;;
+Mouka žitná T 1700;;344.5;14.9;69.7;1.8;;
+Mouka žitná T 930;;355.5;6.5;78.5;1.1;;
+Mrkev;;43;1;10;0;;
+Mrkev čerstvá;;42.5;1.02;7.34;0;;
+Mrkev sterilizovaná;;27;0.6;6;0.1;;
+Müsli ochucené - průměr;;369.4;9.9;64.5;9.1;;
+Nektarinky;;36.4;1.2;8;0.1;;
+Nesquick - čokoládový nápoj (prášek);;362.2;4.2;79;2.7;;
+Nudle rýžové suché;;364;3.44;83.24;0.56;;
+Nudle rýžové vařené;;191.8;1.6;43.82;0.35;;
+Nudle s tvarohem;;152.9;6.46;22.29;4.26;;
+Nudle vaječné suché;;381;14.02;71.1;4.21;;
+Nudle vaječné vařené;;133;4.75;24.84;1.47;;
+Nugeta oříšková;;507.9;5.8;60.4;28.7;;
+Ocet;;41.1;0;3.5;0;;
+Ocet vinný;;22.5;0.2;5.9;0;;
+Okoun;;88;19;0.1;0.8;;
+Okurka;;13;0.69;2.76;0.13;;
+Okurka čerstvá;;14.4;1.04;2.28;0.15;;
+Okurka salátová;;16;0.7;2.6;0.2;;
+Okurkový salát;;26;0.99;5.22;0.14;;
+Okurky DIA sterilizované;;10;0.4;2.1;0;;
+Okurky rychlokvašené;;11;0.7;1.9;0.2;;
+Okurky sterilizované;;22;0.62;6;0.1;;
+Olej jedlý HELIOL;;898;0.1;0.1;99.7;;
+Olej jedlý MAJA;;885;0.05;0.05;99.6;;
+Olej jedlý VEGETOL;;897;0.1;0.1;99.6;;
+Olej jedlý VITOL;;896.9;0.08;0.1;99.6;;
+Olej kokosový;;895.7;0;0;99;;
+Olej olivový;;880;0.1;0.2;99.5;;
+Olej palmový;;897.9;0.1;0.001;99.7;;
+Olej řepkový;;898.6;0;0;99.6;;
+Olej slunečnicový;;882.5;0;0;99.8;;
+Olej sójový;;885;0.1;0.1;99.65;;
+Olej z vlašských ořechů;;898;0.1;0.1;99.7;;
+Olivy;;101;0.8;0;11;;
+Omáčka sójová;;55;7.5;6.52;0.08;;
+Omáčka tatarská;;478;1.66;0.53;52.13;;
+Ořechy burské pražené;;603.3;26.5;19;46.6;;
+Ořechy kešu;;580.6;15.8;25.97;46.3;;
+Ořechy kokosové čerstvé;;366;4;11;36;;
+Ořechy lískové;;664.5;17.61;10.35;63.23;;
+Ořechy lískové pražené;;702.4;15.46;11.8;65.8;;
+Ořechy para;;630.4;15.14;7.73;67.77;;
+Ořechy piniové;;679.4;14;4;68.6;;
+Ořechy pistáciové;;635.9;20.4;17.1;54.7;;
+Ořechy vlašské;;664.5;18.46;14.59;60.41;;
+Ostružiny;;47.8;1.2;12;0.8;;
+Ovoce sušené - směs;;274.4;2.3;68.1;0.4;;
+Papaja;;14.1;0.5;0.9;0.1;;
+Paprika;;25.8;1.09;4.59;0.46;;
+Paprika čili pálivá;;40;2;9.46;0.2;;
+Paprika sladká;;27;0.89;6.43;0.18;;
+Paprika sterilizovaná ve sladkokyselém nálevu;;56;0.8;6.7;3;;
+Párky - špekáčky;;290.4;9.8;1.8;27.1;;
+Párky debrecínské;;249;15.2;2.2;23.98;;
+Párky drůbeží lahůdkové;;249;13.91;1.51;19.15;;
+Párky frankfurtské;;318.8;11.29;2.47;29.29;;
+Párky hanácké;;327.8;15.2;1.51;28.98;;
+Párky jemné;;303;12.92;1.09;26.8;;
+Párky krůtí;;226;14.28;1.49;17.7;;
+Párky lahůdkové - loupací;;288;13.16;1.2;24.52;;
+Párky obyčejné (liberky);;220.3;14.1;2.1;16.7;;
+Párky pražské;;216.3;13.8;2.1;15.4;;
+Párky vídeňské;;242.3;13.15;0;21.08;;
+Pastinák;;54.1;1.6;14.9;0.4;;
+Paštika Čertovská směs na topinky;;223.2;10;6;19;;
+Paštika drůbeží;;285.1;19.05;1.11;22.71;;
+Paštika drůbeží jemná;;325;14.21;0.83;30.56;;
+Paštika játrová lahůdková;;393;15.17;1.2;28.66;;
+Paštika Junák;;200;9;1;18;;
+Paštika z husích jater;;459.3;11.4;4.67;43.84;;
+Paštika z kuřecích jater;;201;13.45;6.55;13.1;;
+Paštika z lososa;;221;10;5;20;;
+Paštika z uzeného masa;;377.8;11;2;32;;
+Patizon;;50;2.3;10.2;0.3;;
+Pažitka;;51.2;3.3;8.1;0.7;;
+Pečivo čajové slané;;554.8;8;47;38;;
+Pepř;;309.1;8.8;68;6.5;;
+Perník na strouhání;;270.3;6.4;65;0.8;;
+Perník plněný v čokoládě;;416.3;5.9;76.6;10.2;;
+Perník s cukrovou polevou;;350.5;5.4;81.7;0.7;;
+Perník švestkový;;392.8;6.91;59.84;13.88;;
+Petržel - kořen;;63.1;2.9;12.2;0.6;;
+Petržel - nať;;58.1;3.7;9;1;;
+Petržel - nať sušená;;351.9;20.7;61.2;5.6;;
+Pistácie;;646;20.35;17.11;54.63;;
+Pistácie pražené;;651.6;14.93;27.55;52.82;;
+Piškoty dětské kulaté;;397.5;10.42;75.8;5.15;;
+Pivo světlé 10% 3,9% obj.;;33;0.29;3.7;0.22;;
+Pivo světlé 10% 5% obj. DIA;;40;0.3;2.5;0.22;;
+Pivo světlé 12% 4,5% obj.;;44;0.48;4.24;0.32;;
+Pivo tmavé 10% 3,7% obj.;;33;0.32;3.93;0.23;;
+Pivo tmavé 12% 4% obj.;;45;0.43;4.8;0.25;;
+Pivo tmavé 13% 4,4% obj.;;52.1;0.5;6;0.25;;
+Pizza - prášek;;330.1;6.9;73.2;1.7;;
+Platýz velký;;86.1;17.1;0;1.9;;
+Plec skopová;;252;10.21;0.08;22.91;;
+Plíce vepřové;;99.3;14.28;0.2;3.31;;
+Podmáslí;;36;3.45;4.38;0.65;;
+Pohanka;;353.6;11;60;3;;
+Pohankové krupky;;329.2;7.5;72.6;1.5;;
+Poleva cukrářská čokoládová;;595.7;6.4;51.7;39.3;;
+Polévka hovězí - Vitana;;470.1;13.9;29.9;32.7;;
+Polévka instantní hrášková (Vitana);;422.7;15;56;11;;
+Polévka instantní nudlová (BRAVO - bal. 60g.);;450;10.8;63.1;17.3;;
+Polévka instantní nudlová hovězí (Clever - bal. 60g);;450;10.8;63.1;17.3;;
+Polévka instantní zelná (Vitana);;400;14;51;5;;
+Polévka žampionová (Knorr);;346.2;10;50.67;12.7;;
+Pomazánka bůčková;;377.8;11.42;0.1;36.87;;
+Pomeranč;;47;0.94;11.75;0.12;;
+Pórek;;41.9;2.25;7.74;0.3;;
+Potočnice;;22.5;0.3;0.4;1;;
+Povidla švestková;;229;1.4;59.13;0.4;;
+Pribináček;;243.3;7.4;16.8;17;;
+Proso loupané - jáhly;;360.7;10.63;71.15;3.9;;
+Protlak jahodový;;35;0.76;6.38;0.5;;
+Protlak rajčatový sterilizovaný;;106;2.45;23.71;0.5;;
+Přesnídávka broskvová;;68.7;0.47;17.63;0.32;;
+Přesnídávka DIA jablečná;;52.9;0.26;13.95;0.37;;
+Přesnídávka DIA jahodová;;49;0.37;13.47;0.37;;
+Přesnídávka DIA meruňková;;52.4;0.37;13.47;0.26;;
+Přesnídávka hrušková;;50.7;0.42;13.42;0.42;;
+Přesnídávka jablečná;;71;0.32;18.37;0.42;;
+Přesnídávka meruňková;;76.3;0.32;18.21;0.21;;
+Pudink kakaový sušený;;418.3;12.19;70.21;10.26;;
+Pudinkový prášek - kakaový;;352.7;2.02;82.73;1.99;;
+Rajčatová šťáva;;20;0.82;3.98;0.13;;
+Rajče;;22.5;0.98;4.13;0.25;;
+Rajče červené;;21;0.82;4.65;0.35;;
+Rajče oranžové;;16;1.16;3.18;0.19;;
+Rajče zelené;;24;1.2;5.09;0.2;;
+Rajče žluté;;15;0.98;2.98;0.26;;
+Rak;;65.1;15;0;0.5;;
+Rakytník;;50.2;1.2;5;3.9;;
+Reveň;;20.1;1.3;3.6;0.1;;
+Rohlík bílý;;308;9.78;57.47;3.68;;
+Rohlík celozrnný;;286;9;54.7;2.9;;
+Rohlík grahamový;;297;9.79;58.55;4.82;;
+Rohlík mléčný bílý slaný;;331;9.23;61.8;4.61;;
+Rohlík tmavý;;261.5;10.15;54.3;3.3;;
+Rohlík tukový;;302.4;8.3;59.9;2.9;;
+Rohlík vodový;;286.4;8.4;60.1;1;;
+Rozinky;;268.2;2.3;71.2;0.5;;
+Rum bílý (37,5%);;207.2;0;0;0;;
+Rum hnědý (40%);;221.3;0;0;0;;
+Ryba - candát;;81.1;18.4;0.1;0.3;;
+Ryba - halibut;;72;15.5;0;1.1;;
+Ryba - hejk;;91.1;17.2;0;2.5;;
+Ryba - herink;;236.1;8.2;0;17;;
+Ryba - kapr;;106;16;0;4.2;;
+Ryba - losos;;203.3;25.3;0.2;15.2;;
+Ryba - losos uzený;;315.3;28.5;0;19.4;;
+Ryba - makrela;;180;18.8;0.1;11.6;;
+Ryba - makrela uzená;;233.2;21.4;0.1;16.3;;
+Ryba - mečoun;;117.2;19.4;0;4.4;;
+Ryba - pečenáč;;115.1;11.1;0;7.9;;
+Ryba - platýz velký;;86.1;17.1;0;1.9;;
+Ryba - pstruh;;98.1;18.5;0.1;3;;
+Ryba - sleď;;209.1;18.5;0.1;14;;
+Ryba - sumec;;163.1;15.3;0;11.3;;
+Ryba - štika;;86.1;18.8;0.1;0.7;;
+Ryba - treska - file;;74.2;16.5;0.1;0.4;;
+Ryba - tuňák;;226.3;21.5;0;15.5;;
+Ryba - úhoř;;298.3;18.6;0.1;24.5;;
+Ryba - zavináč;;175.4;11.3;5.5;11.9;;
+Rybí konzerva Kambala v rajčatové omáčce;;134.2;13.7;4.8;6.3;;
+Rybí konzerva losos v oleji;;378.7;22;0;32.7;;
+Rybí konzerva makrela v rajčatové omáčce;;134.7;13.7;4.8;6.3;;
+Rybí konzerva sardinky v rajčatové omáčce;;122.5;12.5;4.3;6.1;;
+Rybí konzerva šproty v oleji;;365.1;17.4;0;32.4;;
+Rybí konzerva tresčí játra;;594.5;4.2;1.3;63.5;;
+Rybí konzerva v rajčatové omáčce;;147;14.53;2.78;8.61;;
+Rybičky v oleji a ve vlastní šťávě;;194.4;14.93;1.93;14.08;;
+Rybíz černý;;63;1.4;15.38;0.41;;
+Rybíz červený (nebo bílý);;56;1.4;13.8;0.2;;
+Ryngle;;64.1;0.8;16.5;0.2;;
+Rýže bílá dlouhozrná syrová;;365;7.13;79.95;0.66;;
+Rýže bílá dlouhozrná vařená;;130;2.69;28.17;0.28;;
+Rýže bílá krátkozrná syrová;;358;6.5;79.15;0.52;;
+Rýže bílá krátkozrná vařená;;130;2.36;28.73;0.19;;
+Rýže divoká syrová;;357;14.73;74.9;1.08;;
+Rýže divoká vařená;;101;3.99;21.3;0.34;;
+Rýže dušená;;183.2;4.43;38.49;0.19;;
+Rýže hnědá dlouhozrná syrová;;370;7.94;77.23;2.92;;
+Rýže hnědá dlouhozrná vařená;;111;2.58;22.95;0.9;;
+Rýže loupaná suchá;;349.6;8.77;76.49;0.44;;
+Rýže neloupaná (Natural);;323;7.1;76.8;1.9;;
+Rýžový nákyp;;142.8;3.43;25.11;3.4;;
+Ředkev;;27.9;1.49;6.88;0.12;;
+Ředkvička;;17.5;1.14;3.91;0.14;;
+Řepa červená;;48.1;1.8;10.6;0.1;;
+Řízek vepřový smažený;;504.5;19.5;23.5;36.4;;
+Sádlo husí;;757;1.1;0.1;83.7;;
+Sádlo škvařené - průměr;;736.8;0.3;0;81;;
+Salám berlínský;;415.2;16;1.6;38.3;;
+Salám boloňský;;288.5;12.89;1.82;25.5;;
+Salám brněnský;;295;13.45;0.1;26.57;;
+Salám český;;337.3;12.5;2.1;23.5;;
+Salám drůbeží;;162;18.3;1.27;8.89;;
+Salám drůbeží točený;;287;14.34;1.07;25.1;;
+Salám gothajský;;434;10.81;0.1;37.98;;
+Salám jemný;;263;11.83;0.1;23.98;;
+Salám jemný z kuřecího masa;;185;20.16;1.55;17.59;;
+Salám Junior;;272;13.2;0;24.3;;
+Salám kabanos;;205.3;14.8;2.1;14.8;;
+Salám koňský;;127.7;14.7;3.4;6.1;;
+Salám krůtí měkký;;196;17.19;0.72;12.76;;
+Salám lovecký;;451;27.45;0.2;35.36;;
+Salám měkký;;247.9;14.31;2.37;20.11;;
+Salám metský;;358.6;17.6;0.1;31.1;;
+Salám paprikový;;376.6;16.4;0.2;34.2;;
+Salám pařížský;;310;10.68;0.2;30.12;;
+Salám Poličan;;440.2;26.89;0.2;36.88;;
+Salám pražský;;258.4;12.8;2.1;21;;
+Salám šunkový;;203.5;17.97;0.1;14.58;;
+Salám točený;;230.1;14.5;2.1;18.6;;
+Salám turistický trvanlivý;;407;19.44;0.1;36.69;;
+Salám uherský;;463.1;23.3;0;41;;
+Salám Vysočina;;434;18.1;0;40;;
+Salát bramborový;;87.6;2.6;15.6;1.9;;
+Salát bramborový s majonézou;;211.2;1.9;12;17.5;;
+Salát čočkový;;161.7;6.4;17.2;7.9;;
+Salát Hanácký;;148.8;1.4;13.5;10.2;;
+Salát hlávkový;;16.8;1.33;2.51;0.28;;
+Salát krabí;;220.3;12;1.2;18.6;;
+Salát ledový;;12.7;0.7;1.9;0.3;;
+Salát okurkový;;26;0.99;5.22;0.14;;
+Salát pochoutkový;;339.5;8.1;2.3;33.4;;
+Salát polníček;;16.3;1.8;1.4;0.3;;
+Salát rybí s majonézou;;285.4;21.3;0;22.2;;
+Salát slanečkový;;130.1;7.7;11.2;6.1;;
+Salát sojový s majonézou;;276.6;10.3;7.5;22.8;;
+Salát sýrový Holandský;;131.6;22.5;0.9;7.5;;
+Salát vajíčkový;;198.3;5.1;5.5;17.6;;
+Salát vlašský;;153.5;4.82;11.74;10.38;;
+Sardelová pasta;;241;6.54;0.06;23.88;;
+Sardinka obecná;;130;19.71;0.1;11.01;;
+Sardinky ruské;;161;17.49;4.5;4.91;;
+Sardinky v oleji;;252;22.58;1.23;18.71;;
+Sekaná domácí;;266.6;17.53;6.25;18.98;;
+Sekaná drůbeží domácí;;311.2;10.89;9.7;25.36;;
+Semínka lněná;;485.4;22;13;40;;
+Semínka slunečnicová;;582.5;27;15;49;;
+Sepie;;68.2;13.3;0;0.8;;
+Sezamová semínka;;616;21.97;14.9;53.23;;
+Sherry suché;;81.6;0.2;0.2;0;;
+Slanina anglická;;402.46;10.54;0.08;40.01;;
+Slanina vepřová;;773.56;3.5;0.1;84.37;;
+Sleď baltický marinovaný;;146.7;15.78;0.18;9.54;;
+Sleď v rajčatové omáčce;;180;16.2;0.5;12.5;;
+Sleď - uzenáč;;211;22.2;0;12.9;;
+Sleď - zavináč;;217.5;19.8;0;14.8;;
+Slepice syrová (Guinejská) - pouze maso;;110;20.64;0;2.47;;
+Slezina;;111.2;16.9;1;4;;
+Slivovice 40%;;221.3;0;0;0;;
+Slunečnice - semena;;605;22.47;18.63;49;;
+Smetana 33% - (šlehačka);;325;2.16;3.31;33.7;;
+Smetana 6% tuku (do kávy);;86;3.5;4.5;6;;
+Smetana konzumní (12% tuku);;137;3.1;4.2;12;;
+Smetana pochoutková (16% tuku);;171;2.91;4;16;;
+Smetana šlehačka light;;200.7;2.5;8;17.8;;
+Smetana zakysaná 11%;;127;2.9;4.2;11;;
+Smetana zakysaná 15%;;164.3;2.5;4.5;15;;
+Sójové boby;;406.7;34;30.8;18.3;;
+Sójové boby vařené;;139;11;10.8;5.7;;
+Sójové klíčky;;12.9;1.5;1.7;0.1;;
+Sójové maso neochucené;;282.1;45;20;2;;
+Sójové mléko;;44;2.9;3.9;1.9;;
+Solamyl;;322.5;0.4;80;0.4;;
+Srdce hovězí;;122.8;16.87;0.48;6.32;;
+Srdce vepřové;;112;16.4;0.4;4.6;;
+Strouhanka;;373.4;11;78.1;1.4;;
+Suchar dietní;;373.5;10.99;72;3.87;;
+Sumec;;163.1;15.3;0;11.3;;
+Sušenky Albert;;381.6;5.9;80.9;8.4;;
+Sušenky Amarant;;446.2;7.1;61.6;18.1;;
+Sušenky Amarant kakaové;;465.1;7.8;71.2;16.5;;
+Sušenky Amarant vanilkové;;474.4;7.4;71.1;17.8;;
+Sušenky BeBe (Opavia);;409.1;6.5;77.5;11.6;;
+Sušenky Bravo - průměr;;522.7;5.6;54.6;33.8;;
+Sušenky Dalila;;532.3;7.6;52.5;33.6;;
+Sušenky Delissa - průměr;;540;8.2;55.9;31.6;;
+Sušenky Derby kakaové;;448.6;6.3;63.5;23.1;;
+Sušenky DIA kokosové;;464.1;7.6;58.6;22.6;;
+Sušenky DIA Párty;;454.5;9.6;56;27.1;;
+Sušenky Disco - průměr;;440.2;5.5;70.5;19.8;;
+Sušenky Dukla - kakaové řezy;;496.4;5.3;58.4;31.8;;
+Sušenky Falco desert ořech;;440.2;5;60;20;;
+Sušenky Fidela;;503.6;8.4;56.9;28.2;;
+Sušenky Fidorky;;491.9;2.6;64.6;24;;
+Sušenky Florenta;;504.8;8.5;56.7;29.6;;
+Sušenky Floriana;;436.6;6.2;72.4;17.5;;
+Sušenky Horalky - průměr;;513.2;8.9;54.5;31.6;;
+Sušenky kakaové věnečky;;459.3;6.9;59.6;25.5;;
+Sušenky KOKA kokosové;;439;6.4;61.5;23.9;;
+Sušenky Kolonáda - oříško-čokoládové;;504.8;7.7;57;29.9;;
+Sušenky Kolonáda - trojhránky kakaové;;516.7;4.9;58.1;31.8;;
+Sušenky Lázeňské oplatky;;403.6;5.3;72.3;11.1;;
+Sušenky Lucie kakaové;;451;6.7;62.8;25.4;;
+Sušenky Lucie Via Dia;;501.2;8.8;47.2;35.4;;
+Sušenky máslové - CLUB;;458.4;8.11;70.4;16.2;;
+Sušenky máslové (CLUB);;458.4;8.11;70.4;16.2;;
+Sušenky Miňonky kakaové;;515.6;8.1;53.4;31.3;;
+Sušenky polomáčené;;464.1;6.7;66.2;21.6;;
+Sušenky s kakaovou náplní - Romanca;;458.4;5.15;65.11;23.56;;
+Sušenky slané;;554.3;8;47;38;;
+Sušenky věnečky arašídové;;478.7;9;65.5;21.2;;
+Sušenky Zlaté - lískový ořech;;496.4;5.7;58.6;28.6;;
+Sušnky Zlaté - vanilkové;;492.8;6.6;59.4;27;;
+Sýr Balkánský;;233.5;11.3;1;20.4;;
+Sýr Brynza (40% t. v s.);;295.3;20.5;2.5;22.6;;
+Sýr Brynza (50% t. v s.);;297.8;19.1;1.6;23.8;;
+Sýr Camembert (30% t. v s.);;216.3;22.8;0;12.8;;
+Sýr Camembert (45% t. v s.);;285.2;21;0;21.8;;
+Sýr cottage (1% tuku);;72.4;12.39;2.72;1.02;;
+Sýr cottage (2% tuku);;89.7;13.74;3.63;1.93;;
+Sýr čedar;;403;24.9;1.28;33.14;;
+Sýr čedar - tavený;;284;16.69;3.09;22.81;;
+Sýr dezertní 20%;;182;24.3;2.2;8;;
+Sýr dezertní 40%;;236;18.3;2.1;17.2;;
+Sýr eidam 20% t. v s.;;215.3;30;3;10;;
+Sýr eidam cihla - výběr 60%;;403;18.8;1;36;;
+Sýr eidam cihla 30%;;263;30.3;1.4;15.15;;
+Sýr eidam cihla 40%;;320;28.5;1;22.4;;
+Sýr eidam cihla 45%;;343;26;1;26.1;;
+Sýr eidam salámový 40%;;314;28;1;22;;
+Sýr eidam uzený 45%;;343;26;1;26.1;;
+Sýr ementál (Primátor);;387;28.02;2.31;29.34;;
+Sýr ementál 45% t. v s.;;387.3;28.9;0;30;;
+Sýr Geramont;;363.6;16.5;2;31.5;;
+Sýr Gervais;;232;6.3;4.8;21;;
+Sýr Gouda;;356.3;24.94;2.22;27.44;;
+Sýr Gouda 30%;;258;28.6;1.95;15.15;;
+Sýr Gouda 45%;;343;26;1;26.1;;
+Sýr Hermelín (Camember, Encián);;298;20.76;1.57;22.84;;
+Sýr játrový;;359;13.86;1.25;31.25;;
+Sýr jihočeský 40%;;258;22;1.8;18;;
+Sýr kapiový 50% t. v s.;;170.3;9;2;14;;
+Sýr kozí čerstvý;;79;4.7;1.5;6.1;;
+Sýr krémový;;193;12.4;1.8;15.63;;
+Sýr krkonošský pivní;;305;18.4;1.6;25;;
+Sýr lahůdkový tavený 70%;;351;8;1;35;;
+Sýr Laktík;;183.2;14.1;2.3;12.7;;
+Sýr Moravský blok 50%;;393;25.2;2.3;31.5;;
+Sýr Moravský bochník 45%;;342;24.8;2;26.1;;
+Sýr Mortadela;;277;14.62;0.056;23.13;;
+Sýr mozzarella;;281.4;19.24;2.22;21.6;;
+Sýr Niva (Rokfór);;381.2;21.29;1.47;32.26;;
+Sýr Niva 50% - tavený;;269;15.2;1.4;22.5;;
+Sýr Olomoucké tvarůžky;;134;30.3;2;0.8;;
+Sýr Oštiepok;;366;21.62;3.3;30.06;;
+Sýr ovčí tvrdý;;400.4;27.05;0.5;32.26;;
+Sýr ovčí ve slaném nálevu;;325.3;20.18;1.31;26.6;;
+Sýr Parmezán;;391;34.87;0.068;26.33;;
+Sýr plátkový balený;;286.1;18;4;22;;
+Sýr plátkový light;;184.9;22;4;9;;
+Sýr plátkový se šunkou;;346.9;13;7;30;;
+Sýr Primátor 45% t. v s.;;368.7;26.5;2.2;28;;
+Sýr Přimda - jemný přírodní;;325;21.6;1.2;26;;
+Sýr Romadur 20%;;176;23.6;2.5;8;;
+Sýr Romadur 40%;;237;18.1;2.4;17.2;;
+Sýr smetanový 65%;;286;12.1;0.103;26;;
+Sýr smetanový KIRI;;336.8;9;2;33;;
+Sýr smetanový tavený 45%;;231;15.9;1.2;18.39;;
+Sýr sójový TOFU;;79;7.8;2.2;4.2;;
+Sýr Šumavský blok 45%;;336;25.2;1;26.1;;
+Sýr tavený 30%-40% t. v s. - průměr;;187.1;19.6;0.8;11.4;;
+Sýr tavený 40%-50% t. v s. - průměr;;231.3;15.9;1.2;18;;
+Sýr tavený 50%-60% t. v s. - průměr;;284.4;12.1;1;26;;
+Sýr tavený 60%-70% t. v s. - průměr;;371.3;12.1;1;35;;
+Sýr tavený FIT;;131.3;17;0;7;;
+Sýr tavený lipno s lososem - light (30% t. v s.);;186.6;20;1;9.9;;
+Sýr tavený smetanový;;336.8;9;2;33;;
+Sýr tavený šunkový;;300.2;17.4;0.9;25.9;;
+Sýr Tylžský;;302;27.7;1.54;26.22;;
+Šáteček s makovou náplní;;377.9;8.49;55.33;13.67;;
+Šáteček s marmeládou;;346.2;5.62;64.29;7.31;;
+Škeble;;54.1;10.5;0;1.3;;
+Škrob kukuřičný;;359.3;0.31;87.27;0.09;;
+Škrob rýžový;;349.7;0.62;85.07;0.1;;
+Škvarky vepřové;;742.1;15.5;0;75;;
+Šlehačka pařížská;;352.21;2.75;12.24;32.55;;
+Šnek;;73;16;0;1;;
+Špagety celozrnné suché;;348;14.63;75.03;1.4;;
+Špagety celozrnné vařené;;124;5.32;26.54;0.54;;
+Špagety suché;;371;12.77;74.68;1.58;;
+Špagety vařené;;141;4.77;28.34;0.67;;
+Špagety, makarony;;354;12.5;75;1.2;;
+Špagety, makarony - vařené;;126;4.2;26;0.5;;
+Špagety, makarony celozrnné;;330.6;11;75.4;1.5;;
+Špenát;;32.8;3.2;4.1;0.6;;
+Špenátový protlak;;32.3;2;6.1;0.1;;
+Šproty v oleji;;375;15.07;0.5;31.59;;
+Štika mořská syrová;;88;19.25;0;0.69;;
+Štika obecná;;49.8;11.23;0.06;0.51;;
+Štika v rajčatové omáčce;;105.1;13.82;3.6;3.9;;
+Šunka drůbeží;;117;22.91;0.25;3.13;;
+Šunka drůbeží PIKNIK;;110.7;25.1;0.2;1.05;;
+Šunka dušená;;156.5;17.64;1.39;9.1;;
+Šunka kuřecí;;167;17.6;0;10.5;;
+Šunka kuřecí (Velkopavlovická);;119;21.35;0.2;3.64;;
+Šunka kuřecí prsní;;98.1;14;1.5;4;;
+Šunka s vyšším obsahem tuku;;240.5;16.49;1.07;18.92;;
+Šunka uzená;;259.01;16.36;0.1;21.47;;
+Šunka vepřová;;179.7;16.14;0.78;12.47;;
+Šunkový salám;;203.5;17.97;0.1;14.58;;
+Švestky;;53.97;0.71;14.65;0.25;;
+Švestky sušené;;230.4;2.5;60.4;0.7;;
+Taliáni;;371.9;20.9;0.1;32;;
+Tatranky;;541;8.95;54.8;31.4;;
+Tequila (38%);;210.3;0;0;0;;
+Termix - průměr;;203.3;11.5;15.7;11.3;;
+Termix banánový;;221.4;11.08;17.15;12.16;;
+Těsto listové;;423;5.73;36.07;28.71;;
+Těstoviny amarantové;;332.8;11.4;74.3;0.9;;
+Těstoviny bezlepkové kukuřičné;;394.7;7.5;84;2;;
+Těstoviny čtyřvaječné;;367;11.13;72.58;2.84;;
+Těstoviny diabetické;;359;30.4;55.3;1.36;;
+Těstoviny grahamové;;393.5;13.26;68.05;3.72;;
+Těstoviny konzumní;;364;10.9;73.3;10.9;;
+Těstoviny nevaječné;;357.8;9.82;75.2;1.21;;
+Těstoviny pětivaječné;;370;11.6;71.6;3.34;;
+Těstoviny sedmivaječné;;374;12.3;70.2;4.13;;
+Těstoviny vařené (průměr);;131.3;3.55;23.74;2.52;;
+Tlačenka drůbeží;;177;18.49;0.13;11.94;;
+Tlačenka masová světlá;;301;14.15;0.7;27.87;;
+Tlačenka tmavá lidová;;317;14.88;0.1;28.03;;
+Tofu;;54.5;11;1.5;3;;
+Treska - filé;;75.9;17.69;0.1;0.43;;
+Treska mražená;;46.2;11.22;0.07;0.4;;
+Treska syrová;;87;18.91;0;0.72;;
+Treska uzená;;116;25.2;0;0.94;;
+Třešně;;59.7;0.92;14.38;0.51;;
+Tuk Ceresoft;;830.9;0;2;92.2;;
+Tuk Dukát jedlý;;748.5;0.48;0.15;81.06;;
+Tuk Hera jedlý;;754;0.2;0.32;80.13;;
+Tuk Juno jedlý;;761;0.15;0.15;80.46;;
+Tuk Perla jedlý;;825;0.08;0.13;84;;
+Tuk Perla pro teplou kuchyni;;614.8;0.1;0.3;69;;
+Tuk Planta;;904.3;0;0;100;;
+Tuk Stella;;716.8;0.05;0.3;80;;
+Tuk Visa;;704.8;3;4;78.3;;
+Tuk ztužený (100%);;863.6;0;0;97.7;;
+Tuňák konzervovaný v oleji;;186;26.52;0;8.08;;
+Tuňák konzervovaný ve vodě;;128;23.62;0;2.96;;
+Tuňák light konzervovaný v oleji;;198;29.13;0;8.21;;
+Tuňák light konzervovaný ve vodě;;116;25.51;0;0.82;;
+Tuňák obecný;;232;23.85;0.1;8.36;;
+Tuňák v oleji a vlastní šťávě;;184;19.9;0.1;11.6;;
+Tuřín;;34;1.12;7.35;0.19;;
+Tvaroh jemný;;109.1;17.5;4.2;2.5;;
+Tvaroh konzumní;;131.1;17.59;3.88;4.53;;
+Tvaroh měkký nízkotučný;;96;18.75;4.4;0.35;;
+Tvaroh ovocný (PM);;92.1;10;12;0.3;;
+Tvaroh ovocný Prince;;137.6;5.9;17.1;5;;
+Tvaroh speciál;;175.6;13.7;3.2;12;;
+Tvaroh tučný;;184;12.31;3.3;13.53;;
+Tvaroh Vitalinea Danone;;74.9;13.5;3.8;0.3;;
+Tvaroh Vitalinea ovocný;;59.3;6.5;10;0.1;;
+Tvarohová rozhuda;;66.3;10.7;3.8;0.8;;
+Tyčinka BeSlim průměr;;399;10;59;15;;
+Tyčinka Café crip cappucino;;412.9;11.3;68.7;11.7;;
+Tyčinka DELI s oříšky;;452.1;4.4;68.4;20.7;;
+Tyčinka FIT GO - průměr;;416;3.48;71.74;12.17;;
+Tyčinka Flint - kokos, likér;;459.3;7;70;18;;
+Tyčinka FLY MISS - ořech, karamel;;415.1;11.6;47.8;19.6;;
+Tyčinka Granko;;544.3;6.2;54.2;33.2;;
+Tyčinka müsli - průměr;;409.1;6.8;62.8;18.4;;
+Tyčinka Müsli Pro Diet;;400.2;9.4;54.7;16;;
+Tyčinka Twiggy - průměr;;438.8;9.5;49.2;21.9;;
+Tyčinka Twix;;481.6;5.6;63.2;24.5;;
+Tykev - semena;;432.8;18.13;13.17;34.04;;
+Tykev špagetová;;26.6;0.6;8.3;0.1;;
+Úhoř říční;;178.1;9.92;0.07;15.35;;
+Úhoř uzený;;321.2;18.74;0.87;26.98;;
+Ústřice;;66;9;4.8;1.2;;
+Uzenáč;;117.7;15.8;0.2;5.9;;
+Vaječná hmota sušená;;587;46.53;2.19;44.13;;
+Vaječné věnečky obalované;;485;8.49;64.87;20.67;;
+Vaječný bílek slepičí;;49;11.28;0.81;0.3;;
+Vaječný bílek slepičí sušený;;353;81.95;5.6;1.4;;
+Vaječný žloutek pasterizovaný mražený;;313;14.9;0;27.6;;
+Vaječný žloutek slepičí;;359;16.3;0.69;32.09;;
+Vaječný žloutek sušený;;666;31.7;2.1;59.3;;
+Vánočka máslová;;368;7.2;60.8;10.1;;
+Vánočka tuková;;349.3;7.3;60.9;8.6;;
+Vejce husí celé (čerstvé, syrové);;185;13.87;1.35;13.27;;
+Vejce kachní celé (čerstvé, syrové);;185;12.81;1.45;13.77;;
+Vejce krůtí celé;;171;13.68;1.15;11.88;;
+Vejce slepičí;;160;12.28;0.66;11.72;;
+Vejce slepičí - bílek syrový;;50;10.52;1.03;0;;
+Vejce slepičí - sušený bílek;;382;81.1;7.8;0;;
+Vejce slepičí (sušené celé);;587.6;46;3;42;;
+Vejce slepičí (sušený bílek);;384;84.1;6.2;0;;
+Vejce slepičí (sušený žloutek);;679.4;30.5;1.3;60;;
+Vejce slepičí syrové (celé);;149;12.49;1.22;10.02;;
+Vejce slepičí syrové (pouze bílek);;48.1;11;0;0;;
+Vejce slepičí syrové (pouze žloutek);;358;16.76;1.78;30.87;;
+Vejce slepičí vařené (celé);;155;12.58;1.12;10.61;;
+Veka;;289;8.4;60.1;1;;
+Veka tuková;;293;8.94;53.89;4.04;;
+Vepřová játra dušená;;193.2;16.16;7.65;11.08;;
+Vepřová kýta - libové maso;;136;20.48;0;5.41;;
+Víno - sherry polosuché;;117;0.1;3.7;0;;
+Víno - sherry sladké;;135.9;0.3;6.9;0;;
+Víno - sherry suché;;115.1;0.2;1.4;0;;
+Víno - Vermut sladký;;151;0;15.9;0;;
+Víno - Vermut suchý;;117.9;0.1;5.5;0;;
+Víno bílé;;77;0.1;0.1;7.5;;
+Víno bílé přírodní;;54.1;0.1;0.1;0;;
+Víno bílé přírodní sladké;;94.3;0.2;5.9;0;;
+Víno červené;;77;0.25;2.8;0.76;;
+Víno ovocné - průměr;;110;0;20;0.3;;
+Víno šumivé (sekt);;103;0.19;7.9;0.91;;
+Víno šumivé sladké 11%;;107.2;0;11;0;;
+Víno šumivé suché 11%;;75.1;0;3.5;0;;
+Višně;;54.8;1;12.17;0.62;;
+Višně v čokoládě;;342;3.2;56.9;13.1;;
+Vločky ovesné;;351.9;13;57;7;;
+Vodnice;;23.4;0.9;4.7;0.3;;
+Vývar z drůbežího masa;;6;0.35;0.34;0.37;;
+Vývar z masa - průměr;;3.3;0.23;0.15;0.2;;
+Whisky irská 45%;;249.3;0;0;0;;
+Whisky skotská 43%;;231.1;0;0;0;;
+Worchester;;72.4;1.3;15.8;0.3;;
+Zákusek - indián;;428.5;3;71;14;;
+Zákusek - kokoska;;502.9;6.12;62.25;25.4;;
+Zákusek - košíčky linecké s ovocem;;263.2;2.67;38.83;11.7;;
+Zákusek - kremrole;;311;4.2;45;22;;
+Zákusek - laskonka;;294.2;1.67;35.33;16;;
+Zákusek - roláda s krémem;;394.7;6.4;53.9;17.4;;
+Zákusek - řezy punčové;;358.1;5.3;48.7;15.7;;
+Zákusek - řezy žloutkové;;334.7;3.57;38.86;18.9;;
+Zákusek - šáteček s tvarohovou náplní;;397.8;5.83;63.17;13.5;;
+Zákusek - špička;;421;8.83;62.33;15;;
+Zákusek - věnečky vaječné;;276.6;4;33.8;13.4;;
+Závin jablečný;;476.3;4;55.1;28.2;;
+Závin ořechový;;397.8;5.4;62.5;14.2;;
+Závin s makovou náplní;;393.2;8.7;55.6;14.5;;
+Zavináče;;178.9;11.55;5.67;12.17;;
+Zeleninová směs - Mochovská;;63.4;4.2;11.2;0.1;;
+Zeleninová směs do polévky;;32.3;2;6.1;0.1;;
+Zeleninová směs jarní mražená;;49.2;3.58;9.61;0.33;;
+Zeleninová směs lahůdková;;52.4;2.8;10.3;0.3;;
+Zeleninová směs pod svíčkovou;;66.3;1.7;11.3;0.3;;
+Zeleninová směs s kukuřicí;;80.1;3.9;15.7;0.5;;
+Zeleninová směs se žampiony;;58.4;2.2;11.5;0.4;;
+Zelí - sterilizované;;17.09;0.75;4.02;0.2;;
+Zelí bílé;;25;1.46;5.4;0.26;;
+Zelí bílé sterilizované;;21.8;1.23;6.07;0.17;;
+Zelí červené;;27;1.39;6.12;0.26;;
+Zelí čínské (pak-choi);;13;1.5;2.18;0.2;;
+Zelí čínské (pe-tsai);;16;1.2;3.22;0.2;;
+Zelí kysané;;14.8;1;4;0;;
+Zmrzlina polárkový dort - průměr;;197.4;3.6;20.5;8.9;;
+Žampion polní;;29.23;4.73;3.44;0.3;;
+Žampiony čerstvé;;35.6;3.2;4.6;0.6;;
+Žampiony sterilizované;;29.4;2.25;3;0.5;;
+Žemle tmavá;;323;9.18;61.7;3.87;;
+Žemle tuková;;304;8.3;59.9;2.9;;`},
+  por:{raw:`Pivo 10° světlé;;31;;2.1;;;
+Dia pivo;;33;;2;;;
+Pepsi cola;;47;;11.6;;;
+Dia Pepsi cola;;0.3;;0;;;
+Fanta pomerančová limonáda sladká;;41;;10;;;
+40% destilát;;274;;;;;
+Bílé víno;;53;;0.1;;;
+Džus sladký jablkový;;41;;10.2;;;
+100% džus pomerančový;;40;;10;;;
+Sirup sladký (do 200 ml vody);;260;;65;;;
+Šunka;;145;;;;;
+Šunkový salám;;177;;0.1;;;
+Drůbeží párky;;156;;;;;
+Turistický salám;;384;;;;;
+Tlačenka vepřová;;272;;0.6;;;
+Tlačenka drůbeží;;165;;0.1;;;
+Špekáčky;;290;;;;;
+Uherský salám;;462;;;;;
+Šunkový závitek v rosolu;;132;;2.7;;;
+Šunkový chlebíček;;261.4;;20;;;
+Mléko egalizované (mléko s nižším obsahem tuku);;48;;4.6;;;
+Mléko nízkotučné;;36;;4.3;;;
+Tavený sýr 30% t. v s.;;179;;0.9;;;
+Tavený sýr 70% t. v s.;;344;;1;;;
+Eidam 30%;;248;;1.3;;;
+Hermelín 45% t. v s.;;249;;0.9;;;100
+Lučina (menší) 60% t. v s.;;285.7;;1;;;63
+Tvaroh Danisimo (Danone);;148;;18.8;;;150
+Bílý jogurt 4 % tuku;;87.3;;6.7;;;150
+Bílý jogurt Vitalinea 1 % tuku;;44;;6.2;;;150
+Ovocný jogurt Vitalinea;;48;;7.8;;;150
+Ovocný jogurt Jogobela (Zott);;98;;14.9;;;150
+Kefír;;46;;3.7;;;
+Šlehačka 33% tuku;;302;;3;;;
+Tvaroh měkký;;92;;4.3;;;
+Tvaroh na strouhání;;125;;1.5;;;
+Zakysaná smetana;;204;;4.6;;;
+Vejce;;122;;0.6;;;50
+Máslo;;680;;;;;
+Perla;;360;;;;;
+Rama;;680;;;;;
+Flora;;630;;;;;
+Diana;;360;;;;;
+Olej slunečnicový;;660;;;;;
+Cukr 1 lžička;;390;;99;;;
+Med 2 lžička;;323.3;;80.3;;;
+Čokoláda mléčná;;548;;57;;;
+Čokoláda dia mléčná;;505;;48.9;;;
+Oplatky Florenta;;503;;56.5;;;
+Dia oplatky Via kakao;;452;;62.6;;;
+Müsli tyčka Fly jogurtová;;392;;58.8;;;
+Müsli tyčka Senza ořechová;;392;;61.6;;;
+Ořechový dort s krémem;;274.4;;34.3;;;133
+Pařížský dort;;286.4;;29.3;;;110
+Větrník;;332.5;;38;;;80
+Ovocný dort;;418.2;;23.8;;;110
+Žloutkový věneček;;391.1;;26.7;;;45
+Chleba (1,5 kg veka);;225.7;;46.1;;;70
+Toustový chléb tmavý;;280;;53.5;;;20
+Dalamánek;;255;;55.8;;;40
+Graham chléb;;250;;52;;;30
+Knaeckebrot;;355.6;;72.2;;;9
+Křehký chléb Knuspi sýrový;;325;;65;;;8
+Rohlík;;285;;54.2;;;40
+Pletýnka;;292;;58.1;;;125
+Bílé veky;;275;;58;;;20
+Suchar;;400;;79.6;;;25
+Piškoty;;370;;72;;;
+Vánočky;;344;;59.2;;;50
+Ovesných vloček;;350;;60;;;
+Corn flakes;;370;;84.3;;;
+Mouky;;340;;70;;;
+Vařené rýže;;96;;21.4;;;
+Vařených kolínek – malá;;108;;21.4;;;
+Houskový knedlík;;237.5;;50;;;40
+Brambor. knedlík;;157.5;;27.5;;;40
+Vařená čočka (30 g syrové);;89;;16.5;;;
+Vařený hrách (30 g syrového);;89;;17.1;;;
+Vařené fazole (30 g syrových);;92;;16.7;;;
+Bramborové kaše;;100;;18;;;
+Brambory;;83;;18.6;;;
+Bramborový salát;;133.5;;14.7;;;
+Hranolky;;341;;25;;;
+Chipsy;;533;;49.3;;;
+Slané tyčky;;551;;46.1;;;
+Jablko;;49;;11.7;;;
+Broskve;;52;;12.3;;;
+Jahody;;39;;7.9;;;
+Meruňky;;50;;11.7;;;
+Švestky;;60;;14.3;;;
+Víno hrozny;;61;;16;;;
+Banány;;59;;15.4;;;
+Grep;;25;;6;;;
+Pomeranče;;37;;8.5;;;
+Dia kompot švestky;;44;;10.2;;;
+Dia kompot meruňky;;39;;9.2;;;
+Sladký kompot směs;;81;;21.2;;;
+Dia ovocná přesnídávka;;47.8;;11;;;
+Rozinky;;230;;55.8;;;
+Celer kořen;;30;;6.1;;;
+Fazolky zelené;;33;;6;;;
+Kapusta hlávková;;28;;4.4;;;
+Kedlubny;;19;;3.4;;;
+Květák;;18;;2.7;;;
+Mrkev;;34;;7.4;;;
+Okurka salátová;;13;;2.1;;;
+Paprika;;22;;3.9;;;
+Pórek;;32;;6;;;
+Rajčata;;20;;3.7;;;
+Ředkvičky;;13;;2.4;;;
+Zelí hlávkové;;21;;4;;;
+Hrášek sterilovaný;;61;;10.6;;;
+Kečup;;102;;12;;;
+Sterilované okurky;;20;;4.5;;;
+Kysané zelí;;18;;3.6;;;
+Červená řepa sterilovaná;;32;;7.5;;;
+Mražený špenát;;23;;3.1;;;
+Zelenina mražená směs;;32;;6.1;;;
+Polévka hovězí s těstovinou;;18.9;;3.1;;;
+Polévka čočková;;66.1;;7;;;
+Polévka bramborová;;48.2;;6.1;;;
+Polévka pórková;;42.4;;3;;;
+Polévka gulášová instantní 16 g;;24.5;;4.5;;;
+Polévka hovězí instantní 11 g;;17.1;;3.3;;;
+Polévka slepičí instantní 17 g;;28.6;;4.1;;;
+Polévka pórková instantní;;15.2;;2.4;;;
+Hovězí guláš;;140.4;;2.4;;;
+Hovězí přírodní;;159.2;;2.8;;;
+Svíčková na smetaně;;185.9;;3.8;;;
+Biftek s oblohou;;212.7;;;;;
+Smažený řízek vepřový;;500;;12.5;;;
+Sekaná pečeně;;402.5;;12.5;;;
+Vepřová pečeně (120 g);;209.5;;3;;;
+Smažené filé;;359.3;;10;;;
+Bramborová kaše;;100;;18;;;
+Bramborový knedlík;;157.5;;27.5;;;
+Bramborové hranolky;;341.3;;24.7;;;
+Vařené těstoviny;;107.8;;21.7;;;
+Vařená rýže;;96.1;;21.7;;;
+Pečené kuře (250 g);;169.3;;;;;
+Pečené filé;;103.3;;;;;
+Dušené zelí;;246.3;;27.8;;;
+Dušený špenát;;246.7;;11.1;;;`}
 };
 let _foodDb = null;
 function foodDb(){
@@ -14818,9 +14817,9 @@ function foodDb(){
   Object.keys(FOOD_TAB).forEach(k=>{
     const T = FOOD_TAB[k], n = v=>(v===''||v==null) ? null : parseFloat(v);
     T.raw.split('\n').forEach((l,i)=>{
-      const a = l.split(';'); if(a.length<9 || !a[0]) return;
+      const a = l.split(';'); if(a.length<8 || !a[0]) return;
       _foodDb.push({id:'T:'+k+':'+i, name:a[0], brand:a[1]||'', alias:a[1]||'', per100:{kcal:n(a[2]), p:n(a[3]), c:n(a[4]), s:null, f:n(a[5]), fiber:n(a[6])},
-        pieceG:n(a[7]), pieceLabel:'ks', tab:k, url: T.url ? T.url+(+a[8]>0 ? '#page='+a[8] : '') : ''});
+        pieceG:n(a[7]), pieceLabel:'ks', tab:k});
     });
   });
   return _foodDb;
@@ -15376,7 +15375,7 @@ function openFoodForm(init){
     document.getElementById('ffGrams').value = String(Math.round(pk*parseFloat(bt.dataset.qf)*10)/10).replace('.',','); refresh();
   }));
   ov.querySelectorAll('#ffQuick [data-qs]').forEach(bt=>bt.addEventListener('click', ()=>{ document.getElementById('ffGrams').value = String(bt.dataset.qs).replace('.',','); refresh(); }));
-  let srcNow = init.source||'manual', srcUrlNow = init.srcUrl||'', piece = null;
+  let srcNow = init.source||'manual', piece = null;
   const nameEl = document.getElementById('ffName'), gramsEl = document.getElementById('ffGrams'), cntEl = document.getElementById('ffCount');
   const fmtN = n=>String(n).replace('.',',');
   const setPiece = (p,count)=>{
@@ -15396,7 +15395,7 @@ function openFoodForm(init){
     if(it.name) nameEl.value = it.name;
     const pc = foodPieceOf(it), q = foodQtyToGrams(pc, qty);
     setPiece(pc, q.count); gramsEl.value = fmtN(Math.round(q.grams*10)/10);
-    srcNow = it.mine ? 'library' : (it.ai ? 'ai' : 'db'); srcUrlNow = '';
+    srcNow = it.mine ? 'library' : (it.ai ? 'ai' : 'db');
     const sv = document.getElementById('ffSave'); if(sv) sv.checked = false;
     sugEl.innerHTML = ''; refresh();
   };
@@ -15434,7 +15433,7 @@ function openFoodForm(init){
     const p = r.per100;
     if(p.kcal==null){ showToast('⚠️ Zadej aspoň kalorie nebo makra'); return; }
     const f = r.grams/100;
-    foodCommit({date: (foodDate||todayKey()), name, source: srcNow, srcUrl: srcUrlNow||undefined, grams: r.grams,
+    foodCommit({date: (foodDate||todayKey()), name, source: srcNow, grams: r.grams,
       kcal:(p.kcal||0)*f, p:(p.p||0)*f, c:(p.c||0)*f, f:(p.f||0)*f, s: p.s==null ? null : p.s*f});
     const sv = document.getElementById('ffSave');
     if(sv && sv.checked){
@@ -15684,8 +15683,8 @@ async function foodLookupBarcode(code){
     const o = list[0];
     if(!o || !o.name){ showToast('Výrobek není v Open Food Facts – zkouším další zdroje'); openFoodSearch(code); return; }
     const name = [o.name, o.brand].filter(Boolean).join(' – ');
-    openFoodForm({source:'barcode', name, per100:fsNormPer(o.per100), srcUrl:o.url||'', servingG:o.pieceG||null, packG:o.packG||null, grams:o.pieceG || o.packG || 100,
-      missing: [], note:'Údaje pocházejí z databáze Open Food Facts (přidávají je uživatelé). Zkontroluj je podle obalu.'+(o.url ? ' <a href="'+homeEsc(o.url)+'" target="_blank" rel="noopener">zdroj ↗</a>' : '')});
+    openFoodForm({source:'barcode', name, per100:fsNormPer(o.per100), servingG:o.pieceG||null, packG:o.packG||null, grams:o.pieceG || o.packG || 100,
+      missing: [], note:'Údaje pocházejí z databáze Open Food Facts (přidávají je uživatelé). Zkontroluj je podle obalu.'});
   }catch(err){ showToast('⚠️ '+(err && err.code==='limit' ? err.message : 'Nepodařilo se spojit s databází – zkontroluj internet')); }
 }
 
@@ -15921,9 +15920,9 @@ const FS_SRC = {
   lib:   {label:'Moje potraviny',          ico:'⭐', pri:50},
   nutri: {label:'NutriDatabáze',           ico:'🇨🇿', pri:30},
   db:    {label:'Základní databáze',       ico:'🔎', pri:25},
-  mv:    {label:'Kalorické tabulky (Muskulvit)', ico:'📋', pri:24},
-  dv:    {label:'Energetické tabulky (Diviš 2003)', ico:'📋', pri:21},
-  por:   {label:'Tabulka porcí',           ico:'📋', pri:18},
+  mv:    {label:'Tabulky potravin', ico:'📋', pri:24},
+  dv:    {label:'Tabulky potravin', ico:'📋', pri:21},
+  por:   {label:'Tabulky potravin', ico:'📋', pri:18},
   off:   {label:'Open Food Facts',         ico:'🌐', pri:20},
   google:{label:'Google (ověřený zdroj)',  ico:'🔍', pri:10}
 };
@@ -16131,17 +16130,16 @@ function foodOpenItem(it, qty){
   const s0 = it.mine ? 'lib' : ((it.src && it.src[0]) || (it.off ? 'off' : (it.ai ? 'ai' : 'db')));
   const source = s0==='lib' ? 'library' : s0;
   const full = (it.brand && !homeNorm(it.name).includes(homeNorm(it.brand))) ? it.name+' – '+it.brand : it.name;
-  const link = it.url ? ' <a href="'+homeEsc(it.url)+'" target="_blank" rel="noopener">zdroj ↗</a>' : '';
   let note = '';
   if(source==='nutri') note = 'Údaje z NutriDatabáze (©NutriDatabaze.cz) – průměr pro surovinu, hlídej variantu (syrové / vařené / pečené).';
-  else if(source==='off') note = 'Údaje z Open Food Facts (přidávají je uživatelé) – zkontroluj podle obalu.'+link;
-  else if(source==='google') note = '🔍 Hodnoty přepsané ze stránky nalezené přes Google'+(it.url ? ' ('+homeEsc(fsHost(it.url))+')' : '')+' – zkontroluj podle obalu.'+link;
+  else if(source==='off') note = 'Údaje z Open Food Facts (přidávají je uživatelé) – zkontroluj podle obalu.';
+  else if(source==='google') note = '🔍 Hodnoty přepsané ze stránky nalezené přes Google'+' – zkontroluj podle obalu.';
   else if(source==='ai') note = it.aiNote || '✨ Odhad od AI – je orientační, hlavně u hotových jídel.';
   else if(source==='db') note = 'Orientační průměrné hodnoty na 100 g. Pro přesnost použij údaje z obalu.';
-  else if(source==='mv' || source==='dv' || source==='por') note = '📋 '+FOOD_TAB[source].label+' – publikované průměrné hodnoty, od konkrétního výrobku se mohou lišit.'+(source==='por' ? ' Tabulka uvádí jen kalorie a sacharidy, bílkoviny a tuky doplň podle obalu.' : '')+link;
+  else if(source==='mv' || source==='dv' || source==='por') note = '📋 Průměrné hodnoty z tabulek potravin – od konkrétního výrobku se mohou lišit.'+(source==='por' ? ' Tabulka uvádí jen kalorie a sacharidy, bílkoviny a tuky doplň podle obalu.' : '');
   if(it.conflict) note += (note?'<br>':'')+'⚠️ Jiný zdroj uvádí jiné hodnoty – ověř podle obalu.';
   openFoodForm({source, name:full.slice(0,60), per100:it.per100, servingG: it.mine ? it.pieceG : null, packG: (it.mine || it.packG) ? it.packG : null,
-    piece, count, grams: Math.round(grams*10)/10, srcUrl: it.url||'', note});
+    piece, count, grams: Math.round(grams*10)/10, note});
 }
 // čárový kód (8–14 číslic) se nesmí číst jako „množství + název“
 function fsParse(v){ const d = String(v||'').replace(/\s/g,''); return /^\d{8,14}$/.test(d) ? {text:d, qty:null, unit:''} : foodParseQuery(v); }
@@ -16169,19 +16167,16 @@ function openFoodSearch(q0){
     if(pq.text.length<2){ res.innerHTML = '<p class="nb-note">Napiš název (aspoň 2 písmena) nebo čárový kód. Můžeš i s množstvím: „2 vejce“, „150 g tvaroh“. Online zdroje se prohledají po stisku Enter.</p>'; }
     else {
       res.innerHTML = shown.map((it,i)=>{
-        const srcTxt = it.src.map(s=>FS_SRC[s].ico+' '+FS_SRC[s].label).join(' + ');
+        const srcTxt = [...new Set(it.src.map(s=>FS_SRC[s].ico+' '+FS_SRC[s].label))].join(' + ');
         const dots = '●'.repeat(it.cmp.lvl+1)+'○'.repeat(2-it.cmp.lvl);
-        const links = it.links.map(l=>`<a class="fs-link" href="${homeEsc(l.url)}" target="_blank" rel="noopener" title="Původní zdroj: ${homeEsc(FS_SRC[l.src].label)}">↗</a>`).join('');
         return `<div class="fd-lib fs-card"><button data-fs="${i}"><b>${it.mine?'⭐ ':''}${homeEsc(it.name)}${it.variant && !homeNorm(it.name).includes(homeNorm(it.variant).slice(0,5)) ? ' <em class="fs-var">'+homeEsc(it.variant)+'</em>' : ''}</b>`
           + (it.brand ? `<small class="fs-brand">${homeEsc(it.brand)}</small>` : '') + `<small>${foodItemLine(it)}</small>`
-          + `<small class="fs-meta"><span>${srcTxt}</span><span class="fs-cmp l${it.cmp.lvl}" title="Úplnost údajů: ${it.cmp.n} z 8 hodnot">${dots} ${it.cmp.txt}</span>${it.conflict ? '<span class="fs-warn">⚠️ jiný zdroj uvádí jiné hodnoty</span>' : ''}</small></button>${links}</div>`;
+          + `<small class="fs-meta"><span>${srcTxt}</span><span class="fs-cmp l${it.cmp.lvl}" title="Úplnost údajů: ${it.cmp.n} z 8 hodnot">${dots} ${it.cmp.txt}</span>${it.conflict ? '<span class="fs-warn">⚠️ jiný zdroj uvádí jiné hodnoty</span>' : ''}</small></button></div>`;
       }).join('') || (busy ? '<p class="nb-note">⏳ Hledám…</p>' : (useOnl ? '<p class="nb-note">Nic nenalezeno v žádném zdroji. Zkus jiný název, zadej hodnoty ručně nebo použij odhad od AI.</p>' : '<p class="nb-note">V mých potravinách a základní databázi nic. Stiskni Enter a prohledají se i online zdroje.</p>'));
       const used = new Set(); shown.forEach(it=>it.src.forEach(s=>used.add(s)));
       const at = [];
       if(used.has('nutri')) at.push('Data: ©NutriDatabaze.cz');
       if(used.has('off')) at.push('Data: Open Food Facts (licence ODbL)');
-      if(used.has('mv')) at.push('Data: Kalorické tabulky Muskulvit.cz');
-      if(used.has('dv')) at.push('Data: Energetické tabulky L. Diviše (2003)');
       if(at.length) res.innerHTML += '<p class="nb-note fs-attr">'+at.join(' · ')+'</p>';
     }
     res.querySelectorAll('[data-fs]').forEach(b=>b.addEventListener('click', ()=>foodOpenItem(shown[+b.dataset.fs], pq)));
