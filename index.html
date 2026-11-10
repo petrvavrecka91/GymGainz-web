@@ -1296,6 +1296,10 @@
   .fs-cmp.l2{color:var(--green,#2ecc71);} .fs-cmp.l1{color:var(--cyan);} .fs-cmp.l0{color:#ff9d5d;} .fs-warn{color:#ff9d5d;}
   .fs-link{flex:0 0 auto; align-self:stretch; display:flex; align-items:center; padding:0 10px; border-radius:12px; border:1px solid var(--line); color:var(--accent); text-decoration:none; font-size:18px;}
   .fs-attr{margin-top:6px;}
+  .fv-row{padding:8px 0; border-bottom:1px solid var(--line);} .fv-top{display:flex; gap:6px;} .fv-top input{flex:1; min-width:0;}
+  .fv-bot{display:flex; align-items:flex-end; gap:8px; margin-top:6px;} .fv-bot label{display:flex; flex-direction:column; font-size:calc(12.6px * var(--font-scale)); color:var(--muted); gap:2px;} .fv-bot input{width:84px;} .fv-bot b{margin-left:auto; color:var(--cyan); white-space:nowrap;}
+  .fv-row input{padding:7px 10px !important; font-size:calc(14.6px * var(--font-scale));} .fv-top .nb-del{flex:0 0 auto;}
+  .fv-src{display:block; color:var(--muted); font-size:calc(12.6px * var(--font-scale)); margin-top:3px;}
   .fd-lib b{display:block; font-size:calc(14.6px * var(--font-scale));} .fd-lib small{display:block; color:var(--muted); font-size:calc(13.4px * var(--font-scale)); margin-top:2px;}
   .ff-lbl{display:block; font-size:13.8px; color:var(--muted); margin:9px 0 4px;}
   .ff-lbl input, .ff-lbl select{display:block; width:100%; margin-top:4px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:rgba(0,0,0,calc(var(--gs) * 0.9)); color:var(--text); font-family:inherit; font-size:15.7px; box-shadow:inset 0 1px 0 rgba(255,255,255,var(--gedge)), inset 0 -1px 0 rgba(255,255,255,calc(var(--gedge) * 0.35));}
@@ -3118,7 +3122,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30t · 2026-11-07</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30u · 2026-11-10</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -12630,7 +12634,7 @@ function renderHomeNotebookTile(){
 //       state.myFoods  [{id,name,per100:{kcal,p,c,s,f,sf,fiber,salt}, servingG}]
 // Součty dne se zrcadlí do starého state.dayMacros (mise a achievementy zůstávají funkční).
 // ============================================================
-const FOOD_SRC_ICON = {recipe:'🍳', label:'📷', barcode:'📦', manual:'✍️', library:'⭐', db:'🔎', off:'🌐', ai:'✨'};
+const FOOD_SRC_ICON = {recipe:'🍳', label:'📷', barcode:'📦', manual:'✍️', library:'⭐', db:'🔎', off:'🌐', ai:'✨', nutri:'🇨🇿', google:'🔍', voice:'🎤'};
 // ===== Databáze potravin (orientační hodnoty na 100 g) =====
 // řádek: název;aliasy;kcal;B;S;z toho cukry;T;gramy 1 kusu/porce;jak se to jmenuje (ks, lžíce…)
 const FOOD_DB_RAW = `Jablko;jablka jablek;52;0.3;14;10.4;0.2;180;ks
@@ -12815,7 +12819,10 @@ Smažený sýr;smazak;300;13;19;1;18;100;ks
 Guláš hovězí;gulas;140;11;4;1;9;300;porce
 Káva s mlékem;kava latte;30;1.6;2.4;2.4;1.5;250;hrnek
 Domácí hamburger;burger hamburger;250;13;24;4;11;200;ks
-Kebab;;215;12;20;3;10;300;ks`;
+Kebab;;215;12;20;3;10;300;ks
+Sůl;sul kuchynska;0;0;0;0;0;1;špetka
+Tortilla pšeničná;tortilla tortila wrap placka;310;8.5;50;3;8;60;ks
+Sýr cheddar;cheddar cedar chedar syr;400;25;1.3;0.5;33;20;plátek`;
 let _foodDb = null;
 function foodDb(){
   if(_foodDb) return _foodDb;
@@ -12876,7 +12883,9 @@ const AI_BASE = 'https://generativelanguage.googleapis.com/v1beta/';
 function aiErr(code, msg){ const e = new Error(msg||code); e.code = code; return e; }
 async function aiFetch(url, opts){
   let r;
-  try{ r = await fetch(url, opts); }catch(e){ throw aiErr('net','Bez připojení k internetu'); }
+  const ctl = new AbortController(), to = setTimeout(()=>ctl.abort(), 30000);
+  try{ r = await fetch(url, Object.assign({signal:ctl.signal}, opts)); }catch(e){ throw aiErr('net', e && e.name==='AbortError' ? 'AI neodpověděla včas' : 'Bez připojení k internetu'); }
+  finally{ clearTimeout(to); }
   if(r.ok) return r.json();
   let body = null; try{ body = await r.json(); }catch(e){}
   const msg = body && body.error && body.error.message || '';
@@ -12898,16 +12907,19 @@ async function aiPickModel(){
   try{ localStorage.setItem(GG_MODEL_LS, pick); }catch(e){}
   return pick;
 }
-async function aiGenerate(parts, schema){
+async function aiGenerate(parts, schema, opts){
   if(!aiKey()) throw aiErr('nokey','Chybí klíč');
+  const gc = m => { const c = {responseMimeType:'application/json', responseSchema:schema, temperature:0.1}; if(/^gemini-2\.5-flash$/.test(m)) c.thinkingConfig = {thinkingBudget:0}; return c; };   // bez „přemýšlení“ je odpověď rychlejší
   const run = model => aiFetch(AI_BASE+'models/'+model+':generateContent', {
     method:'POST', headers:{'Content-Type':'application/json','x-goog-api-key':aiKey()},
-    body: JSON.stringify({contents:[{role:'user', parts}], generationConfig:{responseMimeType:'application/json', responseSchema:schema, temperature:0.1}})});
-  // Google občas hlásí „model je vytížený“ – zkusíme další modely a pak ještě jedno kolo po pauze
-  const models = [aiModel(), 'gemini-flash-latest', 'gemini-2.5-flash', 'gemini-flash-lite-latest', 'gemini-2.5-flash-lite'].filter((m,i,a)=>a.indexOf(m)===i);
+    body: JSON.stringify({contents:[{role:'user', parts}], generationConfig:gc(model)})});
+  // Google občas hlásí „model je vytížený“ – zkusíme další modely a pak ještě jedno kolo po krátké pauze
+  // fast = textové úlohy, kde stačí rychlý model (Flash-Lite jde první)
+  const base = [aiModel(), 'gemini-flash-latest', 'gemini-2.5-flash', 'gemini-flash-lite-latest', 'gemini-2.5-flash-lite'];
+  const models = ((opts && opts.fast) ? ['gemini-flash-lite-latest', 'gemini-2.5-flash-lite'].concat(base) : base).filter((m,i,a)=>a.indexOf(m)===i);
   let j = null, last = null;
   for(let round=0; round<2 && !j; round++){
-    if(round) await new Promise(r=>setTimeout(r, 2500));
+    if(round) await new Promise(r=>setTimeout(r, 800));
     for(const m of models){
       try{ j = await run(m); break; }
       catch(e){ last = e; if(e.code==='badkey' || e.code==='net') throw e; /* busy / quota / nomodel → další model */ }
@@ -12928,7 +12940,7 @@ async function aiGenerateSearch(prompt){
   const models = [aiModel(), 'gemini-flash-latest', 'gemini-2.5-flash', 'gemini-flash-lite-latest'].filter((m,i,a)=>a.indexOf(m)===i);
   let j = null, last = null;
   for(let round=0; round<2 && !j; round++){
-    if(round) await new Promise(r=>setTimeout(r, 2500));
+    if(round) await new Promise(r=>setTimeout(r, 800));
     for(const m of models){
       try{ j = await run(m); break; }
       catch(e){ last = e; if(e.code==='badkey' || e.code==='net') throw e; }
@@ -12958,7 +12970,7 @@ async function aiEstimateFood(name){
     'Kalorie (kcal), bílkoviny, sacharidy, z toho cukry, tuky, z toho nasycené, vláknina a sůl v gramech. '+
     'Dále typická hmotnost jednoho kusu nebo porce v gramech (pieceG) a jak se jednotka česky jmenuje (pieceLabel, např. "ks", "plátek", "lžíce", "porce"). '+
     'Pokud je to nesmysl a nejde o jídlo, vrať kcal null. Odpověz pouze JSON.'}],
-    {type:'OBJECT', properties:{name:{type:'STRING'}, per100:AI_PER100, pieceG:AI_NUM, pieceLabel:{type:'STRING', nullable:true}}});
+    {type:'OBJECT', properties:{name:{type:'STRING'}, per100:AI_PER100, pieceG:AI_NUM, pieceLabel:{type:'STRING', nullable:true}}}, {fast:true});
   const per = aiCleanPer(r.per100);
   if(per.kcal==null && per.p==null && per.c==null && per.f==null) throw aiErr('nofood','Tohle AI nepoznala jako jídlo');
   return {name: String(r.name||name).slice(0,60), per100: per, pieceG: (r.pieceG>0 ? r.pieceG : null), pieceLabel: r.pieceLabel||'ks'};
@@ -13258,6 +13270,7 @@ function renderFoodDiary(){
     </details>
     <div class="fd-actions">
       <button id="fdSearch" style="grid-column:1 / -1;">🔎 Hledat potravinu (jablko, rohlík…)</button>
+      <button id="fdVoice" style="grid-column:1 / -1;">🎤 Říct / napsat, co jsem jedl</button>
       <button id="fdPhoto" style="grid-column:1 / -1;">📸 Vyfotit jídlo (odhad AI)</button>
       <button id="fdLabel">📷 Vyfotit tabulku</button><button id="fdBarcode">📦 Čárový kód</button>
       <button id="fdRecipe">🍳 Z receptu</button><button id="fdLib">⭐ Moje potraviny</button>
@@ -13296,6 +13309,7 @@ function renderFoodDiary(){
     }});
   });
   document.getElementById('fdSearch').addEventListener('click', ()=>openFoodSearch(''));
+  document.getElementById('fdVoice').addEventListener('click', ()=>openFoodSpeak(''));
   document.getElementById('fdPhoto').addEventListener('click', openFoodPhotoPicker);
   document.getElementById('fdLabel').addEventListener('click', openFoodLabelPicker);
   document.getElementById('fdBarcode').addEventListener('click', openFoodBarcode);
@@ -13698,7 +13712,7 @@ function openFoodPhotoPicker(){
     const hint = document.getElementById('fpHint').value.trim();
     foodPanel('<h4>✨ AI se dívá na jídlo…</h4><div class="ff-prog"><div id="ffProgBar" style="width:60%"></div></div><p class="nb-note">Trvá to pár sekund.</p>');
     try{
-      const b64 = await foodImageToJpegB64(f, 1280);
+      const b64 = await foodImageToJpegB64(f, 896);
       const r = await aiEstimatePhoto(b64, 'image/jpeg', hint);
       openFoodForm({source:'ai', name:r.name, per100:r.per100, grams:r.grams, missing:[],
         note:'✨ Odhad z fotky'+(r.items?' ('+homeEsc(r.items)+')':'')+'. Gramy a hodnoty jsou orientační – uprav podle skutečnosti.'});
@@ -13708,6 +13722,190 @@ function openFoodPhotoPicker(){
   document.getElementById('fpPick').addEventListener('click', ()=>document.getElementById('fpGal').click());
   document.getElementById('fpCam').addEventListener('change', e=>go(e.target.files[0]));
   document.getElementById('fpGal').addEventListener('change', e=>go(e.target.files[0]));
+}
+// --- zápis jídla větou (diktování z klávesnice / psaní) → rozpis na ingredience ---
+const MEAL_NUMS = {jedno:1,jeden:1,jedna:1,jednu:1,dva:2,dve:2,tri:3,ctyri:4,pet:5,sest:6,sedm:7,osm:8,devet:9,deset:10,pul:0.5,pulku:0.5,polovinu:0.5,tucet:12};
+const MEAL_UNITS = [[/^(g|gr|gram|gramu|gramy)$/,'g'],[/^kg$/,'kg'],[/^ml$/,'ml'],[/^(ks|kus|kusy|kusu)$/,'ks'],[/^(platek|platky|platku)$/,'plátek'],[/^(lzice|lzic|lzici)$/,'lžíce'],
+  [/^(lzicka|lzicky|lzicek|lzicku)$/,'lžička'],[/^(hrst|hrsti|hrstku)$/,'hrst'],[/^(spetka|spetky|spetku)$/,'špetka'],[/^(porce|porci)$/,'porce'],[/^(sklenice|sklenici|sklenka|sklenku|sklenky)$/,'sklenice'],
+  [/^(hrnek|hrnku|hrnky)$/,'hrnek'],[/^(kousek|kousky|kousku)$/,'kousek']];
+const MEAL_UNIT_G = {g:1, kg:1000, ml:1, 'plátek':20, 'lžíce':15, 'lžička':5, hrst:30, 'špetka':1, porce:150, sklenice:250, hrnek:250, kousek:30};
+const MEAL_SOFT_UNITS = ['hrst','špetka','lžíce','lžička','plátek','kousek','sklenice','hrnek','porce'];   // „špetka soli“ = 1 špetka
+const MEAL_VAGUE = ['trochu','trosku','malo','kapku','kapka','pár','par'];
+const MEAL_FILL = ['se','s','z','ze','a','i','na','do','jsem','jedl','jedla','snedl','snedla','dal','dala','pak','potom','dale','si','mel','mela','dnes','k','ke','od','pridal','pridala','jeste','plus','tak','ted','ráno','rano','obed','vecer','dostal','dostala'];
+const MEAL_ALIAS = {soli:'sul', sole:'sul', solí:'sul', vajicka:'vejce', vajec:'vejce', vajicko:'vejce', chedar:'cheddar', cedar:'cheddar', chedaru:'cheddar', cheddaru:'cheddar', kecupu:'kecup', slaniny:'slanina', vlocek:'vlocky', vlocku:'vlocky', tortily:'tortilla', tortil:'tortilla', tortilu:'tortilla'};
+function mealUnitOf(t){ const u = MEAL_UNITS.find(x=>x[0].test(t)); return u ? u[1] : ''; }
+// rozdělí větu na položky {nameTxt, qty, unit, vague}; počítá i s diktováním bez čárek (hranice položek se hledají podle databáze)
+function mealSegment(text){
+  const raw = homeNorm(text).replace(/[(),;+\n]+/g,' | ').split(/\s+/).filter(Boolean);
+  const items = []; let cur = {name:[], qty:null, unit:'', vague:false, pre:false};
+  const flush = ()=>{ if(cur.name.length || cur.qty!=null){ items.push(cur); } cur = {name:[], qty:null, unit:'', vague:false, pre:false}; };
+  const qtyAt = i=>{   // přečte „množstevní blok“ od pozice i → {qty, unit, vague, len} nebo null
+    const t = raw[i]; if(t==null) return null;
+    let m;
+    if((m = t.match(/^(\d+(?:[.,]\d+)?)(g|kg|ml|ks|x)?$/))){
+      const q = parseFloat(m[1].replace(',','.')); let u = m[2]==='x' ? 'ks' : (m[2]||''), len = 1;
+      if(!u && raw[i+1]){ if(raw[i+1]==='x'){ u='ks'; len=2; } else { const uu = mealUnitOf(raw[i+1]); if(uu){ u=uu; len=2; } } }
+      return {qty:q, unit:u, len};
+    }
+    if(MEAL_NUMS[t]!=null){ let u = '', len = 1; if(raw[i+1]){ const uu = mealUnitOf(raw[i+1]); if(uu){ u=uu; len=2; } } return {qty:MEAL_NUMS[t], unit:u, len}; }
+    if(MEAL_VAGUE.includes(t)) return {qty:null, unit:'', vague:true, len:1};
+    const uu = mealUnitOf(t); if(uu && MEAL_SOFT_UNITS.includes(uu)) return {qty:1, unit:uu, len:1, soft:true};
+    return null;
+  };
+  for(let i=0; i<raw.length; ){
+    const t = raw[i];
+    if(t==='|'){ flush(); i++; continue; }
+    if(MEAL_FILL.includes(t)){ i++; continue; }
+    const q = qtyAt(i);
+    if(q){
+      const nextIsName = raw[i+q.len] && raw[i+q.len]!=='|' && !qtyAt(i+q.len) && !MEAL_FILL.includes(raw[i+q.len]);
+      if(cur.name.length && cur.qty==null && !cur.vague && !nextIsName){ cur.qty = q.qty; cur.unit = q.unit; cur.vague = !!q.vague; }   // „cheddar dva plátky“
+      else { flush(); cur.qty = q.qty; cur.unit = q.unit; cur.vague = !!q.vague; cur.pre = true; }                                              // „dva plátky cheddaru“
+      i += q.len; continue;
+    }
+    cur.name.push(MEAL_ALIAS[t] || t.replace(/ych$/,'e').replace(/iho$/,'i')); i++;
+  }
+  flush();
+  // název z více slov bez čárky („tortily cheddar“) rozděl na položky, které databáze zná
+  const out = [];
+  items.forEach(it=>{
+    let words = it.name.slice(), first = true;
+    if(!words.length){   // osamělé množství na konci („… cheddar dva plátky“) patří poslední položce bez množství
+      const prev = out[out.length-1];
+      if(prev && prev.qty==null && !prev.vague){ prev.qty = it.qty; prev.unit = it.unit; prev.vague = it.vague; }
+      return;
+    }
+    while(words.length){
+      let k = words.length;
+      while(k>1 && !foodSearchLocal(words.slice(0,k).join(' '), 1).length) k--;
+      const head = words.slice(0,k).join(' ');
+      if(k===1 && !foodSearchLocal(head,1).length && words.length>1){   // první slovo databáze nezná → zkus celé zbytek jako jednu položku
+        out.push({nameTxt:words.join(' '), qty:first?it.qty:null, unit:first?it.unit:'', vague:first?it.vague:false}); break;
+      }
+      out.push({nameTxt:head, qty:first?it.qty:null, unit:first?it.unit:'', vague:first?it.vague:false});
+      words = words.slice(k); first = false;
+    }
+  });
+  return out;
+}
+function mealGrams(hit, qty, unit, vague){
+  const pcL = hit && hit.pieceG>0 ? homeNorm(hit.pieceLabel||'') : '';
+  if(unit==='g'||unit==='ml') return qty;
+  if(unit==='kg') return qty*1000;
+  if(qty==null){ return hit && hit.pieceG>0 ? hit.pieceG : (vague ? 10 : 100); }   // „trochu“ = 1 jednotka dané potraviny (lžíce, špetka…)
+  if(unit && unit!=='ks'){ return qty * ((pcL && pcL===homeNorm(unit)) ? hit.pieceG : (MEAL_UNIT_G[unit]||100)); }
+  if(hit && hit.pieceG>0) return qty*hit.pieceG;
+  return qty>=10 ? qty : qty*100;
+}
+// bez AI: rozpis podle databáze v aplikaci
+function mealParseLocal(text){
+  const items = mealSegment(text).filter(x=>x.nameTxt).map(x=>{
+    const hit = foodSearchLocal(x.nameTxt, 1)[0] || null;
+    const g = mealGrams(hit, x.qty, x.unit, x.vague);
+    return {name: hit ? hit.name : x.nameTxt, grams: Math.round(g*10)/10, per100: hit ? fsNormPer(hit.per100) : null, src: hit ? (hit.mine?'lib':'db') : 'none', vague: !!x.vague || (x.qty==null)};
+  });
+  return {mealName:'', items, ai:false};
+}
+// s AI: rozdělí větu, odhadne gramy; hodnoty bere z databáze v aplikaci, a když tam potravina není, z odhadu AI
+async function aiParseMeal(text){
+  const r = await aiGenerate([{text:
+    'Uživatel česky nadiktoval nebo napsal, co snědl (diktování bývá bez čárek a interpunkce). Rozděl to na jednotlivé potraviny a ke každé odhadni hmotnost v gramech (grams) '+
+    'podle toho, co řekl. Typické hmotnosti: vejce 55 g, plátek slaniny 15 g, plátek sýra 20 g, tortilla (wrap) 60 g, lžíce kečupu 17 g, špetka soli 1 g, plátek šunky 20 g, rohlík 50 g, krajíc chleba 40 g, hrst oříšků 30 g. '+
+    '„Trochu/trošku/pár“ = malé množství – odhadni a nastav vague=true. Nic nepřidávej, co nezaznělo. Název v name piš česky v 1. pádu (např. „tortilla“, „sýr cheddar“). '+
+    'dbQuery = krátký obecný název pro hledání v databázi potravin (např. „slanina“, „kečup“, „vejce“). per100 = průměrné hodnoty na 100 g dané potraviny (kcal, p bílkoviny, c sacharidy, s cukry, f tuky, sf nasycené, fiber, salt v g). '+
+    'mealName = krátký název celého jídla (max 40 znaků). Text: "'+String(text).slice(0,600).replace(/"/g,"'")+'". Odpověz pouze JSON.'}],
+    {type:'OBJECT', properties:{mealName:{type:'STRING'}, items:{type:'ARRAY', items:{type:'OBJECT', properties:{name:{type:'STRING'}, dbQuery:{type:'STRING'}, grams:{type:'NUMBER'}, vague:{type:'BOOLEAN'}, per100:AI_PER100}}}}}, {fast:true});
+  const items = (r.items||[]).filter(x=>x && x.name && x.grams>0).slice(0,30).map(x=>{
+    const hit = foodSearchLocal(x.dbQuery || x.name, 1)[0] || null;
+    const ai = fsNormPer(x.per100), aiOk = ai.kcal!=null;
+    return {name: String(x.name).slice(0,50), grams: Math.round(x.grams*10)/10, per100: hit ? fsNormPer(hit.per100) : (aiOk ? ai : null), src: hit ? (hit.mine?'lib':'db') : (aiOk ? 'ai' : 'none'), vague: !!x.vague};
+  });
+  if(!items.length) throw aiErr('nofood','Z textu AI nepoznala žádné jídlo');
+  return {mealName: String(r.mealName||'').slice(0,40), items, ai:true};
+}
+function openFoodSpeak(text0){
+  foodPanel(`<h4>🎤 Řekni nebo napiš, co jsi jedl/a</h4>
+    <p class="nb-note" style="margin:0 0 8px;">Klepni do pole a na klávesnici telefonu na 🎤 – nadiktuj třeba „čtyři vejce, šest plátků slaniny, trochu kečupu, dvě tortily, cheddar dva plátky“. Appka to rozdělí na položky a spočítá kalorie. Před uložením všechno uvidíš a můžeš upravit.</p>
+    <textarea id="fvText" class="wo-scratch-input" rows="4" maxlength="600" placeholder="co jsi jedl/a…" style="width:100%; box-sizing:border-box; margin-bottom:8px;">${homeEsc(text0||'')}</textarea>
+    <div class="fs-more"><button id="fvGo">✨ Spočítat</button></div>`);
+  const go = async()=>{
+    const text = document.getElementById('fvText').value.trim();
+    if(text.length<3){ showToast('⚠️ Napiš nebo nadiktuj, co jsi jedl/a'); return; }
+    foodPanel('<h4>✨ Rozpisuji jídlo…</h4><div class="ff-prog"><div id="ffProgBar" style="width:60%"></div></div><p class="nb-note">Trvá to pár sekund.</p>');
+    let r, note = '';
+    if(aiKey()){
+      try{ r = await aiParseMeal(text); }
+      catch(e){ r = mealParseLocal(text); note = '⚠️ AI se nepovedla ('+aiErrText(e)+') – rozpis je jen podle databáze v appce, zkontroluj ho.'; }
+    } else { r = mealParseLocal(text); note = 'Rozpis je jen podle databáze v appce (bez AI). S AI (Profil → Nastavení) rozumí volnější větě.'; }
+    if(!r.items.length){ showToast('🤔 Nepoznal jsem žádnou potravinu – zkus to jinak'); openFoodSpeak(text); return; }
+    showMealResult(r, text, note);
+  };
+  document.getElementById('fvGo').addEventListener('click', go);
+}
+function showMealResult(r, text, note){
+  const rows = r.items.map(x=>Object.assign({}, x));
+  const SRC = {db:'📚 databáze', lib:'⭐ moje potraviny', ai:'✨ odhad AI', none:'❓ nenalezeno – doplň kcal'};
+  const ov = foodPanel(`<h4>🍽️ Rozpis jídla</h4>
+    ${note ? '<div class="ff-note">'+homeEsc(note)+'</div>' : ''}
+    <label class="ff-lbl">Název jídla<input type="text" id="fvName" maxlength="60" value="${homeEsc(r.mealName || 'Jídlo z diktování')}"></label>
+    <div id="fvRows"></div>
+    <div id="ffPreview" class="ff-preview"></div>
+    <label class="ff-chk"><input type="checkbox" id="fvSplit"> Zapsat každou položku zvlášť</label>
+    <label class="ff-chk"><input type="checkbox" id="fvSave"> Uložit jako vlastní jídlo do Mých potravin</label>
+    <button class="paywall-cta" id="fvAdd" style="background:var(--accent); color:#14041f; margin:12px 0 0;">➕ Přidat do deníku</button>`);
+  const rowsEl = ov.querySelector('#fvRows'), pv = ov.querySelector('#ffPreview');
+  const f1 = n=>String(Math.round(n*10)/10).replace('.',',');
+  const rk = x=> x.per100 && x.per100.kcal!=null ? x.per100.kcal*x.grams/100 : null;
+  const totals = ()=>{
+    const t = {kcal:0, p:0, c:0, f:0, s:0, g:0, sOk:true, miss:0};
+    rows.forEach(x=>{ if(!x.per100 || x.per100.kcal==null){ t.miss++; return; } const k = x.grams/100; t.kcal += (x.per100.kcal||0)*k; t.p += (x.per100.p||0)*k; t.c += (x.per100.c||0)*k; t.f += (x.per100.f||0)*k; if(x.per100.s==null) t.sOk = false; else t.s += x.per100.s*k; t.g += x.grams; });
+    return t;
+  };
+  const upd = ()=>{
+    rows.forEach((x,i)=>{ const el = rowsEl.querySelector('[data-kc="'+i+'"]'); if(el){ const k = rk(x); el.textContent = k==null ? '— kcal' : Math.round(k)+' kcal'; } });
+    const t = totals();
+    pv.innerHTML = `<b>Celkem:</b> ${Math.round(t.kcal)} kcal · B ${foodFmt(t.p)} g · S ${foodFmt(t.c)} g · T ${foodFmt(t.f)} g · ${Math.round(t.g)} g`
+      + (t.miss ? `<div class="ff-warn">⚠️ ${t.miss} položka(y) nemá kalorie – doplň je, nebo se do součtu nepočítají.</div>` : '');
+  };
+  const draw = ()=>{
+    rowsEl.innerHTML = rows.map((x,i)=>`<div class="fv-row">
+      <div class="fv-top"><input type="text" data-n="${i}" maxlength="50" value="${homeEsc(x.name)}"><button class="nb-del" data-d="${i}" aria-label="Odebrat">✕</button></div>
+      <div class="fv-bot"><label>g<input type="text" inputmode="decimal" data-g="${i}" value="${f1(x.grams)}"></label>
+        <label>kcal/100 g<input type="text" inputmode="decimal" data-k="${i}" value="${x.per100 && x.per100.kcal!=null ? f1(x.per100.kcal) : ''}"></label>
+        <b data-kc="${i}"></b></div>
+      <small class="fv-src">${SRC[x.src]||''}${x.vague ? ' · ⚠️ množství je odhad' : ''}</small></div>`).join('');
+    rowsEl.querySelectorAll('[data-n]').forEach(e=>e.addEventListener('input', ()=>{ rows[+e.dataset.n].name = e.value; }));
+    rowsEl.querySelectorAll('[data-g]').forEach(e=>e.addEventListener('input', ()=>{ const v = foodNum(e.value); if(v>=0){ rows[+e.dataset.g].grams = v; rows[+e.dataset.g].vague = false; } upd(); }));
+    rowsEl.querySelectorAll('[data-k]').forEach(e=>e.addEventListener('input', ()=>{
+      const x = rows[+e.dataset.k], v = foodNum(e.value);
+      if(v==null || !(v>=0)){ return; }
+      if(x.per100 && x.per100.kcal>0){ const ratio = v/x.per100.kcal; ['p','c','s','f','sf','fiber','salt'].forEach(k=>{ if(x.per100[k]!=null) x.per100[k] *= ratio; }); x.per100.kcal = v; }
+      else { x.per100 = Object.assign(fsNormPer(null), {kcal:v}); }
+      upd();
+    }));
+    rowsEl.querySelectorAll('[data-d]').forEach(b=>b.addEventListener('click', ()=>{ rows.splice(+b.dataset.d, 1); if(!rows.length){ closeFoodPanel(); return; } draw(); upd(); }));
+    upd();
+  };
+  draw();
+  ov.querySelector('#fvAdd').addEventListener('click', ()=>{
+    const ok = rows.filter(x=>x.per100 && x.per100.kcal!=null && x.grams>0);
+    if(!ok.length){ showToast('⚠️ Doplň aspoň u jedné položky kalorie a gramy'); return; }
+    const date = foodDate || todayKey(), clean = s=>String(s||'').replace(/[<>"&`\\]/g,'').trim();
+    if(ov.querySelector('#fvSplit').checked){
+      ok.forEach(x=>{ const k = x.grams/100, p = x.per100; foodCommit({date, name:clean(x.name)||'Položka', source:'voice', grams:x.grams, kcal:(p.kcal||0)*k, p:(p.p||0)*k, c:(p.c||0)*k, f:(p.f||0)*k, s:p.s==null?null:p.s*k}); });
+    } else {
+      const t = totals(), name = clean(ov.querySelector('#fvName').value) || 'Jídlo z diktování';
+      foodCommit({date, name, source:'voice', grams:t.g, kcal:t.kcal, p:t.p, c:t.c, f:t.f, s:t.sOk ? t.s : null});
+      if(ov.querySelector('#fvSave').checked && t.g>0){
+        if(!Array.isArray(state.myFoods)) state.myFoods = [];
+        const per = {kcal:foodR1(t.kcal/t.g*100), p:foodR1(t.p/t.g*100), c:foodR1(t.c/t.g*100), f:foodR1(t.f/t.g*100)}; if(t.sOk) per.s = foodR1(t.s/t.g*100);
+        const ex = state.myFoods.find(z=>homeNorm(z.name)===homeNorm(name));
+        if(ex){ ex.per100 = per; ex.servingG = Math.round(t.g); } else state.myFoods.push({id:'M'+Date.now(), name, per100:per, servingG:Math.round(t.g), packG:null});
+        saveState();
+      }
+    }
+    closeFoodPanel(); showToast('🍽️ Přidáno do deníku'); renderFoodDiary(); try{ renderProgFood(); }catch(e){}
+  });
 }
 // --- hledání potravin: sjednocené vyhledávání z více zdrojů najednou ---
 function foodPieceOf(it){ return it && it.pieceG>0 ? {g:it.pieceG, label:it.pieceLabel||'ks'} : null; }
