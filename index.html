@@ -3121,7 +3121,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30y · 2026-11-10</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30z · 2026-11-10</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -16067,6 +16067,15 @@ function foodParsePack(q){
   const v = (m[1] ? Number(m[1]) : 1) * Number(m[2]) * k;
   return v>0 && v<20000 ? Math.round(v*10)/10 : null;
 }
+
+// čekání na AI: poctivý odhad doby + běžící čas (a při zavření panelu se časovač sám zruší)
+let _ffWaitT = null;
+function foodWaitTimer(msg){
+  clearInterval(_ffWaitT);
+  const t0 = Date.now();
+  const draw = ()=>{ const el = document.getElementById('ffWait'); if(!el){ clearInterval(_ffWaitT); return; } el.textContent = msg+' ⏱ '+Math.round((Date.now()-t0)/1000)+' s'; };
+  draw(); _ffWaitT = setInterval(draw, 1000);
+}
 async function foodLookupBarcode(code){
   code = String(code||'').replace(/\D/g,'');
   if(code.length<8){ showToast('⚠️ Zadej celé číslo čárového kódu (8–13 číslic)'); return; }
@@ -16101,7 +16110,8 @@ function openFoodPhotoPicker(){
   const go = async f=>{
     if(!f) return;
     const hint = document.getElementById('fpHint').value.trim();
-    foodPanel('<h4>✨ AI se dívá na jídlo…</h4><div class="ff-prog"><div id="ffProgBar" style="width:60%"></div></div><p class="nb-note">Trvá to pár sekund.</p>');
+    foodPanel('<h4>✨ AI se dívá na jídlo…</h4><div class="ff-prog"><div id="ffProgBar" style="width:60%"></div></div><p class="nb-note" id="ffWait"></p>');
+    foodWaitTimer('Obvykle 10–30 s, při přetížení Googlu i déle.');
     try{
       const b64 = await foodImageToJpegB64(f, 896);
       const r = await aiEstimatePhoto(b64, 'image/jpeg', hint);
@@ -16222,7 +16232,8 @@ function openFoodSpeak(text0){
   const go = async()=>{
     const text = document.getElementById('fvText').value.trim();
     if(text.length<3){ showToast('⚠️ Napiš nebo nadiktuj, co jsi jedl/a'); return; }
-    foodPanel('<h4>✨ Rozpisuji jídlo…</h4><div class="ff-prog"><div id="ffProgBar" style="width:60%"></div></div><p class="nb-note">Trvá to pár sekund.</p>');
+    foodPanel('<h4>✨ Rozpisuji jídlo…</h4><div class="ff-prog"><div id="ffProgBar" style="width:60%"></div></div><p class="nb-note" id="ffWait"></p>');
+    foodWaitTimer('Obvykle 5–20 s, při přetížení Googlu i déle.');
     let r, note = '';
     if(aiKey()){
       try{ r = await aiParseMeal(text); }
