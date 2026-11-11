@@ -3121,7 +3121,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V30z · 2026-11-10</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V31a · 2026-11-10</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -15268,8 +15268,8 @@ const AI_BASE = 'https://generativelanguage.googleapis.com/v1beta/';
 function aiErr(code, msg){ const e = new Error(msg||code); e.code = code; return e; }
 async function aiFetch(url, opts){
   let r;
-  const ctl = new AbortController(), to = setTimeout(()=>ctl.abort(), 30000);
-  try{ r = await fetch(url, Object.assign({signal:ctl.signal}, opts)); }catch(e){ throw aiErr('net', e && e.name==='AbortError' ? 'AI neodpověděla včas' : 'Bez připojení k internetu'); }
+  const ctl = new AbortController(), to = setTimeout(()=>ctl.abort(), (opts && opts.timeoutMs) || 30000);
+  try{ r = await fetch(url, Object.assign({signal:ctl.signal}, opts)); }catch(e){ if(e && e.name==='AbortError') throw aiErr('timeout','AI neodpověděla včas'); throw aiErr('net', 'Bez připojení k internetu'); }
   finally{ clearTimeout(to); }
   if(r.ok) return r.json();
   let body = null; try{ body = await r.json(); }catch(e){}
@@ -15295,8 +15295,9 @@ async function aiPickModel(){
 async function aiGenerate(parts, schema, opts){
   if(!aiKey()) throw aiErr('nokey','Chybí klíč');
   const gc = m => { const c = {responseMimeType:'application/json', responseSchema:schema, temperature:0.1}; if(/^gemini-2\.5-flash$/.test(m)) c.thinkingConfig = {thinkingBudget:0}; return c; };   // bez „přemýšlení“ je odpověď rychlejší
+  const perTry = (opts && opts.timeoutMs) || ((opts && opts.fast) ? 14000 : 20000), t0 = Date.now();
   const run = model => aiFetch(AI_BASE+'models/'+model+':generateContent', {
-    method:'POST', headers:{'Content-Type':'application/json','x-goog-api-key':aiKey()},
+    method:'POST', headers:{'Content-Type':'application/json','x-goog-api-key':aiKey()}, timeoutMs:perTry,
     body: JSON.stringify({contents:[{role:'user', parts}], generationConfig:gc(model)})});
   // Google občas hlásí „model je vytížený“ – zkusíme další modely a pak ještě jedno kolo po krátké pauze
   // fast = textové úlohy, kde stačí rychlý model (Flash-Lite jde první)
@@ -15306,9 +15307,11 @@ async function aiGenerate(parts, schema, opts){
   for(let round=0; round<2 && !j; round++){
     if(round) await new Promise(r=>setTimeout(r, 800));
     for(const m of models){
+      if(Date.now()-t0 > 55000) break;   // celkově nečekáme déle než ~1 min
       try{ j = await run(m); break; }
-      catch(e){ last = e; if(e.code==='badkey' || e.code==='net') throw e; /* busy / quota / nomodel → další model */ }
+      catch(e){ last = e; if(e.code==='badkey' || e.code==='net') throw e; /* timeout / busy / quota / nomodel → další model */ }
     }
+    if(Date.now()-t0 > 55000) break;
   }
   if(!j) throw last || aiErr('http','Chyba AI');
   const txt = (((j.candidates||[])[0]||{}).content||{}).parts;
@@ -15323,13 +15326,15 @@ async function aiGenerateSearch(prompt){
     method:'POST', headers:{'Content-Type':'application/json','x-goog-api-key':aiKey()},
     body: JSON.stringify({contents:[{role:'user', parts:[{text:prompt}]}], tools:[{google_search:{}}], generationConfig:{temperature:0.1}})});
   const models = [aiModel(), 'gemini-flash-latest', 'gemini-2.5-flash', 'gemini-flash-lite-latest'].filter((m,i,a)=>a.indexOf(m)===i);
-  let j = null, last = null;
+  let j = null, last = null; const t0 = Date.now();
   for(let round=0; round<2 && !j; round++){
     if(round) await new Promise(r=>setTimeout(r, 800));
     for(const m of models){
+      if(Date.now()-t0 > 45000) break;
       try{ j = await run(m); break; }
       catch(e){ last = e; if(e.code==='badkey' || e.code==='net') throw e; }
     }
+    if(Date.now()-t0 > 45000) break;
   }
   if(!j) throw last || aiErr('http','Chyba AI');
   const cand = (j.candidates||[])[0]||{};
@@ -15385,7 +15390,7 @@ async function aiEstimatePhoto(b64, mime, hint){
       'name = krátký český název jídla (max 50 znaků). items = stručný výčet rozpoznaných částí s odhadem gramů, např. "kuřecí prsa ~150 g, rýže ~180 g". '+
       (hint ? 'Upřesnění od uživatele (ber ho jako pravdivé): "'+String(hint).slice(0,200)+'". ' : '')+
       'Pokud na fotce žádné jídlo není, vrať kcal null. Odpověz pouze JSON.'}],
-    {type:'OBJECT', properties:{name:{type:'STRING'}, grams:AI_NUM, items:{type:'STRING', nullable:true}, per100:AI_PER100}});
+    {type:'OBJECT', properties:{name:{type:'STRING'}, grams:AI_NUM, items:{type:'STRING', nullable:true}, per100:AI_PER100}}, {fast:true});
   const per = aiCleanPer(r.per100);
   if(per.kcal==null && per.p==null && per.c==null && per.f==null) throw aiErr('nofood','Na fotce AI nepoznala jídlo');
   return {name:String(r.name||'Jídlo z fotky').slice(0,60), grams: r.grams>0 ? Math.round(r.grams) : 250, per100:per, items:r.items?String(r.items).slice(0,200):''};
@@ -15399,7 +15404,7 @@ async function aiReadLabel(b64, mime){
       'Pokud je jen sloupec "na porci", vrať hodnoty na porci, basis="serving" a servingG = hmotnost porce v gramech (pokud je uvedena, jinak null). '+
       'Energie v kcal (když je jen kJ, přepočti: kJ/4,184). Sůl v gramech. Nenaznačuj hodnoty, které na fotce nejsou – dej null. '+
       'Pokud je na fotce vidět název výrobku, vyplň name. Odpověz pouze JSON.'}],
-    {type:'OBJECT', properties:{name:{type:'STRING', nullable:true}, basis:{type:'STRING', enum:['100','serving']}, servingG:AI_NUM, per100:AI_PER100}});
+    {type:'OBJECT', properties:{name:{type:'STRING', nullable:true}, basis:{type:'STRING', enum:['100','serving']}, servingG:AI_NUM, per100:AI_PER100}}, {fast:true});
   const per = aiCleanPer(r.per100);
   const found = Object.values(per).filter(v=>v!=null).length;
   if(found < 2) throw aiErr('unread','Tabulku se nepodařilo přečíst');
@@ -16532,7 +16537,7 @@ const fsSrc = {
 };
 function fsErrText(e){
   const c = e && e.code;
-  return c==='net' ? (e.message||'nedostupné') : c==='quota' ? 'limit AI vyčerpán' : c==='busy' ? 'AI je přetížená' : c==='badkey' ? 'neplatný AI klíč' : (e && e.message) || 'chyba';
+  return c==='net' || c==='timeout' ? (e.message||'nedostupné') : c==='quota' ? 'limit AI vyčerpán' : c==='busy' ? 'AI je přetížená' : c==='badkey' ? 'neplatný AI klíč' : (e && e.message) || 'chyba';
 }
 
 function foodOpenItem(it, qty){
@@ -16629,7 +16634,7 @@ function openFoodSearch(q0){
   if(/^\d{8,14}$/.test((q0||'').trim())) run();
 }
 function aiErrText(e){
-  return e.code==='nokey' ? 'Nejdřív nastav AI klíč' : e.code==='net' ? 'Bez internetu AI nefunguje' : e.code==='busy' ? '⏳ Google má AI přetíženou – zkus to za chvilku' : e.code==='quota' ? '⏳ Limit AI je vyčerpaný, zkus to za minutu' : e.code==='badkey' ? '🔑 Klíč není platný – zkontroluj ho v nastavení' : e.code==='nofood' ? 'Tohle AI nepoznala jako jídlo' : e.code==='unread' ? 'Tabulku AI nepřečetla – vyfoť ji blíž a na světle' : ('AI: ' + (e.message||'chyba'));
+  return e.code==='nokey' ? 'Nejdřív nastav AI klíč' : e.code==='net' ? 'Bez internetu AI nefunguje' : e.code==='timeout' ? '⏱ AI neodpověděla včas – zkus to znovu (pomůže i lepší signál)' : e.code==='busy' ? '⏳ Google má AI přetíženou – zkus to za chvilku' : e.code==='quota' ? '⏳ Limit AI je vyčerpaný, zkus to za minutu' : e.code==='badkey' ? '🔑 Klíč není platný – zkontroluj ho v nastavení' : e.code==='nofood' ? 'Tohle AI nepoznala jako jídlo' : e.code==='unread' ? 'Tabulku AI nepřečetla – vyfoť ji blíž a na světle' : ('AI: ' + (e.message||'chyba'));
 }
 async function foodAiFor(text){
   const pq = foodParseQuery(text);
