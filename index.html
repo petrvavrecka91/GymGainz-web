@@ -847,7 +847,7 @@
   }
   .dm-reset{
     background:none; border:none; color:var(--muted); cursor:pointer;
-    font-family:'Space Mono',monospace; font-size:13.4px; text-decoration:underline; margin-top:8px;
+    font-family:'Space Mono',monospace; font-size:13.4px; text-decoration:underline; margin-top:2px; padding:12px 14px;
   }
 
 
@@ -2030,7 +2030,7 @@
   .home-chip.on{border-color:var(--accent); background:rgba(var(--accent-rgb),calc(0.18 * var(--gt))); color:var(--accent); font-weight:700;}
   .home-label{font-size:calc(14px * var(--font-scale)); color:var(--muted); margin:16px 0 6px;}
   .home-eq-summary{font-size:calc(13.8px * var(--font-scale)); color:var(--muted); margin-bottom:10px; line-height:1.45;}
-  .home-link{background:none; border:0; color:var(--cyan); text-decoration:underline; cursor:pointer; font-size:inherit; padding:0 2px; font-family:inherit;}
+  .home-link{background:none; border:0; color:var(--cyan); text-decoration:underline; cursor:pointer; font-size:inherit; padding:9px 6px; margin:-9px -4px; font-family:inherit;}   /* větší dosah prstu, vzhled textu beze změny */
   .home-cover{border:1px solid var(--line); border-radius:12px; padding:10px 12px; background:rgba(0,0,0,calc(var(--gs) * 0.9)); font-size:calc(13.3px * var(--font-scale)); margin-bottom:6px; box-shadow:inset 0 1px 0 rgba(255,255,255,var(--gedge)), inset 0 -1px 0 rgba(255,255,255,calc(var(--gedge) * 0.35));}
   .home-cover b{display:block; margin-bottom:6px; font-family:'Oxanium',sans-serif; font-size:calc(14px * var(--font-scale));}
   .home-cov-row{display:flex; justify-content:space-between; gap:10px; padding:3px 0; border-top:1px solid rgba(255,255,255,0.05);}
@@ -2174,6 +2174,7 @@
   .sess-rest-pop .sess-rest-label{color:#d4cbc0 !important; padding:0 42px; font-size:13.8px;}
   .sess-rest-pop .sess-timer-controls button{background:rgba(255,255,255,.1) !important; color:#f4f1ee !important; border-color:rgba(255,255,255,.3) !important;}
   .sess-rest-pop .sess-skip-btn{color:#f4f1ee !important; border-color:rgba(255,255,255,.6) !important; background:rgba(255,255,255,.06) !important; font-weight:700;}
+  .fs-meal-btn{display:block; width:100%; margin:8px 0; padding:12px; border-radius:12px; border:1.5px dashed var(--accent); background:rgba(180,77,255,.08); color:var(--accent); font-weight:700; font-family:inherit; font-size:14.6px; text-align:left; cursor:pointer;}
   .sess-rest-pop .sess-auto-chip{color:#d4cbc0 !important; border-color:rgba(255,255,255,.3) !important;}
   .sess-rest-pop .sess-auto-chip.on{color:var(--accent) !important; border-color:var(--accent) !important;}
   .sess-rest-pop .sess-upnext{background:rgba(255,255,255,.07) !important; border-color:rgba(255,255,255,.2) !important;}
@@ -3121,7 +3122,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V31c · 2026-11-10</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V31d · 2026-11-10</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -9075,6 +9076,7 @@ function renderSessSetDone(el){
         <button data-d="ok">💪<br>Akorát</button>
         <button data-d="hard">🥵<br>Těžká</button>
       </div>
+      <button class="sess-auto-chip" id="sessNoDiff" style="margin:14px auto 0;">⏩ Neptat se na obtížnost</button>
     </div>`;
   function finishSet(difficulty){
       session.restKind = '';
@@ -9121,7 +9123,11 @@ function renderSessSetDone(el){
       renderSession();
   }
   if(p.t === 'w'){ finishSet(''); return; }
+  // volitelné: bez ptaní na obtížnost se série zapíše hned a pauza naskočí (doporučené váhy se pak podle obtížnosti neupravují)
+  if(state.noDiffAsk){ finishSet(''); return; }
   document.querySelectorAll('.sess-diff-btns button').forEach(b=>b.addEventListener('click', ()=>finishSet(b.dataset.d)));
+  const nd = document.getElementById('sessNoDiff');
+  if(nd) nd.addEventListener('click', ()=>{ state.noDiffAsk = true; saveState(); showToast('⏩ Obtížnost se už nebude ptát (zapneš to v pauze)'); finishSet(''); });
 }
 
 function renderSessRest(el){
@@ -9139,8 +9145,11 @@ function renderSessRest(el){
       </div>
       <button class="sess-skip-btn" id="sessSkipRest">Přeskočit pauzu →</button>
       <button class="sess-auto-chip ${state.sessAuto===false?'':'on'}" id="sessAutoChip">${state.sessAuto===false?'🔕 Auto-pokračování: vyp':'⚡ Auto-pokračování: zap'}</button>
+      <button class="sess-auto-chip ${state.noDiffAsk?'':'on'}" id="sessDiffChip" style="margin-top:6px;">${state.noDiffAsk?'💬 Ptát se na obtížnost: vyp':'💬 Ptát se na obtížnost: zap'}</button>
       ${sessUpcomingHTML()}
     </div>`;
+  const dc = document.getElementById('sessDiffChip');
+  if(dc) dc.addEventListener('click', ()=>{ state.noDiffAsk = !state.noDiffAsk; saveState(); dc.classList.toggle('on', !state.noDiffAsk); dc.textContent = state.noDiffAsk ? '💬 Ptát se na obtížnost: vyp' : '💬 Ptát se na obtížnost: zap'; });
   document.getElementById('sessPopToggle').addEventListener('click', function(){
     session.restCompact = !session.restCompact;
     el.classList.toggle('compact', session.restCompact); this.textContent = session.restCompact ? '▾' : '▴';
@@ -15683,8 +15692,8 @@ function foodDonutHTML(tot, tg, size){
   const left = Math.round(tg.kcal - tot.kcal);
   const ck = foodLimitColor(rk);
   const center = left>=0
-    ? `<text x="110" y="107" text-anchor="middle" fill="#f2f2f7" font-size="25" font-weight="800" font-family="Oxanium,sans-serif">${left}</text><text x="110" y="121" text-anchor="middle" fill="#c9c9d6" font-size="9" font-family="Space Mono,monospace">kcal zbývá</text>`
-    : `<text x="110" y="107" text-anchor="middle" fill="#f2f2f7" font-size="23" font-weight="800" font-family="Oxanium,sans-serif">+${-left}</text><text x="110" y="121" text-anchor="middle" fill="#c9c9d6" font-size="9" font-family="Space Mono,monospace">kcal navíc</text>`;
+    ? `<text x="110" y="107" text-anchor="middle" fill="#f2f2f7" font-size="25" font-weight="800" font-family="Oxanium,sans-serif">${left}</text><text x="110" y="121" text-anchor="middle" fill="#c9c9d6" font-size="11" font-family="Space Mono,monospace">kcal zbývá</text>`
+    : `<text x="110" y="107" text-anchor="middle" fill="#f2f2f7" font-size="23" font-weight="800" font-family="Oxanium,sans-serif">+${-left}</text><text x="110" y="121" text-anchor="middle" fill="#c9c9d6" font-size="11" font-family="Space Mono,monospace">kcal navíc</text>`;
   return `<svg viewBox="0 0 220 220" width="${size}" height="${size}" role="img" aria-label="Makra dnes">
     ${foodRing(102, rk, ck, 11)}${foodRing(87, rp, foodProteinColor(rp), 10)}${foodRing(72, rc, foodLimitColor(rc), 10)}${foodRing(57, rf, foodLimitColor(rf), 10)}${foodRing(42, rs, foodLimitColor(rs), 9)}
     ${center}${rk>=3 ? '<text x="203" y="44" text-anchor="middle" fill="#ff2d2d" font-size="42" font-weight="900" font-family="Oxanium,sans-serif" style="filter:drop-shadow(0 0 4px #ff0000) drop-shadow(0 0 9px #ff0000)">!</text>' : ''}</svg>`;
@@ -15715,7 +15724,7 @@ function foodWeekChart(endKey, tg, selKey){
   const max = Math.max(tg.kcal*1.25, ...vals, 1);
   const W = 300, H = 110, bw = 28, gap = (W-7*bw)/8;
   const y = v => H-18 - (v/max)*(H-34);
-  let g = `<line x1="0" x2="${W}" y1="${y(tg.kcal)}" y2="${y(tg.kcal)}" stroke="rgba(255,255,255,0.35)" stroke-dasharray="4 3"/><text x="${W-2}" y="${y(tg.kcal)-3}" text-anchor="end" fill="#c9c9d6" font-size="9.2" font-family="monospace">cíl ${tg.kcal}</text>`;
+  let g = `<line x1="0" x2="${W}" y1="${y(tg.kcal)}" y2="${y(tg.kcal)}" stroke="rgba(255,255,255,0.35)" stroke-dasharray="4 3"/><text x="${W-2}" y="${y(tg.kcal)-3}" text-anchor="end" fill="#c9c9d6" font-size="10.5" font-family="monospace">cíl ${tg.kcal}</text>`;
   days.forEach((k,i)=>{
     const v = vals[i], x = gap + i*(bw+gap);
     const col = v===0 ? FOOD_COLORS.track : foodLimitColor(v/tg.kcal);
@@ -16482,10 +16491,10 @@ function fsMk(src, o){
   const url = (o.url && /^https?:\/\//i.test(o.url)) ? String(o.url) : '';
   const it = {src:[src], name, brand:String(o.brand||'').trim().slice(0,40), variant:o.variant||fsVariant(name), per100:per, url,
     links: url ? [{src, url}] : [], ean:String(o.ean||'').replace(/\D/g,''), pieceG:o.pieceG>0 ? Number(o.pieceG) : null, pieceLabel:o.pieceLabel||'porce',
-    packG:o.packG>0 ? Number(o.packG) : null, mine:src==='lib', id:o.id||null, cmp:fsComplete(per)};
+    packG:o.packG>0 ? Number(o.packG) : null, mine:src==='lib', id:o.id||null, cmp:fsComplete(per), alias:String(o.alias||'').slice(0,120)};
   return it;
 }
-function fsFromLocal(list){ return list.map(x=>fsMk(x.mine?'lib':(x.tab||'db'), {id:x.id, name:x.name, brand:x.brand, url:x.url, per100:x.per100, pieceG:x.pieceG, pieceLabel:x.pieceLabel, packG:x.packG, ean:x.ean})).filter(Boolean); }
+function fsFromLocal(list){ return list.map(x=>fsMk(x.mine?'lib':(x.tab||'db'), {id:x.id, name:x.name, brand:x.brand, url:x.url, per100:x.per100, pieceG:x.pieceG, pieceLabel:x.pieceLabel, packG:x.packG, ean:x.ean, alias:x.alias})).filter(Boolean); }
 // stejné hodnoty v rámci tolerance zaokrouhlení → jde o totéž z různých zdrojů
 function fsSame(a, b){
   const t = (x,y,abs,rel)=> (x==null || y==null) ? true : Math.abs(x-y) <= Math.max(abs, rel*Math.max(x,y));
@@ -16520,7 +16529,7 @@ function fsRank(items, text){
   const nq = homeNorm(text||'').trim(), tokens = nq.split(/\s+/).filter(Boolean);
   const kept = [];
   items.forEach(it=>{
-    const hay = homeNorm([it.name, it.brand, it.variant].join(' ')), words = hay.split(/[\s,()\/\-]+/).filter(Boolean);
+    const hay = homeNorm([it.name, it.brand, it.variant, it.alias].join(' ')), words = hay.split(/[\s,()\/\-]+/).filter(Boolean);
     let s = 0, hit = 0;
     tokens.forEach(t=>{
       if(words.includes(t)){ s += 100; hit++; }
@@ -16532,6 +16541,8 @@ function fsRank(items, text){
     s = tokens.length ? s/tokens.length : 0;
     if(homeNorm(it.name)===nq) s += 30;
     s -= Math.min(hay.length, 60)*0.1;
+    if(it.src.includes('db') || it.src.includes('lib')) s += 14;   // základní databáze = běžné potraviny dopředu (mléko polotučné před kozím)
+    if(it.src.length>1) s += 6;                                      // shodné hodnoty z více zdrojů = důvěryhodnější
     it.score = s + Math.max.apply(null, it.src.map(x=>FS_SRC[x].pri))/10 + it.cmp.lvl;
     kept.push(it);
   });
@@ -16687,7 +16698,14 @@ function openFoodSearch(q0){
     const useOnl = onQ!==null && homeNorm(pq.text)===onQ;
     let all = local.slice();
     if(useOnl) ONL.forEach(id=>{ if(online[id]) all = all.concat(online[id]); });
-    shown = fsRank(fsMerge(all), pq.text).slice(0, 30);
+    shown = fsRank(fsMerge(all), pq.text);
+    const numM = !pq.unit && String(qEl.value).match(/(?:^|\s)(\d+[.,]\d+|\d{1,2})\s*%?\s*$/);
+    if(numM && pq.text.length>=2){
+      const nt = numM[1].replace('.',',');
+      const has = it=>(it.name+' '+(it.variant||'')).replace('.',',').split(/[^\d,]+/).some(w=>w===nt);
+      shown = shown.map((it,i)=>({it,i,h:has(it)?0:1})).sort((a,b)=>(a.h-b.h)||(a.i-b.i)).map(x=>x.it);
+    }
+    shown = shown.slice(0, 30);
     const busy = useOnl && ONL.some(id=>status[id] && status[id].st==='load');
     if(pq.text.length<2){ res.innerHTML = '<p class="nb-note">Napiš název (aspoň 2 písmena) nebo čárový kód. Můžeš i s množstvím: „2 vejce“, „150 g tvaroh“. Online zdroje se prohledají po stisku Enter.</p>'; }
     else {
@@ -16704,6 +16722,13 @@ function openFoodSearch(q0){
       if(used.has('off')) at.push('Data: Open Food Facts (licence ODbL)');
       if(at.length) res.innerHTML += '<p class="nb-note fs-attr">'+at.join(' · ')+'</p>';
     }
+    // věta typu „kuřecí s rýží“, „chleba se salámem“, „2 vejce a slanina“ je celé jídlo → nabídnout rozpis po surovinách
+    const wordsN = qEl.value.trim().split(/\s+/).filter(Boolean).length;
+    if(pq.text.length>=5 && (/(\s(s|se|a|plus)\s|[,+])/i.test(qEl.value) || wordsN>=4)){
+      const btn = `<button type="button" class="fs-meal-btn" id="fsMeal">🧩 Rozepsat „${homeEsc(qEl.value.trim().slice(0,40))}“ jako jídlo po surovinách</button>`;
+      res.innerHTML = shown.length ? res.innerHTML + btn : btn + res.innerHTML;
+    }
+    const mealBtn = document.getElementById('fsMeal'); if(mealBtn) mealBtn.addEventListener('click', ()=>openFoodSpeak(qEl.value.trim()));
     res.querySelectorAll('[data-fs]').forEach(b=>b.addEventListener('click', ()=>foodOpenItem(shown[+b.dataset.fs], pq)));
   };
   const drawStat = ()=>{
@@ -17550,7 +17575,7 @@ function bkRestoreState(o, label){
 }
 document.getElementById('aiSetBtn').addEventListener('click', openAiSetup);
 // reset profilu: vynuluje pokrok, nastavení a plán nechá; stav před resetem se uloží stranou
-const RESET_KEEP = ['onboardingDone','onboardingVer','theme','glass','fontScale','sfxMuted','musicMuted','sessAuto','reminder','notifAsked','premium','customCut','customAccent','customBgPhoto','exLang','exAlias','homeProfile','myRecipes','myFoods','favorites','favoriteExercises','shopping','foodGoal','schedule','dmTargets','dmTargetsManual','pendingNick','cloudBkAt','fdTgOpen'];
+const RESET_KEEP = ['noSides','noDiffAsk','onboardingDone','onboardingVer','theme','glass','fontScale','sfxMuted','musicMuted','sessAuto','reminder','notifAsked','premium','customCut','customAccent','customBgPhoto','exLang','exAlias','homeProfile','myRecipes','myFoods','favorites','favoriteExercises','shopping','foodGoal','schedule','dmTargets','dmTargetsManual','pendingNick','cloudBkAt','fdTgOpen'];
 function resetProfileNow(){
   const old = state;
   const fresh = {xp:0, favorites:[], shopping:[], missionsDate:'', missions:[], cooked:[]};
