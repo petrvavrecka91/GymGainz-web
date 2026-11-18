@@ -3121,7 +3121,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V31b · 2026-11-10</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V31c · 2026-11-10</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -4006,30 +4006,50 @@ function generateCustomPlan(goal, freq, levelNum){
   const t = timeTargetForLevel(levelNum);
   const days = templates.map((day, idx)=>{
     const used = new Set();
-    const exercises = [];
+    let exercises = [];
+    // silový plán: dny označené „Hyper“ jedou hypertrofním schématem, izolační cviky mají vždy vyšší opakování (3–6 opakování na hammer curl nebo lýtka nedává smysl)
+    const dayScheme = (goal==='strength' && /hyper/i.test(day.label)) ? goalScheme('hypertrophy') : sch;
+    const isoScheme = goal==='strength' ? {sets:3, repsMin:10, repsMax:15, rest:60} : dayScheme;
     for(const [muscle, n] of day.slots){
       const picks = pickExercises(muscle, levelNum, n, used);
       exercises.push(...picks.map(p=>{
         const isTime = p.mode==='time' || p.mode==='weightTime';
         if(p.mode==='cardio'){ const c = cardioTargetForLevel(levelNum, p.name);
           return {name:p.name, muscle:MUSCLE_LABELS[p.muscle], muscleKey:p.muscle, mode:'cardio', sets:1, rest:30, repsMin:c.min, repsMax:c.max}; }
+        const sc = exTier(p)==='iso' ? isoScheme : dayScheme;
         return {name:p.name, muscle:MUSCLE_LABELS[p.muscle], muscleKey:p.muscle, mode:p.mode,
-          sets:sch.sets, rest:sch.rest,
-          repsMin: isTime ? t.min : sch.repsMin, repsMax: isTime ? t.max : sch.repsMax};
+          sets:sc.sets, rest:sc.rest,
+          repsMin: isTime ? t.min : sc.repsMin, repsMax: isTime ? t.max : sc.repsMax};
       }));
     }
+    // pořadí v tréninku: nejdřív základní (těžké) cviky, potom ostatní, izolace a lýtka na konec; v rámci skupiny zůstává pořadí podle svalů
+    exercises = exercises.map((e,i)=>({e,i,r:EX_TIER_RANK[exTier(e)]})).sort((a,b)=>(a.r-b.r)||(a.i-b.i)).map(x=>x.e);
     // kardio na konci treninku: pri hubnuti kazdy den, pri udrzovani kazdy druhy den
     if(goal==='cutting' || (goal==='maintain' && idx%2===1)){
       const cp = pickExercises('cardio', levelNum, 1, used)[0];
       if(cp){ const c = cardioTargetForLevel(levelNum, cp.name);
         exercises.push({name:cp.name, muscle:MUSCLE_LABELS.cardio, muscleKey:'cardio', mode:'cardio', sets:1, rest:30, repsMin:c.min, repsMax:c.max}); }
     }
-    const repsStr = sch.repsMin===sch.repsMax ? sch.repsMin : sch.repsMin+'-'+sch.repsMax;
-    return {label: day.label, note: `${sch.sets} série × ${repsStr} opakování`, exercises};
+    const repsStr = dayScheme.repsMin===dayScheme.repsMax ? dayScheme.repsMin : dayScheme.repsMin+'-'+dayScheme.repsMax;
+    return {label: day.label, note: `${dayScheme.sets} série × ${repsStr} opakování`, exercises};
   });
   return {splitKey:'generated', splitName: GOALS[goal].name + ' plán', level: levelNum, goal, freq, days, done: days.map(()=>false)};
 }
 
+// druh cviku podle názvu: 'comp' = základní (vícekloubový), 'iso' = izolace / malé svaly (lýtka, bicepsový zdvih…), 'mid' = ostatní
+const EX_ISO_RE = /calf|výpon|tibialis|straight-arm|face pull|raise|fly|flye|curl|extension|pushdown|kickback|abduction|adduction|crunch|twist|woodchop|side bend|shrug|pec deck|pullover|donkey|clamshell|hydrant|plank|sit-up|leg raise/i;
+const EX_COMP_RE = /squat|leg press|deadlift|lunge|hack|step-up|bench press|chest press|overhead press|shoulder press|military|push press|incline press|decline press|dip|row|pull-up|chin-up|pulldown|pull-down|shyb|hip thrust|good morning|dřep|výpad|mrtv|přítah|tlak|push-up|kliky|pull-through|floor press|landmine/i;
+function exTier(e){
+  const n = typeof e==='string' ? e : (e && e.name) || '';
+  if(EX_ISO_RE.test(n)) return 'iso';
+  if(EX_COMP_RE.test(n)) return 'comp';
+  return 'mid';
+}
+const EX_TIER_RANK = {comp:0, mid:1, iso:2};
+// „rodina“ cviku: stejný pohyb s jiným náčiním (Hip Thrust / Heavy Barbell Hip Thrust, Chest Dips / Weighted Dips) se v jednom dni neopakuje
+function exFamily(name){
+  return String(name||'').toLowerCase().replace(/\(.*?\)/g,'').replace(/\b(heavy|barbell|dumbbell|smith machine|smith|machine|cable|weighted|assisted|single-leg|single-arm|seated|standing|close-grip|wide-grip|chest|těžký|stroj|jednonohý|jednoruční)\b/g,'').replace(/\s+/g,' ').trim();
+}
 function pickExercises(muscle, levelMax, n, usedSet){
   // 'legs' je souhrnný klíč pro generování tréninkových plánů (SPLITS) -
   // pokrývá kvadriceps, hamstringy i lýtka dohromady, ať plán míchá cviky na celé nohy
@@ -4038,8 +4058,28 @@ function pickExercises(muscle, levelMax, n, usedSet){
   const shuffled = pool.sort(()=>Math.random()-0.5);
   // oblíbené cviky (❤️) mají při generování přednost
   shuffled.sort((a,b)=> (isFavExercise(b.name)?1:0) - (isFavExercise(a.name)?1:0));
-  const picks = shuffled.slice(0, n);
-  picks.forEach(p=>usedSet.add(p.name));
+  let picks = [];
+  const famOk = x=>!usedSet.has('fam:'+exFamily(x.name)) && !picks.some(q=>exFamily(q.name)===exFamily(x.name));
+  const add = x=>{ if(x && !picks.includes(x) && famOk(x)) picks.push(x); };
+  if(muscle==='legs'){
+    // nohy: vždy základní cvik (dřep / leg press / mrtvý tah…); lýtka jen jako poslední cvik, když je cviků na nohy víc
+    const main = shuffled.filter(e=>e.muscle!=='calves');
+    const calves = shuffled.filter(e=>e.muscle==='calves' && !/tibialis/i.test(e.name));
+    const wantCalf = n>=3 && calves.length>0, k = wantCalf ? n-1 : n;
+    const comp = main.filter(e=>exTier(e)==='comp');
+    add(comp.find(e=>e.muscle==='quads') || comp[0]);
+    if(k>=2) add(comp.find(e=>e.muscle==='hamstrings' && !picks.includes(e)));
+    main.forEach(e=>{ if(picks.length<k) add(e); });
+    if(wantCalf) add(calves[0]);
+    if(!picks.length) shuffled.slice(0,n).forEach(add);   // záloha (např. nízká úroveň)
+  } else {
+    // ostatní svaly: první cvik je základní (tlak, přítah, hip thrust…), pokud existuje
+    if(!['core','calves','forearms','cardio'].includes(muscle)) add(shuffled.find(e=>exTier(e)==='comp'));
+    shuffled.forEach(e=>{ if(picks.length<n) add(e); });
+  }
+  if(picks.length<n) shuffled.forEach(e=>{ if(picks.length<n && !picks.includes(e)) picks.push(e); });
+  picks = picks.slice(0, n);
+  picks.forEach(p=>{ usedSet.add(p.name); usedSet.add('fam:'+exFamily(p.name)); });
   return picks;
 }
 // ============================================================
@@ -17591,7 +17631,16 @@ setMode(foodGoalKey()==='bulking' ? 'bulking' : 'cutting');
 let obStep = 0;
 let obData = {goal:'maintain', level:1, freq:3};
 const ONBOARDING_VER = 3; // v3 = muz/zena, prezdivka, vaha; v2 = muz/zena - kazdy uzivatel ho uvidi jednou
+// uložená strava (vegetarián / vegan) předvyplní filtr receptů
+function applyDietPref(){
+  try{
+    const d = profState().diet || '';
+    fltDiet = d;
+    const sel = document.getElementById('fltDiet'); if(sel) sel.value = d;
+  }catch(e){}
+}
 function maybeShowOnboarding(){
+  applyDietPref();
   if(state.onboardingDone && (state.onboardingVer||1) >= ONBOARDING_VER){ goHome(); return; }
   document.getElementById('onboardingOverlay').classList.add('open');
   renderOnboardingStep(0);
@@ -17647,10 +17696,11 @@ function renderOnboardingStep(step){
     const curW = profState().weight || '';
     const curH = profState().height || '';
     el.innerHTML = `
-      <h3 style="font-family:'Oxanium',sans-serif; margin-bottom:4px;">Kolik měříš a vážíš?</h3>
-      <p style="color:var(--muted); font-size:14px; margin-bottom:18px;">Z váhy a výšky spočítáme BMI a kalorie a budeš sledovat svůj progres. Můžeš to kdykoli změnit v profilu.</p>
+      <h3 style="font-family:'Oxanium',sans-serif; margin-bottom:4px;">Kolik ti je, měříš a vážíš?</h3>
+      <p style="color:var(--muted); font-size:14px; margin-bottom:18px;">Z věku, váhy a výšky spočítáme BMI a kalorie a budeš sledovat svůj progres. Můžeš to kdykoli změnit v profilu.</p>
       <div class="ob-weight-wrap" style="margin-bottom:12px;"><input id="obWeight" class="ob-input" type="text" inputmode="decimal" maxlength="6" autocomplete="off" placeholder="Váha, např. 80" value="${curW}"><span>kg</span></div>
       <div class="ob-weight-wrap"><input id="obHeight" class="ob-input" type="text" inputmode="numeric" maxlength="3" autocomplete="off" placeholder="Výška, např. 178" value="${curH}"><span>cm</span></div>
+      <div class="ob-weight-wrap" style="margin-top:12px;"><input id="obAge" class="ob-input" type="text" inputmode="numeric" maxlength="2" autocomplete="off" placeholder="Věk, např. 30" value="${profState().age||''}"><span>let</span></div>
       <div id="obBmi" style="margin-top:14px; min-height:44px; font-size:14.6px; color:var(--muted);"></div>
       <button class="paywall-cta" id="obWeightNext" style="background:var(--accent); color:#14041f; width:100%; margin-top:14px;">DÁL →</button>
       <button class="ob-skip-step" id="obWeightSkip">Přeskočit</button>`;
@@ -17669,6 +17719,8 @@ function renderOnboardingStep(step){
     document.getElementById('obHeight').addEventListener('input', showBmi);
     const go = ()=>{
       const w = readW(), h = readH();
+      const ageRaw = (document.getElementById('obAge').value||'').trim(), age = ageRaw==='' ? null : parseInt(ageRaw);
+      if(age!==null && !(age>=14 && age<=90)){ showToast('⚠️ Zadej věk mezi 14 a 90 lety'); return; }
       if(w!==null && !(w>=30 && w<=300)){ showToast('⚠️ Zadej váhu mezi 30 a 300 kg'); return; }
       if(h!==null && !(h>=100 && h<=250)){ showToast('⚠️ Zadej výšku mezi 100 a 250 cm'); return; }
       const p = profState();
@@ -17680,13 +17732,15 @@ function renderOnboardingStep(step){
         if(last && last.d===t) last.w = p.weight; else p.weightLog.push({d:t, w:p.weight});
       }
       if(h!==null) p.height = h;
+      if(age!==null) p.age = age;
       saveState();
       renderOnboardingStep(4);
     };
     document.getElementById('obWeightNext').addEventListener('click', go);
     document.getElementById('obWeightSkip').addEventListener('click', ()=>renderOnboardingStep(4));
     document.getElementById('obWeight').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('obHeight').focus(); });
-    document.getElementById('obHeight').addEventListener('keydown', e=>{ if(e.key==='Enter') go(); });
+    document.getElementById('obHeight').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('obAge').focus(); });
+    document.getElementById('obAge').addEventListener('keydown', e=>{ if(e.key==='Enter') go(); });
   } else if(step===4){
     const goalHTML = Object.entries(GOALS).map(([key,g])=>`
       <button class="goal-card ${obData.goal===key?'on':''}" data-goal="${key}">
@@ -17716,12 +17770,20 @@ function renderOnboardingStep(step){
     el.innerHTML = `
       <h3 style="font-family:'Oxanium',sans-serif; margin-bottom:4px;">Kolikrát týdně chceš cvičit?</h3>
       <p style="color:var(--muted); font-size:14px; margin-bottom:24px;">Podle toho appka sestaví rozvržení dní</p>
-      <div class="wo-daycount" style="margin-bottom:28px;">
+      <div class="wo-daycount" style="margin-bottom:20px;">
         <button id="obFreqMinus">−</button>
         <b id="obFreqVal">${obData.freq}</b>
         <button id="obFreqPlus">+</button>
       </div>
+      <p style="color:var(--muted); font-size:14px; margin:0 0 10px;">A jak se stravuješ? <span style="opacity:.7;">(filtruje recepty)</span></p>
+      <div class="ob-diet-row" style="display:flex; gap:8px; margin-bottom:24px;">
+        ${[['','🍖 Běžně'],['vegetarian','🥚 Vegetarián'],['vegan','🌱 Vegan']].map(([k,l])=>`<button type="button" class="sess-auto-chip ob-diet ${(profState().diet||'')===k?'on':''}" data-diet="${k}" style="flex:1; margin:0;">${l}</button>`).join('')}
+      </div>
       <button class="paywall-cta" id="obGenerate" style="background:var(--accent); color:#14041f; width:100%;">🎯 VYGENEROVAT MŮJ PLÁN</button>`;
+    document.querySelectorAll('#obContent .ob-diet').forEach(b=>b.addEventListener('click', ()=>{
+      profState().diet = b.dataset.diet; saveState(); applyDietPref();
+      document.querySelectorAll('#obContent .ob-diet').forEach(x=>x.classList.toggle('on', x===b));
+    }));
     document.getElementById('obFreqMinus').addEventListener('click', ()=>{ obData.freq = Math.max(2, obData.freq-1); document.getElementById('obFreqVal').textContent = obData.freq; });
     document.getElementById('obFreqPlus').addEventListener('click', ()=>{ obData.freq = Math.min(6, obData.freq+1); document.getElementById('obFreqVal').textContent = obData.freq; });
     document.getElementById('obGenerate').addEventListener('click', ()=>{
@@ -17740,6 +17802,8 @@ function renderOnboardingStep(step){
         ${profState().nick ? `<div class="ob-summary-row"><span>Přezdívka</span><span>${escHtml(profState().nick)}</span></div>` : ''}
         ${profState().weight ? `<div class="ob-summary-row"><span>Váha</span><span>${profState().weight} kg</span></div>` : ''}
         ${profState().height ? `<div class="ob-summary-row"><span>Výška</span><span>${profState().height} cm</span></div>` : ''}
+        ${profState().age ? `<div class="ob-summary-row"><span>Věk</span><span>${profState().age} let</span></div>` : ''}
+        ${profState().diet ? `<div class="ob-summary-row"><span>Strava</span><span>${profState().diet==='vegan'?'🌱 Vegan':'🥚 Vegetarián'}</span></div>` : ''}
         ${(profState().weight && profState().height) ? `<div class="ob-summary-row"><span>BMI</span><span>${calcBMI()}</span></div>` : ''}
         <div class="ob-summary-row"><span>Pohlaví</span><span>${profState().sex==='female'?'👩 Žena':'👨 Muž'}</span></div>
         <div class="ob-summary-row"><span>Cíl</span><span>${GOALS[obData.goal].name}</span></div>
