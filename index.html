@@ -3121,7 +3121,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V31a · 2026-11-10</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V31b · 2026-11-10</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -7904,6 +7904,13 @@ function woBuildEntryBase(plan, exMeta, name){
 function exIsUnilateral(name){
   return /lunge|výpad|split squat|bulhar|single[- ](arm|leg)|jednonoh|jednoruční|pistol|step[- ]?up|výstup|kickback|concentration curl|dumbbell row/i.test(String(name||'')+' '+String(exCanon(name)||''));
 }
+// střídání stran (P/L) u jednostranných cviků: ruční volba u cviku má přednost; jinak rozhoduje celkový vypínač (Přehled tréninku → ↔ Střídání stran)
+function sessSidesInit(e){
+  if(e.mode==='cardio') return false;
+  if(e.sidesUser) return !!e.sides;
+  if(state.noSides) return false;
+  return e.sides!==undefined ? e.sides : exIsUnilateral(e.name);
+}
 function woBuildEntry(plan, exMeta, name){
   const e = woBuildEntryBase(plan, exMeta, name);
   if(e.mode!=='cardio' && e.sides===undefined && exIsUnilateral(name)) e.sides = true;
@@ -8251,7 +8258,7 @@ function startWorkoutSession(dayIndex){
   saveState();
   session = {
     dayIndex,
-    exercises: day.exercises.map(e=>({...e, doneSets:0, sides: (e.mode==='cardio') ? false : (e.sides!==undefined ? e.sides : exIsUnilateral(e.name))})),
+    exercises: day.exercises.map(e=>({...e, doneSets:0, sides: sessSidesInit(e)})),
     exIdx: 0, setIdx: 0,
     log: {}, // name -> [{weight,reps,rir,note}]
     startTime: Date.now(),
@@ -8366,7 +8373,26 @@ function sessSkipSet(){
 }
 function sessSkipExercise(){
   const e = session.exercises[session.exIdx];
-  showConfirm({icon:'⏩', title:'Přeskočit celý cvik?', text:`„${exDisp(e.name)}“ se dnes přeskočí${(session.log[e.name]||[]).length?' (už zapsané série zůstanou)':''}. V plánu zůstane beze změny.`,
+  // poprvé: cvik se jen odloží na konec tréninku (je tam k vidění a dá se k němu vrátit); podruhé / když je poslední: skutečné vynechání
+  const isLast = session.exIdx >= session.exercises.length-1;
+  if(!e.postponed && !isLast){
+    const from = session.exIdx, phaseBefore = session.phase, setBefore = session.setIdx;
+    clearRestTimer(); clearFinalCountdown();
+    session.exercises.splice(from, 1); session.exercises.push(e); e.postponed = true;
+    delete e._side; delete e._sideP; session.restKind = ''; session.setType = '';
+    const n = session.exercises[from];
+    session.setIdx = sessStartIdxFor(n); session.phase = 'active';
+    renderSession();
+    showUndo('↪ „'+exDisp(e.name)+'“ přesunut na konec', ()=>{
+      if(!session || session.exercises[session.exercises.length-1]!==e || session.exIdx!==from){ showToast('Už to nejde vrátit'); return; }
+      clearRestTimer(); clearFinalCountdown();
+      session.exercises.pop(); session.exercises.splice(from, 0, e); delete e.postponed;
+      session.exIdx = from; session.setIdx = setBefore; session.phase = phaseBefore==='rest' ? 'active' : phaseBefore;
+      renderSession();
+    });
+    return;
+  }
+  showConfirm({icon:'⏩', title:e.postponed ? 'Cvik úplně vynechat?' : 'Přeskočit celý cvik?', text:`„${exDisp(e.name)}“ se dnes přeskočí${(session.log[e.name]||[]).length?' (už zapsané série zůstanou)':''}. V plánu zůstane beze změny.`,
     okLabel:'Přeskočit', cancelLabel:'Zpět', onConfirm:()=>{ e.skipped = true; sessEndExercise(e); sessGoNextExercise(); }});
 }
 // ----- výměna cviku uprostřed tréninku (obsazený stroj apod.) -----
@@ -8638,7 +8664,7 @@ function renderSessList(el){
         <span class="sc-num">${i+1}</span>
         <div class="sc-main">
           <div class="sc-name">${st==='current' ? `<a href="${youtubeSearchUrl(exDisp(e.name), state.sex)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;">${homeEsc(exDisp(e.name))} <span class="yticon">▶️</span></a>` : homeEsc(exDisp(e.name))}</div>
-          <div class="sc-sub">${sessSchemeStr(e)}${e.muscle?' · '+homeEsc(e.muscle):''}${e.skippedSets?' · přeskočeno sérií: '+e.skippedSets:''}</div>
+          <div class="sc-sub">${sessSchemeStr(e)}${e.muscle?' · '+homeEsc(e.muscle):''}${e.skippedSets?' · přeskočeno sérií: '+e.skippedSets:''}${(e.postponed && st!=='done')?' · ↪ odložený cvik':''}</div>
           ${suggStr ? `<div class="sc-sugg">${suggStr}</div>` : ''}
           ${logged ? `<div class="sc-sugg">${logged}</div>` : ''}
         </div>
@@ -8659,7 +8685,15 @@ function renderSessList(el){
     <div class="sess-list" id="sessList">${cards}</div>
     ${canEdit ? '<button class="sess-add-btn" id="sessAddList">＋ Přidat cvik</button>' : ''}
     ${(session.dirty && canEdit) ? '<button class="sess-add-btn sess-save-plan" id="sessSavePlan">💾 Uložit změny do plánu</button>' : ''}
+    ${ph==='overview' ? `<button type="button" class="sess-auto-chip ${state.noSides?'':'on'}" id="sessSidesAll" style="margin:12px auto 0;">↔ Střídání pravá/levá strana: ${state.noSides?'vyp':'zap'}</button>` : ''}
     ${ph==='overview' ? '<button class="sess-start-btn" id="sessBeginBtn">▶ START</button>' : ''}`;
+  const sidesAll = document.getElementById('sessSidesAll');
+  if(sidesAll) sidesAll.addEventListener('click', ()=>{
+    state.noSides = !state.noSides; saveState();
+    session.exercises.forEach(x=>{ if(!x.sidesUser) x.sides = sessSidesInit(x); });
+    showToast(state.noSides ? '↔ Strany se nestřídají (u žádného cviku)' : '↔ U jednostranných cviků se strany střídají');
+    renderSession();
+  });
   // tělo aktuálního cviku / vyskakovací pauza
   const body = document.getElementById('sessCardBody');
   if(ph==='active'){ renderSessActive(body); if(keepIn) sessRestoreInputs(keepIn); }
@@ -8908,13 +8942,14 @@ function renderSessActive(el){
       <button id="sessSkipSet">⏭ Přeskočit sérii</button>
       ${!isCardio ? '<button id="sessAddSet">＋ Přidat sérii</button>' : ''}
       <button id="sessSwapEx">🔁 Jiný cvik</button>
-      <button id="sessSkipEx">⏩ Přeskočit cvik</button>
+      <button id="sessSkipEx">${(e.postponed || session.exIdx>=session.exercises.length-1) ? '⏩ Vynechat cvik' : '⏩ Přeskočit (na konec)'}</button>
     </div>
     ${sessNextLine()}
     ${logHTML}`;
   const sidesChip = document.getElementById('sessSidesChip');
   if(sidesChip) sidesChip.addEventListener('click', ()=>{
-    e.sides = !e.sides; e._side = 'P'; delete e._sideP; session.dirty = true;
+    e.sides = !e.sides; e.sidesUser = true; e._side = 'P'; delete e._sideP;
+    try{ const pe = ((state.workoutPlan.days[session.dayIndex]||{}).exercises||[]).find(x=>x.name===e.name); if(pe){ pe.sides = e.sides; pe.sidesUser = true; saveState(); } }catch(err){}   // ruční volba se hned uloží do plánu, nevrací se zpět
     showToast(e.sides ? '↔ Po každé straně dostaneš krátký dech' : '↔ Strany se nestřídají');
     session._keepInputs = true; renderSession();
   });
@@ -9345,7 +9380,7 @@ function renderSessComplete(el){
       // objem podle svalove partie (pro tydenni report)
       const exM = session.exercises.find(e=>e.name===name) || exMeta(name);
       const muscleKey = (exM && (exM.muscleKey || exM.muscle)) || 'ostatni';
-      const exVolume = sets.reduce((s,x)=> s + (x.weight||0)*(x.reps||0), 0);
+      const exVolume = sets.reduce((s,x)=> s + (x.weight||0)*((x.reps||0)+(x.repsP>0?x.repsP:0)), 0);
       muscleVolumes[muscleKey] = (muscleVolumes[muscleKey]||0) + exVolume;
     });
     // zpracovani PR z teto session - zlepseni, milniky 10%/2x, ruzne cviky
@@ -9377,7 +9412,7 @@ function renderSessComplete(el){
     if(!state.sessionLog) state.sessionLog = [];
     state.sessionLog.push({
       date: todayKey(), dayIndex: session.dayIndex, cycle: state.workoutPlan.cycleNum,
-      totalVolume, muscleVolumes, newPRs: session.prsThisSession.length
+      totalVolume, muscleVolumes, newPRs: session.prsThisSession.length, session: sessionNum
     });
     if(state.sessionLog.length > 200) state.sessionLog = state.sessionLog.slice(-200);
 
@@ -11447,8 +11482,8 @@ function showWeeklyReport(){
   const lastCycle = log.filter(s=>s.cycle===cycleNum-1);
   const isFirstWeek = lastCycle.length===0;
 
-  const thisVolume = thisCycle.reduce((s,x)=>s+(x.totalVolume||0),0);
-  const lastVolume = lastCycle.reduce((s,x)=>s+(x.totalVolume||0),0);
+  const thisVolume = thisCycle.reduce((s,x)=>s+progSessVol(x),0);
+  const lastVolume = lastCycle.reduce((s,x)=>s+progSessVol(x),0);
   const volDiff = thisVolume - lastVolume;
   const volPct = lastVolume>0 ? (volDiff/lastVolume*100) : null;
   const newPRs = thisCycle.reduce((s,x)=>s+(x.newPRs||0),0);
@@ -11923,7 +11958,7 @@ function nbFindEntry(id){ return nbEntries().find(e=>e.id===id) || null; }
 function nbHide(id){ if(!Array.isArray(state.nbHidden)) state.nbHidden = []; if(!state.nbHidden.includes(id)) state.nbHidden.push(id); }
 // zápis jednoho cviku z právě dokončeného tréninku (volá se při uložení session)
 function nbLogSession(name, sets, sessionNum){
-  const clean = (sets||[]).map(s=>{ const o = {weight:s.weight||0, reps:s.reps||0}; if(s.t) o.t = s.t; return o; }).filter(s=>s.weight>0 || s.reps>0);
+  const clean = (sets||[]).map(s=>{ const o = {weight:s.weight||0, reps:s.reps||0}; if(s.t) o.t = s.t; if(s.repsP>0) o.rp = s.repsP; return o; }).filter(s=>s.weight>0 || s.reps>0);
   if(!clean.length) return;
   if(!Array.isArray(state.notebook)) state.notebook = [];
   const notes = [...new Set((sets||[]).map(s=>(s.note||'').trim()).filter(Boolean))].join(' · ');
@@ -11938,7 +11973,8 @@ function nbSetStr(name, s){
   if(mode==='cardio') return ic+nbFmt(s.reps)+' min';
   if(mode==='time') return ic+(s.weight>0 ? nbFmt(s.weight)+' kg · ' : '')+s.reps+' s';
   if(mode==='weightTime') return ic+nbFmt(s.weight)+' kg · '+s.reps+' s';
-  return ic+(s.weight>0 ? nbFmt(s.weight)+'×'+s.reps : 'vl. váha×'+s.reps);
+  const rp = s.rp>0 ? '+'+s.rp : '';
+  return ic+(s.weight>0 ? nbFmt(s.weight)+'×'+s.reps+rp : 'vl. váha×'+s.reps+rp);
 }
 function nbTop(name, sets){
   // nejlepší pracovní série: nejtěžší (při stejné váze víc opakování); bez váhy nejvíc opakování
@@ -11950,7 +11986,7 @@ function nbTop(name, sets){
 function nbVolume(name, sets){
   const mode = nbMode(name);
   if(mode==='cardio' || mode==='time' || mode==='weightTime') return 0;
-  return (sets||[]).filter(s=>s.t!=='w').reduce((a,s)=>a + (Number(s.weight)||0)*(Number(s.reps)||0), 0);
+  return (sets||[]).filter(s=>s.t!=='w').reduce((a,s)=>a + (Number(s.weight)||0)*((Number(s.reps)||0)+(Number(s.rp)||0)), 0);   // rp = druhá strana (P/L) – stejně jako v součtu tréninku
 }
 function nbStatsHTML(entries){
   const days = new Set(entries.map(e=>e.date));
@@ -12166,6 +12202,16 @@ function nbDayClusters(info){
   });
   return cl;
 }
+// objem jednoho tréninku: je-li v Sešitu, bere se odtud (aby Progres a Sešit vždy seděly); starší tréninky bez vazby mají uloženou hodnotu
+function progSessVol(l){
+  try{
+    if(l && l.session){
+      const es = nbEntries().filter(e=>e.session===l.session);
+      if(es.length) return es.reduce((a,e)=>a+nbVolume(e.name,e.sets),0);
+    }
+  }catch(e){}
+  return (l && l.totalVolume) || 0;
+}
 function progCmpCandidates(dk){
   const info = nbDayInfo(nbEntries()); const me = info[dk]; if(!me) return [];
   const lab = {}; (state.sessionLog||[]).forEach(l=>{ lab[l.date] = schedDayLabel(l.dayIndex); });
@@ -12221,10 +12267,11 @@ function renderProgVolume(){
   const log = (state.sessionLog||[]).slice(-12).reverse();
   const rows = log.map(l=>{
     const older = (state.sessionLog||[]).slice(0, (state.sessionLog||[]).lastIndexOf(l)).reverse().find(x=>x.dayIndex===l.dayIndex);
-    const d = older && older.totalVolume>0 ? Math.round((l.totalVolume-older.totalVolume)/older.totalVolume*100) : null;
+    const lv = progSessVol(l), ov = older ? progSessVol(older) : 0;
+    const d = ov>0 ? Math.round((lv-ov)/ov*100) : null;
     const t = dateKeyToTime(l.date), dt = t ? new Date(t) : null;
     const pi = progCmpPick.indexOf(l.date);
-    return `<div class="pv-row click${pi>=0?' sel'+(pi+1):''}" data-pvday="${l.date}"><span class="pv-d">${dt ? dt.getDate()+'. '+(dt.getMonth()+1)+'.' : ''}</span><span class="pv-n">${homeEsc(schedDayLabel(l.dayIndex))}${pi>=0?' <small class="pv-badge">'+(pi+1)+'</small>':''}</span><b>${fmt(l.totalVolume||0)}</b>${d!==null?`<span class="pv-delta ${dCls(d)}">${dTxt(d,' %')}</span>`:'<span></span>'}</div>`;
+    return `<div class="pv-row click${pi>=0?' sel'+(pi+1):''}" data-pvday="${l.date}"><span class="pv-d">${dt ? dt.getDate()+'. '+(dt.getMonth()+1)+'.' : ''}</span><span class="pv-n">${homeEsc(schedDayLabel(l.dayIndex))}${pi>=0?' <small class="pv-badge">'+(pi+1)+'</small>':''}</span><b>${fmt(lv)}</b>${d!==null?`<span class="pv-delta ${dCls(d)}">${dTxt(d,' %')}</span>`:'<span></span>'}</div>`;
   }).join('');
   box.innerHTML = `<div class="prog-vol">
     <h5>⚖️ Objem po týdnech</h5>
@@ -15361,7 +15408,7 @@ async function aiEstimateFood(name){
     'Dále typická hmotnost jednoho kusu nebo porce v gramech (pieceG) a jak se jednotka česky jmenuje (pieceLabel, např. "ks", "plátek", "lžíce", "porce"). '+
     'Pokud je to nesmysl a nejde o jídlo, vrať kcal null. Odpověz pouze JSON.'}],
     {type:'OBJECT', properties:{name:{type:'STRING'}, per100:AI_PER100, pieceG:AI_NUM, pieceLabel:{type:'STRING', nullable:true}}}, {fast:true});
-  const per = aiCleanPer(r.per100);
+  const per = aiFillMacro(aiCleanPer(r.per100));
   if(per.kcal==null && per.p==null && per.c==null && per.f==null) throw aiErr('nofood','Tohle AI nepoznala jako jídlo');
   return {name: String(r.name||name).slice(0,60), per100: per, pieceG: (r.pieceG>0 ? r.pieceG : null), pieceLabel: r.pieceLabel||'ks'};
 }
@@ -15381,17 +15428,39 @@ async function aiSearchFood(name){
     const r = await aiEstimateFood(name); r.searched = false; r.sources = []; return r; // záloha: odhad bez vyhledávání
   }
 }
+// odpověď AI je „úplná“, když má kalorie i bílkoviny, sacharidy a tuky (rychlý model je občas vynechá)
+function aiMacrosComplete(per){ return per && per.kcal!=null && per.p!=null && per.c!=null && per.f!=null; }
+// když chybí jedno makro a ostatní + kcal jsou známé, dopočítá se z energie (4/4/9 kcal na g)
+function aiFillMacro(per){
+  if(!per || per.kcal==null) return per;
+  const miss = ['p','c','f'].filter(k=>per[k]==null);
+  if(miss.length!==1) return per;
+  const f = {p:4, c:4, f:9}, rest = ['p','c','f'].filter(k=>k!==miss[0]).reduce((a,k)=>a+per[k]*f[k],0);
+  per[miss[0]] = Math.max(0, Math.round((per.kcal-rest)/f[miss[0]]*10)/10);
+  return per;
+}
 // foto jídla → {name, grams, per100, items}
 async function aiEstimatePhoto(b64, mime, hint){
-  const r = await aiGenerate([
+  const parts = [
     {inlineData:{mimeType:mime||'image/jpeg', data:b64}},
     {text:'Na fotce je jídlo na talíři nebo v obalu. Rozpoznej, co to je, odhadni hmotnost celé porce v gramech (grams) '+
       'a průměrné nutriční hodnoty NA 100 g tohoto jídla (kcal, bílkoviny, sacharidy, z toho cukry, tuky, z toho nasycené, vláknina, sůl v gramech). '+
+      'DŮLEŽITÉ: pokud je na fotce jídlo, vyplň VŽDY všechna čísla kcal, bílkoviny (p), sacharidy (c) i tuky (f) – nikdy je nenechávej prázdná, odhadni je. '+
       'name = krátký český název jídla (max 50 znaků). items = stručný výčet rozpoznaných částí s odhadem gramů, např. "kuřecí prsa ~150 g, rýže ~180 g". '+
       (hint ? 'Upřesnění od uživatele (ber ho jako pravdivé): "'+String(hint).slice(0,200)+'". ' : '')+
-      'Pokud na fotce žádné jídlo není, vrať kcal null. Odpověz pouze JSON.'}],
-    {type:'OBJECT', properties:{name:{type:'STRING'}, grams:AI_NUM, items:{type:'STRING', nullable:true}, per100:AI_PER100}}, {fast:true});
-  const per = aiCleanPer(r.per100);
+      'Pokud na fotce žádné jídlo není, vrať kcal null. Odpověz pouze JSON.'}];
+  const schema = {type:'OBJECT', properties:{name:{type:'STRING'}, grams:AI_NUM, items:{type:'STRING', nullable:true}, per100:AI_PER100}};
+  let r = await aiGenerate(parts, schema, {fast:true});
+  let per = aiCleanPer(r.per100);
+  // rychlý model někdy makra vynechá → jeden automatický druhý pokus (větší model), pak dopočet z kalorií
+  if(per.kcal!=null && !aiMacrosComplete(per) && Object.keys(per).length){
+    try{
+      const r2 = await aiGenerate(parts, schema, {timeoutMs:25000});
+      const p2 = aiCleanPer(r2.per100);
+      if(aiMacrosComplete(p2) || (p2.kcal!=null && ['p','c','f'].filter(k=>p2[k]==null).length < ['p','c','f'].filter(k=>per[k]==null).length)){ r = r2; per = p2; }
+    }catch(e){ /* nevadí – zůstane první odpověď */ }
+    aiFillMacro(per);
+  }
   if(per.kcal==null && per.p==null && per.c==null && per.f==null) throw aiErr('nofood','Na fotce AI nepoznala jídlo');
   return {name:String(r.name||'Jídlo z fotky').slice(0,60), grams: r.grams>0 ? Math.round(r.grams) : 250, per100:per, items:r.items?String(r.items).slice(0,200):''};
 }
