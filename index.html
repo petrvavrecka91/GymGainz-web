@@ -2797,6 +2797,9 @@
 .fd-photo-menu button small{display:block; font-size:13px; font-weight:400; opacity:.75; margin-top:4px; line-height:1.3}
 .fs-quick{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 10px}
 .fs-quick button{flex:1 1 0; min-height:44px; padding:8px 12px; font-size:14px; border-radius:12px; border:1px solid var(--line,#3a3a48); background:var(--card2,#1d1d28); color:inherit; font-family:inherit}
+.fv-mic{display:block; width:100%; min-height:56px; margin:0 0 10px; padding:12px; font-size:18px; font-weight:700; border-radius:14px; border:2px solid var(--accent); background:rgba(var(--accent-rgb),.15); color:var(--accent); font-family:inherit}
+.fv-mic.on{background:var(--accent); color:#14041f}
+.fv-mic:disabled{opacity:.6}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -3128,7 +3131,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V31f · 2026-11-25</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V31g · 2026-11-25</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -16395,11 +16398,41 @@ async function aiParseMeal(text){
   if(!items.length) throw aiErr('nofood','Z textu AI nepoznala žádné jídlo');
   return {mealName: String(r.mealName||'').slice(0,40), items, ai:true};
 }
-function openFoodSpeak(text0){
+function openFoodSpeak(text0, auto){
   foodPanel(`<h4>🎤 Řekni nebo napiš, co jsi jedl/a</h4>
-    <p class="nb-note" style="margin:0 0 8px;">Klepni do pole a na klávesnici telefonu na 🎤 – nadiktuj třeba „čtyři vejce, šest plátků slaniny, trochu kečupu, dvě tortily, cheddar dva plátky“. Appka to rozdělí na položky a spočítá kalorie. Před uložením všechno uvidíš a můžeš upravit.</p>
+    <button class="fv-mic" id="fvMic" type="button">🎤 Mluvit</button>
+    <p class="nb-note" id="fvMicHint" style="margin:0 0 8px;">Klepni na mikrofon a řekni třeba „čtyři vejce, šest plátků slaniny, trochu kečupu“. Můžeš i psát.</p>
     <textarea id="fvText" class="wo-scratch-input" rows="4" maxlength="600" placeholder="co jsi jedl/a…" style="width:100%; box-sizing:border-box; margin-bottom:8px;">${homeEsc(text0||'')}</textarea>
     <div class="fs-more"><button id="fvGo">✨ Spočítat</button></div>`);
+  const micBtn = document.getElementById('fvMic'), micHint = document.getElementById('fvMicHint'), txtEl = document.getElementById('fvText');
+  const cap = window.Capacitor, spN = cap && cap.isNativePlatform && cap.isNativePlatform() ? (cap.Plugins && cap.Plugins.Speech || (cap.registerPlugin && cap.registerPlugin('Speech'))) : null;
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let rec = null;
+  const gotText = t=>{ t = String(t||'').trim(); if(!t) return; txtEl.value = (txtEl.value.trim() ? txtEl.value.trim()+', ' : '') + t; };
+  const listen = ()=>{
+    if(spN){   // appka v Androidu: systémové okno s mikrofonem
+      micBtn.disabled = true;
+      spN.listen({lang:'cs-CZ', prompt:'Řekni, co jsi jedl/a'}).then(r=>{ gotText(r && r.text); if(txtEl.value.trim().length>=3) document.getElementById('fvGo').click(); })
+        .catch(e=>{ if(!(e && /cancel/i.test(String(e.message||e)))) showToast('🎤 Hlasové zadávání není v tomto telefonu dostupné – použij mikrofon na klávesnici'); })
+        .then(()=>{ micBtn.disabled = false; });
+      return;
+    }
+    if(SR){   // prohlížeč / PWA
+      if(rec){ try{ rec.stop(); }catch(e){} return; }
+      rec = new SR(); rec.lang = 'cs-CZ'; rec.interimResults = false; rec.maxAlternatives = 1; rec.continuous = false;
+      micBtn.classList.add('on'); micBtn.textContent = '⏹ Poslouchám… (klepni pro konec)';
+      let got = false;
+      rec.onresult = ev=>{ got = true; gotText([...ev.results].map(r=>r[0].transcript).join(' ')); };
+      rec.onerror = ev=>{ if(ev.error==='not-allowed' || ev.error==='service-not-allowed') showToast('🎤 Povol mikrofon v prohlížeči (ikona zámku u adresy)'); else if(ev.error==='no-speech') showToast('🎤 Nic jsem neslyšel – zkus to znovu'); else if(ev.error!=='aborted') showToast('🎤 Rozpoznávání řeči se nepovedlo'); };
+      rec.onend = ()=>{ rec = null; micBtn.classList.remove('on'); micBtn.textContent = '🎤 Mluvit'; if(got && txtEl.value.trim().length>=3) document.getElementById('fvGo').click(); };
+      try{ rec.start(); }catch(e){ rec = null; micBtn.classList.remove('on'); micBtn.textContent = '🎤 Mluvit'; }
+      return;
+    }
+    showToast('🎤 Tenhle prohlížeč hlasové zadávání nepodporuje – klepni do pole a použij mikrofon na klávesnici');
+    txtEl.focus();
+  };
+  micBtn.addEventListener('click', listen);
+  if(!spN && !SR) micHint.textContent = 'Klepni do pole a na klávesnici telefonu na 🎤 – nadiktuj, co jsi jedl/a. Můžeš i psát.';
   const go = async()=>{
     const text = document.getElementById('fvText').value.trim();
     if(text.length<3){ showToast('⚠️ Napiš nebo nadiktuj, co jsi jedl/a'); return; }
@@ -16414,6 +16447,7 @@ function openFoodSpeak(text0){
     showMealResult(r, text, note);
   };
   document.getElementById('fvGo').addEventListener('click', go);
+  if(auto && !(text0||'').trim()) listen();
 }
 function showMealResult(r, text, note){
   const rows = r.items.map(x=>Object.assign({}, x));
@@ -16814,7 +16848,7 @@ function openFoodSearch(q0){
   qEl.addEventListener('input', ()=>{ clearTimeout(tm); tm = setTimeout(()=>{ draw(); drawStat(); }, 150); });   // jen místní zdroje, online až po odeslání
   qEl.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); run(); } });
   document.getElementById('fsOnline').addEventListener('click', run);
-  document.getElementById('fsSpeak').addEventListener('click', ()=>openFoodSpeak(qEl.value.trim()));
+  document.getElementById('fsSpeak').addEventListener('click', ()=>openFoodSpeak(qEl.value.trim(), true));
   document.getElementById('fsLib').addEventListener('click', ()=>openFoodLibrary(qEl.value.trim()));
   document.getElementById('fsRec').addEventListener('click', ()=>openFoodRecipePicker(qEl.value.trim()));
   document.getElementById('fsManual').addEventListener('click', ()=>openFoodForm({source:'manual', name: fsParse(qEl.value).text}));
