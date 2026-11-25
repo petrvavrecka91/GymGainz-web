@@ -3131,7 +3131,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V31g · 2026-11-25</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V31h · 2026-11-25</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -15866,13 +15866,14 @@ function renderFoodDiary(){
 
 // --- sdílený panel (modal nad vším) ---
 function foodPanel(html){
+  if(window._speechStop){ try{ window._speechStop(); }catch(e){} }
   const ov = document.getElementById('foodAddOverlay');
   ov.innerHTML = `<div class="nb-add-card" style="max-width:440px;"><button class="prof-close" id="foodPanelClose" style="float:none; position:absolute; top:12px; right:12px;">✕</button>${html}</div>`;
   ov.classList.add('open');
   document.getElementById('foodPanelClose').addEventListener('click', closeFoodPanel);
   return ov;
 }
-function closeFoodPanel(){ document.getElementById('foodAddOverlay').classList.remove('open'); }
+function closeFoodPanel(){ if(window._speechStop){ try{ window._speechStop(); }catch(e){} } document.getElementById('foodAddOverlay').classList.remove('open'); }
 
 // --- formulář jídla (společný pro foto, kód, knihovnu, ruční zápis) ---
 const FOOD_FIELDS = [['kcal','Energie (kcal)'],['p','Bílkoviny (g)'],['c','Sacharidy (g)'],['s','z toho cukry (g)'],['f','Tuky (g)'],['sf','z toho nasycené (g)'],['fiber','Vláknina (g)'],['salt','Sůl (g)']];
@@ -16302,12 +16303,57 @@ function openFoodPhotoPicker(){
 const MEAL_NUMS = {jedno:1,jeden:1,jedna:1,jednu:1,dva:2,dve:2,tri:3,ctyri:4,pet:5,sest:6,sedm:7,osm:8,devet:9,deset:10,pul:0.5,pulku:0.5,polovinu:0.5,tucet:12};
 const MEAL_UNITS = [[/^(g|gr|gram|gramu|gramy)$/,'g'],[/^kg$/,'kg'],[/^ml$/,'ml'],[/^(ks|kus|kusy|kusu)$/,'ks'],[/^(platek|platky|platku)$/,'plátek'],[/^(lzice|lzic|lzici)$/,'lžíce'],
   [/^(lzicka|lzicky|lzicek|lzicku)$/,'lžička'],[/^(hrst|hrsti|hrstku)$/,'hrst'],[/^(spetka|spetky|spetku)$/,'špetka'],[/^(porce|porci)$/,'porce'],[/^(sklenice|sklenici|sklenka|sklenku|sklenky)$/,'sklenice'],
-  [/^(hrnek|hrnku|hrnky)$/,'hrnek'],[/^(kousek|kousky|kousku)$/,'kousek']];
-const MEAL_UNIT_G = {g:1, kg:1000, ml:1, 'plátek':20, 'lžíce':15, 'lžička':5, hrst:30, 'špetka':1, porce:150, sklenice:250, hrnek:250, kousek:30};
+  [/^(hrnek|hrnku|hrnky)$/,'hrnek'],[/^(kousek|kousky|kousku)$/,'kousek'],[/^(l|litr|litru|litry|litrů)$/,'l'],[/^(dl|decilitr|decilitru|decilitry|deci)$/,'dl']];
+const MEAL_UNIT_G = {g:1, kg:1000, ml:1, l:1000, dl:100, 'plátek':20, 'lžíce':15, 'lžička':5, hrst:30, 'špetka':1, porce:150, sklenice:250, hrnek:250, kousek:30};
 const MEAL_SOFT_UNITS = ['hrst','špetka','lžíce','lžička','plátek','kousek','sklenice','hrnek','porce'];   // „špetka soli“ = 1 špetka
+const MEAL_TENS = {dvacet:20,tricet:30,ctyricet:40,padesat:50,sedesat:60,sedmdesat:70,osmdesat:80,devadesat:90,sto:100,jedenact:11,dvanact:12,patnact:15,sedmnact:17,osmnact:18};
+const MEAL_HUND = ['ste','sta','set'];
+// přečte číslo slovy od pozice i: „sto padesát“, „dvě stě“, „tři sta dvacet“ → {v, len}
+function mealNumWords(raw, i){
+  let v = 0, n = 0, cur = null;
+  while(raw[i+n]!=null){
+    const t = raw[i+n];
+    if(MEAL_HUND.includes(t) && cur!=null && cur<10 && cur>=2){ v += cur*100; cur = null; n++; continue; }
+    if(MEAL_TENS[t]!=null && (cur==null)){ if(MEAL_TENS[t]===100){ v += 100; } else cur = MEAL_TENS[t]; n++; if(MEAL_TENS[t]===100) cur = null; continue; }
+    if(MEAL_NUMS[t]!=null && MEAL_NUMS[t]>=1 && MEAL_NUMS[t]<10 && (cur==null || (cur>=20 && cur%10===0))){ cur = (cur||0) + MEAL_NUMS[t]; n++; continue; }
+    break;
+  }
+  if(cur!=null) v += cur;
+  return n>1 ? {v, len:n} : null;
+}
 const MEAL_VAGUE = ['trochu','trosku','malo','kapku','kapka','pár','par'];
-const MEAL_FILL = ['se','s','z','ze','a','i','na','do','jsem','jedl','jedla','snedl','snedla','dal','dala','pak','potom','dale','si','mel','mela','dnes','k','ke','od','pridal','pridala','jeste','plus','tak','ted','ráno','rano','obed','vecer','dostal','dostala'];
-const MEAL_ALIAS = {soli:'sul', sole:'sul', solí:'sul', vajicka:'vejce', vajec:'vejce', vajicko:'vejce', chedar:'cheddar', cedar:'cheddar', chedaru:'cheddar', cheddaru:'cheddar', kecupu:'kecup', slaniny:'slanina', vlocek:'vlocky', vlocku:'vlocky', tortily:'tortilla', tortil:'tortilla', tortilu:'tortilla'};
+const MEAL_FILL = ['velke','velky','velka','male','maly','mala','stredni','dobre','dobry','cerstve','cerstvy','snidane','snidani','obed','obedu','vecere','veceri','svacina','svaciny','svacinu','jsme','mame','mam','dala','snedla','sezral','zobal','spapal','dlouho','take','taky','ty','to','tu','byl','byla','bylo','bylo','se','s','z','ze','a','i','na','do','jsem','jedl','jedla','snedl','snedla','dal','dala','pak','potom','dale','si','mel','mela','dnes','k','ke','od','pridal','pridala','jeste','plus','tak','ted','ráno','rano','obed','vecer','dostal','dostala'];
+const MEAL_ALIAS = {kafe:'kava', kafem:'kava', kafe:'kava', mleka:'mleko', pizzu:'pizza', soli:'sul', sole:'sul', solí:'sul', vajicka:'vejce', vajec:'vejce', vajicko:'vejce', chedar:'cheddar', cedar:'cheddar', chedaru:'cheddar', cheddaru:'cheddar', kecupu:'kecup', slaniny:'slanina', vlocek:'vlocky', vlocku:'vlocky', tortily:'tortilla', tortil:'tortilla', tortilu:'tortilla'};
+// skloňování → základní tvar, který zná databáze („tvarohu“ → „tvaroh“, „mléka“ → „mléko“, „rýží“ → „rýže“)
+const MEAL_ENDS = [['ych','i'],['ych','e'],['ich','i'],['eho','e'],['eho','i'],['iho','i'],['ou','a'],['ou','e'],['ou','y'],['em','o'],['em',''],['ami',''],['ami','a'],['ami','y'],['mi',''],['ach','a'],['u',''],['u','o'],['u','a'],['a','o'],['e','o'],['i','e'],['i',''],['y','a'],['y',''],['ku','ka']];
+const _mealFixC = {};
+function mealFixWord(w){
+  if(w.length<4 || /^\d/.test(w)) return w;
+  if(_mealFixC[w]!==undefined) return _mealFixC[w];
+  const ok = c=>{ const h = foodSearchLocal(c, 1)[0]; return !!h && homeNorm(h.name).split(/[\s,()\/\-]+/).slice(0,2).some(x=>x.startsWith(c)); };
+  let out = w;
+  if(!ok(w)){
+    for(const [suf, r] of MEAL_ENDS){
+      if(w.endsWith(suf) && w.length-suf.length>=3){ const c = w.slice(0, w.length-suf.length)+r; if(ok(c)){ out = c; break; } }
+    }
+  }
+  return (_mealFixC[w] = out);
+}
+// shoduje se nalezená položka z databáze opravdu s tím, co AI myslela? („kuřecí maso“ ≠ „Salám z kuřecího masa“)
+function mealHitOk(hit, q){
+  if(!hit) return false;
+  const hw = homeNorm(hit.name).split(/[\s,()\/\-]+/).filter(Boolean).slice(0,2), qt = homeNorm(q).split(/\s+/).filter(Boolean);
+  if(!qt.length) return false;
+  const stem = t=>t.slice(0, Math.max(3, Math.min(t.length, 5)));
+  return [qt[0], qt[qt.length-1]].some(t=>hw.some(w=>w.startsWith(stem(t))));
+}
+// obecné slovo → nejběžnější položka (jinak by „mléko“ našlo kozí a „jogurt“ nějakou značku)
+const MEAL_DEFAULT = {mleko:'mleko polotucne', jogurt:'jogurt bily', tvaroh:'tvaroh jemny', ryze:'ryze bila varena', brambory:'brambory vařené', salat:'salat ledovy', kava:'kava bez mleka a cukru', syr:'syr gouda', maslo:'maslo', pivo:'pivo 12'};
+function mealLookup(q){
+  const d = MEAL_DEFAULT[homeNorm(q).trim()];
+  if(d){ const h = foodSearchLocal(d, 1)[0]; if(h) return h; }
+  return foodSearchLocal(q, 1)[0] || null;
+}
 function mealUnitOf(t){ const u = MEAL_UNITS.find(x=>x[0].test(t)); return u ? u[1] : ''; }
 // rozdělí větu na položky {nameTxt, qty, unit, vague}; počítá i s diktováním bez čárek (hranice položek se hledají podle databáze)
 function mealSegment(text){
@@ -16322,6 +16368,9 @@ function mealSegment(text){
       if(!u && raw[i+1]){ if(raw[i+1]==='x'){ u='ks'; len=2; } else { const uu = mealUnitOf(raw[i+1]); if(uu){ u=uu; len=2; } } }
       return {qty:q, unit:u, len};
     }
+    const cw = mealNumWords(raw, i);
+    if(cw){ let u = '', len = cw.len; if(raw[i+len]){ const uu = mealUnitOf(raw[i+len]); if(uu){ u=uu; len++; } } return {qty:cw.v, unit:u, len}; }
+    if(MEAL_TENS[t]!=null && MEAL_TENS[t]>=20){ let u = '', len = 1; if(raw[i+1]){ const uu = mealUnitOf(raw[i+1]); if(uu){ u=uu; len=2; } } return {qty:MEAL_TENS[t], unit:u, len}; }
     if(MEAL_NUMS[t]!=null){ let u = '', len = 1; if(raw[i+1]){ const uu = mealUnitOf(raw[i+1]); if(uu){ u=uu; len=2; } } return {qty:MEAL_NUMS[t], unit:u, len}; }
     if(MEAL_VAGUE.includes(t)) return {qty:null, unit:'', vague:true, len:1};
     const uu = mealUnitOf(t); if(uu && MEAL_SOFT_UNITS.includes(uu)) return {qty:1, unit:uu, len:1, soft:true};
@@ -16330,6 +16379,7 @@ function mealSegment(text){
   for(let i=0; i<raw.length; ){
     const t = raw[i];
     if(t==='|'){ flush(); i++; continue; }
+    if(['s','se','a','i','plus','k','ke'].includes(t)){ if(cur.name.length) flush(); i++; continue; }
     if(MEAL_FILL.includes(t)){ i++; continue; }
     const q = qtyAt(i);
     if(q){
@@ -16338,7 +16388,7 @@ function mealSegment(text){
       else { flush(); cur.qty = q.qty; cur.unit = q.unit; cur.vague = !!q.vague; cur.pre = true; }                                              // „dva plátky cheddaru“
       i += q.len; continue;
     }
-    cur.name.push(MEAL_ALIAS[t] || t.replace(/ych$/,'e').replace(/iho$/,'i')); i++;
+    cur.name.push(MEAL_ALIAS[t] || mealFixWord(t)); i++;
   }
   flush();
   // název z více slov bez čárky („tortily cheddar“) rozděl na položky, které databáze zná
@@ -16366,7 +16416,8 @@ function mealSegment(text){
 function mealGrams(hit, qty, unit, vague){
   const pcL = hit && hit.pieceG>0 ? homeNorm(hit.pieceLabel||'') : '';
   if(unit==='g'||unit==='ml') return qty;
-  if(unit==='kg') return qty*1000;
+  if(unit==='kg' || unit==='l') return qty*1000;
+  if(unit==='dl') return qty*100;
   if(qty==null){ return hit && hit.pieceG>0 ? hit.pieceG : (vague ? 10 : 100); }   // „trochu“ = 1 jednotka dané potraviny (lžíce, špetka…)
   if(unit && unit!=='ks'){ return qty * ((pcL && pcL===homeNorm(unit)) ? hit.pieceG : (MEAL_UNIT_G[unit]||100)); }
   if(hit && hit.pieceG>0) return qty*hit.pieceG;
@@ -16375,7 +16426,7 @@ function mealGrams(hit, qty, unit, vague){
 // bez AI: rozpis podle databáze v aplikaci
 function mealParseLocal(text){
   const items = mealSegment(text).filter(x=>x.nameTxt).map(x=>{
-    const hit = foodSearchLocal(x.nameTxt, 1)[0] || null;
+    const hit = mealLookup(x.nameTxt);
     const g = mealGrams(hit, x.qty, x.unit, x.vague);
     return {name: hit ? hit.name : x.nameTxt, grams: Math.round(g*10)/10, per100: hit ? fsNormPer(hit.per100) : null, src: hit ? (hit.mine?'lib':'db') : 'none', vague: !!x.vague || (x.qty==null)};
   });
@@ -16391,7 +16442,8 @@ async function aiParseMeal(text){
     'mealName = krátký název celého jídla (max 40 znaků). Text: "'+String(text).slice(0,600).replace(/"/g,"'")+'". Odpověz pouze JSON.'}],
     {type:'OBJECT', properties:{mealName:{type:'STRING'}, items:{type:'ARRAY', items:{type:'OBJECT', properties:{name:{type:'STRING'}, dbQuery:{type:'STRING'}, grams:{type:'NUMBER'}, vague:{type:'BOOLEAN'}, per100:AI_PER100}}}}}, {fast:true});
   const items = (r.items||[]).filter(x=>x && x.name && x.grams>0).slice(0,30).map(x=>{
-    const hit = foodSearchLocal(x.dbQuery || x.name, 1)[0] || null;
+    let hit = mealLookup(x.dbQuery || x.name);
+    if(hit && !mealHitOk(hit, x.dbQuery || x.name)) hit = null;   // špatná shoda (např. salám místo masa) → raději hodnoty od AI, označené jako odhad
     const ai = fsNormPer(x.per100), aiOk = ai.kcal!=null;
     return {name: String(x.name).slice(0,50), grams: Math.round(x.grams*10)/10, per100: hit ? fsNormPer(hit.per100) : (aiOk ? ai : null), src: hit ? (hit.mine?'lib':'db') : (aiOk ? 'ai' : 'none'), vague: !!x.vague};
   });
@@ -16422,9 +16474,11 @@ function openFoodSpeak(text0, auto){
       rec = new SR(); rec.lang = 'cs-CZ'; rec.interimResults = false; rec.maxAlternatives = 1; rec.continuous = false;
       micBtn.classList.add('on'); micBtn.textContent = '⏹ Poslouchám… (klepni pro konec)';
       let got = false;
-      rec.onresult = ev=>{ got = true; gotText([...ev.results].map(r=>r[0].transcript).join(' ')); };
+      let killT = setTimeout(()=>{ try{ rec && rec.stop(); }catch(e){} }, 20000);   // pojistka: nikdy neposlouchá déle než 20 s
+      window._speechStop = ()=>{ clearTimeout(killT); try{ rec && rec.abort(); }catch(e){} rec = null; window._speechStop = null; };
+      rec.onresult = ev=>{ got = true; gotText([...ev.results].map(r=>r[0].transcript).join(' ')); try{ rec.stop(); }catch(e){} };
       rec.onerror = ev=>{ if(ev.error==='not-allowed' || ev.error==='service-not-allowed') showToast('🎤 Povol mikrofon v prohlížeči (ikona zámku u adresy)'); else if(ev.error==='no-speech') showToast('🎤 Nic jsem neslyšel – zkus to znovu'); else if(ev.error!=='aborted') showToast('🎤 Rozpoznávání řeči se nepovedlo'); };
-      rec.onend = ()=>{ rec = null; micBtn.classList.remove('on'); micBtn.textContent = '🎤 Mluvit'; if(got && txtEl.value.trim().length>=3) document.getElementById('fvGo').click(); };
+      rec.onend = ()=>{ clearTimeout(killT); window._speechStop = null; rec = null; micBtn.classList.remove('on'); micBtn.textContent = '🎤 Mluvit'; if(got && txtEl.value.trim().length>=3) document.getElementById('fvGo').click(); };
       try{ rec.start(); }catch(e){ rec = null; micBtn.classList.remove('on'); micBtn.textContent = '🎤 Mluvit'; }
       return;
     }
