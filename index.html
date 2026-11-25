@@ -3122,7 +3122,7 @@
     <div class="home-bottom-controls">
     <button id="exitAppBtn" class="home-bottom-btn home-bottom-btn-exit" style="display:none;">🚪 Exit</button>
   </div>
-  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V31d · 2026-11-10</div>
+  <div style="text-align:center; font-family:'Space Mono',monospace; font-size:13px; color:var(--muted); opacity:0.7; padding:0 0 18px;">build V31e · 2026-11-25</div>
 </div>
 
 <nav class="bottom-nav" id="bottomNav">
@@ -15354,6 +15354,45 @@ function foodSearchLocal(text, limit){
   return out.slice(0, limit||12).map(x=>x.it);
 }
 
+// ===== Velká databáze CZ/SK produktů (Open Food Facts) – samostatný soubor off_cz.json, načítá se až když je potřeba =====
+let _offBig = null, _offBigP = null;
+function offBigLoad(){
+  if(_offBig) return Promise.resolve(true);
+  if(_offBigP) return _offBigP;
+  _offBigP = fetch('off_cz.json').then(r=>{ if(!r.ok) throw new Error('http'); return r.json(); }).then(a=>{
+    _offBig = a.map((r,i)=>{
+      const n = v=>(v===''||v==null) ? null : Number(v);
+      const hay = homeNorm(r[1]+' '+r[2]+' '+(r[11]||''));
+      return {id:'O:'+r[0], ean:r[0], name:r[1], brand:r[2]||'', alias:r[11]||'', per100:{kcal:n(r[3]), p:n(r[4]), c:n(r[5]), f:n(r[6]), fiber:n(r[7]), s:n(r[8]), salt:n(r[9])},
+        pieceG:n(r[10]), pieceLabel:'porce', tab:'off', _n:homeNorm(r[1]), _w:hay.split(/[\s,()\/\-]+/).filter(Boolean)};
+    });
+    return true;
+  }).catch(()=>{ _offBigP = null; return false; });
+  return _offBigP;
+}
+function offBigByEan(code){ return _offBig ? (_offBig.find(x=>x.ean===code) || null) : null; }
+function offBigSearch(text, limit){
+  if(!_offBig) return [];
+  const nq = homeNorm(text||'').trim();
+  if(nq.length < 2) return [];
+  if(/^\d{8,14}$/.test(nq)) return _offBig.filter(x=>x.ean===nq).slice(0, limit||10);
+  const tokens = nq.split(/\s+/).filter(Boolean), out = [];
+  for(const it of _offBig){
+    let total = 0;
+    for(const t of tokens){
+      let best = 0;
+      if(it._n.startsWith(t)) best = 100;
+      else if(it._w.some(w=>w.startsWith(t))) best = 80;
+      else if(t.length>=5){ const s = t.slice(0, t.length-1); if(it._w.some(w=>w.startsWith(s))) best = 55; }
+      if(!best){ total = 0; break; }
+      total += best;
+    }
+    if(total) out.push({it, sc: total/tokens.length - Math.min(it.name.length, 60)*0.1});
+  }
+  out.sort((a,b)=>b.sc-a.sc);
+  return out.slice(0, limit||12).map(x=>x.it);
+}
+
 // ===== AI (Gemini) – vlastní klíč uživatele z Google AI Studia =====
 // klíč je v samostatném localStorage klíči, mimo `state` → nejde do záloh ani do cloudu
 const GG_KEY_LS = 'gg_gemini_key', GG_MODEL_LS = 'gg_gemini_model';
@@ -16202,7 +16241,8 @@ function foodWaitTimer(msg){
 async function foodLookupBarcode(code){
   code = String(code||'').replace(/\D/g,'');
   if(code.length<8){ showToast('⚠️ Zadej celé číslo čárového kódu (8–13 číslic)'); return; }
-  const loc = foodDb().find(x=>x.ean===code);
+  let loc = foodDb().find(x=>x.ean===code);
+  if(!loc){ await offBigLoad(); loc = offBigByEan(code); }
   if(loc){
     openFoodForm({source:'barcode', name:[loc.name, loc.brand].filter(Boolean).join(' – '), per100:fsNormPer(loc.per100), servingG:loc.pieceG||null, grams:loc.pieceG||100,
       missing: [], note:'Údaje pocházejí z databáze Open Food Facts (přidávají je uživatelé). Zkontroluj je podle obalu.'});
@@ -16542,6 +16582,7 @@ function fsRank(items, text){
     if(homeNorm(it.name)===nq) s += 30;
     s -= Math.min(hay.length, 60)*0.1;
     if(it.src.includes('db') || it.src.includes('lib')) s += 14;   // základní databáze = běžné potraviny dopředu (mléko polotučné před kozím)
+    if(it.src.length===1 && it.src[0]==='off' && it.brand && !tokens.some(t=>homeNorm(it.brand).includes(t))) s -= 25;   // značkové výrobky až za obecné potraviny (pokud se nehledá značka)
     if(it.src.length>1) s += 6;                                      // shodné hodnoty z více zdrojů = důvěryhodnější
     it.score = s + Math.max.apply(null, it.src.map(x=>FS_SRC[x].pri))/10 + it.cmp.lvl;
     kept.push(it);
@@ -16694,7 +16735,7 @@ function openFoodSearch(q0){
   const ONL = ['nutri','off','google'];
   const draw = ()=>{
     pq = fsParse(qEl.value);
-    local = pq.text.length>=2 ? fsFromLocal(foodSearchLocal(pq.text, 30)) : [];
+    local = pq.text.length>=2 ? fsFromLocal(foodSearchLocal(pq.text, 30).concat(offBigSearch(pq.text, 25))) : [];
     const useOnl = onQ!==null && homeNorm(pq.text)===onQ;
     let all = local.slice();
     if(useOnl) ONL.forEach(id=>{ if(online[id]) all = all.concat(online[id]); });
@@ -16765,6 +16806,7 @@ function openFoodSearch(q0){
   document.getElementById('fsManual').addEventListener('click', ()=>openFoodForm({source:'manual', name: fsParse(qEl.value).text}));
   document.getElementById('fsAi').addEventListener('click', ()=>foodAiFor(qEl.value));
   draw();
+  offBigLoad().then(ok=>{ if(ok && document.body.contains(qEl)) draw(); });   // velká databáze CZ/SK produktů se dočte na pozadí
   if(/^\d{8,14}$/.test((q0||'').trim())) run();
 }
 function aiErrText(e){
